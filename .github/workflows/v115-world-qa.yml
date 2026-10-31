@@ -1,7 +1,7 @@
 name: V115 — World Atlas and Multiplayer Boundary QA
 on:
   push:
-    branches: [feature/v115-one-living-world]
+    branches: [feature/v115-one-living-world, feature/v115-road-and-visual-grid]
   workflow_dispatch:
 
 permissions:
@@ -24,7 +24,21 @@ jobs:
           node --check qa/check-v115-campus.cjs
           node qa/check-v115-campus.cjs
           node qa/check-v115-connected-city.cjs
+          node --check published-game-capture/v115-city-fabric.js
+          node --check qa/check-v115-city-fabric.cjs
+          node qa/check-v115-city-fabric.cjs
           node qa/check-v115-world.cjs published-game-capture/v115-world.js
+      - name: Guard original engine and every Zombie/Academy file against base branch
+        shell: bash
+        run: |
+          git fetch origin feature/v115-one-living-world
+          test "$(git rev-parse HEAD:published-game-capture/game.js)" = "$(git rev-parse origin/feature/v115-one-living-world:published-game-capture/game.js)"
+          test "$(git rev-parse HEAD:published-game-capture/outbreak.css)" = "$(git rev-parse origin/feature/v115-one-living-world:published-game-capture/outbreak.css)"
+          git diff --name-only origin/feature/v115-one-living-world HEAD | tee /tmp/v115-street-changed.txt
+          if grep -Ei '/assets/outbreak|zombie|training|academy|published-game-capture/game\\.js' /tmp/v115-street-changed.txt; then
+            echo "Protected area changed"; exit 1
+          fi
+          echo "PASS: No Zombie, Academy or classic engine changes"
       - name: Verify original game, combat and Zombie Outbreak are untouched
         shell: bash
         run: |

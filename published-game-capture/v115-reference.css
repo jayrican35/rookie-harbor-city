@@ -1,0 +1,6 @@
+/* Reference-guided city map development. Purely presentational. */
+#v115ReferenceTag{position:absolute;right:14px;bottom:140px;z-index:6;
+  pointer-events:none;background:#173653ee;color:#f8e3aa;border:1px solid #d5b971;
+  border-radius:7px;padding:5px 9px;font:800 10px system-ui,sans-serif;
+  letter-spacing:.06em;box-shadow:0 4px 14px #10243f70;}
+@media(max-width:480px){#v115ReferenceTag{bottom:154px;right:14px;font-size:9px}}

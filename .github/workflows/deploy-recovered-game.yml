@@ -36,6 +36,13 @@ jobs:
           path: visual-preview
           persist-credentials: true
 
+      - name: Check out V114 Case 002 preview (isolated)
+        uses: actions/checkout@v4
+        with:
+          ref: feature/v114-midnight-pickle-panic
+          path: pickle-preview
+          persist-credentials: false
+
       - name: Recover missing main-campaign environment art
         shell: bash
         working-directory: visual-preview
@@ -99,6 +106,39 @@ jobs:
           cmp -s game-backup/published-game-capture/outbreak.css site/preview/v113/outbreak.css
           echo "PASS: original playable root and Zombie Outbreak source remain byte-for-byte identical."
           echo "Preview path: /rookie-harbor-city/preview/v113/"
+
+      - name: Add V114 funny Case 002 preview without changing main or V113
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v114
+          cp -a pickle-preview/published-game-capture/. site/preview/v114/
+          test -s site/preview/v114/game.js
+          test -s site/preview/v114/v114-preview-save-isolation.js
+          node --check site/preview/v114/game.js
+          node --check site/preview/v114/v114-preview-save-isolation.js
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('site/preview/v114/index.html')
+          html=p.read_text()
+          script='<script src="./game.js"></script>'
+          assert html.count(script)==1,'Could not safely inject preview-only save isolation'
+          html=html.replace(script,'<script src="./v114-preview-save-isolation.js"></script>\n'+script)
+          p.write_text(html)
+          text=(Path('site/preview/v114/game.js')).read_text()
+          assert 'CASE002_PICKLE_PANIC_V114' in text
+          assert 'case2ConclusionChoices' in text
+          assert len(text)>1450000
+          PY
+          (cd pickle-preview && node qa/test_case002_v114.cjs)
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s visual-preview/published-game-capture/game.js site/preview/v113/game.js
+          cmp -s visual-preview/published-game-capture/outbreak.css site/preview/v113/outbreak.css
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v114/outbreak.css
+          echo "PASS: original home-screen game, V113 preview and Zombie Outbreak remain unchanged"
+          echo "V114 URL: /rookie-harbor-city/preview/v114/"
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

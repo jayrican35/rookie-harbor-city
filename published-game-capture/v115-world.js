@@ -11,13 +11,51 @@
     westfield:   [-3100, 1260],
     residential: [-1500, 1260],
     plaza:       [148, 600],
-    northgate:   [5086, 163],
+    northgate:   [5086, 183],
     downtown:    [5056, 1283],
     midtown:     [2800, 1260],
     eastside:    [6556, 1260],
     industrial:  [8156, 1003],
-    waterfront:  [4400, 3245],
+    waterfront:  [4400, 3220],
     southbay:    [2800, 3220]
+  });
+  // V115 Phase 3B: canonical topological road plan. Both the atlas and the
+  // connected scene consume these same world-space road segments and nodes.
+  // All positions are absolute world units; no map swaps or screen loads.
+  const STREET_NETWORK = Object.freeze({
+    version:'115-phase3b-roads-1',worldId:'harbor-main',
+    primary:Object.freeze({id:'harbor-avenue',name:'Harbor Avenue',centerY:1784,laneWidth:127}),
+    segments:Object.freeze([
+      {id:'harbor-ave-west',x:-3100,y:1721,w:3250,h:127,kind:'arterial'},
+      {id:'harbor-ave-east',x:2068,y:1721,w:733,h:127,kind:'arterial'},
+      {id:'maple-to-southbay',x:-650,y:1800,w:144,h:1958,kind:'collector'},
+      {id:'south-connector',x:-650,y:3680,w:3450,h:128,kind:'collector'},
+      {id:'midtown-south',x:3460,y:3070,w:170,h:230,kind:'collector'},
+      {id:'northgate-downtown',x:5800,y:945,w:110,h:352,kind:'collector'},
+      {id:'downtown-waterfront',x:5720,y:2230,w:150,h:1640,kind:'collector'},
+      {id:'bayview-link',x:4388,y:3680,w:55,h:128,kind:'collector'}
+    ].map(r=>Object.freeze(r))),
+    // Road boundary points are pedestrian crossings and future AI graph nodes;
+    // NOT teleports, mission triggers, or server-owned gameplay logic.
+    crossings:Object.freeze([
+      {id:'westfield-residential',x:-1500,y:1784,axis:'h',type:'district-seam'},
+      {id:'residential-precinct',x:0,y:1784,axis:'h',type:'district-seam'},
+      {id:'precinct-midtown',x:2800,y:1784,axis:'h',type:'district-seam'},
+      {id:'midtown-downtown',x:5056,y:1784,axis:'h',type:'district-seam'},
+      {id:'downtown-eastside',x:6556,y:1784,axis:'h',type:'district-seam'},
+      {id:'eastside-industrial',x:8156,y:1784,axis:'h',type:'district-seam'},
+      {id:'maple-arterial',x:-578,y:1784,axis:'h',type:'intersection'},
+      {id:'maple-south-road',x:-578,y:3744,axis:'h',type:'intersection'},
+      {id:'northgate-downtown',x:5855,y:1283,axis:'v',type:'intersection'},
+      {id:'downtown-waterfront',x:5795,y:2283,axis:'v',type:'intersection'},
+      {id:'southbay-waterfront',x:4400,y:3744,axis:'v',type:'district-seam'}
+    ].map(r=>Object.freeze(r))),
+    landmarks:Object.freeze([
+      {id:'precinct',label:'PRECINCT 9',x:948,y:1160},
+      {id:'midtown',label:'MIDTOWN',x:3940,y:1760},
+      {id:'downtown',label:'DOWNTOWN',x:5830,y:1780},
+      {id:'waterfront',label:'WATERFRONT',x:5080,y:3810}
+    ].map(r=>Object.freeze(r)))
   });
   const INDOOR_PARENT = Object.freeze({
     station: 'plaza', store: 'midtown', cafe: 'downtown',
@@ -167,11 +205,18 @@
     });
     // Streets and connecting footpaths are real walkable coordinates in the
     // V115 connected-world preview, not imaginary district links.
-    const streets=[[-3100,1721,3250,127],[2068,1721,733,127],
-      [-650,1800,144,1958],[-650,3680,3450,128],[3460,3070,170,230],
-      [5800,945,110,352],[5720,2230,150,1640],[4388,3680,55,128]];
-    mapctx.fillStyle='rgba(139,162,169,.75)';
-    streets.forEach(r=>mapctx.fillRect(r[0]*s,r[1]*s,Math.max(1,r[2]*s),Math.max(1,r[3]*s)));
+    // Draw the authored network after districts so road connections stay
+    // visible in the overview even when district ground paintings overlap.
+    mapctx.fillStyle='rgba(102,119,132,.93)';
+    STREET_NETWORK.segments.forEach(r=>mapctx.fillRect(r.x*s,r.y*s,Math.max(1,r.w*s),Math.max(1,r.h*s)));
+    mapctx.strokeStyle='rgba(236,213,142,.9)';mapctx.lineWidth=1.3;
+    STREET_NETWORK.crossings.forEach(c=>{
+      const half=c.type==='intersection'?12:7;
+      mapctx.beginPath();
+      if(c.axis==='h'){mapctx.moveTo((c.x-half)*s,c.y*s);mapctx.lineTo((c.x+half)*s,c.y*s);}
+      else {mapctx.moveTo(c.x*s,(c.y-half)*s);mapctx.lineTo(c.x*s,(c.y+half)*s);}
+      mapctx.stroke();
+    });
     // This is the actual 1:1 station envelope, not the old 640px exterior.
     const station=cells.station;
     if(station && MAPS.station){
@@ -252,6 +297,7 @@
     rooms:()=>indoorIds.map(id=>cells[id]),
     areas:()=>zoneIds.map(id=>cells[id]),
     area:(id)=>cells[id]||null,
+    roadNetwork:()=>STREET_NETWORK,
     toWorld:worldPoint,
     playerPoint,
     nearbyChunks:chunksAround,

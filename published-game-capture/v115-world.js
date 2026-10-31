@@ -133,6 +133,12 @@
     mapctx.fillStyle=BACKGROUND; mapctx.fillRect(0,0,canvas.width,canvas.height);
     mapctx.save(); mapctx.translate(px-MIN_X*s,py);
     mapctx.fillStyle='#15344b'; mapctx.fillRect(MIN_X*s,0,(W-MIN_X)*s,HGT*s);
+    // Same shoreline, green belts and world coordinates as the walkable city.
+    if(H.cityFabricV115){
+      mapctx.save();mapctx.scale(s,s);
+      H.cityFabricV115.backdrop(mapctx,{x:MIN_X,y:0,w:W-MIN_X,h:HGT},s);
+      mapctx.restore();
+    }
     // Real map extents. The space between rectangles identifies areas where
     // the new connecting roads must still be designed and built.
     zoneIds.forEach(id => {
@@ -172,6 +178,8 @@
       [5800,945,110,352],[5720,2230,150,1640],[4388,3680,55,128]];
     mapctx.fillStyle='rgba(139,162,169,.75)';
     streets.forEach(r=>mapctx.fillRect(r[0]*s,r[1]*s,Math.max(1,r[2]*s),Math.max(1,r[3]*s)));
+    // Crossings are drawn from the SAME authored graph as the active city.
+    if(H.cityFabricV115)H.cityFabricV115.atlasRoads(mapctx,s);
     // This is the actual 1:1 station envelope, not the old 640px exterior.
     const station=cells.station;
     if(station && MAPS.station){

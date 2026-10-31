@@ -168,6 +168,7 @@ jobs:
           (cd world-preview && node qa/check-v115-world.cjs published-game-capture/v115-world.js)
           (cd world-preview && node qa/check-v115-campus.cjs)
           (cd world-preview && node qa/check-v115-connected-city.cjs)
+          (cd world-preview && node qa/check-v115-road-layout.cjs)
           cmp -s game-backup/published-game-capture/index.html site/index.html
           cmp -s game-backup/published-game-capture/game.js site/game.js
           cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
@@ -177,7 +178,7 @@ jobs:
           grep -q 'V115 DEV BUILD' site/preview/v115/index.html
           grep -q 'game-v115.bundle.js' site/preview/v115/index.html
           echo "PASS: V115 world and campus share engine scope; normal game and Zombie Outbreak remain byte-for-byte unchanged"
-          echo "V115 connected city preview: /rookie-harbor-city/preview/v115/"
+          echo "V115 aligned-roads preview: /rookie-harbor-city/preview/v115/"
 
       - name: Build isolated V115 professional street-grid comparison
         shell: bash

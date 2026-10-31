@@ -1,0 +1,61 @@
+/* ROOKIE: Harbor City — V113 main-menu and readable HUD visual pass.
+   Presentation only; no Academy/Outbreak selectors. */
+#familySelect {
+  background:
+    radial-gradient(ellipse at 50% -12%,rgba(76,137,170,.38),transparent 55%),
+    radial-gradient(ellipse at 105% 110%,rgba(188,140,72,.13),transparent 48%),
+    linear-gradient(145deg,#0a1528 0%,#122d45 58%,#081320 100%);
+}
+#familySelect .family-inner {max-width:760px}
+#familySelect .family-kicker {
+  letter-spacing:.22em;color:#ffe0a0;
+  text-shadow:0 1px 16px rgba(255,212,125,.24);
+}
+#familySelect .family-inner h1 {
+  font-family:'Barlow Condensed',system-ui,sans-serif;
+  font-weight:800;letter-spacing:.025em;
+  text-shadow:0 3px 19px rgba(0,0,0,.40);
+}
+#familySelect .family-inner>p {color:#d9e7ee}
+#familySelect .family-cards {gap:14px}
+#familySelect .family-card {
+  position:relative;isolation:isolate;overflow:hidden;
+  border:1px solid rgba(159,191,209,.64);
+  border-radius:17px;
+  background:linear-gradient(157deg,rgba(48,88,117,.93),rgba(16,41,66,.98) 62%,#0d2036);
+  box-shadow:0 10px 22px rgba(0,0,0,.31),inset 0 1px rgba(255,255,255,.11);
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,background .18s ease;
+}
+#familySelect .family-card::before {
+  content:'';position:absolute;z-index:-1;pointer-events:none;
+  top:-55%;left:-30%;width:160%;height:110%;
+  background:radial-gradient(ellipse at 50% 65%,rgba(125,203,224,.19),transparent 68%);
+}
+#familySelect .family-card:focus-visible {outline:3px solid #ffe09b;outline-offset:3px}
+@media(hover:hover) {
+  #familySelect .family-card:hover {
+    transform:translateY(-3px);border-color:#f4d187;
+    box-shadow:0 14px 26px rgba(0,0,0,.36),0 0 0 1px rgba(244,209,135,.37);
+  }
+}
+#familySelect .family-card:active {transform:translateY(1px)}
+#familySelect .family-card img {
+  border:1px solid rgba(255,255,255,.20);border-radius:12px;
+  background:linear-gradient(#285e76,#13314d);
+  box-shadow:0 7px 16px rgba(0,0,0,.20);
+}
+#familySelect .family-card strong {
+  font-family:'Barlow Condensed',system-ui,sans-serif;
+  font-weight:800;letter-spacing:.022em;color:#fff9eb;
+}
+#familySelect .family-card span {color:#d3e2ea;font-weight:500}
+#familySelect .family-card small {color:#ffdf90;letter-spacing:.025em}
+#familySelect .family-note {color:#c0d3df;line-height:1.55}
+body:not(.tactical-focus) .topbar {box-shadow:0 2px 16px rgba(2,15,33,.14)}
+body:not(.tactical-focus) .topbar .hbtn:focus-visible,
+body:not(.tactical-focus) .topbar button:focus-visible {
+  outline:2px solid #ffdf90;outline-offset:2px;
+}
+@media(prefers-reduced-motion:reduce){
+  #familySelect .family-card {transition:none}
+}

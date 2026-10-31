@@ -7,27 +7,79 @@ on:
       - .github/workflows/capture-game.yml
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   capture:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 15
     steps:
-      - name: Check out read-only recovery tools
+      - name: Check out dedicated published backup branch
         uses: actions/checkout@v4
         with:
-          ref: v112-sandwich-caper
-      - name: Capture public HTML and linked resources
+          ref: published-v1-backup
+          persist-credentials: true
+
+      - name: Capture published HTML and linked files
         run: python3 tools/archive_published_game.py
-        continue-on-error: true
-      - name: Capture lazy-loaded art and audio and restore portable filenames
+
+      - name: Capture dynamic images and audio
         run: python3 tools/archive_runtime_assets.py
-        continue-on-error: true
-      - name: Upload public game backup and reports
+
+      - name: Validate that this is the ROOKIE game
+        shell: bash
+        run: |
+          test -s published-game-capture/index.html
+          test -s published-game-capture/game.js
+          python3 - <<'PY'
+          from pathlib import Path
+          from json import loads
+          p = Path("published-game-capture")
+          html = (p/"index.html").read_text("utf-8", errors="replace")
+          js = (p/"game.js").read_text("utf-8", errors="replace")
+          assert "ROOKIE" in (html + js).upper(), "Not the ROOKIE website"
+          assert len(js) > 100000, "Main game JS unexpectedly small"
+          report = loads((p/"RUNTIME-ASSETS-REPORT.json").read_text())
+          print("Website captured; extra assets fetched:", len(report["captured"]))
+          print("Remaining identified assets:", len(report["remaining_identified_paths"]))
+          PY
+
+      - name: Produce standalone recovery ZIP
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile, ZIP_DEFLATED
+          root = Path("published-game-capture")
+          dest = Path("ROOKIE_Harbor_City_Published_Backup.zip")
+          with ZipFile(dest, "w", ZIP_DEFLATED, compresslevel=6) as z:
+              for p in sorted(root.rglob("*")):
+                  if p.is_file():
+                      z.write(p, p.relative_to(root))
+          print("Backup ZIP bytes:", dest.stat().st_size)
+          PY
+
+      - name: Commit captured public game files to backup-only branch
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f published-game-capture/
+          if [ "$(stat -c%s ROOKIE_Harbor_City_Published_Backup.zip)" -lt 90000000 ]; then
+            git add -f ROOKIE_Harbor_City_Published_Backup.zip
+          fi
+          if ! git diff --cached --quiet; then
+            git commit -m "Archive published ROOKIE website and referenced public game assets"
+            git push origin HEAD:published-v1-backup
+          fi
+
+      - name: Upload capture artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: rookie-published-game-expanded-backup
-          path: published-game-capture/
+          path: |
+            published-game-capture/
+            ROOKIE_Harbor_City_Published_Backup.zip
           if-no-files-found: warn
           retention-days: 30

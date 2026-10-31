@@ -60,7 +60,11 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -f published-game-capture/V113-WORLD-ART-RECOVERY.json
-          git add -f published-game-capture/assets/midtown/ published-game-capture/assets/maple-court/ published-game-capture/assets/exterior/
+          for directory in midtown maple-court exterior; do
+            if [ -d "published-game-capture/assets/$directory" ]; then
+              git add -f "published-game-capture/assets/$directory/"
+            fi
+          done
           if ! git diff --cached --quiet; then
             git commit -m "Restore missing main-campaign storefront and world sprites"
             git push origin HEAD:feature/v113-visual-polish

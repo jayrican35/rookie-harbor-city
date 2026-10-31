@@ -33,8 +33,7 @@
   const indoorIds = Object.keys(INDOOR_PARENT).filter(id => MAPS[id]);
   const active = () => typeof state !== 'undefined' && state &&
     state.map !== 'training' &&
-    !(H.academy && typeof H.academy.active === 'function' && H.academy.active()) &&
-    !(H.academy && typeof H.academy.mode === 'function' && H.academy.mode() === 'zombie');
+    !(H.academy && typeof H.academy.active === 'function' && H.academy.active());
 
   function descriptor(id) {
     if (!MAPS[id] || id === 'training') return null;

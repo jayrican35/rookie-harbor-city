@@ -1,0 +1,215 @@
+{
+  "source": "https://rookie-harbor-city-jay-20261014.satinyboot35.chatgpt.site/",
+  "requested_paths": [
+    "assets/midtown/convenience_store.webp",
+    "assets/midtown/cafe.webp",
+    "assets/midtown/cafe_patio_set.webp",
+    "assets/midtown/motel.webp",
+    "assets/midtown/repair_garage.webp",
+    "assets/midtown/pharmacy.webp",
+    "assets/midtown/laundromat.webp",
+    "assets/midtown/pizza_shop.webp",
+    "assets/maple-court/house_12_peach.webp",
+    "assets/maple-court/house_8_cream.webp",
+    "assets/maple-court/house_16_sage.webp",
+    "assets/maple-court/mailbox.webp",
+    "assets/exterior/precinct_overhead.webp",
+    "assets/exterior/garage.webp",
+    "assets/exterior/utility_shed.webp",
+    "assets/exterior/fence_horizontal.webp",
+    "assets/exterior/fence_vertical.webp",
+    "assets/exterior/gate_open.webp",
+    "assets/exterior/fountain.webp",
+    "assets/exterior/monument.webp",
+    "assets/exterior/flagpole.webp",
+    "assets/exterior/bench.webp",
+    "assets/exterior/lamp.webp",
+    "assets/exterior/bollard.webp",
+    "assets/exterior/flower_planter.webp",
+    "assets/exterior/hedge.webp",
+    "assets/exterior/palm.webp",
+    "assets/exterior/shade_tree.webp",
+    "assets/exterior/hydrant.webp",
+    "assets/exterior/trash_bin.webp",
+    "assets/exterior/parking_bay.webp",
+    "assets/exterior/wheel_stop.webp",
+    "assets/exterior/patrol_car.webp",
+    "assets/exterior/civilian_red.webp"
+  ],
+  "captured": [
+    {
+      "path": "assets/exterior/bench.webp",
+      "bytes": 2256,
+      "sha256": "8f9a251a303cdc45cf752b6b3b87fc9d0eaf053db3c7ea11f624bc4f578ea7ba"
+    },
+    {
+      "path": "assets/exterior/bollard.webp",
+      "bytes": 572,
+      "sha256": "c7ebde7883a2953eb155fa00d46198ebb8ba52f1418712c4f07e1cfca88b4efd"
+    },
+    {
+      "path": "assets/exterior/civilian_red.webp",
+      "bytes": 24516,
+      "sha256": "66957f84a7dc6d0b5054fcf49c83bdd90ed83807aa2dce4737d67065382b7209"
+    },
+    {
+      "path": "assets/exterior/fence_horizontal.webp",
+      "bytes": 838,
+      "sha256": "864ad844c43f6687954fd1a44c264ebdf3285d46e30e1c7ff5c81fed34806b21"
+    },
+    {
+      "path": "assets/exterior/fence_vertical.webp",
+      "bytes": 210,
+      "sha256": "11c57c41fb2849ee0e7646e4b94caa0a5278080c0c15c6efe612579549de62f1"
+    },
+    {
+      "path": "assets/exterior/flagpole.webp",
+      "bytes": 1954,
+      "sha256": "c9ca8ca647eaf5f2e1603ffb0b2478718df7bdd42b251c828899066277fb6fc7"
+    },
+    {
+      "path": "assets/exterior/flower_planter.webp",
+      "bytes": 3748,
+      "sha256": "3e6e758153fbb84cd1a61df503b77442065deff5f318a10fda999634b0139951"
+    },
+    {
+      "path": "assets/exterior/fountain.webp",
+      "bytes": 13336,
+      "sha256": "0c3c1fb131c33e879cff8bfad2447e5b3262356c4369a8e3fed5058836dd5ac7"
+    },
+    {
+      "path": "assets/exterior/garage.webp",
+      "bytes": 39368,
+      "sha256": "9f4bffc47048f79a4f211be25fe89a67915e500429e7da8b7e5c8bc05597f416"
+    },
+    {
+      "path": "assets/exterior/gate_open.webp",
+      "bytes": 1990,
+      "sha256": "700cd5cb7aa61ad3d2549ba993828c5afac5bb21661f7b4b29313a95cbb1a30d"
+    },
+    {
+      "path": "assets/exterior/hedge.webp",
+      "bytes": 6492,
+      "sha256": "049ce89092d0ee058679b01ece51483999390b8694f49fa776cb5fada8d0fc89"
+    },
+    {
+      "path": "assets/exterior/hydrant.webp",
+      "bytes": 604,
+      "sha256": "73321a4114578c349ec7cfb37f9a71fe52e2d08f302f2782e740e7c47a8c67d6"
+    },
+    {
+      "path": "assets/exterior/lamp.webp",
+      "bytes": 1846,
+      "sha256": "4fb26b26416c4587bc8a7ea0fd105b11621386f143004ee9ab843253ef40546c"
+    },
+    {
+      "path": "assets/exterior/monument.webp",
+      "bytes": 6838,
+      "sha256": "62d62c23fd0bc33f58eeb14580bc4133309adf0dbc5abab80844e1603ac70d92"
+    },
+    {
+      "path": "assets/exterior/palm.webp",
+      "bytes": 13020,
+      "sha256": "cfcdafb7df8860c73b4f7669542de2ba72de8ef1f59e214e961777e8824f12af"
+    },
+    {
+      "path": "assets/exterior/patrol_car.webp",
+      "bytes": 24144,
+      "sha256": "ab2479facb7f5bd9b68803dd0eae79883c7de52b7d673f2a4de7281e7fa67418"
+    },
+    {
+      "path": "assets/exterior/precinct_overhead.webp",
+      "bytes": 360432,
+      "sha256": "0c5c8b5cc03070f4a822b7e220fffd7e7df7184e4b4df3108c48fcf820562eb8"
+    },
+    {
+      "path": "assets/exterior/shade_tree.webp",
+      "bytes": 17836,
+      "sha256": "81ee0db872db30b934526a8b9ffac3375b1d0a5f5fbf12690ebd020b8168a4ff"
+    },
+    {
+      "path": "assets/exterior/trash_bin.webp",
+      "bytes": 442,
+      "sha256": "b7586ab099b13bbd6bf37ee74a71833a9c1885ef5feeb780d2d3d9c6774929e6"
+    },
+    {
+      "path": "assets/exterior/utility_shed.webp",
+      "bytes": 15544,
+      "sha256": "02483cb6a1c2c721d306980e480deaaa405338b37e92560aba043f1b3c52f939"
+    },
+    {
+      "path": "assets/maple-court/house_12_peach.webp",
+      "bytes": 949718,
+      "sha256": "c03ae811908a88ed2555f5b38081d82d15c8752f2cfc67617404b9ee96dce21d"
+    },
+    {
+      "path": "assets/maple-court/house_16_sage.webp",
+      "bytes": 1181592,
+      "sha256": "231f9e377bce295ce0381eea616565bc7b2aaa0e15f5e67449f322f09cc3812d"
+    },
+    {
+      "path": "assets/maple-court/house_8_cream.webp",
+      "bytes": 1136366,
+      "sha256": "3f716100ccc8ada0ae662cdc252f19367e2709d2936087e2b9fd5646e37db163"
+    },
+    {
+      "path": "assets/maple-court/mailbox.webp",
+      "bytes": 625184,
+      "sha256": "5580aa0081ca61ac9158480eb5d43898c435b8cea667a051948dcac1e098a0d3"
+    },
+    {
+      "path": "assets/midtown/cafe.webp",
+      "bytes": 1141312,
+      "sha256": "64d01c3ec0010af91c2814e5b70ff3b27cc4440d1fa2bf190d2b2c579feaf0c7"
+    },
+    {
+      "path": "assets/midtown/cafe_patio_set.webp",
+      "bytes": 938740,
+      "sha256": "d421f5544a89a40f44fc328a0730a3d4385deabb4e145338a1ea8f2bb1f5297e"
+    },
+    {
+      "path": "assets/midtown/convenience_store.webp",
+      "bytes": 1293928,
+      "sha256": "f9b6d6ac13af77ca6b3aa9bdff072f062150914e0c5dd66e25a39ee50feac9eb"
+    },
+    {
+      "path": "assets/midtown/laundromat.webp",
+      "bytes": 1321184,
+      "sha256": "7b44362d14f4886b781bf018e4d05803b2c7d4aa8f9e9d7b6658e15192d59271"
+    },
+    {
+      "path": "assets/midtown/motel.webp",
+      "bytes": 1463106,
+      "sha256": "16df8eb9e750b8f15061fcd32997c5d28158e4b164253bd31ff01b34fbae77f2"
+    },
+    {
+      "path": "assets/midtown/pharmacy.webp",
+      "bytes": 1261770,
+      "sha256": "7e04496647f16a56cfcc1f9a8b3964a2a1ef443068f80187102593027a77671d"
+    },
+    {
+      "path": "assets/midtown/pizza_shop.webp",
+      "bytes": 1002372,
+      "sha256": "63ad5f0965a5a16e7ba768d0ff106b61ce1856a791fc60f61561f603fd687166"
+    },
+    {
+      "path": "assets/midtown/repair_garage.webp",
+      "bytes": 1362246,
+      "sha256": "96e1ae5aa81a290874947b27f1f5e44dff8885af5f97242fc40a2d63f72b5ba6"
+    }
+  ],
+  "existing": [],
+  "failed": [
+    {
+      "path": "assets/exterior/parking_bay.webp",
+      "error": "Not a valid or size-limited WebP asset"
+    },
+    {
+      "path": "assets/exterior/wheel_stop.webp",
+      "error": "Not a valid or size-limited WebP asset"
+    }
+  ],
+  "zombie_outbreak_touched": false,
+  "midtown_available": 8,
+  "midtown_required": 8
+}

@@ -21,9 +21,10 @@ preview = Path(sys.argv[1]).resolve()
 baseline = Path(sys.argv[2]).resolve()
 engine_file = preview / 'game.js'
 entry_file = preview / 'index.html'
+fabric_file = preview / 'v115-city-fabric.js'
 world_file = preview / 'v115-world.js'
 campus_file = preview / 'v115-campus.js'
-for file in (engine_file, baseline, entry_file, world_file, campus_file,
+for file in (engine_file, baseline, entry_file, fabric_file, world_file, campus_file,
              preview / 'outbreak.css', preview / 'v115-preview-save-isolation.js'):
     if not file.is_file():
         raise SystemExit(f'Missing required file: {file}')
@@ -36,20 +37,21 @@ if not source.lstrip().startswith('(function(){'):
 last = re.search(r'\}\)\(\);\s*\Z', source)
 if not last:
     raise SystemExit('Original engine does not end with the expected IIFE closure')
-for path in (world_file, campus_file):
+for path in (fabric_file, world_file, campus_file):
     text = path.read_text(encoding='utf-8')
     if not text.strip().endswith('})();') or len(text) < 3000:
         raise SystemExit(f'Malformed V115 extension: {path}')
+fabric = fabric_file.read_text('utf-8')
 world = world_file.read_text('utf-8')
 campus = campus_file.read_text('utf-8')
-if 'H.worldV115' not in world or 'H.seamlessCampusV115' not in campus:
+if 'H.cityFabricV115' not in fabric or 'H.worldV115' not in world or 'H.seamlessCampusV115' not in campus:
     raise SystemExit('V115 extension markers missing')
 
 # Insert each extension as its own inner IIFE just BEFORE the original
 # game engine's final closure, sharing the legacy MAPS/state/player scope.
 # Everything in game.js before that closure is copied byte-for-byte.
 combined = (source[:last.start()] + '\n/* V115 preview-only world bridge: private engine scope */\n' +
-            world + '\n' + campus + '\n' + source[last.start():])
+            fabric + '\n' + world + '\n' + campus + '\n' + source[last.start():])
 compiled = preview / 'game-v115.bundle.js'
 compiled.write_text(combined, encoding='utf-8')
 

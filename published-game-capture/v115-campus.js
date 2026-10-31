@@ -117,7 +117,7 @@
   const modal=document.createElement('section');modal.id='v115Campus';modal.hidden=true;
   modal.setAttribute('aria-label','V115 seamless precinct and grounds development preview');
   modal.innerHTML=`<canvas id="v115CampusCanvas" aria-label="Continuous 1:1 Precinct 9 interior, grounds and streets"></canvas>
-    <header class="v115-campus-header"><div class="v115-campus-brand">HARBOR CITY <span>CONNECTED DISTRICTS · V115 DEVELOPMENT</span></div>
+    <header class="v115-campus-header"><div class="v115-campus-brand">HARBOR CITY <span>CONNECTED WORLD · STREET ALIGNMENT PASS</span></div>
     <button type="button" id="v115CampusExit">Return to game</button></header>
     <div class="v115-campus-hud"><strong id="v115CampusRegion">Precinct Grounds</strong>
     <small id="v115CampusCoords">Single continuous world · no loading screens</small></div>
@@ -208,6 +208,7 @@
   }
   function drawGrass(){
     g.fillStyle='#608d56';g.fillRect(MIN_X,MIN_Y,W-MIN_X,HGT-MIN_Y);
+    if(campus.zoom<.10)return; // skip costly grass specks during whole-city zoom
     const x0=Math.max(MIN_X,Math.floor(campus.camX/48)*48),x1=Math.min(W,campus.camX+tw/campus.zoom+60);
     const y0=Math.max(0,Math.floor(campus.camY/48)*48),y1=Math.min(HGT,campus.camY+th/campus.zoom+60);
     for(let x=x0;x<x1;x+=48)for(let y=y0;y<y1;y+=48){
@@ -218,6 +219,8 @@
   }
   function drawCampusGround(){
     drawGrass();
+    if(H.cityFabricV115)H.cityFabricV115.backdrop(g,
+      {x:campus.camX,y:campus.camY,w:tw/campus.zoom,h:th/campus.zoom},campus.zoom);
     g.save();g.translate(PLX,PLY);
     for(const v of PL.ground){
       g.fillStyle=v.c;g.fillRect(v.x,v.y,v.w,v.h);
@@ -347,12 +350,14 @@
     if(campus.zoom>.25){g.font='800 28px Barlow Condensed,sans-serif';g.textAlign='center';
       g.fillStyle='#fff0b5';g.fillText(d.map.name,d.w/2,46);}
     else if(campus.zoom<.10){
-      const fs=Math.min(350,Math.max(80,11/campus.zoom));
-      const cy=d.h/2;
-      g.font='800 '+fs+'px Barlow Condensed,sans-serif';g.textAlign='center';
-      g.lineWidth=fs*.16;g.strokeStyle='rgba(5,22,37,.89)';g.fillStyle='#fff1b4';
-      g.strokeText(d.id.toUpperCase(),d.w/2,cy);
-      g.fillText(d.id.toUpperCase(),d.w/2,cy);
+      if(H.cityFabricV115)H.cityFabricV115.overviewDistrictLabel(g,d,campus.zoom);
+      else { // original fallback when the optional art module is not loaded
+        const fs=Math.min(350,Math.max(80,11/campus.zoom));
+        g.font='800 '+fs+'px Barlow Condensed,sans-serif';g.textAlign='center';
+        g.lineWidth=fs*.16;g.strokeStyle='rgba(5,22,37,.89)';g.fillStyle='#fff1b4';
+        g.strokeText(d.id.toUpperCase(),d.w/2,d.h/2);
+        g.fillText(d.id.toUpperCase(),d.w/2,d.h/2);
+      }
     }
     g.restore();
   }
@@ -361,6 +366,10 @@
     for(const d of districtEntries){if(!nearViewport(d.x,d.y,d.w,d.h))continue;
       districtGround(d);districtDecor(d);
     }
+    // Correct road seam colors and pedestrian crossings at district borders.
+    // Visual only: no collision, traffic or existing MAPS geometry mutation.
+    if(H.cityFabricV115)H.cityFabricV115.streetSeams(g,
+      {x:campus.camX,y:campus.camY,w:tw/campus.zoom,h:th/campus.zoom},campus.zoom);
   }
 
   function drawOutdoorDecor(){

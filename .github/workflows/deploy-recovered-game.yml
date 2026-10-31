@@ -64,6 +64,13 @@ jobs:
           path: showcase-preview
           persist-credentials: false
 
+      - name: Check out reference-guided V115 city composition
+        uses: actions/checkout@v4
+        with:
+          ref: feature/v115-reference-city-composition
+          path: reference-preview
+          persist-credentials: false
+
       - name: Recover missing main-campaign environment art
         shell: bash
         working-directory: visual-preview
@@ -241,6 +248,38 @@ jobs:
           grep -q 'game-v115.bundle.js' site/preview/v115-showcase/index.html
           echo "PASS: isolated showcase, original game, other previews and Zombie Outbreak preserved."
           echo "Showcase preview: /rookie-harbor-city/preview/v115-showcase/"
+
+      - name: Build isolated V115 reference-guided city preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v115-reference
+          cp -a reference-preview/published-game-capture/. site/preview/v115-reference/
+          test -s site/preview/v115-reference/v115-reference-art.js
+          test -s site/preview/v115-reference/v115-reference.css
+          grep -q 'rookie:v115-reference-sandbox:' site/preview/v115-reference/v115-preview-save-isolation.js
+          node --check site/preview/v115-reference/v115-reference-art.js
+          node --check site/preview/v115-reference/v115-campus.js
+          node --check site/preview/v115-reference/v115-world.js
+          python3 reference-preview/tools/build_v115_preview.py site/preview/v115-reference pickle-preview/published-game-capture/game.js
+          python3 reference-preview/tools/build_v115_showcase_preview.py site/preview/v115-reference
+          python3 reference-preview/tools/build_v115_reference_preview.py site/preview/v115-reference
+          node --check site/preview/v115-reference/game-v115.bundle.js
+          (cd reference-preview && node qa/check-v115-world.cjs published-game-capture/v115-world.js)
+          (cd reference-preview && node qa/check-v115-campus.cjs)
+          (cd reference-preview && node qa/check-v115-connected-city.cjs)
+          (cd reference-preview && node qa/check-v115-road-layout.cjs)
+          (cd reference-preview && node qa/check-v115-showcase.cjs)
+          (cd reference-preview && node qa/check-v115-reference.cjs)
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s showcase-preview/published-game-capture/game.js site/preview/v115-reference/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v115-reference/outbreak.css
+          grep -q 'v115-reference-art.js' site/preview/v115-reference/index.html
+          grep -q 'game-v115.bundle.js' site/preview/v115-reference/index.html
+          echo "PASS: reference world visual preview, original gameplay and Zombie Outbreak untouched."
+          echo "Reference preview: /rookie-harbor-city/preview/v115-reference/"
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

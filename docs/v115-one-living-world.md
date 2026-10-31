@@ -17,7 +17,18 @@
 - Academy and Zombie Outbreak are excluded from this new world registry. The original game engine and its save format remain unchanged.
 - V115 preview script copies profile saves into an isolated prefix once; testing writes/removes only its own prefixed copies.
 
-### Phase 2 — Precinct 9 physical reconstruction (not implemented yet)
+### Phase 2A — Walkable continuous Precinct 9 campus prototype (implemented on branch, not production)
+- A **separate world-exploration preview** (`v115-campus.js` + `v115-campus.css`) is accessible from the V115 actual-world map via **EXPLORE PRECINCT CAMPUS**. It does not replace the main game.
+- One 2,800 × 1,950 world-space canvas draws a full-size **1,936 × 1,172** precinct interior, redesigned exterior grounds, sidewalk, parking and the southern road together. The source of interior rooms, solid furniture and walls is `MAPS.station`.
+- The front entrance uses the actual x532–604 gap of the original south wall (world x948/y1124); the garage exit uses its 345-unit-wide south-wall opening. Walking across either gap moves the character in a single coordinate space. No `goTo`, fade, screen swap or browser reload is called by this prototype.
+- One continuous follow camera with desktop scroll/pinch-to-zoom, joystick, WASD/arrow movement, collision checks, 512-unit visible-chunk indexing, zoom-out overview and roof-opacity cutaway.
+- Launching the preview reads the classic character's current station or plaza location when geometrically valid; it NEVER writes game position, saves, missions or vehicle state back.
+- The prototype has synthetic, interim outdoor landscaping and a roof schematic. The in-world mission interactions, patrol-car driving, full exterior tileset pass and the remaining districts have NOT been migrated.
+- Network contract uses `worldId: harbor-main`, stable area/instance IDs and numeric coordinates, with `authoritativeServer: false` and `transport: none`. **No real multiplayer synchronization is active.**
+- Regression checks: `node qa/check-v115-campus.cjs` and the existing V115 atlas test. Door crossing, wall/furniture collision, map sizes, and Academy/Zombie exclusion are tested without modifying protected code.
+- **Not ready to merge or publish as a replacement for the game.** Test only under `/preview/v115/`; do not move campaign saves into it.
+
+### Phase 2B — Precinct 9 main-game integration and finished art (not yet implemented)
 Current interior: **1,936 × 1,172 units**. Current exterior precinct art: **640 × 448 units**. A player cannot literally walk seamlessly through the existing 640-pixel shell and find the much bigger 1,936-pixel interior without spatial contradiction. Do NOT call an instant `goTo` / black fade removal a seamless fix.
 
 Work required:

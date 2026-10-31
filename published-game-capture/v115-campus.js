@@ -19,7 +19,7 @@
     westfield:{x:-3100,y:1260},residential:{x:-1500,y:1260},
     midtown:{x:2800,y:1260},downtown:{x:5056,y:1283},
     eastside:{x:6556,y:1260},industrial:{x:8156,y:1003},
-    northgate:{x:5086,y:163},southbay:{x:2800,y:3220},waterfront:{x:4400,y:3245}
+    northgate:{x:5086,y:183},southbay:{x:2800,y:3220},waterfront:{x:4400,y:3220}
   });
   const districtEntries=Object.entries(DISTRICT_ORIGINS).filter(([id])=>MAPS[id]).map(([id,pos])=>({
     id,x:pos.x,y:pos.y,w:MAPS[id].w,h:MAPS[id].h,map:MAPS[id],
@@ -30,18 +30,12 @@
     for(const d of districtEntries)if(inDistrict(d,x,y))return d;
     return null;
   }
-  const links=Object.freeze([
-    // Restored long east-west Harbor Avenue, physically aligned with the
-    // original segment art and passing through the precinct frontage.
-    {id:'harbor-ave-west',x:-3100,y:1721,w:3250,h:127,kind:'street'},
-    {id:'harbor-ave-east',x:2068,y:1721,w:733,h:127,kind:'street'},
-    {id:'maple-to-southbay',x:-650,y:1800,w:144,h:1958,kind:'street'},
-    {id:'south-connector',x:-650,y:3680,w:3450,h:128,kind:'street'},
-    {id:'midtown-south',x:3460,y:3070,w:170,h:230,kind:'street'},
-    {id:'northgate-downtown',x:5800,y:945,w:110,h:352,kind:'street'},
-    {id:'downtown-waterfront',x:5720,y:2230,w:150,h:1640,kind:'street'},
-    {id:'bayview-link',x:4388,y:3680,w:55,h:128,kind:'street'}
-  ]);
+  // The atlas and walkable city now use the same authored road plan.
+  const roadNetwork=H.worldV115.roadNetwork();
+  if(roadNetwork.worldId!==WORLD_ID || roadNetwork.primary.centerY!==1784)
+    throw new Error('Connected-road coordinate contract mismatch');
+  const links=roadNetwork.segments;
+  const crossings=roadNetwork.crossings;
   const linkCollision = []; // Roads are traversable, never scene exits.
   const districtSolids=[];
   for(const d of districtEntries){
@@ -117,14 +111,14 @@
   const modal=document.createElement('section');modal.id='v115Campus';modal.hidden=true;
   modal.setAttribute('aria-label','V115 seamless precinct and grounds development preview');
   modal.innerHTML=`<canvas id="v115CampusCanvas" aria-label="Continuous 1:1 Precinct 9 interior, grounds and streets"></canvas>
-    <header class="v115-campus-header"><div class="v115-campus-brand">HARBOR CITY <span>CONNECTED DISTRICTS · V115 DEVELOPMENT</span></div>
+    <header class="v115-campus-header"><div class="v115-campus-brand">HARBOR CITY <span>CONNECTED STREETS · V115 ROAD PASS</span></div>
     <button type="button" id="v115CampusExit">Return to game</button></header>
     <div class="v115-campus-hud"><strong id="v115CampusRegion">Precinct Grounds</strong>
     <small id="v115CampusCoords">Single continuous world · no loading screens</small></div>
     <div class="v115-campus-tools"><button id="v115CampusZoomOut" aria-label="Zoom out">−</button>
       <button id="v115CampusOverview" aria-label="Toggle full campus overview">ALL</button>
       <button id="v115CampusZoomIn" aria-label="Zoom in">+</button></div>
-    <div class="v115-campus-note" id="v115CampusNote">One connected city: walk from Precinct 9 to Maple Court, Midtown, Downtown, Eastside and the waterfront. Story and vehicles are not migrated yet.</div>
+    <div class="v115-campus-note" id="v115CampusNote">Continuous roads now share one topology with the city map. Driveable lanes, traffic and missions still need integration.</div>
     <div class="v115-campus-pad" id="v115CampusPad" aria-label="Movement joystick" role="button" tabindex="0">
       <div id="v115CampusKnob"></div></div>
     <button id="v115CampusInteract" class="v115-campus-interact" type="button">LOOK</button>
@@ -260,12 +254,39 @@
       y+h>campus.camY-80 && y<campus.camY+th/campus.zoom+80;
   }
   function roadRect(r){
-    g.fillStyle='#414a54';g.fillRect(r.x,r.y,r.w,r.h);
-    g.fillStyle='#b5b6b1';
-    if(r.w>r.h){g.fillRect(r.x,r.y-21,r.w,20);g.fillRect(r.x,r.y+r.h+1,r.w,20);
-      g.fillStyle='rgba(243,226,185,.68)';for(let x=r.x+12;x<r.x+r.w-10;x+=80)g.fillRect(x,r.y+r.h/2-2,36,4);
-    } else {g.fillRect(r.x-20,r.y,19,r.h);g.fillRect(r.x+r.w+1,r.y,20,r.h);
-      g.fillStyle='rgba(243,226,185,.68)';for(let y=r.y+12;y<r.y+r.h-10;y+=80)g.fillRect(r.x+r.w/2-2,y,4,36);
+    // Draw at world coordinates. Slightly textured gutters and edge lights
+    // bridge imported tileset seams without repainting existing buildings.
+    const horizontal=r.w>r.h;
+    g.fillStyle='#3e4852';g.fillRect(r.x,r.y,r.w,r.h);
+    g.fillStyle='#717c83';
+    if(horizontal){
+      g.fillRect(r.x,r.y, r.w,4);g.fillRect(r.x,r.y+r.h-4,r.w,4);
+      g.fillStyle='#c0bdaf';g.fillRect(r.x,r.y-16,r.w,15);g.fillRect(r.x,r.y+r.h+1,r.w,15);
+      g.fillStyle='#d6b879';
+      for(let x=r.x+20;x<r.x+r.w-20;x+=76)g.fillRect(x,r.y+r.h/2-2,33,4);
+    }else{
+      g.fillRect(r.x,r.y,4,r.h);g.fillRect(r.x+r.w-4,r.y,4,r.h);
+      g.fillStyle='#c0bdaf';g.fillRect(r.x-16,r.y,15,r.h);g.fillRect(r.x+r.w+1,r.y,15,r.h);
+      g.fillStyle='#d6b879';
+      for(let y=r.y+20;y<r.y+r.h-20;y+=76)g.fillRect(r.x+r.w/2-2,y,4,33);
+    }
+  }
+  function drawCrossing(c){
+    // Readable curb-to-curb zebra crossings at real street intersections,
+    // hidden at distant zoom to avoid an aliased citywide overview.
+    if(campus.zoom<.18 || !nearViewport(c.x-85,c.y-85,170,170))return;
+    const width=c.type==='intersection'?45:31;
+    const lane=roadNetwork.primary.laneWidth;
+    g.fillStyle='rgba(245,239,218,.83)';
+    if(c.axis==='h'){
+      const y=c.y-lane/2+10;
+      for(let i=-width/2;i<width/2;i+=12)g.fillRect(c.x+i,y,7,lane-20);
+      g.fillStyle='rgba(244,208,115,.65)';
+      g.fillRect(c.x-width/2-8,y-6,width+16,3);
+      g.fillRect(c.x-width/2-8,y+lane-15,width+16,3);
+    }else{
+      const x=c.x-lane/2+10;
+      for(let i=-width/2;i<width/2;i+=12)g.fillRect(x,c.y+i,lane-20,7);
     }
   }
   function districtGround(d){
@@ -329,7 +350,29 @@
     if(campus.zoom>.27){g.font='700 18px Barlow Condensed,sans-serif';g.textAlign='center';
       g.fillStyle='#fff2c3';g.fillText(String(d.name||d.label||'HARBOR CITY').slice(0,32),bx+bw/2,by+bh-8);}
   }
+  const OVERVIEW_SHORT_NAMES=Object.freeze({
+    westfield:'WEST',residential:'MAPLE',midtown:'MIDTOWN',
+    downtown:'DOWNTOWN',eastside:'EAST',industrial:'INDUST.',
+    northgate:'NORTH',southbay:'SOUTH',waterfront:'MARINA'
+  });
+  function overviewDistrictLabel(d){
+    // At citywide zoom, full-size street sprites become visual static. Use
+    // readable, abbreviated neighborhood placards in fixed SCREEN pixel sizes.
+    const z=campus.zoom,fs=8.8/z,txt=OVERVIEW_SHORT_NAMES[d.id]||d.id.toUpperCase();
+    const x=d.x+d.w/2,y=d.y+d.h*(d.id==='downtown'||d.id==='westfield'?.77:.26);
+    const maxW=d.w-36,estimated=txt.length*fs*.57;
+    const bw=Math.min(estimated+12/z,maxW),bh=15/z;
+    g.save();
+    g.fillStyle='rgba(10,33,51,.91)';g.fillRect(x-bw/2,y-bh/2,bw,bh);
+    g.strokeStyle='rgba(239,210,140,.77)';g.lineWidth=1.1/z;
+    g.strokeRect(x-bw/2,y-bh/2,bw,bh);
+    g.font='800 '+fs+'px Barlow Condensed,system-ui,sans-serif';
+    g.fillStyle='#fff0c2';g.textAlign='center';g.textBaseline='middle';
+    g.fillText(txt,x,y,Math.max(15,maxW-8/z));
+    g.restore();
+  }
   function districtDecor(d){
+    if(campus.zoom<.10){overviewDistrictLabel(d);return;}
     g.save();g.translate(d.x,d.y);
     for(const o of d.map.decors||[]){
       const x=o.x||0,y=o.y||0;
@@ -346,21 +389,15 @@
     }
     if(campus.zoom>.25){g.font='800 28px Barlow Condensed,sans-serif';g.textAlign='center';
       g.fillStyle='#fff0b5';g.fillText(d.map.name,d.w/2,46);}
-    else if(campus.zoom<.10){
-      const fs=Math.min(350,Math.max(80,11/campus.zoom));
-      const cy=d.h/2;
-      g.font='800 '+fs+'px Barlow Condensed,sans-serif';g.textAlign='center';
-      g.lineWidth=fs*.16;g.strokeStyle='rgba(5,22,37,.89)';g.fillStyle='#fff1b4';
-      g.strokeText(d.id.toUpperCase(),d.w/2,cy);
-      g.fillText(d.id.toUpperCase(),d.w/2,cy);
-    }
     g.restore();
   }
   function drawLinkedDistricts(t){
+    // Connected asphalt first; native streets, buildings and natural ground
+    // retain their material quality. Crossings seal visibly disjoint seams.
     for(const link of links)if(nearViewport(link.x,link.y,link.w,link.h))roadRect(link);
-    for(const d of districtEntries){if(!nearViewport(d.x,d.y,d.w,d.h))continue;
-      districtGround(d);districtDecor(d);
-    }
+    for(const d of districtEntries)if(nearViewport(d.x,d.y,d.w,d.h))districtGround(d);
+    for(const c of crossings)drawCrossing(c);
+    for(const d of districtEntries)if(nearViewport(d.x,d.y,d.w,d.h))districtDecor(d);
   }
 
   function drawOutdoorDecor(){
@@ -558,6 +595,8 @@
     width:W-MIN_X,height:HGT,chunkSize:CHUNK,entrances:Object.freeze({front:FRONT,garage:GARAGE}),
     districts:()=>districtEntries.map(d=>({id:d.id,x:d.x,y:d.y,w:d.w,h:d.h,instanceId:d.instanceId})),
     links:()=>links.map(l=>({...l})),
+    intersections:()=>crossings.map(c=>({...c})),
+    roadTopologyVersion:roadNetwork.version,
     districtAt:(x,y)=>districtAt(x,y)?.id||'precinct-campus',
     open,close,isOpen:()=>campus.open,
     toWorld:(areaId,x,y)=>areaId==='station'?{worldId:WORLD_ID,areaId,x:STX+x,y:STY+y}:

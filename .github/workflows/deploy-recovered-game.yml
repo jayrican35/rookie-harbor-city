@@ -221,6 +221,7 @@ jobs:
           cp -a showcase-preview/published-game-capture/. site/preview/v115-showcase/
           test -s site/preview/v115-showcase/v115-showcase.js
           test -s site/preview/v115-showcase/v115-showcase.css
+          grep -q 'rookie:v115-showcase-sandbox:' site/preview/v115-showcase/v115-preview-save-isolation.js
           node --check site/preview/v115-showcase/v115-showcase.js
           node --check site/preview/v115-showcase/v115-campus.js
           python3 showcase-preview/tools/build_v115_preview.py site/preview/v115-showcase pickle-preview/published-game-capture/game.js

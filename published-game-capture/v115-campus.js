@@ -11,7 +11,47 @@
       !document.querySelector('#mapOverlay .maptools')) return;
   const H=window.HARBOR, ST=MAPS.station, PL=MAPS.plaza;
   const WORLD_ID='harbor-main', AREA_ID='precinct-campus-v115';
-  const W=2800,HGT=1950, TILE=32, CHUNK=512;
+  const MIN_X=-3100, MIN_Y=0, W=9656,HGT=4680, TILE=32, CHUNK=512;
+  // A single authored city graph, derived from the original district MAPS.
+  // East/west main-street edges share the same world y=1784. Nothing swaps
+  // MAPS or game-state on crossing a neighborhood boundary.
+  const DISTRICT_ORIGINS=Object.freeze({
+    westfield:{x:-3100,y:1260},residential:{x:-1500,y:1260},
+    midtown:{x:2800,y:1260},downtown:{x:5056,y:1283},
+    eastside:{x:6556,y:1260},industrial:{x:8156,y:1003},
+    northgate:{x:5086,y:163},southbay:{x:2800,y:3220},waterfront:{x:4400,y:3245}
+  });
+  const districtEntries=Object.entries(DISTRICT_ORIGINS).filter(([id])=>MAPS[id]).map(([id,pos])=>({
+    id,x:pos.x,y:pos.y,w:MAPS[id].w,h:MAPS[id].h,map:MAPS[id],
+    instanceId:'harbor-main:district:'+id
+  }));
+  function inDistrict(d,x,y){return x>=d.x&&x<d.x+d.w&&y>=d.y&&y<d.y+d.h;}
+  function districtAt(x,y){
+    for(const d of districtEntries)if(inDistrict(d,x,y))return d;
+    return null;
+  }
+  const links=Object.freeze([
+    // Restored long east-west Harbor Avenue, physically aligned with the
+    // original segment art and passing through the precinct frontage.
+    {id:'harbor-ave-west',x:-3100,y:1721,w:3250,h:127,kind:'street'},
+    {id:'harbor-ave-east',x:2068,y:1721,w:733,h:127,kind:'street'},
+    {id:'maple-to-southbay',x:-650,y:1800,w:144,h:1958,kind:'street'},
+    {id:'south-connector',x:-650,y:3680,w:3450,h:128,kind:'street'},
+    {id:'midtown-south',x:3460,y:3070,w:170,h:230,kind:'street'},
+    {id:'northgate-downtown',x:5800,y:945,w:110,h:352,kind:'street'},
+    {id:'downtown-waterfront',x:5720,y:2230,w:150,h:1640,kind:'street'},
+    {id:'bayview-link',x:4388,y:3680,w:55,h:128,kind:'street'}
+  ]);
+  const linkCollision = []; // Roads are traversable, never scene exits.
+  const districtSolids=[];
+  for(const d of districtEntries){
+    const solids = d.map.pedSolids || d.map.solids || [];
+    for(const b of solids){
+      if(!b||!Number.isFinite(b.x)||!Number.isFinite(b.y)||!Number.isFinite(b.w)||!Number.isFinite(b.h))continue;
+      if(b.w<=0||b.h<=0)continue;
+      districtSolids.push({x:d.x+b.x,y:d.y+b.y,w:b.w,h:b.h,id:d.id});
+    }
+  }
   const STX=380, STY=96, PLX=148, PLY=600;
   const FRONT={x:STX+568,y:STY+1028}, GARAGE={x:STX+1538,y:STY+1160};
   const rect=(r,ox,oy)=>({x:r.x+ox,y:r.y+oy,w:r.w,h:r.h});
@@ -24,13 +64,22 @@
     .map(s=>({id:'station:'+s.id,areaId:'station',x:STX+s.x,y:STY+s.y,label:s.label}));
   worldSpots.push({id:'campus:front',areaId:'precinct-campus',x:FRONT.x,y:FRONT.y+54,label:'Precinct 9 front entrance'},
     {id:'campus:garage',areaId:'precinct-campus',x:GARAGE.x,y:GARAGE.y+60,label:'Precinct garage door'},
-    {id:'campus:road',areaId:'precinct-campus',x:948,y:1738,label:'Harbor Avenue — continued road construction'});
+    {id:'campus:road',areaId:'precinct-campus',x:948,y:1738,label:'Harbor Avenue — connects through city districts'});
   const npcActors=ST.npcs.map((n,i)=>({id:'station-npc:'+i,name:n.name,color:n.color,hat:n.hat,x:n.x+STX,y:n.y+STY}));
   npcActors.push({id:'campus-npc:diaz',name:'OFCR. DIAZ',color:'#44557a',hat:true,x:PLX+960,y:PLY+640});
+  for(const d of districtEntries){
+    for(const sp of d.map.spots||[]){
+      if(sp.to||!Number.isFinite(sp.x)||!Number.isFinite(sp.y))continue;
+      worldSpots.push({id:d.id+':'+sp.id,areaId:d.id,x:d.x+sp.x,y:d.y+sp.y,label:sp.label||sp.id});
+    }
+    for(const [i,n] of (d.map.npcs||[]).entries()){
+      npcActors.push({id:d.id+':npc:'+i,name:n.name,color:n.color,hat:n.hat,x:d.x+n.x,y:d.y+n.y});
+    }
+  }
   const idOf=(x,y)=>WORLD_ID+':'+Math.floor(x/CHUNK)+':'+Math.floor(y/CHUNK);
   function chunkAt(x,y){return {id:idOf(x,y),x:Math.floor(x/CHUNK)*CHUNK,y:Math.floor(y/CHUNK)*CHUNK,w:CHUNK,h:CHUNK};}
   function chunkWindow(x,y,viewW,viewH){
-    const arr=[];const x0=Math.max(0,Math.floor(x/CHUNK)),y0=Math.max(0,Math.floor(y/CHUNK));
+    const arr=[];const x0=Math.max(Math.floor(MIN_X/CHUNK),Math.floor(x/CHUNK)),y0=Math.max(0,Math.floor(y/CHUNK));
     const x1=Math.min(Math.floor((W-1)/CHUNK),Math.floor((x+Math.max(0,viewW))/CHUNK));
     const y1=Math.min(Math.floor((HGT-1)/CHUNK),Math.floor((y+Math.max(0,viewH))/CHUNK));
     for(let cy=y0;cy<=y1;cy++)for(let cx=x0;cx<=x1;cx++)arr.push(WORLD_ID+':'+cx+':'+cy);
@@ -41,8 +90,17 @@
     return (x-px)*(x-px)+(y-py)*(y-py) < radius*radius;
   }
   function blocked(x,y,r=12){
-    if(x<r||y<r||x>W-r||y>HGT-r)return true;
-    for(let i=0;i<collision.length;i++)if(circleHitsRect(x,y,r,collision[i]))return true;
+    if(x<MIN_X+r||y<MIN_Y+r||x>W-r||y>HGT-r)return true;
+    // Outside the precinct, preserve each district's original solid geometry.
+    // Never let a hidden exterior district building block the rebuilt station.
+    if(!districtAt(x,y)){
+      for(let i=0;i<collision.length;i++)if(circleHitsRect(x,y,r,collision[i]))return true;
+    } else {
+      for(let i=0;i<districtSolids.length;i++){
+        const b=districtSolids[i];
+        if(circleHitsRect(x,y,r,b))return true;
+      }
+    }
     // The blank northeast corner of the irregular station footprint is not
     // usable interior. Existing station west/east/south wall gaps stay real.
     return false;
@@ -59,26 +117,26 @@
   const modal=document.createElement('section');modal.id='v115Campus';modal.hidden=true;
   modal.setAttribute('aria-label','V115 seamless precinct and grounds development preview');
   modal.innerHTML=`<canvas id="v115CampusCanvas" aria-label="Continuous 1:1 Precinct 9 interior, grounds and streets"></canvas>
-    <header class="v115-campus-header"><div class="v115-campus-brand">PRECINCT 9 <span>SEAMLESS CAMPUS · V115 EXPERIMENT</span></div>
+    <header class="v115-campus-header"><div class="v115-campus-brand">HARBOR CITY <span>CONNECTED DISTRICTS · V115 DEVELOPMENT</span></div>
     <button type="button" id="v115CampusExit">Return to game</button></header>
     <div class="v115-campus-hud"><strong id="v115CampusRegion">Precinct Grounds</strong>
     <small id="v115CampusCoords">Single continuous world · no loading screens</small></div>
     <div class="v115-campus-tools"><button id="v115CampusZoomOut" aria-label="Zoom out">−</button>
       <button id="v115CampusOverview" aria-label="Toggle full campus overview">ALL</button>
       <button id="v115CampusZoomIn" aria-label="Zoom in">+</button></div>
-    <div class="v115-campus-note" id="v115CampusNote">Explore from the precinct lobby onto the sidewalk. Mission actions are not migrated yet.</div>
+    <div class="v115-campus-note" id="v115CampusNote">One connected city: walk from Precinct 9 to Maple Court, Midtown, Downtown, Eastside and the waterfront. Story and vehicles are not migrated yet.</div>
     <div class="v115-campus-pad" id="v115CampusPad" aria-label="Movement joystick" role="button" tabindex="0">
       <div id="v115CampusKnob"></div></div>
     <button id="v115CampusInteract" class="v115-campus-interact" type="button">LOOK</button>
-    <footer class="v115-campus-footer">Walk with joystick / WASD · zoom without changing world · no story or save changes</footer>`;
+    <footer class="v115-campus-footer">Continuous city streets · joystick / WASD · all districts one canvas · game saves unchanged</footer>`;
   document.body.appendChild(modal);
   const cv=modal.querySelector('canvas'),g=cv.getContext('2d',{alpha:false});
   const btn=document.createElement('button');btn.id='v115CampusLaunch';btn.type='button';
-  btn.textContent='EXPLORE PRECINCT CAMPUS';btn.title='Walk inside and outside one continuous precinct world (experimental preview)';
+  btn.textContent='EXPLORE CONNECTED HARBOR CITY';btn.title='Walk inside and outside one continuous precinct world (experimental preview)';
   document.querySelector('#mapOverlay .maptools').appendChild(btn);
   let tw=960,th=640,dpr=1,oldCtx=null,cache=null,cacheValid=false,roofCanvas=null;
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-  function pickZoom(z){campus.zoom=clamp(z,.11,2.5);campus.follow=campus.zoom>.19;}
+  function pickZoom(z){campus.zoom=clamp(z,.024,2.5);campus.follow=campus.zoom>.09;}
   function clearInput(){campus.keys.clear();campus.stick=null;modal.querySelector('#v115CampusKnob').style.transform='translate(0,0)';}
   function resize(){
     if(!campus.open)return;
@@ -120,8 +178,8 @@
       const ease=1-Math.exp(-9*Math.max(.001,dt));
       campus.camX+=(wantedX-campus.camX)*ease;campus.camY+=(wantedY-campus.camY)*ease;
     }
-    campus.camX=clamp(campus.camX,0,Math.max(0,W-zw));
-    campus.camY=clamp(campus.camY,0,Math.max(0,HGT-zh));
+    campus.camX=zw>=W-MIN_X?MIN_X+(W-MIN_X-zw)/2:clamp(campus.camX,MIN_X,W-zw);
+    campus.camY=zh>=HGT-MIN_Y?MIN_Y+(HGT-MIN_Y-zh)/2:clamp(campus.camY,MIN_Y,HGT-zh);
   }
   function direction(){
     let dx=0,dy=0;
@@ -149,8 +207,8 @@
     return nowRoom;
   }
   function drawGrass(){
-    g.fillStyle='#608d56';g.fillRect(0,0,W,HGT);
-    const x0=Math.max(0,Math.floor(campus.camX/48)*48),x1=Math.min(W,campus.camX+tw/campus.zoom+60);
+    g.fillStyle='#608d56';g.fillRect(MIN_X,MIN_Y,W-MIN_X,HGT-MIN_Y);
+    const x0=Math.max(MIN_X,Math.floor(campus.camX/48)*48),x1=Math.min(W,campus.camX+tw/campus.zoom+60);
     const y0=Math.max(0,Math.floor(campus.camY/48)*48),y1=Math.min(HGT,campus.camY+th/campus.zoom+60);
     for(let x=x0;x<x1;x+=48)for(let y=y0;y<y1;y+=48){
       const h=((x*73856093)^(y*19349663))>>>0;
@@ -195,6 +253,103 @@
     g.fillStyle='#5da754';g.beginPath();g.arc(x-4,y-5,r,0,7);g.fill();
     g.fillStyle='rgba(194,226,96,.45)';g.beginPath();g.arc(x-10,y-11,r*.35,0,7);g.fill();
   }
+  // Same authored world space as precinct. Unlike the legacy side exits,
+  // every region below is rendered without changing state.map or the canvas.
+  function nearViewport(x,y,w,h){
+    return x+w>campus.camX-80 && x<campus.camX+tw/campus.zoom+80 &&
+      y+h>campus.camY-80 && y<campus.camY+th/campus.zoom+80;
+  }
+  function roadRect(r){
+    g.fillStyle='#414a54';g.fillRect(r.x,r.y,r.w,r.h);
+    g.fillStyle='#b5b6b1';
+    if(r.w>r.h){g.fillRect(r.x,r.y-21,r.w,20);g.fillRect(r.x,r.y+r.h+1,r.w,20);
+      g.fillStyle='rgba(243,226,185,.68)';for(let x=r.x+12;x<r.x+r.w-10;x+=80)g.fillRect(x,r.y+r.h/2-2,36,4);
+    } else {g.fillRect(r.x-20,r.y,19,r.h);g.fillRect(r.x+r.w+1,r.y,20,r.h);
+      g.fillStyle='rgba(243,226,185,.68)';for(let y=r.y+12;y<r.y+r.h-10;y+=80)g.fillRect(r.x+r.w/2-2,y,4,36);
+    }
+  }
+  function districtGround(d){
+    const m=d.map;
+    g.fillStyle=m.base||'#7c9a67';g.fillRect(d.x,d.y,m.w,m.h);
+    g.save();g.translate(d.x,d.y);
+    for(const r of m.ground||[]){
+      const c=(r.c||'').toLowerCase();
+      g.fillStyle=c||'#c2b8a4';g.fillRect(r.x,r.y,r.w,r.h);
+      if(c==='#3d4148'||c==='#43474e'){
+        g.fillStyle='rgba(255,255,255,.07)';g.fillRect(r.x,r.y+2,r.w,2);
+      }
+      if(c==='#2e6da8'){
+        g.strokeStyle='rgba(255,255,255,.18)';g.lineWidth=2;
+        for(let yy=r.y+25;yy<r.y+r.h;yy+=58){g.beginPath();g.moveTo(r.x+20,yy);g.lineTo(r.x+r.w-20,yy);g.stroke();}
+      }
+    }
+    if(m.dashes){const a=m.dashes;g.fillStyle='rgba(237,219,153,.65)';
+      if(a.axis==='h')for(let x=a.from;x<a.to;x+=58)g.fillRect(x,a.at-2,30,4);
+      else for(let y=a.from;y<a.to;y+=58)g.fillRect(a.at-2,y,4,30);
+    }
+    g.restore();
+  }
+  const districtImages=new Map();
+  function sprite(name){
+    const key='midtown/'+name;
+    if(!districtImages.has(key)){
+      const img=new Image();img.decoding='async';img.src='./assets/midtown/'+name+'.webp';
+      districtImages.set(key,img);
+    }
+    const im=districtImages.get(key);return im.complete&&im.naturalWidth>0?im:null;
+  }
+  function paintedBuilding(d){
+    const bx=d.t==='mtbldg'?(d.bx||d.x):(d.x||0),
+      by=d.t==='mtbldg'?(d.btop||d.y):(d.y||0),
+      bw=d.t==='mtbldg'?(d.bw||d.w):(d.w||200),
+      bh=d.t==='mtbldg'?(d.bh||d.h):(d.h||155);
+    if(!Number.isFinite(bx)||!Number.isFinite(by)||!Number.isFinite(bw)||!Number.isFinite(bh))return;
+    /* District visibility was already tested in world space by the caller. */
+    if(d.t==='mtbldg'&&d.img){const im=sprite(d.img);
+      if(im){g.drawImage(im,bx,by,bw,bh);return;}}
+    const roof=d.roof||'#615a55',wall=d.c||'#c1a98e';
+    g.fillStyle='rgba(12,25,37,.27)';g.fillRect(bx+8,by+9,bw,bh);
+    g.fillStyle=wall;g.fillRect(bx,by+18,bw,Math.max(20,bh-18));
+    g.fillStyle=roof;g.fillRect(bx-6,by,bw+12,Math.max(14,bh*.70));
+    g.fillStyle='rgba(255,255,255,.13)';g.fillRect(bx,by+4,bw,6);
+    g.fillStyle='rgba(18,34,55,.5)';g.fillRect(bx+18,by+Math.max(25,bh*.7),Math.max(18,bw-36),Math.max(4,bh*.18));
+    if(campus.zoom>.27){g.font='700 18px Barlow Condensed,sans-serif';g.textAlign='center';
+      g.fillStyle='#fff2c3';g.fillText(String(d.name||d.label||'HARBOR CITY').slice(0,32),bx+bw/2,by+bh-8);}
+  }
+  function districtDecor(d){
+    g.save();g.translate(d.x,d.y);
+    for(const o of d.map.decors||[]){
+      const x=o.x||0,y=o.y||0;
+      if(!nearViewport(d.x+x-130,d.y+y-170,(o.w||240)+260,(o.h||200)+260))continue;
+      if(['bldg','house','shed','lighthouse','mtbldg'].includes(o.t)){paintedBuilding(o);continue;}
+      if(o.t==='tree'||o.t==='bigtree'||o.t==='palm'){drawTree(x,y,o.t==='bigtree'?38:26);continue;}
+      if(o.t==='lamp'){g.fillStyle='#1b3b50';g.fillRect(x-3,y-35,6,36);g.fillStyle='#f4df97';g.fillRect(x-8,y-40,16,10);continue;}
+      if(o.t==='sign'||o.t==='gate'){g.fillStyle='#2a4458';g.fillRect(x-36,y-22,110,28);g.fillStyle='#fff0c3';g.font='700 15px Barlow Condensed,sans-serif';g.textAlign='left';g.fillText(String(o.text||d.id).slice(0,20),x-32,y-4);continue;}
+      if(o.t==='bench'){g.fillStyle='#886443';g.fillRect(x,y,o.w||88,10);g.fillRect(x+5,y+10,5,10);continue;}
+      if(o.t==='car'){g.fillStyle=o.c||'#587aa1';g.fillRect(x,y,o.w||70,o.h||36);g.fillStyle='#b8d2e3';g.fillRect(x+8,y+8,Math.min(24,(o.w||60)-12),10);continue;}
+      if(o.t==='mtprop'||o.t==='rpgProp'){if(o.img==='shade'||o.img==='palm'||o.role==='shade')drawTree(x,y,27);continue;}
+      if(o.t==='mailbox'){g.fillStyle='#28476b';g.fillRect(x-8,y-14,16,16);continue;}
+      if(o.t==='fountain'){g.fillStyle='#70b9cc';g.beginPath();g.arc(x,y,35,0,Math.PI*2);g.fill();}
+    }
+    if(campus.zoom>.25){g.font='800 28px Barlow Condensed,sans-serif';g.textAlign='center';
+      g.fillStyle='#fff0b5';g.fillText(d.map.name,d.w/2,46);}
+    else if(campus.zoom<.10){
+      const fs=Math.min(350,Math.max(80,11/campus.zoom));
+      const cy=d.h/2;
+      g.font='800 '+fs+'px Barlow Condensed,sans-serif';g.textAlign='center';
+      g.lineWidth=fs*.16;g.strokeStyle='rgba(5,22,37,.89)';g.fillStyle='#fff1b4';
+      g.strokeText(d.id.toUpperCase(),d.w/2,cy);
+      g.fillText(d.id.toUpperCase(),d.w/2,cy);
+    }
+    g.restore();
+  }
+  function drawLinkedDistricts(t){
+    for(const link of links)if(nearViewport(link.x,link.y,link.w,link.h))roadRect(link);
+    for(const d of districtEntries){if(!nearViewport(d.x,d.y,d.w,d.h))continue;
+      districtGround(d);districtDecor(d);
+    }
+  }
+
   function drawOutdoorDecor(){
     for(const d of PL.decors){
       if(d.ext==='precinct'||d.ext==='garage'||d.t==='extcar'||d.t==='shed')continue;
@@ -258,7 +413,12 @@
       const stride=Math.sin(campus.stride)*3;g.fillStyle='#152438';g.fillRect(-8,5+stride,6,12);g.fillRect(3,5-stride,6,12);
     } else {g.fillStyle='#152438';g.fillRect(-8,5,6,12);g.fillRect(2,5,6,12);}
     g.restore();
-    if(isPlayer){g.strokeStyle='#e9c35b';g.lineWidth=2;g.beginPath();g.ellipse(p.x,p.y+7,19,7,0,0,7);g.stroke();}
+    if(isPlayer){
+      g.strokeStyle='#e9c35b';g.lineWidth=Math.max(2,2/campus.zoom);
+      g.beginPath();const r=Math.max(19,9/campus.zoom);
+      g.ellipse(p.x,p.y+7,r,r*.45,0,0,7);g.stroke();
+      if(campus.zoom<.11){g.font='800 '+Math.min(280,10/campus.zoom)+'px Barlow Condensed,sans-serif';g.textAlign='center';g.fillStyle='#ffdc86';g.fillText('YOU',p.x,p.y-r-5);}
+    }
     else if(campus.zoom>.54){g.fillStyle='#faf0cb';g.font='bold 13px Barlow Condensed,sans-serif';g.textAlign='center';g.fillText(p.name,p.x,p.y-39);}
   }
   function drawEntityHighlights(t){
@@ -279,12 +439,13 @@
     const viewW=tw/campus.zoom,viewH=th/campus.zoom;
     campus.visibleChunks=chunkWindow(campus.camX,campus.camY,viewW,viewH);
     g.save();g.setTransform(dpr,0,0,dpr,0,0);g.fillStyle='#172e48';g.fillRect(0,0,tw,th);
-    g.translate(-campus.camX*campus.zoom,-campus.camY*campus.zoom);g.scale(campus.zoom,campus.zoom);
+    g.scale(campus.zoom,campus.zoom);g.translate(-campus.camX,-campus.camY);
     // The same canvas and camera always draw both the campus and interior.
-    drawCampusGround();drawOutdoorDecor();drawStation();drawEntityHighlights(t);
+    drawCampusGround();drawLinkedDistricts(t);drawOutdoorDecor();drawStation();drawEntityHighlights(t);
     g.restore();
     const region=interiorRoom(campus.x,campus.y);
-    const desc=region ? 'PRECINCT 9 · '+region : campus.y>1670?'HARBOR AVENUE · PRECINCT ROAD':'PRECINCT 9 · GROUNDS';
+    const district=districtAt(campus.x,campus.y);
+    const desc=region ? 'PRECINCT 9 · '+region : district ? district.map.name : campus.y>1640?'HARBOR CITY · CONNECTED AVENUES':'PRECINCT 9 · GROUNDS';
     modal.querySelector('#v115CampusRegion').textContent=desc;
     modal.querySelector('#v115CampusCoords').textContent='World '+Math.round(campus.x)+', '+Math.round(campus.y)+'  · '+idOf(campus.x,campus.y)+'  · '+Math.round(campus.zoom*100)+'%';
     modal.querySelector('#v115CampusInteract').textContent=campus.near?'LOOK · '+campus.near.label:'LOOK';
@@ -324,9 +485,9 @@
   modal.querySelector('#v115CampusZoomOut').addEventListener('click',()=>pickZoom(campus.zoom/1.3));
   modal.querySelector('#v115CampusZoomIn').addEventListener('click',()=>pickZoom(campus.zoom*1.3));
   modal.querySelector('#v115CampusOverview').addEventListener('click',()=>{
-    const fit=Math.min(tw/W,th/HGT)*.96;
-    if(campus.zoom<.30){pickZoom(1.15);campus.follow=true;}
-    else {pickZoom(fit);campus.follow=false;campus.camX=(W-tw/campus.zoom)/2;campus.camY=(HGT-th/campus.zoom)/2;}
+    const fit=Math.min(tw/(W-MIN_X),th/(HGT-MIN_Y))*.96;
+    if(campus.zoom<.09){pickZoom(1.15);campus.follow=true;}
+    else {pickZoom(Math.min(tw/(W-MIN_X),th/(HGT-MIN_Y))*.96);campus.follow=false;campus.camX=(MIN_X+W-tw/campus.zoom)/2;campus.camY=(HGT-th/campus.zoom)/2;}
   });
   modal.querySelector('#v115CampusInteract').addEventListener('click',()=>{
     const sp=campus.near;
@@ -381,12 +542,15 @@
   // None of this state is stored in game saves or synchronized over a network.
   // This schema is deterministic and uses the same world ID as the Phase 1 atlas.
   const api={version:'115-phase2-seamless-precinct-prototype',worldId:WORLD_ID,areaId:AREA_ID,
-    width:W,height:HGT,chunkSize:CHUNK,entrances:Object.freeze({front:FRONT,garage:GARAGE}),
+    width:W-MIN_X,height:HGT,chunkSize:CHUNK,entrances:Object.freeze({front:FRONT,garage:GARAGE}),
+    districts:()=>districtEntries.map(d=>({id:d.id,x:d.x,y:d.y,w:d.w,h:d.h,instanceId:d.instanceId})),
+    links:()=>links.map(l=>({...l})),
+    districtAt:(x,y)=>districtAt(x,y)?.id||'precinct-campus',
     open,close,isOpen:()=>campus.open,
     toWorld:(areaId,x,y)=>areaId==='station'?{worldId:WORLD_ID,areaId,x:STX+x,y:STY+y}:
       areaId==='plaza'?{worldId:WORLD_ID,areaId:'precinct-campus-v115',x:PLX+x,y:PLY+y}:null,
-    snapshot:()=>Object.freeze({schema:1,worldId:WORLD_ID,areaId:AREA_ID,
-      playerId:'local-preview',x:campus.x,y:campus.y,instanceId:'harbor-main:campus',
+    snapshot:()=>Object.freeze({schema:1,worldId:WORLD_ID,areaId:districtAt(campus.x,campus.y)?.id||AREA_ID,
+      playerId:'local-preview',x:campus.x,y:campus.y,instanceId:districtAt(campus.x,campus.y)?.instanceId||'harbor-main:campus',
       transport:'none',authoritativeServer:false,committedToSave:false}),
     chunks:(x,y,vw,vh)=>chunkWindow(x,y,vw,vh),
     geometry:()=>({walls:walls.length,furniture:furniture.length,rooms:roomRects.length,spots:worldSpots.length,
@@ -394,6 +558,6 @@
       separateSceneLoads:0,doorTransitions:'world-space-continuous'}),
     test:{blocked,interiorRoom,chunkAt,moveTo:(x,y)=>{if(blocked(x,y))return false;campus.x=x;campus.y=y;return true;},
       position:()=>({x:campus.x,y:campus.y}),doorCrossings:()=>campus.doorCrossings},
-    scope:'This is an isolated contiguous precinct-and-road exploration preview; existing missions, car driving and the remaining districts are NOT yet integrated.'};
+    scope:'Connected district geography and precinct foot exploration share one camera. Missions, street NPC routines, interiors beyond Precinct 9, live multiplayer and cars still require migration.'};
   H.seamlessCampusV115=Object.freeze(api);
 })();

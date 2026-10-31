@@ -1,6 +1,10 @@
 name: Capture published ROOKIE game (backup only)
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/capture-game.yml
 
 permissions:
   contents: read
@@ -8,19 +12,22 @@ permissions:
 jobs:
   capture:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 12
     steps:
-      - name: Check out recovery utility
+      - name: Check out read-only recovery tools
         uses: actions/checkout@v4
         with:
           ref: v112-sandwich-caper
-      - name: Capture published website
+      - name: Capture public HTML and linked resources
         run: python3 tools/archive_published_game.py
         continue-on-error: true
-      - name: Archive recovery output
+      - name: Capture lazy-loaded art and audio and restore portable filenames
+        run: python3 tools/archive_runtime_assets.py
+        continue-on-error: true
+      - name: Upload public game backup and reports
         uses: actions/upload-artifact@v4
         with:
-          name: rookie-published-website-capture
+          name: rookie-published-game-expanded-backup
           path: published-game-capture/
           if-no-files-found: warn
           retention-days: 30

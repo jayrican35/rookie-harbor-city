@@ -29,6 +29,7 @@ jobs:
           node qa/check-v115-road-layout.cjs
           node qa/check-v115-showcase.cjs
           python3 -m py_compile tools/build_v115_showcase_preview.py
+          grep -q 'rookie:v115-showcase-sandbox:' published-game-capture/v115-preview-save-isolation.js
       - name: Protect original game and Zombie Outbreak byte-for-byte
         shell: bash
         run: |
@@ -45,6 +46,7 @@ jobs:
             'published-game-capture/v115-campus.js',
             'published-game-capture/v115-showcase.js',
             'published-game-capture/v115-showcase.css',
+            'published-game-capture/v115-preview-save-isolation.js',
             'tools/build_v115_showcase_preview.py',
             'qa/check-v115-showcase.cjs',
             '.github/workflows/v115-showcase-qa.yml',

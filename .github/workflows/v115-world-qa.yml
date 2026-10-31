@@ -1,0 +1,50 @@
+name: V115 — World Atlas and Multiplayer Boundary QA
+on:
+  push:
+    branches: [feature/v115-one-living-world]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check V115 syntax and isolated world tests
+        run: |
+          node --check published-game-capture/game.js
+          node --check published-game-capture/v115-world.js
+          node --check published-game-capture/v115-preview-save-isolation.js
+          node --check published-game-capture/v115-campus.js
+          node --check qa/check-v115-campus.cjs
+          node qa/check-v115-campus.cjs
+          node qa/check-v115-connected-city.cjs
+          node qa/check-v115-road-layout.cjs
+          node qa/check-v115-world.cjs published-game-capture/v115-world.js
+      - name: Verify original game, combat and Zombie Outbreak are untouched
+        shell: bash
+        run: |
+          git fetch origin feature/v114-midnight-pickle-panic
+          for f in published-game-capture/game.js published-game-capture/outbreak.css; do
+            test "$(git rev-parse origin/feature/v114-midnight-pickle-panic:$f)" = "$(git rev-parse HEAD:$f)" || { echo "$f changed!"; exit 1; }
+          done
+          python3 - <<'PY'
+          import subprocess
+          changed=subprocess.check_output(["git","diff","--name-only","origin/feature/v114-midnight-pickle-panic","HEAD"]).decode().splitlines()
+          assert not [f for f in changed if "outbreak" in f or "training" in f or f.endswith("/game.js")],changed
+          assert "published-game-capture/v115-world.js" in changed
+          print("PASS protected game, Academy and Zombie Outbreak source unchanged")
+          PY
+      - name: Verify only preview integration was added
+        shell: bash
+        run: |
+          grep -q 'v115-world.js' published-game-capture/index.html
+          grep -q 'v115-world.css' published-game-capture/index.html
+          grep -q 'v115-campus.js' published-game-capture/index.html
+          grep -q 'v115-campus.css' published-game-capture/index.html
+          grep -q 'v115-sandbox' published-game-capture/v115-preview-save-isolation.js

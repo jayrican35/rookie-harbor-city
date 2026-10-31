@@ -57,6 +57,13 @@ jobs:
           path: street-preview
           persist-credentials: false
 
+      - name: Check out V115 Precinct-to-Midtown visual showcase
+        uses: actions/checkout@v4
+        with:
+          ref: feature/v115-showcase-precinct-midtown
+          path: showcase-preview
+          persist-credentials: false
+
       - name: Recover missing main-campaign environment art
         shell: bash
         working-directory: visual-preview
@@ -205,6 +212,34 @@ jobs:
           cmp -s world-preview/published-game-capture/index.html site/preview/v115/index.html || true
           echo "PASS: isolated street-alignment preview, original root and Zombie Outbreak unchanged"
           echo "Compare: /rookie-harbor-city/preview/v115-roads/"
+
+      - name: Build isolated V115 visual-showcase preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v115-showcase
+          cp -a showcase-preview/published-game-capture/. site/preview/v115-showcase/
+          test -s site/preview/v115-showcase/v115-showcase.js
+          test -s site/preview/v115-showcase/v115-showcase.css
+          node --check site/preview/v115-showcase/v115-showcase.js
+          node --check site/preview/v115-showcase/v115-campus.js
+          python3 showcase-preview/tools/build_v115_preview.py site/preview/v115-showcase pickle-preview/published-game-capture/game.js
+          python3 showcase-preview/tools/build_v115_showcase_preview.py site/preview/v115-showcase
+          node --check site/preview/v115-showcase/game-v115.bundle.js
+          (cd showcase-preview && node qa/check-v115-world.cjs published-game-capture/v115-world.js)
+          (cd showcase-preview && node qa/check-v115-campus.cjs)
+          (cd showcase-preview && node qa/check-v115-connected-city.cjs)
+          (cd showcase-preview && node qa/check-v115-road-layout.cjs)
+          (cd showcase-preview && node qa/check-v115-showcase.cjs)
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s world-preview/published-game-capture/game.js site/preview/v115-showcase/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v115-showcase/outbreak.css
+          grep -q 'v115-showcase.js' site/preview/v115-showcase/index.html
+          grep -q 'game-v115.bundle.js' site/preview/v115-showcase/index.html
+          echo "PASS: isolated showcase, original game, other previews and Zombie Outbreak preserved."
+          echo "Showcase preview: /rookie-harbor-city/preview/v115-showcase/"
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

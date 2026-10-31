@@ -114,7 +114,7 @@ var EVIDENCE = {
   m2door:{m:"m2", name:"Bent Hasp & Grey Paint Chip — Rear Door", desc:"The back-door latch was bent with a metal bar. The lock is still closed, but the latch cannot hold it. A chip of grey car paint is caught in the metal."},
   m2label:{m:"m2", name:"Voss Import Parts Label Fragment", desc:"A torn label was left beside the empty delivery cage. It reads: VOSS IMPORT PARTS — NIGHT DELIVERY — HARBOR AVE. It may have fallen from a crate or work jacket."},
   m2camera:{m:"m2", name:"QuickMart Camera Still — 02:07", desc:"The camera shows a person in a grey work jacket at the back door at 02:07. A grey box truck is nearby. You can read part of its plate: HBR-44.."},
-  m3note:{m:"m3", name:"Threat Note — Voss Import Parts Letterhead", desc:"A note on Voss Import Parts paper was pushed under Emmett’s door. It says: “YOU SAW NOTHING. FORGET THE PHOTO.” The same company is named on the torn label."},
+  m3note:{m:"m3", name:"Threat Note — Voss Import Parts Letterhead", desc:"A note on Voss Import Parts paper was left on Emmett’s kitchen table. It says: “YOU SAW NOTHING. FORGET THE PHOTO.” The same company is named on the torn label."},
   m3photo:{m:"m3", name:"Hale's Photo — Truck at the QuickMart", desc:"Emmett’s photo shows the grey truck at QuickMart’s back door at night. This time the whole plate is clear: HBR-4417. It is the Voss Import Parts truck."},
   m3key:{m:"m3", name:"Brass Key — Tagged 'SHED B'", desc:"A brass key marked SHED B opens Emmett’s boat shed. He gave you permission to use it. The key has been written into the evidence record."},
   m4crates:{m:"m4", name:"QuickMart Stock — Recovered Crates", desc:"Two crates in warehouse bay 3 still have QuickMart labels and Omar’s stock numbers. These are goods missing from the store."},
@@ -211,7 +211,7 @@ var DB_RECORDS = [
   {badge:"5102", name:"Lindqvist, Ana", role:"Harbormaster \u2014 Marina Office", detail:"Runs the Harbor City marina and dock office. Keeps the harbor log for all berth movements."},
   {badge:"5206", name:"Ortiz, Marco", role:"Foreman \u2014 Harbor Freight Warehouse", detail:"Day foreman at the Harbor Freight warehouse, industrial district. Signs all inbound manifests."},
   {badge:"6110", name:"Reyes, Lucia", role:"Owner \u2014 Caf\u00E9 Del Mar", detail:"Runs the downtown caf\u00E9. Unofficial information hub of Harbor Ave \u2014 hears everything, repeats little."},
-  {badge:"6145", name:"Haddad, Omar", role:"Clerk \u2014 QuickMart", detail:"Night and morning clerk at the downtown QuickMart convenience store. Keeps the store camera system maintained."},
+  {badge:"6145", name:"Haddad, Omar", role:"Owner \u2014 QuickMart", detail:"Owner of the downtown QuickMart convenience store. Reported the Case 002 break-in himself and handed over the store camera footage. Keeps the store camera system maintained."},
   {badge:"HBR-4417", name:"VEHICLE \u2014 Grey Box Truck", role:"Vehicle \u00b7 Plate HBR-4417", detail:"Registered to Voss Import Parts LLC (fictional). The only truck on the QuickMart night-delivery route. QuickMart cameras caught a partial plate 'HBR-44..' at the rear door on the break-in night (Case 002)."},
   {badge:"HBR-2091", name:"VEHICLE \u2014 Blue Sedan", role:"Vehicle \u00b7 Plate HBR-2091", detail:"Registered to Lucia Reyes, Caf\u00E9 Del Mar. Parked at the caf\u00E9 on the break-in night; no warehouse connection."},
   {badge:"HBR-7730", name:"VEHICLE \u2014 Yard Forklift", role:"Vehicle \u00b7 Plate HBR-7730", detail:"Harbor Freight yard equipment. Never leaves the industrial yard. Logged inside the warehouse all night."},
@@ -4844,20 +4844,19 @@ function doSergeant(){
     }
     var miss = [];
     MISSION_OBJS[m].forEach(function(o){ if(!o.done() && o.id !== "brief" && o.id !== "lead" && o.id !== "conclude" && o.id !== "report" && o.id !== "final") miss.push(o.text); });
-    showLines([
-      ["SGT. BROOKS", "Case " + MISSIONS[m].num + " \u2014 " + MISSIONS[m].name + " \u2014 is still open. Still outstanding: " + miss.join("; ") + "."],
-      ["SGT. BROOKS", "That\u2019s not a failure \u2014 it\u2019s the checklist. Follow the beacon and the map star, finish those steps, then come back. Nothing here is a dead end."]
-    ], null);
+    var guide = [["SGT. BROOKS", "Case " + MISSIONS[m].num + " \u2014 " + MISSIONS[m].name + " \u2014 is still open. Still outstanding:"]];
+    miss.forEach(function(t){ guide.push(["SGT. BROOKS", "\u2022 " + t]); });
+    guide.push(["SGT. BROOKS", "That\u2019s not a failure \u2014 it\u2019s the checklist. Follow the beacon and the map star, finish those steps, then come back. Nothing here is a dead end."]);
+    showLines(guide, null);
     return;
   }
   var n = findingCount();
   if(n < 4){
-    var missing = ORDER.filter(function(k){ return !state.findings[k]; })
-      .map(function(k){ return FINDINGS[k].title; }).join("; ");
-    showLines([
-      ["SGT. BROOKS", "Cadet. You have " + n + " of 4 findings in that notebook. I don't hear conclusions built on gaps."],
-      ["SGT. BROOKS", "Still outstanding: " + missing + ". Work the rooms, fill the notebook, then come back and tell me what happened to EV-001."]
-    ], null);
+    var guide1 = [["SGT. BROOKS", "Cadet. You have " + n + " of 4 findings in that notebook. I don't hear conclusions built on gaps."],
+      ["SGT. BROOKS", "Still outstanding:"]];
+    ORDER.filter(function(k){ return !state.findings[k]; }).forEach(function(k){ guide1.push(["SGT. BROOKS", "\u2022 " + FINDINGS[k].title]); });
+    guide1.push(["SGT. BROOKS", "Work the rooms, fill the notebook, then come back and tell me what happened to EV-001."]);
+    showLines(guide1, null);
     return;
   }
   showLines([
@@ -6587,7 +6586,12 @@ function interact(){
     openVehPanel(); return;
   }
   if(!nearSpot){
+    var tgtD = targetDest(currentTargetId());
+    if(tgtD && tgtD.text){
+      setDialogue("DISPATCH", "Nothing to examine here. Current objective: " + tgtD.text + " \u2014 " + tgtD.where + ". Follow the pulsing gold beacon, or press M for the city map.", "");
+    } else {
     setDialogue("DISPATCH", "Nothing to examine here. Walk up to a gold-ringed, labeled marker \u2014 the pulsing beacon marks your current case objective, and press M for the city map if you're lost.", "");
+    }
     return;
   }
   var s = nearSpot;

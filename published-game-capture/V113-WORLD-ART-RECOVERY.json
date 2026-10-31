@@ -36,7 +36,8 @@
     "assets/exterior/patrol_car.webp",
     "assets/exterior/civilian_red.webp"
   ],
-  "captured": [
+  "captured": [],
+  "existing": [
     {
       "path": "assets/exterior/bench.webp",
       "bytes": 2256,
@@ -198,7 +199,6 @@
       "sha256": "96e1ae5aa81a290874947b27f1f5e44dff8885af5f97242fc40a2d63f72b5ba6"
     }
   ],
-  "existing": [],
   "failed": [
     {
       "path": "assets/exterior/parking_bay.webp",

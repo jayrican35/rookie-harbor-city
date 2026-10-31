@@ -1,0 +1,77 @@
+name: Build V114 — Midnight Pickle Panic (isolated)
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [.github/workflows/build-v114-case002.yml]
+
+permissions:
+  contents: write
+
+jobs:
+  build-case002:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Check out V114 feature branch (never production)
+        uses: actions/checkout@v4
+        with:
+          ref: feature/v114-midnight-pickle-panic
+          persist-credentials: true
+          fetch-depth: 0
+
+      - name: Verify baseline is playable V113 source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s published-game-capture/game.js
+          test -s published-game-capture/index.html
+          test -s published-game-capture/visual-polish-v113.js
+          test -s published-game-capture/outbreak.css
+          python3 - <<'PY'
+          from pathlib import Path
+          js=Path("published-game-capture/game.js").read_text()
+          assert "CASE002_PICKLE_PANIC_V114" not in js or "The Midnight Pickle Panic" in js
+          PY
+
+      - name: Rewrite only Case 002, preserving existing IDs and saves
+        run: python3 tools/patch_case002_v114.py
+
+      - name: Validate JavaScript and family detective paths
+        shell: bash
+        run: |
+          node --check published-game-capture/game.js
+          node qa/test_case002_v114.cjs
+
+      - name: Prove original survival and Academy engine is unchanged
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import subprocess
+          from pathlib import Path
+          old=subprocess.check_output(["git","show","HEAD:published-game-capture/game.js"]).decode()
+          new=Path("published-game-capture/game.js").read_text()
+          key="/* Presentation-only foot contacts, advanced by resolved world movement. Never saved. */"
+          assert old.count(key)==new.count(key)==1
+          assert old[old.index(key):]==new[new.index(key):], "PROTECTED GAME CODE CHANGED"
+          assert "CASE002_PICKLE_PANIC_V114" in new
+          print("PASS: Case 001, world rendering, Academy, Zombie Outbreak and original audio code unchanged")
+          PY
+          git diff --name-only | tee /tmp/v114-changed-files.txt
+          if grep -vx 'published-game-capture/game.js' /tmp/v114-changed-files.txt; then
+            echo "Unexpected files changed. Aborting."; exit 1
+          fi
+
+      - name: Save complete implementation to feature branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add published-game-capture/game.js
+          if ! git diff --cached --quiet; then
+            git commit -m "V114: implement playable Midnight Pickle Panic family case"
+            git push origin HEAD:feature/v114-midnight-pickle-panic
+          else
+            echo "Already applied; no code changes needed"
+          fi

@@ -341,6 +341,10 @@
     /* District visibility was already tested in world space by the caller. */
     if(d.t==='mtbldg'&&d.img){const im=sprite(d.img);
       if(im){g.drawImage(im,bx,by,bw,bh);return;}}
+    // Prefer recovered original storefront sprites; a richer painted fallback
+    // is used only when the source sprite is unavailable in this preview.
+    if(window.ROOKIE_V115_SHOWCASE &&
+       window.ROOKIE_V115_SHOWCASE.buildingFallback(g,d,campus.zoom))return;
     const roof=d.roof||'#615a55',wall=d.c||'#c1a98e';
     g.fillStyle='rgba(12,25,37,.27)';g.fillRect(bx+8,by+9,bw,bh);
     g.fillStyle=wall;g.fillRect(bx,by+18,bw,Math.max(20,bh-18));
@@ -491,7 +495,18 @@
     g.save();g.setTransform(dpr,0,0,dpr,0,0);g.fillStyle='#172e48';g.fillRect(0,0,tw,th);
     g.scale(campus.zoom,campus.zoom);g.translate(-campus.camX,-campus.camY);
     // The same canvas and camera always draw both the campus and interior.
-    drawCampusGround();drawLinkedDistricts(t);drawOutdoorDecor();drawStation();drawEntityHighlights(t);
+    // Visual presentation hooks are optional and must never change gameplay.
+    // They receive a read-only view rectangle and the drawing context only.
+    const art=window.ROOKIE_V115_SHOWCASE;
+    const view={x:campus.camX,y:campus.camY,w:viewW,h:viewH};
+    drawCampusGround();
+    if(art)art.ground(g,{zoom:campus.zoom,view},t);
+    drawLinkedDistricts(t);
+    if(art)art.streets(g,{zoom:campus.zoom,view},t);
+    drawOutdoorDecor();drawStation();
+    if(art)art.precinct(g,{zoom:campus.zoom,view,STX,STY,alpha:roofAlpha()},t);
+    drawEntityHighlights(t);
+    if(art)art.atmosphere(g,{zoom:campus.zoom,view},t);
     g.restore();
     const region=interiorRoom(campus.x,campus.y);
     const district=districtAt(campus.x,campus.y);

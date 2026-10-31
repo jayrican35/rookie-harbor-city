@@ -13,7 +13,7 @@ assert(html.includes('<link rel="stylesheet" href="./visual-polish-v113.css" />'
 assert(html.indexOf('<script src="./game.js"></script>') < html.indexOf('<script src="./visual-polish-v113.js"></script>'));
 assert(css.includes('#familySelect'));
 // Academy/Outbreak styles must never be selected by V113 CSS.
-assert(!/outbreak|zombie|academy|trainingTools|trainingReload|tacticalCamera/i.test(css));
+assert(!/outbreak|zombie|academy|trainingTools|trainingReload|tacticalCamera/i.test(css.replace(/\/\*[\s\S]*?\*\//g,'')));
 const calls={person:[],ped:[],room:0,ground:0,rect:0,image:0};
 const brush={
  save(){},restore(){},beginPath(){},ellipse(){},stroke(){},fill(){},

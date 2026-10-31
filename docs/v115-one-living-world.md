@@ -28,6 +28,20 @@
 - Regression checks: `node qa/check-v115-campus.cjs` and the existing V115 atlas test. Door crossing, wall/furniture collision, map sizes, and Academy/Zombie exclusion are tested without modifying protected code.
 - **Not ready to merge or publish as a replacement for the game.** Test only under `/preview/v115/`; do not move campaign saves into it.
 
+### Phase 3A — Connected outdoor district geometry (implemented on development branch)
+
+**One canvas and camera now cover the Precinct 9 campus and all nine existing outdoor districts** (Westfield, Residential/Maple Court, Midtown, Downtown, Eastside, Industrial, Northgate, Southbay, Waterfront). The layouts reuse the actual latest runtime map sizes; notably Midtown is **2256 × 1900**, not its original 1600 × 1100. The district coordinate system is shared with the original V115 precinct campus.
+
+- Physically continuous Harbor Avenue connects Westfield → Residential → Precinct grounds → Midtown → Downtown → Eastside → Industrial. The road lane center is aligned at world y=1784 across all six legacy side-exit layouts.
+- Authored north–south links connect Northgate, Downtown, Waterfront, Southbay and a southern Maple Court connection. Links are drawn as roads and sidewalks, not teleports.
+- Existing district ground colors/geometry, prominent buildings and NPC/interaction landmarks are drawn with local-world translations. Where available, Midtown buildings and vegetation reuse recovered source WebP assets.
+- Regions are rendered only near the camera viewport. At entire-city zoom, show labeled district regions and a visible player marker. The map overview and campus use the same actual coordinate grid, including the full-size 1936×1172 station footprint.
+- Foot collisions include preserved district solid rectangles where available; the original station walls, rooms and furniture remain unchanged. Players can cross connected road boundaries without invoking `goTo`, loading a new map, or closing the continuous-world view.
+- Each district has a stable world-space `instanceId`; `snapshot().areaId` and `instanceId` reflect current district. The system is still local-only (`transport:none`, `authoritativeServer:false`).
+- Regression tests include `qa/check-v115-campus.cjs`, `qa/check-v115-connected-city.cjs`, and an actual Chromium phone-sized camera-and-crossings smoke test. Those checks do **not** prove complete mission compatibility or final visual quality.
+
+**Important limitation:** The **main campaign still uses the original classic-map engine**, including driving, mission progression, ambient AI, and separate interiors besides Precinct 9. V115 Phase 3A is a fully connected *outdoor exploration prototype* launched from the MAP menu, not yet a replacement for the campaign. Never claim it is complete seamless story gameplay until those systems are migrated and tested. Never merge or republish without approval.
+
 ### Phase 2B — Precinct 9 main-game integration and finished art (not yet implemented)
 Current interior: **1,936 × 1,172 units**. Current exterior precinct art: **640 × 448 units**. A player cannot literally walk seamlessly through the existing 640-pixel shell and find the much bigger 1,936-pixel interior without spatial contradiction. Do NOT call an instant `goTo` / black fade removal a seamless fix.
 
@@ -39,7 +53,7 @@ Work required:
 5. Interior collision uses its current walls/furniture; outdoor sidewalks/vehicle collision use current source geometry transformed to the same world.
 6. Test both directions on foot and vehicle, with synchronized door positions and no loading overlay. **Until this physical space exists, leave classic doorway behavior intact.**
 
-### Phase 3 — Adjacent continuous districts (not implemented yet)
+### Phase 3B — Integrate actual district/traffic/quest systems (not yet implemented)
 - Start with the physical Precinct grounds → Midtown road, then Maple Court and Downtown, before extending Industrial, Southbay and Waterfront.
 - Convert NPC positions, traffic routes, patrol car, encounters, interactables and objective locations into the same world coordinates.
 - Preload neighboring chunks before visible entry and use draw distance/LOD for citywide zoom.

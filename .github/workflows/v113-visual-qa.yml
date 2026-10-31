@@ -1,0 +1,34 @@
+name: V113 Visual Polish — Guardrails & QA
+on:
+  push:
+    branches:
+      - feature/v113-visual-polish
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  visual-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check JS syntax
+        run: |
+          node --check published-game-capture/game.js
+          node --check published-game-capture/visual-polish-v113.js
+          node --check qa/check-v113-visual-polish.cjs
+      - name: Run isolated visual smoke tests
+        run: node qa/check-v113-visual-polish.cjs
+      - name: Check gameplay and Zombie Outbreak source is byte-for-byte unchanged
+        shell: bash
+        run: |
+          git fetch origin published-v1-backup
+          test "$(git rev-parse origin/published-v1-backup:published-game-capture/game.js)" = "$(git rev-parse HEAD:published-game-capture/game.js)"
+          test "$(git rev-parse origin/published-v1-backup:published-game-capture/outbreak.css)" = "$(git rev-parse HEAD:published-game-capture/outbreak.css)"
+          echo "Original game.js and outbreak.css unchanged"
+      - name: Changed-file scope
+        run: |
+          git diff --name-only origin/published-v1-backup HEAD

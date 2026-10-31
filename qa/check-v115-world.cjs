@@ -47,6 +47,8 @@ assert.notEqual(elements.mapImg.style.display,'none');
 state.map='training';
 assert.equal(world.allowed(),false);
 assert.equal(world.networkState(),null);
+state.map='warehouse';
+assert.equal(world.allowed(),true,'Main campaign warehouse is not Academy/Zombie');
 state.map='plaza';fake.window.HARBOR.academy.active=()=>true;
 assert.equal(world.allowed(),false);
 console.log('PASS V115: native district extents, world coords, chunks, safe mode gates, map/illustration toggle, no server or save changes');

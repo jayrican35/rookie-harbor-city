@@ -24,6 +24,7 @@ jobs:
           node --check qa/check-v115-campus.cjs
           node qa/check-v115-campus.cjs
           node qa/check-v115-connected-city.cjs
+          node qa/check-v115-road-layout.cjs
           node qa/check-v115-world.cjs published-game-capture/v115-world.js
       - name: Verify original game, combat and Zombie Outbreak are untouched
         shell: bash

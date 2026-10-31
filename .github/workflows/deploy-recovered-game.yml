@@ -43,6 +43,13 @@ jobs:
           path: pickle-preview
           persist-credentials: false
 
+      - name: Check out V115 world atlas preview
+        uses: actions/checkout@v4
+        with:
+          ref: feature/v115-one-living-world
+          path: world-preview
+          persist-credentials: false
+
       - name: Recover missing main-campaign environment art
         shell: bash
         working-directory: visual-preview
@@ -139,6 +146,36 @@ jobs:
           cmp -s game-backup/published-game-capture/outbreak.css site/preview/v114/outbreak.css
           echo "PASS: original home-screen game, V113 preview and Zombie Outbreak remain unchanged"
           echo "V114 URL: /rookie-harbor-city/preview/v114/"
+
+      - name: Add isolated V115 actual-world map preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v115
+          cp -a world-preview/published-game-capture/. site/preview/v115/
+          test -s site/preview/v115/v115-world.js
+          test -s site/preview/v115/v115-preview-save-isolation.js
+          node --check site/preview/v115/v115-world.js
+          node --check site/preview/v115/game.js
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('site/preview/v115/index.html')
+          html=p.read_text()
+          script='<script src="./game.js"></script>'
+          assert html.count(script)==1, 'Cannot isolate preview saves safely'
+          html=html.replace(script,'<script src="./v115-preview-save-isolation.js"></script>\n'+script)
+          p.write_text(html)
+          assert html.index('v115-preview-save-isolation.js') < html.index(script)
+          assert 'v115-world.js' in html and 'v115-world.css' in html
+          PY
+          (cd world-preview && node qa/check-v115-world.cjs published-game-capture/v115-world.js)
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s pickle-preview/published-game-capture/game.js site/preview/v115/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v115/outbreak.css
+          echo "PASS: production home-screen build and Zombie Outbreak byte-for-byte unchanged"
+          echo "V115 Phase 1 preview: /rookie-harbor-city/preview/v115/"
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

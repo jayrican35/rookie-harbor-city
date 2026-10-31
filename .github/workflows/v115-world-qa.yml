@@ -20,6 +20,9 @@ jobs:
           node --check published-game-capture/game.js
           node --check published-game-capture/v115-world.js
           node --check published-game-capture/v115-preview-save-isolation.js
+          node --check published-game-capture/v115-campus.js
+          node --check qa/check-v115-campus.cjs
+          node qa/check-v115-campus.cjs
           node qa/check-v115-world.cjs published-game-capture/v115-world.js
       - name: Verify original game, combat and Zombie Outbreak are untouched
         shell: bash
@@ -40,4 +43,6 @@ jobs:
         run: |
           grep -q 'v115-world.js' published-game-capture/index.html
           grep -q 'v115-world.css' published-game-capture/index.html
+          grep -q 'v115-campus.js' published-game-capture/index.html
+          grep -q 'v115-campus.css' published-game-capture/index.html
           grep -q 'v115-sandbox' published-game-capture/v115-preview-save-isolation.js

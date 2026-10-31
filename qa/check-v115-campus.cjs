@@ -37,7 +37,7 @@ const tools=element('maptools');const body=element('body');
 const document={body,hidden:false,createElement:(tag)=>element(tag),
  querySelector:(s)=>s==='#mapOverlay .maptools'?tools:null};
 const window={devicePixelRatio:1,events:{},addEventListener(type,fn,capture){window.events[type+(capture?'_capture':'')]=fn;},
- HARBOR:{worldV115:{version:'phase1'},academy:{active:()=>false},outbreak:{active:()=>false}}};
+ HARBOR:{worldV115:{version:'phase1',roadNetwork:()=>({worldId:'harbor-main',primary:{centerY:1784},segments:[],crossings:[]})},academy:{active:()=>false},outbreak:{active:()=>false}}};
 let raf=0;const queue=new Map();
 const sandbox={window,document,console,Math,Number,Date, state:{map:'station'},
  closeMap(){},canvas:element('original'),ctx,

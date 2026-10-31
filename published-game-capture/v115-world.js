@@ -171,6 +171,9 @@
     mapctx.fillStyle=BACKGROUND; mapctx.fillRect(0,0,canvas.width,canvas.height);
     mapctx.save(); mapctx.translate(px-MIN_X*s,py);
     mapctx.fillStyle='#15344b'; mapctx.fillRect(MIN_X*s,0,(W-MIN_X)*s,HGT*s);
+    // Shared coordinate art, drawn beneath original district geometry.
+    const reference=window.ROOKIE_V115_REFERENCE;
+    if(reference){mapctx.save();mapctx.scale(s,s);reference.atlasTerrain(mapctx,{zoom:s});mapctx.restore();}
     // Real map extents. The space between rectangles identifies areas where
     // the new connecting roads must still be designed and built.
     zoneIds.forEach(id => {
@@ -194,6 +197,7 @@
           mapctx.arc(x+v.x*s,y+v.y*s,Math.max(1,12*s),0,Math.PI*2);mapctx.fill();
         }
       });
+      if(reference){mapctx.save();mapctx.scale(s,s);reference.atlasBlocks(mapctx,{zoom:s,districts:[{...d,map:m}]});mapctx.restore();}
       mapctx.strokeStyle='rgba(231,226,207,.6)'; mapctx.lineWidth=1.5;
       mapctx.strokeRect(x,y,m.w*s,m.h*s);
       const tx=x+m.w*s/2, ty=y+m.h*s/2;
@@ -230,6 +234,8 @@
       mapctx.fillStyle='#ffe3a1';mapctx.font='800 16px Barlow Condensed,system-ui,sans-serif';mapctx.textAlign='center';
       mapctx.fillText('PRECINCT 9',(station.x+MAPS.station.w/2)*s,(station.y+MAPS.station.h*.52)*s);
     }
+    // Landmarks use the same world coordinates as the playable canvas.
+    if(reference){mapctx.save();mapctx.scale(s,s);reference.atlasLandmarks(mapctx,{zoom:s});mapctx.restore();}
     mapctx.restore();
   }
   function mapPos(mapId, x, y) {

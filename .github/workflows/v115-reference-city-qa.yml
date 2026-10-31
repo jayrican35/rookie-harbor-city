@@ -1,0 +1,58 @@
+name: V115 Reference City — Visual and Preservation QA
+on:
+  push:
+    branches: [feature/v115-reference-city-composition]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  reference-city-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - name: Validate JS, source-derived rooftops and world-space art
+        run: |
+          node --check published-game-capture/game.js
+          node --check published-game-capture/v115-world.js
+          node --check published-game-capture/v115-campus.js
+          node --check published-game-capture/v115-showcase.js
+          node --check published-game-capture/v115-reference-art.js
+          node qa/check-v115-world.cjs published-game-capture/v115-world.js
+          node qa/check-v115-campus.cjs
+          node qa/check-v115-connected-city.cjs
+          node qa/check-v115-road-layout.cjs
+          node qa/check-v115-showcase.cjs
+          node qa/check-v115-reference.cjs
+          python3 -m py_compile tools/build_v115_reference_preview.py
+          grep -q 'rookie:v115-reference-sandbox:' published-game-capture/v115-preview-save-isolation.js
+      - name: Verify engine, missions and Zombie Outbreak remain intact
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin feature/v115-showcase-precinct-midtown
+          for file in published-game-capture/game.js published-game-capture/outbreak.css; do
+            test "$(git rev-parse origin/feature/v115-showcase-precinct-midtown:$file)" = "$(git rev-parse HEAD:$file)" || {
+              echo "Protected file changed: $file"; exit 1;
+            }
+          done
+          python3 - <<'PY'
+          import subprocess
+          names=set(subprocess.check_output(['git','diff','--name-only',
+             'origin/feature/v115-showcase-precinct-midtown','HEAD'],text=True).splitlines())
+          permitted={
+             'published-game-capture/v115-world.js',
+             'published-game-capture/v115-campus.js',
+             'published-game-capture/v115-reference-art.js',
+             'published-game-capture/v115-reference.css',
+             'published-game-capture/v115-preview-save-isolation.js',
+             'tools/build_v115_reference_preview.py',
+             'qa/check-v115-reference.cjs',
+             'docs/v115-reference-city-composition.md',
+             '.github/workflows/v115-reference-city-qa.yml'
+          }
+          assert names <= permitted, 'Unapproved file changes: '+str(sorted(names-permitted))
+          assert 'published-game-capture/v115-reference-art.js' in names
+          print('PASS: production source and Zombie Outbreak unchanged')
+          PY

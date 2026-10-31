@@ -117,7 +117,7 @@
   const modal=document.createElement('section');modal.id='v115Campus';modal.hidden=true;
   modal.setAttribute('aria-label','V115 seamless precinct and grounds development preview');
   modal.innerHTML=`<canvas id="v115CampusCanvas" aria-label="Continuous 1:1 Precinct 9 interior, grounds and streets"></canvas>
-    <header class="v115-campus-header"><div class="v115-campus-brand">HARBOR CITY <span>CONNECTED DISTRICTS · V115 DEVELOPMENT</span></div>
+    <header class="v115-campus-header"><div class="v115-campus-brand">HARBOR CITY <span>CONNECTED WORLD · STREET ALIGNMENT PASS</span></div>
     <button type="button" id="v115CampusExit">Return to game</button></header>
     <div class="v115-campus-hud"><strong id="v115CampusRegion">Precinct Grounds</strong>
     <small id="v115CampusCoords">Single continuous world · no loading screens</small></div>

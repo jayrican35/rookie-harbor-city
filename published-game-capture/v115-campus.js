@@ -401,6 +401,8 @@
     for(const link of links)if(nearViewport(link.x,link.y,link.w,link.h))roadRect(link);
     for(const d of districtEntries)if(nearViewport(d.x,d.y,d.w,d.h))districtGround(d);
     for(const c of crossings)drawCrossing(c);
+    const ref=window.ROOKIE_V115_REFERENCE;
+    if(ref)ref.gameBlocks(g,{zoom:campus.zoom,view:{x:campus.camX,y:campus.camY,w:tw/campus.zoom,h:th/campus.zoom},districts:districtEntries});
     for(const d of districtEntries)if(nearViewport(d.x,d.y,d.w,d.h))districtDecor(d);
   }
 
@@ -501,7 +503,10 @@
     const view={x:campus.camX,y:campus.camY,w:viewW,h:viewH};
     drawCampusGround();
     if(art)art.ground(g,{zoom:campus.zoom,view},t);
+    const reference=window.ROOKIE_V115_REFERENCE;
+    if(reference)reference.terrain(g,{zoom:campus.zoom,view},t);
     drawLinkedDistricts(t);
+    if(reference)reference.gameOverlay(g,{zoom:campus.zoom,view,districts:districtEntries},t);
     if(art)art.streets(g,{zoom:campus.zoom,view},t);
     drawOutdoorDecor();drawStation();
     if(art)art.precinct(g,{zoom:campus.zoom,view,STX,STY,alpha:roofAlpha()},t);

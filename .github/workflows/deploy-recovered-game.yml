@@ -29,6 +29,13 @@ jobs:
           path: game-backup
           persist-credentials: false
 
+      - name: Check out isolated V113 visual preview
+        uses: actions/checkout@v4
+        with:
+          ref: feature/v113-visual-polish
+          path: visual-preview
+          persist-credentials: false
+
       - name: Prepare game website without modifying source
         shell: bash
         run: |
@@ -41,6 +48,23 @@ jobs:
           echo "Recovered game JavaScript size: $(wc -c < site/game.js)"
           echo "Recovered art/audio file count: $(find site/assets -type f | wc -l)"
           echo "Note: This publishes a TEST copy of the recovered game, not the original editor project."
+
+      - name: Add V113 preview under a separate URL only
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v113
+          cp -a visual-preview/published-game-capture/. site/preview/v113/
+          test -s site/preview/v113/visual-polish-v113.js
+          test -s site/preview/v113/visual-polish-v113.css
+          node --check site/preview/v113/visual-polish-v113.js
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s game-backup/published-game-capture/game.js site/preview/v113/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v113/outbreak.css
+          echo "PASS: original playable root and Zombie Outbreak source remain byte-for-byte identical."
+          echo "Preview path: /rookie-harbor-city/preview/v113/"
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

@@ -1,0 +1,26 @@
+name: Capture published ROOKIE game (backup only)
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Check out recovery utility
+        uses: actions/checkout@v4
+        with:
+          ref: v112-sandwich-caper
+      - name: Capture published website
+        run: python3 tools/archive_published_game.py
+        continue-on-error: true
+      - name: Archive recovery output
+        uses: actions/upload-artifact@v4
+        with:
+          name: rookie-published-website-capture
+          path: published-game-capture/
+          if-no-files-found: warn
+          retention-days: 30

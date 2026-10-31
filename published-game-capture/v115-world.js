@@ -32,7 +32,7 @@
   const zoneIds = Object.keys(OUTDOOR).filter(id => MAPS[id]);
   const indoorIds = Object.keys(INDOOR_PARENT).filter(id => MAPS[id]);
   const active = () => typeof state !== 'undefined' && state &&
-    state.map !== 'training' && state.map !== 'warehouse' &&
+    state.map !== 'training' &&
     !(H.academy && typeof H.academy.active === 'function' && H.academy.active()) &&
     !(H.academy && typeof H.academy.mode === 'function' && H.academy.mode() === 'zombie');
 

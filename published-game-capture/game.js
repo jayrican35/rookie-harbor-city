@@ -105,15 +105,15 @@ var OBJ_DEST = { /* where each objective lives (map id + display name) */
    by evidence or statements in earlier missions before the finale uses it. */
 var MISSION_ORDER = ["m2","m3","m4","m5"];
 var MISSIONS = {
-  m2:{num:"002", name:"Storefront Break-In", intro:"Someone broke into QuickMart! Talk to Omar, check the back door and follow the clues. Who does the evidence point to?"},
+  m2:{num:"002", name:"The Midnight Pickle Panic", intro:"QuickMart's giant foam mascot Mr. Pickles disappeared, and its snack crates are missing too! Interview Omar, investigate the ridiculous scene, and follow the real evidence."},
   m3:{num:"003", name:"The Missing Resident", intro:"Emmett Hale is missing! A grey van was seen on his street on the night of the break-in. Find out where he went and whether he is safe."},
   m4:{num:"004", name:"Warehouse Trail", intro:"The clues lead to Harbor Freight warehouse. Find the missing goods, then question the driver at the precinct. Can you solve the case and earn your detective badge?"},
   m5:{num:"005", name:"Harbor Reckoning", intro:"The clues lead to Boat Shed B and the ship Gray Gull. Put the evidence together. Can you prove who is behind the thefts?"}
 };
 var EVIDENCE = {
-  m2door:{m:"m2", name:"Bent Hasp & Grey Paint Chip — Rear Door", desc:"The back-door latch was bent with a metal bar. The lock is still closed, but the latch cannot hold it. A chip of grey car paint is caught in the metal."},
-  m2label:{m:"m2", name:"Voss Import Parts Label Fragment", desc:"A torn label was left beside the empty delivery cage. It reads: VOSS IMPORT PARTS — NIGHT DELIVERY — HARBOR AVE. It may have fallen from a crate or work jacket."},
-  m2camera:{m:"m2", name:"QuickMart Camera Still — 02:07", desc:"The camera shows a person in a grey work jacket at the back door at 02:07. A grey box truck is nearby. You can read part of its plate: HBR-44.."},
+  m2door:{m:"m2", name:"Bent Latch & Grey Paint — Pickle Escape Route", desc:"The delivery-door latch was pried open from outside, leaving a grey vehicle paint chip. A banana peel is nearby, but it proves nothing. No evidence supports arresting a fruit."},
+  m2label:{m:"m2", name:"Mr. Pickles Found & Voss Shipping Label", desc:"The giant foam pickle mascot was tangled behind the stockroom shelving, wearing a shipping tag that says RETURN TO GHERKIN. Snack crates are still missing. A torn VOSS IMPORT PARTS — NIGHT DELIVERY — HARBOR AVE label gives a genuine lead."},
+  m2camera:{m:"m2", name:"Midnight Pickle Camera Still — 02:07", desc:"At 02:07, a worker in a grey jacket loads cartons into a grey box truck while a huge floppy pickle shape wobbles by the door. The partial plate reads HBR-44.. The costume is funny; the license clue is real."},
   m3note:{m:"m3", name:"Threat Note — Voss Import Parts Letterhead", desc:"A note on Voss Import Parts paper was pushed under Emmett’s door. It says: “YOU SAW NOTHING. FORGET THE PHOTO.” The same company is named on the torn label."},
   m3photo:{m:"m3", name:"Hale's Photo — Truck at the QuickMart", desc:"Emmett’s photo shows the grey truck at QuickMart’s back door at night. This time the whole plate is clear: HBR-4417. It is the Voss Import Parts truck."},
   m3key:{m:"m3", name:"Brass Key — Tagged 'SHED B'", desc:"A brass key marked SHED B opens Emmett’s boat shed. He gave you permission to use it. The key has been written into the evidence record."},
@@ -124,7 +124,7 @@ var EVIDENCE = {
 };
 var EVIDENCE_ORDER = ["m2door","m2label","m2camera","m3note","m3photo","m3key","m4crates","m4ledger","m5goods","m5book"];
 var STATEMENTS = {
-  m2omar:{m:"m2", name:"Omar Haddad — QuickMart Owner", text:"“I locked the store at midnight. At six, the back door was broken and the delivery goods were gone. Nobody took the cash. Voss Import Parts is our only night delivery company. Their driver knows that door.”"},
+  m2omar:{m:"m2", name:"Omar Haddad — QuickMart Owner", text:"“At midnight I locked the store with Mr. Pickles, my giant foam mascot, on display. By six the back latch was bent, the snack delivery cage was emptied, and Mr. Pickles was missing. Nobody touched the register. Only Voss Import Parts delivers that late. Please find my pickle! And, you know, the actual missing food.”"},
   m3almeida:{m:"m3", name:"Mrs. Almeida — Maple Court", text:"“Emmett lives at number 8 with his dog. I have not seen either of them for three days. On the night of the store break-in, a strange grey van waited on our street. Please find out if Emmett is safe.”"},
   m3ana:{m:"m3", name:"Ana Lindqvist — Harbormaster", text:"“Emmett came on Tuesday to check the boat records. He seemed scared. He said, ‘If I am not back by Friday, I am at my sister’s in Portside. Tell the police about the photo.’ He left on the morning ferry.”"},
   m3hale:{m:"m3", name:"Emmett Hale — by Phone (witness)", text:"“I was walking Biscuit past QuickMart at 2 a.m. I took a photo of a truck at the back door. The next day, a note on Voss paper told me to forget it. I went to my sister’s to stay safe. The photo is in my kitchen. My Shed B key is in the bedroom drawer. You may use it.”"},
@@ -146,14 +146,14 @@ function currentMission(){
 function campaignDone(){ return !!state.closed && !currentMission(); }
 var MISSION_OBJS = {
   m2:[
-    {id:"brief", spot:"sergeant", map:"station", where:"Sgt. Brooks' Office — Precinct 9", text:"Get the Case 002 briefing from Sgt. Brooks", done:function(){ return state.camp.m2.brief; }},
-    {id:"omar", spot:"npc:omar", map:"store", where:"QuickMart — Downtown", text:"Interview Omar Haddad, owner of the QuickMart", done:function(){ return stGot("m2omar"); }},
-    {id:"door", spot:"storeRear", map:"store", where:"QuickMart — Rear Door", text:"Examine the entry point — the QuickMart rear door", done:function(){ return evGot("m2door"); }},
-    {id:"label", spot:"storeShelf", map:"store", where:"QuickMart — Stockroom Aisle", text:"Search the stockroom aisle for clues", done:function(){ return evGot("m2label"); }},
-    {id:"camera", spot:"storeCamera", map:"store", where:"QuickMart — Camera Monitor", text:"Recover the camera still from Omar's monitor", done:function(){ return evGot("m2camera"); }},
-    {id:"db", spot:"database", map:"station", where:"Records Room — Precinct 9", text:"Search the Records database — try 'Voss' or '4417'", done:function(){ return state.camp.m2.db; }},
-    {id:"ret", spot:"evshelf", map:"station", where:"Evidence Room — Precinct 9", text:"Return the Case 002 evidence to the Evidence Room", done:function(){ return state.camp.m2.returned; }},
-    {id:"lead", spot:"sergeant", map:"station", where:"Sgt. Brooks' Office — Precinct 9", text:"Report to Sgt. Brooks and identify the supported lead", done:function(){ return state.camp.m2.done; }}
+    {id:"brief", spot:"sergeant", map:"station", where:"Sgt. Brooks' Office — Precinct 9", text:"Get the Midnight Pickle Panic briefing from Sgt. Brooks", done:function(){ return state.camp.m2.brief; }},
+    {id:"omar", spot:"npc:omar", map:"store", where:"QuickMart — Downtown", text:"Ask Omar what happened to Mr. Pickles and the missing snacks", done:function(){ return stGot("m2omar"); }},
+    {id:"door", spot:"storeRear", map:"store", where:"QuickMart — Rear Door", text:"Check the rear door for clues (not banana-based guesses)", done:function(){ return evGot("m2door"); }},
+    {id:"label", spot:"storeShelf", map:"store", where:"QuickMart — Stockroom Aisle", text:"Search the stockroom for the lost pickle and delivery label", done:function(){ return evGot("m2label"); }},
+    {id:"camera", spot:"storeCamera", map:"store", where:"QuickMart — Camera Monitor", text:"Review the wobbly-pickle security video at 02:07", done:function(){ return evGot("m2camera"); }},
+    {id:"db", spot:"database", map:"station", where:"Records Room — Precinct 9", text:"Check the truck's partial plate in Records: Voss / 4417", done:function(){ return state.camp.m2.db; }},
+    {id:"ret", spot:"evshelf", map:"station", where:"Evidence Room — Precinct 9", text:"Log the pickle case evidence in the Evidence Room", done:function(){ return state.camp.m2.returned; }},
+    {id:"lead", spot:"sergeant", map:"station", where:"Sgt. Brooks' Office — Precinct 9", text:"Tell Brooks what REALLY happened (no seagull arrests)", done:function(){ return state.camp.m2.done; }}
   ],
   m3:[
     {id:"brief", spot:"sergeant", map:"station", where:"Sgt. Brooks' Office — Precinct 9", text:"Get the Case 003 briefing from Sgt. Brooks", done:function(){ return state.camp.m3.brief; }},
@@ -212,10 +212,10 @@ var DB_RECORDS = [
   {badge:"5206", name:"Ortiz, Marco", role:"Foreman \u2014 Harbor Freight Warehouse", detail:"Day foreman at the Harbor Freight warehouse, industrial district. Signs all inbound manifests."},
   {badge:"6110", name:"Reyes, Lucia", role:"Owner \u2014 Caf\u00E9 Del Mar", detail:"Runs the downtown caf\u00E9. Unofficial information hub of Harbor Ave \u2014 hears everything, repeats little."},
   {badge:"6145", name:"Haddad, Omar", role:"Clerk \u2014 QuickMart", detail:"Night and morning clerk at the downtown QuickMart convenience store. Keeps the store camera system maintained."},
-  {badge:"HBR-4417", name:"VEHICLE \u2014 Grey Box Truck", role:"Vehicle \u00b7 Plate HBR-4417", detail:"Registered to Voss Import Parts LLC (fictional). The only truck on the QuickMart night-delivery route. QuickMart cameras caught a partial plate 'HBR-44..' at the rear door on the break-in night (Case 002)."},
+  {badge:"HBR-4417", name:"VEHICLE — Grey Box Truck", role:"Vehicle · Plate HBR-4417", detail:"Registered to Voss Import Parts LLC (fictional). Only truck on the QuickMart night-delivery route. The 02:07 security video shows part of its plate (HBR-44..) and a worker loading the missing snack crates beside a wobbling giant pickle costume."},
   {badge:"HBR-2091", name:"VEHICLE \u2014 Blue Sedan", role:"Vehicle \u00b7 Plate HBR-2091", detail:"Registered to Lucia Reyes, Caf\u00E9 Del Mar. Parked at the caf\u00E9 on the break-in night; no warehouse connection."},
   {badge:"HBR-7730", name:"VEHICLE \u2014 Yard Forklift", role:"Vehicle \u00b7 Plate HBR-7730", detail:"Harbor Freight yard equipment. Never leaves the industrial yard. Logged inside the warehouse all night."},
-  {badge:"CASE-002", name:"CASE 002 \u2014 Storefront Break-In", role:"Case Record \u00b7 QuickMart, Harbor Ave", detail:"Rear service door pried, delivery cage emptied, till untouched. Torn Voss Import Parts night-delivery label recovered at the scene. Partial plate HBR-44.. on store cameras. Assigned: Officer Jay."},
+  {badge:"CASE-002", name:"CASE 002 — The Midnight Pickle Panic", role:"Case Record · QuickMart, Harbor Ave", detail:"Giant foam mascot Mr. Pickles was wedged behind the stockroom shelves while snack crates disappeared. Grey paint, a Voss label and camera truck HBR-44.. establish a delivery-route lead. Available to each family detective."},
   {badge:"6108", name:"Hale, Emmett", role:"Resident \u2014 8 Maple Court", detail:"Retired dockhand, lives alone at 8 Maple Court with a terrier. Keeps a berth and gear storage at Boat Shed B, marina. No record. Reported missing by a neighbour in Case 003."},
   {badge:"GRAY GULL", name:"VESSEL \u2014 Freighter 'Gray Gull'", role:"Vessel \u00b7 Night Berth, Harbor City Marina", detail:"Small freighter on an irregular night-berth schedule at the marina, cargo usually declared as 'machine parts' via Voss Import Parts. Harbormaster's log holds all movements."},
   {badge:"VOSS-01", name:"Voss, Elias", role:"Person of Interest \u2014 Importer", detail:"Owner of Voss Import Parts LLC (fictional). Regular at Caf\u00E9 Del Mar corner table. Owns box truck HBR-4417. Prior warning for unsigned freight manifests (2025, fictional record)."},
@@ -4908,12 +4908,32 @@ function answerConclusion(idx){
     "Accept the Verdict", closeCase);
 }
 
+/* CASE002_PICKLE_PANIC_V114 — family-safe detective story; no new save fields. */
+function case2Family(){
+  var key=window.HARBOR && window.HARBOR.profiles && window.HARBOR.profiles.current ? window.HARBOR.profiles.current() : activeFamily;
+  return /^(jay|rosa|kaleb|gigi|lingling)$/.test(key||'')?key:'jay';
+}
+function case2Player(){return {jay:'JAY',rosa:'ROSA',kaleb:'KALEB',gigi:'GIGI',lingling:'LINGLING'}[case2Family()];}
+function case2OpeningQuip(){return {
+  jay:'A missing pickle and a rubber chicken. Good thing I put detective work on my resume.',
+  rosa:'I can investigate the evidence. I cannot promise to keep a straight face.',
+  kaleb:'Seven-foot pickle? Do we need a search warrant or a sandwich?',
+  gigi:'Papi, I call dibs on questioning the pickle. I have IMPORTANT QUESTIONS.',
+  lingling:'CHICKEN BANANA! Oh. Sorry. Official detective voice now.'
+}[case2Family()];}
+function case2WinQuip(){return {
+  jay:'Case closed. The pickle is safe, the snacks are still missing, and I have a dill-lightful report.',
+  rosa:'I am putting that rubber chicken on unpaid administrative leave.',
+  kaleb:'I solved the pickle mystery with science: look at the plate, not the vegetable.',
+  gigi:'MR. PICKLES LIVES! He owes me an autograph. Or a sticker.',
+  lingling:'Chicken Banana! Detective LingLing has cracked the cucumber code!'
+}[case2Family()];}
 /* ================= CAMPAIGN BRIEFINGS / CONCLUSIONS / ENDING ================= */
 var BRIEFINGS = {
   m2:[
-    ["SGT. BROOKS", "Officer Jay. Case 002 — Storefront Break-In. The QuickMart on Harbor Ave was hit overnight: rear door pried, delivery cage emptied, till untouched. Somebody knew that store."],
-    ["SGT. BROOKS", "Work it properly: interview the owner, Omar Haddad. Examine the entry point. Collect the clues. Run what you find through the Records database. Bring the evidence back here, and then — only then — name me a lead that's supported."],
-    ["JAY", "Downtown, talk first, scene second, records third. On it, Sergeant."]
+    ["SGT. BROOKS", "CASE 002: THE MIDNIGHT PICKLE PANIC. Dispatch says a seven-foot dancing pickle has been kidnapped. I asked whether the pickle had a pulse. They said: 'Foam.' I need a different career."],
+    ["SGT. BROOKS", "QuickMart's mascot, Mr. Pickles, has disappeared. The back door was forced, snack crates are gone, and someone left a rubber chicken at the scene. The chicken has declined to comment."],
+    ["SGT. BROOKS", "Talk to Omar, check the rear door and stockroom, watch the security video, check Records, and log your evidence. Remember: being suspiciously silly isn't proof of a crime."],
   ],
   m3:[
     ["SGT. BROOKS", "Case 003 — The Missing Resident. Mrs. Almeida on Maple Court called in a welfare check: Emmett Hale, number 8, hasn't been seen in three days. Curtains shut, dog gone."],
@@ -4932,7 +4952,8 @@ var BRIEFINGS = {
   ]
 };
 function doBriefing(m){
-  showLines(BRIEFINGS[m], function(){ briefMission(m); });
+  var briefing=m==="m2"?BRIEFINGS.m2.concat([[case2Player(),case2OpeningQuip()]]):BRIEFINGS[m];
+  showLines(briefing,function(){briefMission(m);});
 }
 function doBrooksEpilogue(){
   showLines([
@@ -4941,15 +4962,23 @@ function doBrooksEpilogue(){
   ], function(){ showEnding(); });
 }
 var LEAD2 = [
-  { label:"Follow Voss Import Parts — the label, the paint chip and the route records all point at its night-delivery operation.",
-    correct:true },
-  { label:"Arrest Omar Haddad — he staged the break-in for the insurance money.",
-    wrong:"Unsupported. Omar reported the break-in himself, preserved his camera footage and handed it over, and the till was untouched — the thieves went straight for the delivery cage. Nothing in his statement or the scene suggests staging; everything suggests someone who knew his delivery routine." },
-  { label:"It was a random passer-by who pried the door on impulse.",
-    wrong:"Unsupported. A torn Voss Import Parts night-delivery label was left in the stockroom, the paint chip matches the delivery truck's grey, and the intruders ignored the till for the delivery cage. Random passers-by don't know a store's delivery routine — this crew did." },
-  { label:"Arrest the QuickMart's night cleaner — they had a key to the building.",
-    wrong:"Unsupported. The entry point was pried from outside — the hasp bent outward, lock intact. No key was used, and no record places the cleaner near the store that night. The physical evidence points at the delivery door and the truck that serves it." }
+  {label:"Follow Voss Import Parts' night-delivery truck. The label, latch paint, footage and records agree.", correct:true},
+  {label:"Arrest the rubber chicken. It was at the scene and has not said a word.",
+    wrong:"The chicken is rubber and is exercising its right to remain squeaky. A prop cannot drive a truck. Find the real clues: damaged latch, Voss label, video and plate."},
+  {label:"Accuse Omar of secretly eating the seven-foot pickle.",
+    wrong:"Mr. Pickles is a foam costume, not an edible pickle! You found him tangled behind the shelves. Omar reported the missing stock and helped preserve the video. Accusing someone needs evidence."},
+  {label:"Arrest the seagull seen on camera. It looks extremely smug.",
+    wrong:"The bird is definitely smug. Unfortunately, it lacks a driver's license, a loading schedule and hands. The truck plate and shipping label lead to a human delivery route."}
 ];
+
+function case2ConclusionChoices(){
+  showChoices("CASE 002 — THE GREAT DILL-EMMA", "Choose the lead supported by the evidence. Silly guesses are welcome, and trying again costs nothing!", LEAD2.map(function(c){
+    return {label:c.label,fn:function(){
+      if(c.correct){closeM2();return;}
+      showLines([["SGT. BROOKS",c.wrong],[case2Player(),"Okay! Evidence first, chicken second. I can try again."]],case2ConclusionChoices);
+    }};
+  }));
+}
 var CONCLUSION3 = [
   { label:"Hale witnessed the break-in, was threatened on Voss letterhead, and fled to his sister's — a witness in hiding, not a victim.",
     correct:true },
@@ -4980,8 +5009,8 @@ var FINAL_ARREST = [
 ];
 function doMissionConclusion(m){
   if(m === "m2"){
-    showLines([["SGT. BROOKS", "Evidence bagged and returned, database checked, owner's statement in. So, Officer — the QuickMart break-in. What lead does the evidence actually support?"]],
-      function(){ showChoiceSet("YOUR LEAD — CASE 002", "Choose the lead the findings support. A wrong call gets an explanation, not a dead end:", LEAD2, "m2", closeM2); });
+    showLines([["SGT. BROOKS", "You found Mr. Pickles! The poor foam fellow was stuck behind cereal boxes. But the real snack crates are still missing. Which lead is supported by your evidence?"]],
+      function(){case2ConclusionChoices();});
   } else if(m === "m3"){
     showLines([["SGT. BROOKS", "House searched, harbormaster heard, and Hale himself on the phone. So — where is Emmett Hale, and what is he?"]],
       function(){ showChoiceSet("YOUR CONCLUSION — CASE 003", "Choose the conclusion the findings support:", CONCLUSION3, "m3", closeM3); });
@@ -5006,14 +5035,17 @@ function showChoiceSet(title, prompt, set, m, onCorrect){
   }));
 }
 function closeM2(){
-  awardScore("concl:m2", "Supported conclusion", RULES.score.conclusion, "Case 002 \u2014 Storefront Break-In: supported lead identified.");
+  awardScore("concl:m2", "Supported conclusion", RULES.score.conclusion, "Case 002 — The Midnight Pickle Panic: a supported night-delivery lead identified without false accusations.");
   state.camp.m2.done = true; save(); refreshPanels();
-  tone(523,0.12,0,"sine"); tone(659,0.12,0.11,"sine"); tone(784,0.22,0.22,"sine");
+  tone(523,0.12,0,"sine");tone(659,0.12,0.11,"sine");tone(784,0.22,0.22,"sine");
   showLines([
-    ["SGT. BROOKS", "Case 002: CLOSED. The lead stands — the entry point, the label fragment, Omar's still and the route records all run through Voss Import Parts' night deliveries. That's a thread, Officer, and threads in this city get pulled."],
-    ["JAY", "Then I'll keep pulling, Sergeant. Whatever that operation is moving, it started at Omar's rear door."],
-    ["SGT. BROOKS", "It did. And as of an hour ago, it's not the only call on the board — a Maple Court welfare check just came in. See me for Case 003 when you're ready."]
-  ], function(){ toast("Case 002 closed — lead identified: Voss Import Parts"); endShift("m2"); });
+    ["SGT. BROOKS", "Case 002: CLOSED. Mr. Pickles has been rescued from behind the stockroom shelves. The store's ACTUAL snack crates are still gone. Our evidence points to the Voss night-delivery route. That's a lead, not a reason to accuse everybody in a grey jacket."],
+    ["DISPATCH", "Attention all units: the rubber chicken is NOT a suspect. Please stop trying to read it its rights."],
+    [case2Player(), case2WinQuip()],
+    ["SGT. BROOKS", "Omar has named you an honorary DILL DETECTIVE. I'm refusing to wear the certificate. Also: a welfare check just came in from Maple Court. Case 003 is waiting when you're ready."],
+    ["OFFICER RIVERA", "Sergeant, the chicken would like a lawyer."],
+    ["SGT. BROOKS", "GET IT OUT OF MY OFFICE."]
+  ], function(){toast("CASE 002 SOLVED! Mr. Pickles rescued · Dill Detective · Voss lead found");endShift("m2");});
 }
 function closeM3(){
   awardScore("concl:m3", "Supported conclusion", RULES.score.conclusion, "Case 003 \u2014 The Missing Resident: conclusion supported by the findings.");
@@ -5051,7 +5083,7 @@ function closeM5(){
 }
 var CASE_SUMMARY = [
   {n:"CASE 001 — THE MISSING DRIVE", t:"No theft at all: an incomplete internal evidence transfer left EV-001 in Intake Tray B. Solved from the tag, the access log and Maya's statement. Promotion: Cadet → Patrol Officer."},
-  {n:"CASE 002 — STOREFRONT BREAK-IN", t:"The QuickMart's rear door was pried by a crew that knew its delivery routine. The label fragment, grey paint chip, camera still and route records identified the supported lead: Voss Import Parts' night-delivery operation."},
+  {n:"CASE 002 — THE MIDNIGHT PICKLE PANIC", t:"Omar's giant foam mascot Mr. Pickles was found wedged behind the stockroom shelves, but the missing snack crates were real. A bent latch, paint chip, Voss delivery label, security still and partial plate established the night-delivery route as the next evidence-based lead. An honorary Dill Detective badge was issued; no rubber chickens were arrested."},
   {n:"CASE 003 — THE MISSING RESIDENT", t:"Emmett Hale photographed the break-in truck, was threatened on Voss letterhead, and fled to his sister's. Found safe — a witness, not a victim. His photo fixed the plate (HBR-4417) and his key opened the endgame."},
   {n:"CASE 004 — WAREHOUSE TRAIL", t:"QuickMart stock and a shipping ledger in bay 3 tied the warehouse to the ring; Night Watchman Reyes named the driver. Ferris, interviewed at the precinct, confirmed Voss ran it — and was charged as a cooperating accomplice. Promotion: Patrol Officer → Detective."},
   {n:"CASE 005 — HARBOR RECKONING", t:"Boat Shed B held the stolen cache and Voss's own harbor ledger. Combined with the evidence of Cases 002–004, the arrest of Elias Voss was supported at every step."}
@@ -5618,7 +5650,7 @@ var MANUALS = {
     { title:"Making conclusions supported by evidence", body:[
       "When a case's objectives are done, report to <b>Sgt. Brooks</b> and pick a conclusion. She accepts only a conclusion the collected findings, statements and evidence actually support \u2014 that support is the whole test.",
       "A supported conclusion earns <b>+" + RULES.score.conclusion + " Performance</b>, once per case. An unsupported accusation costs <b>" + RULES.score.unsupported + " Performance</b>, once per distinct accusation \u2014 submitting the same one again costs nothing more \u2014 and it is <b>explained, never a dead end</b>: Brooks tells you what doesn't hold up, and you can gather what is missing and try again. There is no hidden rule to break \u2014 if the game wanted it, it is listed as an objective.",
-      "Promotions follow case completions: <b>Patrol Officer</b> after Case 001, <b>Detective</b> after Case 004. The five cases run in order \u2014 001 The Missing Drive, 002 Storefront Break-In, 003 The Missing Resident, 004 Warehouse Trail, 005 Harbor Reckoning \u2014 and each feeds the next. Performance never changes any of that: promotions follow case completions only, and a low score blocks nothing."]},
+      "Promotions follow case completions: <b>Patrol Officer</b> after Case 001, <b>Detective</b> after Case 004. The five cases run in order \u2014 001 The Missing Drive, 002 The Midnight Pickle Panic, 003 The Missing Resident, 004 Warehouse Trail, 005 Harbor Reckoning \u2014 and each feeds the next. Performance never changes any of that: promotions follow case completions only, and a low score blocks nothing."]},
     { title:"In-game traffic-stop procedure", body:[
       "The demonstration stop waits in <b>Midtown, Harbor Ave East</b>: a flagged grey sedan in the eastbound lane. Make it like a real pull-over \u2014 drive Unit 9 up behind the sedan, switch the <b>emergency lights</b> on (<kbd>L</kbd>; the siren, <kbd>K</kbd>, counts too) and stop, and the arrival cutscene begins. On foot, the gold-ringed marker on the south sidewalk starts it instead.",
       "After the arrival scene and the exchange with the driver, <b>Dana Cole</b>, you choose an approach, then control returns for the investigation: <b>question the driver</b>, <b>inspect the sedan's rear and brake light</b>, and <b>run plate HBR-2084</b> through <b>Inventory → Police Radio → Run plate HBR-2084</b>. The plate check needs your <b>police radio</b> carried or equipped.",
@@ -6178,40 +6210,55 @@ function doBusstop(){
 }
 function doStoreCamera(){
   if(currentMission() === "m2" && state.camp.m2.brief && !evGot("m2camera")){
-    showLines([
-      ["STORE CAMERA MONITOR", "Omar rewinds to 02:07 on the break-in night: a figure in a grey work jacket works at the rear door while a grey box truck idles behind the store. The plate is half in shadow \u2014 'HBR-44..' is all the camera gives you."],
-      ["JAY", "Timestamped still exported and bagged for Case 002. A partial plate is still a plate \u2014 Records can work with 'HBR-44..'."]
-    ], function(){ collectEvidence("m2camera"); });
+    showChoices("QUICKMART SECURITY — 02:07", "A large pickle-shaped shadow wobbles by the back door. Beside it, a person in a grey work jacket loads boxes into a truck. What should we examine?", [
+      {label:"Read the truck's partial plate and record the time.",fn:function(){
+        showLines([
+          ["CAMERA MONITOR", "02:07. The grey box truck backs up beside the rear door. The plate reads HBR-44.. A worker in a grey jacket loads cartons. The oversized mascot silhouette does an accidental moonwalk when someone bumps it."],
+          [case2Player(), "The pickle is funny. The plate is evidence. Exporting the still for Records!"]
+        ],function(){collectEvidence("m2camera");});
+      }},
+      {label:"Enhance the seagull's face. He looks suspicious.",fn:function(){
+        showLines([["CAMERA MONITOR", "ENHANCE: the seagull is still a seagull. It looks personally offended by the zoom."],[case2Player(), "A beak is not a license plate. Let's check the truck instead."]],doStoreCamera);
+      }},
+      {label:"Ask whether that pickle can moonwalk.",fn:function(){
+        showLines([["CAMERA MONITOR", "The foam pickle tilts left, tips right, and falls off the loading cart like a dancing noodle."],["DISPATCH", "I am begging you not to file that as a dance competition."]],doStoreCamera);
+      }}
+    ]);
     return;
   }
-  showLines([
-    ["STORE CAMERA MONITOR", "Four grainy feeds: entrance, registers, aisles, loading door. Omar keeps them rolling 24/7."],
-    ["JAY", "Nothing on today's loop but regulars and a very determined seagull at the door sensor. If this store ever does get hit, this monitor is where the case starts."]
-  ], null);
+  if(currentMission() === "m2"){
+    showLines([["STORE CAMERA", "Replay saved: a goofy pickle silhouette, one grey truck, and partial plate HBR-44... The seagull is still refusing interviews."]],null);return;
+  }
+  showLines([["STORE CAMERA MONITOR", "Four security feeds. Today, nothing but shoppers and one seagull who thinks the door sensor belongs to him."]],null);
 }
 function doStoreShelf(){
   if(currentMission() === "m2" && state.camp.m2.brief && !evGot("m2label")){
     showLines([
-      ["STOCKROOM AISLE", "The delivery cage stands emptied, its door swung wide. Half under it, torn and footprinted: a shipping label fragment \u2014 'VOSS IMPORT PARTS \u2014 NIGHT DELIVERY \u2014 HARBOR AVE'."],
-      ["JAY", "Torn off a crate or a jacket while they worked. Bagged for Case 002 \u2014 the first hard name this case has given me."]
-    ], function(){ collectEvidence("m2label"); });
-    return;
+      ["STOCKROOM", "The snack delivery cage is empty. Behind the cereal boxes, two gigantic green feet stick out. A muffled voice seems to say: 'MFFFRRRF'. Wait, that's just the air conditioner."],
+      ["MR. PICKLES", "YOU FOUND ME! (That's what the handwritten tag says. Mr. Pickles is a FOAM COSTUME. He cannot actually speak.)"],
+      [case2Player(), "Mr. Pickles was wedged behind the shelves the whole time! And why is he wearing a cardboard crown labeled RETURN TO GHERKIN?"],
+      ["STOCKROOM", "Beneath the costume: an actual shipping-label fragment: VOSS IMPORT PARTS — NIGHT DELIVERY — HARBOR AVE. The other snack crates are still missing."],
+      [case2Player(), "Mascot recovered, label photographed, clue bagged. I am choosing NOT to interrogate the foam vegetable."]
+    ],function(){collectEvidence("m2label");});return;
   }
-  showLines([
-    ["STOCKROOM AISLE", "Chips, jerky, harbor-taffy and a wall of energy drinks. A handwritten card reads: \u201CPrecinct 9 \u2014 coffee's on us. Seriously. \u2014 Omar.\u201D"]
-  ], null);
+  if(currentMission() === "m2"){
+    showLines([["MR. PICKLES", "Safely standing beside the cereal. Somebody put a tiny paper badge on the foam pickle. It reads: HONORARY OFFICER. The actual snack crates are still missing."]],null);return;
+  }
+  showLines([["STOCKROOM AISLE", "Chips, snacks and cereal. A little note says: 'Do not taste the display pickle. It is foam.'"]],null);
 }
 function doStoreRear(){
   if(currentMission() === "m2" && state.camp.m2.brief && !evGot("m2door")){
     showLines([
-      ["REAR SERVICE DOOR", "The entry point. The door's hasp is bent outward, pried with a bar until the screws tore free \u2014 the lock itself is untouched. Caught in the bent metal: a flake of grey paint."],
-      ["JAY", "They came in through the delivery door, with a bar and no hurry they couldn't afford. Hasp photographed, paint chip bagged \u2014 Case 002 evidence."]
-    ], function(){ collectEvidence("m2door"); });
-    return;
+      ["QUICKMART REAR DOOR", "The latch is bent outward as though pried from the alley. A grey fleck of vehicle paint is trapped in the metal. On the floor: one banana peel and a rubber chicken with an extremely judgmental face."],
+      [case2Player(), "Paint chip and damaged latch: real evidence. The banana could belong to anyone. The chicken has no fingerprints. I checked."],
+      ["RUBBER CHICKEN", "SQUEEEEEAK."],
+      [case2Player(), "Thank you for your statement. This is going in the report under 'very unhelpful'."]
+    ],function(){collectEvidence("m2door");});return;
   }
-  showLines([
-    ["REAR SERVICE DOOR", "The QuickMart's delivery door, opening on the rear alley. Omar props it during morning deliveries and chains it at night. The hasp is newer than the frame \u2014 replaced once already this year, the screw heads bright."]
-  ], null);
+  if(currentMission() === "m2"){
+    showLines([["REAR DOOR", "The bent latch and grey paint chip are documented. A tiny paper sign now reads: 'NO PICKLE PARKING.' The rubber chicken is still innocent until proven squeaky."]],null);return;
+  }
+  showLines([["REAR SERVICE DOOR", "QuickMart's delivery entrance. Omar chains it at night and props it for deliveries each morning."]],null);
 }
 function doCafeMenu(){
   showLines([
@@ -6434,30 +6481,29 @@ var TALKS = {
     ["OFCR. DIAZ", "Lot duty. You'd be amazed what people try to park in a police lot. Heading out? Downtown's east, Maple Court's west \u2014 and if you get lost, that map on M knows the city better than I do."]
   ], null); },
   omar:function(){
-    if(currentMission() === "m2" && state.camp.m2.brief && !stGot("m2omar")){
-      showChoices("OMAR HADDAD \u2014 QUICKMART OWNER", "Omar unlocks the stockroom for you, still angry \u2014 at the thieves, mostly. Ask him:", [
-        {label:"Walk me through the night and what was taken.", fn:function(){
-          showLines([
-            ["OMAR HADDAD", STATEMENTS.m2omar.text],
-            ["JAY", "Statement recorded. Now the scene: the rear door, the stockroom aisle, and your camera monitor. If they knew this store, the store will say how."]
-          ], function(){ recordStatement("m2omar"); });
+    if(currentMission()==="m2" && state.camp.m2.brief && !stGot("m2omar")){
+      showChoices("OMAR HADDAD — QUICKMART", "Omar is carrying a tiny hat and a giant foam pickle's missing shoe. What do you ask?",[
+        {label:"Tell me exactly what happened and what is missing.",fn:function(){
+          showLines([["OMAR HADDAD",STATEMENTS.m2omar.text],
+            ["OMAR HADDAD", "Mr. Pickles is our SEVEN-FOOT mascot, not our lunch. I found one rubber chicken by the delivery door. I have made zero progress interviewing it."],
+            [case2Player(), "Statement recorded. I'll examine the latch, stockroom and camera. Facts before accusations!"]],function(){recordStatement("m2omar");});
         }},
-        {label:"Ask who Omar suspects.", fn:function(){
-          showLines([["OMAR HADDAD", "Suspects are your department, Officer. Mine is facts: midnight lockup, six a.m. break-in, cage emptied, till ignored. Start with what happened \u2014 I'll give you every word of it."]], function(){ if(window.ROOKIE) window.ROOKIE.talkOmar(); });
+        {label:"Does Mr. Pickles have enemies? Perhaps a rival cucumber?",fn:function(){
+          showLines([["OMAR HADDAD", "Only the hot-dog mascot across town. They've been arguing about relish for six months. But it's a foam costume, Detective. It cannot hold a grudge."],
+            [case2Player(), "Noted: vegetable rivalry is not evidence."]],function(){TALKS.omar();});
         }},
-        {label:"Ask about the free coffee.", fn:function(){
-          showLines([["OMAR HADDAD", "Always free for Precinct 9. But coffee after the statement, Officer \u2014 I want this done properly."]], function(){ if(window.ROOKIE) window.ROOKIE.talkOmar(); });
+        {label:"May I interrogate the rubber chicken?",fn:function(){
+          showLines([["OMAR HADDAD", "Be my guest. It won't crack. I already offered it one cracker and a very stern stare."],
+            ["RUBBER CHICKEN", "SQUEEEEAK!"],
+            [case2Player(), "I'm going to mark that as a refusal to cooperate with nonsense."]],function(){TALKS.omar();});
         }}
-      ]);
-      return;
+      ]);return;
     }
     if(state.camp && state.camp.m2.done){
-      showLines([["OMAR HADDAD", "My stock is coming home crate by crate, Officer, and the new rear door has a hasp you could moor a boat with. Harbor Ave thanks you. Coffee's still free \u2014 some things even thieves can't take."]], null);
-      return;
+      showLines([["OMAR HADDAD", "Mr. Pickles is back on display with a little DILL DETECTIVE badge. You're always welcome here. The snacks are still being traced through Voss deliveries — and the rubber chicken has been promoted to store security."]],null);return;
     }
-    showLines([
-    ["OMAR HADDAD", "Officer! Coffee's free for Precinct 9, house rule. Take a look at my camera monitor while you're here \u2014 four angles, no blind spots. This store does not get robbed on my watch."]
-  ], null); },
+    showLines([["OMAR HADDAD", "Coffee's on the house for Precinct 9. Please do not mistake the foam pickle mascot for an actual lunch."]],null);
+  },
   lucia:function(){
     if(state.camp && state.camp.m5.done){
       showLines([["LUCIA REYES", "The corner table is empty this morning, Officer \u2014 first time in years. The caf\u00E9 feels lighter, and so does the whole avenue. Whatever you put in that notebook of yours, it held up. Sit. Chowder's on Fridays, but for you, today."]], null);
@@ -6855,7 +6901,7 @@ function renderDb(q){
   if(currentMission() === "m2" && state.camp.m2.brief && !state.camp.m2.db && rawQ){
     if(q.indexOf("voss")>=0 || q.indexOf("4417")>=0 || q.indexOf("hbr")>=0){
       state.camp.m2.db = true; save(); refreshPanels();
-      toast("Database hit recorded: HBR-4417 — grey box truck, Voss Import Parts, QuickMart night route");
+      toast("Evidence match: HBR-4417 is the Voss night-delivery truck! The pickle cannot drive it.");
     }
   }
   var rows = DB_RECORDS.filter(function(r){

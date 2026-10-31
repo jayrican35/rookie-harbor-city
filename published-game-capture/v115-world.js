@@ -8,16 +8,16 @@
   if (!window.HARBOR || !window.ROOKIE || typeof MAPS === 'undefined' || !MAPS.plaza) return;
 
   const OUTDOOR = Object.freeze({
-    westfield:   [140, 640],
-    residential: [440, 2310],
-    plaza:       [3260, 710],
-    northgate:   [6050, 805],
-    downtown:    [2620, 2815],
-    midtown:     [4510, 2690],
-    eastside:    [4970, 4110],
-    industrial:  [6810, 4450],
-    waterfront:  [550, 4325],
-    southbay:    [2930, 4915]
+    westfield:   [-3100, 1260],
+    residential: [-1500, 1260],
+    plaza:       [148, 600],
+    northgate:   [5086, 163],
+    downtown:    [5056, 1283],
+    midtown:     [2800, 1260],
+    eastside:    [6556, 1260],
+    industrial:  [8156, 1003],
+    waterfront:  [4400, 3245],
+    southbay:    [2800, 3220]
   });
   const INDOOR_PARENT = Object.freeze({
     station: 'plaza', store: 'midtown', cafe: 'downtown',
@@ -28,7 +28,7 @@
   const CHUNK_SIZE = 512;
   const TILE_SIZE = 32;
   const cells = Object.create(null);
-  const W = 8500, HGT = 6350;
+  const MIN_X=-3100, W = 9656, HGT = 4680;
   const zoneIds = Object.keys(OUTDOOR).filter(id => MAPS[id]);
   const indoorIds = Object.keys(INDOOR_PARENT).filter(id => MAPS[id]);
   const active = () => typeof state !== 'undefined' && state &&
@@ -46,12 +46,13 @@
       // entrance, not falsely laid out 1:1: stations are much larger inside.
       const p = MAPS[parent];
       const door = (p.spots || []).find(s => s.to && s.to.map === id);
-      origin = [base[0] + (door ? door.x : p.w/2), base[1] + (door ? door.y : p.h/2)];
+      origin = id==='station' ? [380,96] :
+        [base[0] + (door ? door.x : p.w/2), base[1] + (door ? door.y : p.h/2)];
     }
     if (!origin) return null;
     return Object.freeze({ id, name: m.name, x: origin[0], y: origin[1],
       w: m.w, h: m.h, indoor: !!m.indoor, parent,
-      footprint: parent ? 'entrance-anchor-pending-rebuild' : 'native-playable-geometry',
+      footprint: id==='station'?'physical-1:1-precinct-campus' : parent ? 'entrance-anchor-pending-rebuild' : 'native-playable-geometry',
       revision: 1, instanceId: 'harbor-main:' + id });
   }
   zoneIds.concat(indoorIds).forEach(id => { cells[id] = descriptor(id); });
@@ -61,7 +62,7 @@
   function worldPoint(mapId, x, y) {
     const d = cells[mapId];
     if (!d || !Number.isFinite(x) || !Number.isFinite(y)) return null;
-    if (d.indoor) return Object.freeze({ worldId: 'harbor-main', areaId: mapId,
+    if (d.indoor && mapId!=='station') return Object.freeze({ worldId: 'harbor-main', areaId: mapId,
       instanceId: d.instanceId, entryWorldX: d.x, entryWorldY: d.y,
       localX: x, localY: y, pendingInteriorPlacement: true });
     return Object.freeze({ worldId: 'harbor-main', areaId: mapId,
@@ -75,7 +76,7 @@
     radius = Math.max(0, Math.min(3, Math.trunc(radius || 1)));
     const cx = Math.floor(x/CHUNK_SIZE), cy = Math.floor(y/CHUNK_SIZE), arr=[];
     for (let iy=cy-radius; iy<=cy+radius; iy++) for (let ix=cx-radius; ix<=cx+radius; ix++) {
-      if (ix >= 0 && iy >= 0 && ix*CHUNK_SIZE < W && iy*CHUNK_SIZE < HGT)
+      if (ix*CHUNK_SIZE >= MIN_X && iy >= 0 && ix*CHUNK_SIZE < W && iy*CHUNK_SIZE < HGT)
         arr.push({id:'harbor-main:'+ix+':'+iy, x: ix*CHUNK_SIZE, y:iy*CHUNK_SIZE,
           w: CHUNK_SIZE, h: CHUNK_SIZE, level:0});
     }
@@ -87,7 +88,7 @@
     const x1=Math.floor((cameraX+Math.max(0,vw))/CHUNK_SIZE), y1=Math.floor((cameraY+Math.max(0,vh))/CHUNK_SIZE);
     const result=[];
     for(let y=y0; y<=y1; y++) for(let x=x0; x<=x1; x++) {
-      if(x>=0&&y>=0&&x*CHUNK_SIZE<W&&y*CHUNK_SIZE<HGT) result.push('harbor-main:'+x+':'+y);
+      if(x*CHUNK_SIZE>=MIN_X&&y>=0&&x*CHUNK_SIZE<W&&y*CHUNK_SIZE<HGT) result.push('harbor-main:'+x+':'+y);
     }
     return result;
   }
@@ -126,12 +127,12 @@
   }
   const BACKGROUND='#0f2637', GROUND='#4e8055';
   function paintAtlas() {
-    const sx=canvas.width/W, sy=canvas.height/HGT;
-    const s=Math.min(sx,sy); const px=(canvas.width-W*s)/2, py=(canvas.height-HGT*s)/2;
+    const sx=canvas.width/(W-MIN_X), sy=canvas.height/HGT;
+    const s=Math.min(sx,sy); const px=(canvas.width-(W-MIN_X)*s)/2, py=(canvas.height-HGT*s)/2;
     mapctx.clearRect(0,0,canvas.width,canvas.height);
     mapctx.fillStyle=BACKGROUND; mapctx.fillRect(0,0,canvas.width,canvas.height);
-    mapctx.save(); mapctx.translate(px,py);
-    mapctx.fillStyle='#15344b'; mapctx.fillRect(0,0,W*s,HGT*s);
+    mapctx.save(); mapctx.translate(px-MIN_X*s,py);
+    mapctx.fillStyle='#15344b'; mapctx.fillRect(MIN_X*s,0,(W-MIN_X)*s,HGT*s);
     // Real map extents. The space between rectangles identifies areas where
     // the new connecting roads must still be designed and built.
     zoneIds.forEach(id => {
@@ -164,34 +165,37 @@
       const label=id==='plaza'?'PRECINCT 9':id.toUpperCase();
       mapctx.strokeText(label,tx,ty); mapctx.fillStyle='#fff3cb';mapctx.fillText(label,tx,ty);
     });
-    // Contextual links are dashed: walkable continuous streets haven't been
-    // commissioned for the gaps. Never imply they exist in this build.
-    const candidates=[['plaza','midtown'],['plaza','residential'],['plaza','northgate'],
-      ['residential','westfield'],['downtown','midtown'],['midtown','eastside'],
-      ['eastside','industrial'],['downtown','waterfront'],['waterfront','southbay'],
-      ['southbay','industrial']];
-    mapctx.lineWidth=2;mapctx.setLineDash([4,5]);mapctx.strokeStyle='rgba(248,215,143,.55)';
-    candidates.forEach(pair=>{
-      const a=cells[pair[0]],b=cells[pair[1]];if(!a||!b)return;
-      mapctx.beginPath();mapctx.moveTo((a.x+a.w/2)*s,(a.y+a.h/2)*s);
-      mapctx.lineTo((b.x+b.w/2)*s,(b.y+b.h/2)*s);mapctx.stroke();
-    });
-    mapctx.setLineDash([]);
-    // Central precinct has a physically too-small exterior roof. The studio
-    // must rebuild it to contain the full 1:1 interior; show a warning inset.
-    const precinct=cells.plaza;
-    if(precinct){mapctx.fillStyle='rgba(250,201,112,.95)';mapctx.font='600 12px Barlow,system-ui,sans-serif';mapctx.textAlign='left';
-      mapctx.fillText('PRECINCT INTERIOR: FULL-SCALE REBUILD PENDING',precinct.x*s,Math.max(12,precinct.y*s-12));}
+    // Streets and connecting footpaths are real walkable coordinates in the
+    // V115 connected-world preview, not imaginary district links.
+    const streets=[[-3100,1721,3250,127],[2068,1721,733,127],
+      [-650,1800,144,1958],[-650,3680,3450,128],[3460,3070,170,230],
+      [5800,945,110,352],[5720,2230,150,1640],[4388,3680,55,128]];
+    mapctx.fillStyle='rgba(139,162,169,.75)';
+    streets.forEach(r=>mapctx.fillRect(r[0]*s,r[1]*s,Math.max(1,r[2]*s),Math.max(1,r[3]*s)));
+    // This is the actual 1:1 station envelope, not the old 640px exterior.
+    const station=cells.station;
+    if(station && MAPS.station){
+      mapctx.fillStyle='rgba(13,36,60,.83)';
+      mapctx.fillRect(station.x*s,station.y*s,MAPS.station.w*s,MAPS.station.h*s);
+      (MAPS.station.rooms||[]).forEach(r=>{
+        mapctx.fillStyle=r.fill||'#8fa4b9';
+        mapctx.fillRect((station.x+r.x)*s,(station.y+r.y)*s,
+          Math.max(1,(r.w-4)*s),Math.max(1,(r.h-4)*s));
+      });
+      mapctx.fillStyle='#ffe3a1';mapctx.font='800 16px Barlow Condensed,system-ui,sans-serif';mapctx.textAlign='center';
+      mapctx.fillText('PRECINCT 9',(station.x+MAPS.station.w/2)*s,(station.y+MAPS.station.h*.52)*s);
+    }
     mapctx.restore();
   }
   function mapPos(mapId, x, y) {
     const d=cells[mapId];if(!d)return null;
     // Indoor state is anchored at the physical exterior entrance until
     // the precinct shell is rebuilt at matching scale.
-    const wx=d.indoor?d.x:d.x+x, wy=d.indoor?d.y:d.y+y;
-    const scale=Math.min(canvas.width/W,canvas.height/HGT);
-    const px=(canvas.width-W*scale)/2, py=(canvas.height-HGT*scale)/2;
-    return {x:(px+wx*scale)/canvas.width*100, y:(py+wy*scale)/canvas.height*100};
+    const wx=d.indoor&&mapId!=='station'?d.x:d.x+x,
+      wy=d.indoor&&mapId!=='station'?d.y:d.y+y;
+    const scale=Math.min(canvas.width/(W-MIN_X),canvas.height/HGT);
+    const px=(canvas.width-(W-MIN_X)*scale)/2, py=(canvas.height-HGT*scale)/2;
+    return {x:(px+(wx-MIN_X)*scale)/canvas.width*100, y:(py+wy*scale)/canvas.height*100};
   }
   function refreshMarkers() {
     const mark=(id,pos)=>{
@@ -220,7 +224,7 @@
   function applyView(){
     mapOverlay.classList.toggle('v115-atlas-view',showingBlueprint);
     if(mapHint)mapHint.textContent=showingBlueprint?
-      'Actual district geometry and street footprints · dotted links still need seamless construction · pinch or swipe to pan, +/− zoom.':
+      'Connected precinct, Harbor Avenue, all nine outdoor districts and roads. Other buildings still need interior reconstruction · pinch / swipe to pan.':
       'Original illustrated city concept — not yet geographically matched to the playable world.';
     mapImg.style.display=showingBlueprint?'none':'';
     canvas.style.display=showingBlueprint?'block':'none';
@@ -243,8 +247,8 @@
   window.ROOKIE.openMap=showMap;
   // Don't modify any legacy mini-game or Academy world-map behavior.
   H.worldV115=Object.freeze({
-    version:'115-phase1-atlas',worldId:'harbor-main',chunkSize:CHUNK_SIZE,tileSize:TILE_SIZE,
-    dimensions:Object.freeze({w:W,h:HGT}),
+    version:'115-phase3-connected-district-atlas',worldId:'harbor-main',chunkSize:CHUNK_SIZE,tileSize:TILE_SIZE,
+    dimensions:Object.freeze({minX:MIN_X,w:W-MIN_X,h:HGT}),
     rooms:()=>indoorIds.map(id=>cells[id]),
     areas:()=>zoneIds.map(id=>cells[id]),
     area:(id)=>cells[id]||null,
@@ -256,9 +260,8 @@
     allowed:active,
     paintAtlas,
     previewNotes:Object.freeze([
-      'This phase establishes deterministic coordinate metadata and a truthful blueprint, not full seamless traversal.',
-      'Existing interiors are entrance anchors; their physical 1:1 footprints must be reconstructed.',
-      'Separated districts still require chunk-stitched streets; dotted lines are not playable roads.',
+      'The V115 connected-city prototype supports continuous walking in outdoor areas and into Precinct 9.',
+      'Campaign missions, car driving, NPC schedules and most interiors still run in the original game.',
       'Zombie Outbreak and Academy modes are excluded from the world registry.'
     ])
   });

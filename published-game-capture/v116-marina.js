@@ -139,7 +139,20 @@ const promenadeSolids=Object.freeze(objects.flatMap(o=>{
 }));
 const pilingSolids=Object.freeze(PIER_X.flatMap(px=>[3820,3945,4090].flatMap(py=>
  [px+3,px+86].map(x=>({id:'piling:'+x+':'+py,x:x-7,y:py+9,w:14,h:22})))));
-const marinaFenceSolids=Object.freeze([[4400,285],[4790,285],[5190,295],[5590,310]].map(([x,w])=>
+// Fence gates are cut from both visible rails and solid footprints.
+const fenceBases=[[4400,285],[4790,285],[5190,295],[5590,310]];
+const fenceGates=interiors.map(b=>[b.door.x-b.door.w/2-18,b.door.x+b.door.w/2+18]);
+const fenceSpans=Object.freeze(fenceBases.flatMap(([x,w])=>{
+ let spans=[[x,x+w]];
+ for(const [a,b] of fenceGates){
+  spans=spans.flatMap(([start,end])=>{
+   if(b<=start||a>=end)return [[start,end]];
+   return [[start,Math.max(start,a)],[Math.min(end,b),end]].filter(([s,e])=>e-s>3);
+  });
+ }
+ return spans.map(([start,end])=>[start,end-start]);
+}));
+const marinaFenceSolids=Object.freeze(fenceSpans.map(([x,w])=>
  ({id:'garden-fence',x,y:3606,w,h:32})));
 const signLegSolids=Object.freeze([5395,5576].map(x=>({id:'waterfront-sign-leg',x:x-3,y:3603,w:15,h:40})));
 const outdoorSolids=Object.freeze([...promenadeSolids,...pilingSolids,...marinaFenceSolids,...signLegSolids]);
@@ -279,7 +292,7 @@ function begin(g,opt,t){
   for(let xx=x;xx<x+w;xx+=24){g.fillStyle='#aaa98c';g.fillRect(xx,3643,1,7);}
  }
  // Fine chain-link garden fencing with iron posts and a pale top rail.
- for(const [x,w] of [[4400,285],[4790,285],[5190,295],[5590,310]]){
+ for(const [x,w] of fenceSpans){
   if(!visible({x,y:3604,w,h:40},view,0))continue;
   g.fillStyle='#233d3c';g.fillRect(x,3606,w,3);g.fillRect(x,3635,w,3);
   g.fillStyle='#93a98d';g.fillRect(x,3604,w,2);

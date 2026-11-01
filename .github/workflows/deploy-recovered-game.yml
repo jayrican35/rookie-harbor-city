@@ -71,6 +71,13 @@ jobs:
           path: reference-preview
           persist-credentials: false
 
+      - name: Check out V115 Premium Environments (isolated)
+        uses: actions/checkout@v4
+        with:
+          ref: feature/v115-premium-environments-pass2
+          path: premium-preview
+          persist-credentials: false
+
       - name: Recover missing main-campaign environment art
         shell: bash
         working-directory: visual-preview
@@ -280,6 +287,42 @@ jobs:
           grep -q 'game-v115.bundle.js' site/preview/v115-reference/index.html
           echo "PASS: reference world visual preview, original gameplay and Zombie Outbreak untouched."
           echo "Reference preview: /rookie-harbor-city/preview/v115-reference/"
+
+      - name: Build isolated V115 premium environment art preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v115-premium
+          cp -a premium-preview/published-game-capture/. site/preview/v115-premium/
+          test -s site/preview/v115-premium/v115-premium-art.js
+          test -s site/preview/v115-premium/assets/v115-premium/mountain-north.svg
+          test -s site/preview/v115-premium/assets/v115-premium/waterfall-cliff.svg
+          test -s site/preview/v115-premium/assets/v115-premium/marina-lighthouse.svg
+          grep -q 'rookie:v115-premium-sandbox:' site/preview/v115-premium/v115-preview-save-isolation.js
+          node --check site/preview/v115-premium/v115-premium-art.js
+          node --check site/preview/v115-premium/v115-world.js
+          node --check site/preview/v115-premium/v115-campus.js
+          python3 premium-preview/tools/build_v115_preview.py site/preview/v115-premium pickle-preview/published-game-capture/game.js
+          python3 premium-preview/tools/build_v115_showcase_preview.py site/preview/v115-premium
+          python3 premium-preview/tools/build_v115_reference_preview.py site/preview/v115-premium
+          python3 premium-preview/tools/build_v115_premium_preview.py site/preview/v115-premium
+          node --check site/preview/v115-premium/game-v115.bundle.js
+          (cd premium-preview && node qa/check-v115-world.cjs published-game-capture/v115-world.js)
+          (cd premium-preview && node qa/check-v115-campus.cjs)
+          (cd premium-preview && node qa/check-v115-connected-city.cjs)
+          (cd premium-preview && node qa/check-v115-road-layout.cjs)
+          (cd premium-preview && node qa/check-v115-showcase.cjs)
+          (cd premium-preview && node qa/check-v115-reference.cjs)
+          (cd premium-preview && node qa/check-v115-premium.cjs)
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s reference-preview/published-game-capture/game.js site/preview/v115-premium/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v115-premium/outbreak.css
+          grep -q 'v115-premium-art.js' site/preview/v115-premium/index.html
+          grep -q 'game-v115.bundle.js' site/preview/v115-premium/index.html
+          echo "PASS: isolated premium environment preview; production and Zombie Outbreak byte-for-byte unchanged"
+          echo "Preview: /rookie-harbor-city/preview/v115-premium/"
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

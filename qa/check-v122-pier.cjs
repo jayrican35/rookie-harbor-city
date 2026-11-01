@@ -36,7 +36,7 @@ const g={imageSmoothingEnabled:true,fillStyle:'',
 assert(fx.dock(g,5105,{x:5050,y:3760,w:450,h:440}));
 const imgs=commands.filter(c=>Array.isArray(c)&&c[0]==='image');
 assert.equal(imgs.length,2,'Expected atlas rows 192 + 108 px, no hard-coded 128 px seam');
-assert.deepEqual(imgs.map(c=>c[4]),[192,108]);
+assert.deepEqual(imgs.map(c=>c[5]),[192,108]);
 const dryShadow=commands.filter(c=>Array.isArray(c)&&c[0]==='fill');
 assert(dryShadow.some(c=>c[1]===5105+90),'Shadow cast to right of deck, outside wood');
 assert(dryShadow.some(c=>c[2]===4100&&c[4]===8),'End face physically below dry top');

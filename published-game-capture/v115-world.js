@@ -33,7 +33,20 @@
       {id:'midtown-south',x:3460,y:3070,w:170,h:230,kind:'collector'},
       {id:'northgate-downtown',x:5800,y:945,w:110,h:352,kind:'collector'},
       {id:'downtown-waterfront',x:5720,y:2230,w:150,h:1640,kind:'collector'},
-      {id:'bayview-link',x:4388,y:3680,w:55,h:128,kind:'collector'}
+      {id:'bayview-link',x:4388,y:3680,w:55,h:128,kind:'collector'},
+      // World Completion street graph. Preserve all original roads and stitch
+      // their disconnected endpoints at existing district lane elevations.
+      // The long artery follows the already-authored Harbor Avenue on each
+      // district map; only the missing precinct gap needs fresh road texture.
+      {id:'harbor-precinct-link',x:149,y:1721,w:1920,h:127,kind:'arterial',newRoad:true},
+      {id:'harbor-east-through',x:2800,y:1721,w:6856,h:127,kind:'arterial',newRoad:true,underNative:true},
+      // Southbay loop reconnects Maple's south avenue to the existing
+      // Bayview/Marina edge; no extension into the protected Marina center.
+      {id:'southbay-loop',x:2800,y:3680,w:1589,h:128,kind:'collector',newRoad:true},
+      {id:'midtown-south-link',x:3460,y:3299,w:170,h:382,kind:'collector',newRoad:true},
+      {id:'midtown-through-link',x:3460,y:1847,w:170,h:1224,kind:'collector',newRoad:true},
+      // Northgate and Downtown now connect as one north-south avenue.
+      {id:'northgate-through-link',x:5800,y:1296,w:110,h:935,kind:'collector',newRoad:true}
     ].map(r=>Object.freeze(r))),
     // Road boundary points are pedestrian crossings and future AI graph nodes;
     // NOT teleports, mission triggers, or server-owned gameplay logic.
@@ -48,7 +61,10 @@
       {id:'maple-south-road',x:-578,y:3744,axis:'h',type:'intersection'},
       {id:'northgate-downtown',x:5855,y:1283,axis:'v',type:'intersection'},
       {id:'downtown-waterfront',x:5795,y:2283,axis:'v',type:'intersection'},
-      {id:'southbay-waterfront',x:4400,y:3744,axis:'v',type:'district-seam'}
+      {id:'southbay-waterfront',x:4400,y:3744,axis:'v',type:'district-seam'},
+      {id:'midtown-harbor-junction',x:3545,y:1784,axis:'h',type:'intersection'},
+      {id:'midtown-southbay-junction',x:3545,y:3744,axis:'h',type:'intersection'},
+      {id:'northgate-harbor-junction',x:5855,y:1784,axis:'h',type:'intersection'}
     ].map(r=>Object.freeze(r))),
     landmarks:Object.freeze([
       {id:'precinct',label:'PRECINCT 9',x:948,y:1160},

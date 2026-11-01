@@ -172,7 +172,7 @@ jobs:
       - name: Check out V128 guarded world-quality candidate (isolated)
         uses: actions/checkout@v4
         with:
-          ref: 9d03ddc05009a90d6b421ab85b97127c0e8b64d0 # World Completion integrated district art, real grove collision and successful branch CI
+          ref: bae8ae6cc9b5326ec62590d170576b977397193f # World Completion: eight living districts, safe animated pedestrians and spatial collision culling
           path: v128-world-quality
           persist-credentials: false
 
@@ -1050,6 +1050,7 @@ jobs:
           node --check site/preview/v128-world-quality/game-v115.bundle.js
           (cd v128-world-quality && node qa/check-v128-quality.cjs)
           (cd v128-world-quality && node qa/check-world-completion.cjs)
+          (cd v128-world-quality && node qa/check-world-pedestrians.cjs)
           (cd v128-world-quality && node qa/check-v127-citywide.cjs)
           (cd v128-world-quality && node qa/check-v126-polish.cjs)
           (cd v128-world-quality && node qa/check-v117-jay.cjs)

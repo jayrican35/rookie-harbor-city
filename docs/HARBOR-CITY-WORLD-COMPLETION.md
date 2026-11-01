@@ -14,7 +14,9 @@
 4. **Buildings retain real geometry:** district-appropriate door approaches, façades, awnings, shutters, roof equipment, industrial loading doors, porch details and trims. Recovered original storefront sprites still take precedence over procedural fallback.
 5. **New greenery is physical:** deterministic, limited groves use the already-loaded tree/palm sprites, native actor depth sorting and small trunk colliders. The placement plan excludes mapped roads, solids, doors, existing scene objects and nearby interactions. No extra game loop, scene or save writes.
 6. **Protected Marina:** latest authored Marina assets, interiors, water, piers, NPCs and roof transitions still own the entire original waterfront section. New district dressing and generated groves explicitly skip it.
-7. **Release verification:** new `qa/check-world-completion.cjs` plus existing RUN, world, Marina depth, HUD and source-asset regressions. Browser CI produces ten geographic comparisons plus idle/running screenshots in a separate preview.
+7. **Living-city pedestrians in the existing engine:** up to two wandering pedestrians in each non-Marina district, using the original V123 animated NPC atlases, safe 95-unit routes, native movement collision and the existing Talk prompt. No separate animation loop, vehicle AI, save writes or mission progress.
+8. **Mobile collision and draw optimization:** a 192-unit district-local spatial index is shared by generated-tree trunk checks and viewport prop culling. Tree positions stay identical; only the cost of finding them changes.
+9. **Release verification:** new `qa/check-world-completion.cjs` plus existing RUN, world, Marina depth, HUD and source-asset regressions. Browser CI produces ten geographic comparisons plus idle/running screenshots in a separate preview.
 
 ## Release gate (do not claim complete until all pass)
 
@@ -31,7 +33,7 @@
 
 - True comprehensive, hand-authored premium pixel art for *every* block and building has not been created. The generic fallback renderer is still used in places lacking source artwork.
 - Most extra connected-city building interiors are not yet seamlessly reconstructed. The classic main-campaign missions, driving AI and all traffic systems remain partially separate from the continuous-world exploration view.
-- Environmental NPC schedules across all nine regions require real gameplay integration, not merely static character placement.
+- The first bounded pedestrian routines are live in eight districts; full schedules, varied authentic city NPC art, traffic coordination and quest-aware behavior are still unfinished.
 - Physical Android FPS, long-session soak tests, complete save upgrade/migration and true multiplayer transport are unverified/not implemented.
 
 **Approach:** One cohesive World Completion objective and one review, not a promise that each interim code commit constitutes a finished game. Keep adding/validating within this milestone until the acceptance gate is honestly met; preserve the original preferred playable version.

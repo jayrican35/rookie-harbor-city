@@ -92,6 +92,13 @@ jobs:
           path: v116-marina
           persist-credentials: false
 
+      - name: Check out V117 seamless marina interiors
+        uses: actions/checkout@v4
+        with:
+          ref: 67a262a37b867a46e42764dd5578e28bb2a2a91e # verified continuous café, office, bait shop and workshop
+          path: v117-interiors
+          persist-credentials: false
+
       - name: Recover missing main-campaign environment art
         shell: bash
         working-directory: visual-preview
@@ -440,6 +447,25 @@ jobs:
           done
           test -s site/preview/v116-marina/evidence/metrics.json
           echo 'PASS V116: live gameplay Canvas before/after, Android-sized portrait and landscape, no debug overlays'
+
+      - name: Build isolated V117 continuous marina interiors
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v117-interiors
+          cp -a v117-interiors/published-game-capture/. site/preview/v117-interiors/
+          python3 v117-interiors/tools/build_v117_preview.py site/preview/v117-interiors
+          node --check site/preview/v117-interiors/game-v115.bundle.js
+          (cd v117-interiors && node qa/check-v117-interiors.cjs)
+          (cd v117-interiors && node qa/check-v116-marina.cjs)
+          (cd v117-interiors && node qa/check-v115-campus.cjs)
+          (cd v117-interiors && node qa/check-v117-jay.cjs ../site/preview/v117-interiors/game-v115.bundle.js)
+          cmp -s v116-marina/published-game-capture/game.js site/preview/v117-interiors/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v117-interiors/outbreak.css
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          grep -q 'v117-continuous-world' site/preview/v117-interiors/index.html
+          echo 'PASS: four seamless furnished buildings; original root, V116 and Zombie Outbreak unchanged'
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

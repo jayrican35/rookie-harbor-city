@@ -497,13 +497,13 @@
       if(inMarina)g.translate(0,-marinaMotion.characterBob(movement,t));
       shared.draw(g,'connected-jay',{x:p.x,y:p.y,dir:campus.dir,map:WORLD_ID});
       g.restore();
-      g.strokeStyle='#f4cf70';g.lineWidth=2;g.beginPath();g.ellipse(p.x,p.y+3,18,7,0,0,Math.PI*2);g.stroke();return;
+      // V126: no artificial golden selection halo under the playable character.
+      return;
     }
     const marina=window.ROOKIE_V116_MARINA;
     if(isPlayer&&marina&&marina.inMarina(p.x,p.y)){
       marina.drawNpc(g,{x:p.x,y:p.y,npcStyle:0,phase:0,moving:campus.moved,dir:campus.dir,distance:campus.stride/.055},t);
-      g.strokeStyle='#f4cf70';g.lineWidth=3;
-      g.beginPath();g.ellipse(p.x,p.y+9,18,8,0,0,Math.PI*2);g.stroke();
+      // V126: retain grounded sprite shadow, never a golden ring.
       return;
     }
     g.save();g.translate(p.x,p.y);
@@ -517,10 +517,8 @@
     } else {g.fillStyle='#152438';g.fillRect(-8,5,6,12);g.fillRect(2,5,6,12);}
     g.restore();
     if(isPlayer){
-      g.strokeStyle='#e9c35b';g.lineWidth=Math.max(2,2/campus.zoom);
-      g.beginPath();const r=Math.max(19,9/campus.zoom);
-      g.ellipse(p.x,p.y+7,r,r*.45,0,0,7);g.stroke();
-      if(campus.zoom<.11){g.font='800 '+Math.min(280,10/campus.zoom)+'px Barlow Condensed,sans-serif';g.textAlign='center';g.fillStyle='#ffdc86';g.fillText('YOU',p.x,p.y-r-5);}
+      // Only the small distance-zoom label remains; no character selection ring.
+      if(campus.zoom<.11){g.font='800 '+Math.min(280,10/campus.zoom)+'px Barlow Condensed,sans-serif';g.textAlign='center';g.fillStyle='#ffdc86';g.fillText('YOU',p.x,p.y-30);}
     }
     else if(campus.zoom>.54){g.fillStyle='#faf0cb';g.font='bold 13px Barlow Condensed,sans-serif';g.textAlign='center';g.fillText(p.name,p.x,p.y-39);}
   }

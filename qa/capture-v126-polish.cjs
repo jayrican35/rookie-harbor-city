@@ -11,8 +11,8 @@ const dest=process.env.V126_EVIDENCE||path.resolve('site/preview/v126-polish/evi
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto(url,{waitUntil:'domcontentloaded',timeout:70000});
   await page.waitForFunction(()=>window.HARBOR?.seamlessCampusV115&&window.ROOKIE_V116_MARINA&&window.ROOKIE_JAY,{timeout:40000});
-  assert(await page.evaluate(()=>window.HARBOR.seamlessCampusV115.openAt(5150,3925,1.15)),'Pier center must be walkable');
-  await page.evaluate(()=>window.HARBOR.seamlessCampusV115.qaCamera(5150,3915,1.15));
+  assert(await page.evaluate(()=>window.HARBOR.seamlessCampusV115.openAt(4700,3950,1.15)),'Pier center must be walkable');
+  await page.evaluate(()=>window.HARBOR.seamlessCampusV115.qaCamera(4700,3935,1.15));
   await page.waitForFunction(()=>window.ROOKIE_V116_MARINA.metrics().decoded>=14,{timeout:35000});
   await page.waitForTimeout(950);
   await page.screenshot({path:path.join(dest,version+'-pier.png')});

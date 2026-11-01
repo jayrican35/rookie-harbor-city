@@ -1,0 +1,84 @@
+name: V123 marina physical collision and clean NPC sprite QA
+on:
+  push:
+    branches: [feature/v123-marina-collision-npc-art-cleanup]
+    paths:
+      - 'published-game-capture/v116-marina.js'
+      - 'published-game-capture/v116-marina-walk.js'
+      - 'tools/clean_v123_npc_atlases.py'
+      - 'tools/build_v123_preview.py'
+      - 'qa/check-v123-collision.cjs'
+      - 'qa/check-v116-marina.cjs'
+      - '.github/workflows/v123-marina-qa.yml'
+      - 'docs/V123-COLLISION-AND-NPC-ART.md'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0, persist-credentials: true}
+      - name: Source code and collision tests
+        run: |
+          node --check published-game-capture/v116-marina.js
+          node --check published-game-capture/v116-marina-walk.js
+          node qa/check-v123-collision.cjs
+          node qa/check-v122-pier.cjs
+          node qa/check-v121-marina.cjs
+          node qa/check-v116-walk.cjs
+      - name: Existing city, marina, interior and camera regression tests
+        run: |
+          node qa/check-v115-campus.cjs
+          node qa/check-v115-connected-city.cjs
+          node qa/check-v115-road-layout.cjs
+          node qa/check-v116-marina.cjs
+          node qa/check-v116-hud.cjs
+          node qa/check-v117-jay.cjs
+          node qa/check-v117-interiors.cjs
+      - name: Offline NPC atlas repair and isolated running game build
+        run: |
+          python3 -m pip install -q pillow numpy
+          cp -a published-game-capture /tmp/v123-build
+          python3 tools/build_v123_preview.py /tmp/v123-build
+          node --check /tmp/v123-build/game-v115.bundle.js
+          grep -q 'v123-prop-and-npc-physical-solids' /tmp/v123-build/index.html
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          folder=Path('/tmp/v123-build/assets/v123-marina-npcs')
+          for name in ('officer','fisher','visitor'):
+            im=Image.open(folder/('walk-'+name+'.png'))
+            im.verify()
+            original=Image.open('published-game-capture/assets/v116-marina/walk-'+name+'.webp')
+            assert im.size==original.size
+            print('PASS cleaned NPC atlas',name,im.size)
+          PY
+      - name: Check allowed edits, preserve original campaign and Zombie Outbreak byte-identically
+        run: |
+          python3 - <<'PY'
+          import subprocess
+          from pathlib import Path
+          base='e424f9029a191e077d14f6ef5a537cb919b092f8'
+          changed=set(subprocess.check_output(['git','diff','--name-only',base,'HEAD'],text=True).splitlines())
+          allowed={'published-game-capture/v116-marina.js','published-game-capture/v116-marina-walk.js',
+                   'qa/check-v116-marina.cjs','qa/check-v123-collision.cjs',
+                   'tools/clean_v123_npc_atlases.py','tools/build_v123_preview.py',
+                   '.github/workflows/v123-marina-qa.yml','docs/V123-COLLISION-AND-NPC-ART.md'}
+          assert all(p in allowed or p.startswith('published-game-capture/assets/v123-marina-npcs/') for p in changed),sorted(changed-allowed)
+          for p in ('published-game-capture/game.js','published-game-capture/outbreak.css','published-game-capture/v115-campus.js'):
+            assert subprocess.check_output(['git','show',base+':'+p])==Path(p).read_bytes(),p
+          assert not any('outbreak' in p.lower() or 'zombie' in p.lower() for p in changed)
+          print('PASS original gameplay, shared world camera, Zombie code/assets and missions unchanged')
+          PY
+      - name: Save cleaned player-facing NPC art into isolated development branch
+        run: |
+          python3 tools/clean_v123_npc_atlases.py published-game-capture/assets/v116-marina published-game-capture/assets/v123-marina-npcs
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add published-game-capture/assets/v123-marina-npcs/*.png
+          if ! git diff --cached --quiet; then
+            git commit -m 'Bake cleaned V123 NPC walk frames removing detached visual artifacts'
+            git push origin HEAD:feature/v123-marina-collision-npc-art-cleanup
+          fi

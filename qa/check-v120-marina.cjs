@@ -7,7 +7,7 @@ assert(!/requestAnimationFrame|setInterval|localStorage|sessionStorage|fetch\s*\
 assert(marina.includes('if(y>=3800&&window.ROOKIE_V120_ART)continue'),'Existing water tiles must be disabled');
 assert(marina.includes('if(!premium)window.ROOKIE_V119_MOTION?.waterSurface'),'V119 lines must not stack');
 assert(marina.includes('premium.water(g,opt,t)'),'Existing V116 world canvas must own material pass');
-assert(marina.includes('premium.dock(g,px,view)'),'Same three native piers need replacement material');
+assert(marina.includes('premium?.dock(g,px,view)'),'Same three native piers need replacement material');
 assert(marina.includes('if(premium)premium.boat(g,o,t)'),'Real boats get water interaction');
 assert(marina.includes('if(!premium){'),'Legacy wave scribbles disabled');
 assert(campus.includes('const cinematic=window.ROOKIE_V118_CINEMATIC'),'No scene rewrite');

@@ -12,7 +12,7 @@ function openPanel(type){
   const summary=document.createElement('p');summary.textContent='Current assignment';body.appendChild(summary);
   const objectives=document.querySelector('#objList');const text=document.createElement('p');text.textContent=objectives?.innerText||'Visit Sergeant Brooks at Precinct 9 for your briefing.';body.appendChild(text);
  }else{
-  title.textContent='MARINA MAP';body.textContent='Explore the promenade and the three original fishing piers. The gold marker on the minimap shows your current location.';
+  title.textContent='HARBOR CITY MAP';body.textContent='Explore the continuous Harbor City districts. The gold marker shows your actual world position, including beyond Southbay Marina.';
   const b=document.createElement('button');b.type='button';b.textContent='Open full city map';b.onclick=()=>{window.HARBOR.seamlessCampusV115.close();document.getElementById('btnMap')?.click();};body.appendChild(b);
  }
  panel.querySelector('.v116-panel-close').focus();
@@ -76,12 +76,18 @@ function ready(){
 }
 function paint(state,t){
  if(!root||t-lastPaint<120)return;lastPaint=t;
- root.hidden=!window.ROOKIE_V116_MARINA.inMarina(state.x,state.y);if(root.hidden)return;
+ // V127: campaign profile/minimap/menu must NEVER disappear at a district seam.
+ // This HUD belongs to the one continuous playable city, not the marina map.
+ root.hidden=false;
  const id=window.HARBOR.profiles?.current()||'jay';
  if(id!==current){current=id;root.querySelector('.v116-identity img').src='./assets/family-v1/'+id+'-portrait.webp';root.querySelector('.v116-identity strong').textContent=(names[id]||id).toUpperCase();
  root.querySelector('.v116-identity small').textContent=['kaleb','gigi','lingling'].includes(id)?'ACADEMY SIMULATION':'ON DUTY';
  for(const b of root.querySelectorAll('[data-profile]'))b.classList.toggle('selected',b.dataset.profile===id);}
  const g=context,marina=window.ROOKIE_V116_MARINA,metrics=marina.metrics();
+ const inMarina=marina.inMarina(state.x,state.y),city=window.ROOKIE_V127_CITY;
+ const district=city?.location(state.x,state.y)||'HARBOR CITY';
+ const label=root.querySelector('.v116-identity i');
+ if(label&&label.textContent!==district)label.textContent=district;
  if(!mapArt&&metrics.decoded===metrics.assets){
   mapArt=document.createElement('canvas');mapArt.width=176;mapArt.height=112;
   const mg=mapArt.getContext('2d');mg.imageSmoothingEnabled=false;mg.fillStyle='#508839';mg.fillRect(0,0,176,112);
@@ -90,8 +96,13 @@ function paint(state,t){
   marina.background(mg,{zoom:.18,view},0);marina.foreground(mg,{zoom:.18,view},0);mg.restore();
  }
  g.clearRect(0,0,176,112);
- if(mapArt)g.drawImage(mapArt,0,0);else {g.fillStyle='#12649b';g.fillRect(0,0,176,112);}
- const x=Math.max(6,Math.min(170,(state.x-4400)/1500*176)),y=Math.max(9,Math.min(103,(state.y-3220)/1000*112));star(g,x,y);
+ if(!inMarina&&city){
+   city.map(g,state.x,state.y);
+   star(g,88,56); // center player marker in moving neighborhood viewport
+ }else{
+   if(mapArt)g.drawImage(mapArt,0,0);else {g.fillStyle='#12649b';g.fillRect(0,0,176,112);}
+   const x=Math.max(6,Math.min(170,(state.x-4400)/1500*176)),y=Math.max(9,Math.min(103,(state.y-3220)/1000*112));star(g,x,y);
+ }
 }
 window.ROOKIE_V116_HUD=Object.freeze({paint,
  blocked:()=>!!panel&&!panel.hidden||!!root?.classList?.contains?.('v125-menu-open'),

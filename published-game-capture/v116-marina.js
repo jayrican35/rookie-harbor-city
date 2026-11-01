@@ -10,13 +10,21 @@ const WORLD='harbor-main';
 const TERRAIN={x:4352,y:3220,w:1792,h:1436,cell:32,chunk:256};
 const PIER_X=Object.freeze([4655,5105,5555]);
 const images=Object.create(null),imageFiles=[
- 'marina-tiles.png','marina-cafe.png','bait-and-tackle.png','marina-office.png',
+ 'marina-reference-atlas.webp','marina-tiles.png','marina-detail-tiles.png','marina-cafe.png','bait-and-tackle.png','marina-office.png',
  'boat-service.png','marina-kiosk.png','boat-motor.png','boat-sail.png',
  'boat-fishing.png','marina-people.png','marina-gulls.png'];
 const sourceFiles=['shade_tree','palm','bench','lamp','flower_planter','trash_bin','bollard','fence_horizontal'];
 for(const file of imageFiles){const im=new Image();im.decoding='async';images[file]=im;im.src=BASE+file;}
 for(const file of sourceFiles){const im=new Image();im.decoding='async';images[file+'.webp']=im;im.src='./assets/exterior/'+file+'.webp';}
 const img=(key)=>{const im=images[key];return im&&im.complete&&im.naturalWidth>0?im:null;};
+// Alpha-bound sprites from the reference-guided atlas; no scene-sized backdrop.
+const DETAIL_SPRITES={"marina-office.png": [26, 53, 269, 227], "boat-service.png": [349, 58, 269, 221], "marina-cafe.png": [659, 53, 264, 230], "marina-kiosk.png": [980, 58, 247, 214], "shade_tree.webp": [28, 323, 262, 293], "palm.webp": [353, 329, 260, 285], "flower_planter.webp": [670, 429, 247, 122], "lamp.webp": [1073, 333, 50, 276], "boat-motor.png": [83, 657, 149, 281], "boat-sail.png": [402, 648, 158, 292], "boat-fishing.png": [710, 644, 143, 295], "bench.webp": [976, 759, 243, 142], "hero": [108, 1008, 102, 184], "fisher": [418, 940, 189, 256], "visitor": [736, 1018, 95, 171], "trash_bin.webp": [1059, 1038, 80, 140]};
+DETAIL_SPRITES['bait-and-tackle.png']=DETAIL_SPRITES['marina-cafe.png'];
+function paintSprite(g,key,x,y,w,h){
+ const atlas=img('marina-reference-atlas.webp'),box=DETAIL_SPRITES[key];
+ if(atlas&&box){g.imageSmoothingEnabled=false;g.drawImage(atlas,...box,x,y,w,h);return;}
+ const fallback=img(key);if(fallback)g.drawImage(fallback,x,y,w,h);
+}
 let enabled=true,ready=false,cacheDraws=0,waterFrames=0,objectsDrawn=0,prepass=0;
 const cached=new Map(),CAP=40; // 40 * 256² * 4 = 10 MiB max; avoids portrait viewport LRU rebuild thrashing
 const objects=Object.freeze([
@@ -28,8 +36,9 @@ const objects=Object.freeze([
  {id:'marina:bait',type:'building',image:'bait-and-tackle.png',x:5425,y:3348,w:212,h:163,solid:true},
  {id:'marina:information',type:'kiosk',image:'marina-kiosk.png',x:5670,y:3540,w:88,h:96,solid:true},
  {id:'marina:shade-west',type:'tree',image:'shade_tree.webp',x:4400,y:3294,w:100,h:110},
- {id:'marina:shade-mid',type:'tree',image:'shade_tree.webp',x:4900,y:3280,w:92,h:100},
- {id:'marina:shade-east',type:'tree',image:'shade_tree.webp',x:5280,y:3286,w:92,h:100},
+ {id:'marina:shade-mid',type:'tree',image:'shade_tree.webp',x:4900,y:3280,w:145,h:154},
+ {id:'marina:shade-east',type:'tree',image:'shade_tree.webp',x:5280,y:3286,w:145,h:154},
+ ...[[4435,3440],[4840,3415],[5290,3410],[5710,3300],[5800,3410],[5660,3400],[4880,3500],[5320,3295],[4795,3270],[5490,3225],[5580,3227],[5680,3230],[5800,3260]].map(([x,y],i)=>({id:'marina:grove-'+i,type:'tree',image:'shade_tree.webp',x,y,w:142+(i%2)*18,h:150+(i%2)*18})),
  {id:'marina:palm-a',type:'palm',image:'palm.webp',x:4490,y:3615,w:90,h:91},
  {id:'marina:palm-b',type:'palm',image:'palm.webp',x:4805,y:3622,w:90,h:91},
  {id:'marina:palm-c',type:'palm',image:'palm.webp',x:5290,y:3610,w:90,h:91},
@@ -49,7 +58,7 @@ const actors=[
  {id:'v116:worker',name:'Marina worker',npcStyle:2,x:5400,y:3758,route:[[5400,3758],[5480,3758],[5515,3758],[5400,3758]],speed:27,phase:1,dialogue:'The gulls stole another sandwich. I think they have a schedule.'},
  {id:'v116:visitor',name:'Visitor',npcStyle:3,x:4920,y:3735,route:[[4920,3735],[5010,3735],[4920,3735]],speed:15,phase:2,dialogue:'I have photographed the same boat eleven times. Art is patience.'},
  {id:'v116:customer',name:'Café customer',npcStyle:4,x:4558,y:3420,route:[[4558,3420]],speed:0,phase:0,dialogue:'Coffee and sea air. Best shift break ever.'},
- {id:'v116:stroller',name:'Pedestrian',npcStyle:0,x:5570,y:3758,route:[[5570,3758],[5480,3758],[5390,3758],[5570,3758]],speed:30,phase:3,dialogue:'Watch out for the seagull. It has a suspicious résumé.'}
+ {id:'v116:stroller',name:'Pedestrian',npcStyle:5,x:5570,y:3758,route:[[5570,3758],[5480,3758],[5390,3758],[5570,3758]],speed:30,phase:3,dialogue:'Watch out for the seagull. It has a suspicious résumé.'}
 ].map(a=>({...a,step:0,routeClock:a.phase*2}));
 const interactions=[
  {id:'v116:cafe',label:'Marina Café',x:4551,y:3390,text:'The café smells like cinnamon and sea salt. Someone named a muffin “The Great Wave.”'},
@@ -64,15 +73,15 @@ function tileIndex(x,y){
  // ORIGINAL native waterfront shoreline: sand at local y430–580 (world y3650–3800),
  // water at local y580–1000 (world y3800–4220), three piers y3800–4100.
  if(y>=3800){const n=hash(x,y,3)%4;return [8,9,10,25][n];}
- if(y>=3755)return ((x+y)%7===0)?27:((x+y)%5===0?2:1);
+ if(y>=3755)return hash(x,y,21)%3;
  if(y>=3650){const n=hash(x,y,4)%5;return [0,1,2,3,20][n];}
- if(y>=3510&&x<5870)return hash(x,y,5)%6===0?21:4;
+ if(y>=3510&&y<3650&&((x>=4690&&x<4780)||(x>=5080&&x<5180)||(x>=5490&&x<5580)))return hash(x,y,5)%4;
  return hash(x,y,7)%5===0?5:4;
 }
 function buildChunk(cx,cy){
  const off=document.createElement('canvas');off.width=off.height=256;
  const c=off.getContext('2d');c.imageSmoothingEnabled=false;
- const atlas=img('marina-tiles.png');if(!atlas)return off;
+ const atlas=img('marina-detail-tiles.png');if(!atlas)return off;
  for(let row=0;row<8;row++)for(let col=0;col<8;col++){
   const x=cx+col*32,y=cy+row*32,tid=tileIndex(x,y);
   // An existing north-south street joins the marina here: preserve its road art.
@@ -83,7 +92,7 @@ function buildChunk(cx,cy){
 }
 function chunkAt(cx,cy){
  // Do not retain transparent placeholders while the asynchronously decoded atlas loads.
- if(!img('marina-tiles.png'))return null;
+ if(!img('marina-detail-tiles.png'))return null;
  const key=cx+':'+cy;
  if(!cached.has(key)){
   cached.set(key,buildChunk(cx,cy));
@@ -105,13 +114,40 @@ function begin(g,opt,t){
    const tile=chunkAt(x,y);if(!tile)continue;g.save();g.imageSmoothingEnabled=false;g.drawImage(tile,x,y);g.restore();cacheDraws++;
   }
  }
+ // Dark submerged beams and regularly spaced timber pilings make the quay dimensional.
+ g.fillStyle='#062e53';g.fillRect(4400,3800,1500,20);
+ for(let x=4408;x<5900;x+=44){
+  if(PIER_X.some(px=>x>px-8&&x<px+98))continue;
+  g.fillStyle='#3c3028';g.fillRect(x,3801,7,21);
+  g.fillStyle='#b8844c';g.fillRect(x+1,3801,3,17);
+ }
+ // Raised pale granite edging separates planted lawns from the rose paving.
+ for(const [x,w] of [[4400,285],[4790,285],[5190,295],[5590,310]]){
+  g.fillStyle='#6d7156';g.fillRect(x,3642,w,8);
+  g.fillStyle='#e2d5ae';g.fillRect(x,3642,w,3);
+  for(let xx=x;xx<x+w;xx+=24){g.fillStyle='#aaa98c';g.fillRect(xx,3643,1,7);}
+ }
+ const gardenFence=img('fence_horizontal.webp');
+ if(gardenFence)for(const [x,w] of [[4400,285],[4790,285],[5190,295],[5590,310]]){
+  if(!visible({x,y:3604,w,h:40},view,0))continue;
+  for(let xx=x;xx<x+w;xx+=64)g.drawImage(gardenFence,xx,3604,Math.min(64,x+w-xx),38);
+ }
+ // Palm planter foundations sit below foliage and actors.
+ for(const o of objects)if(o.type==='palm'){
+  const cx=o.x+o.w/2,cy=o.y+o.h-5;
+  g.fillStyle='#51463f';g.fillRect(cx-23,cy-7,46,27);
+  g.fillStyle='#e3c8a6';g.fillRect(cx-23,cy-8,46,4);
+  g.fillStyle='#a49076';g.fillRect(cx-23,cy+15,46,5);
+  g.fillStyle='#324e25';g.fillRect(cx-19,cy-4,38,16);
+  for(let n=0;n<12;n++){g.fillStyle=n%2?'#ed7095':'#f9c46e';g.fillRect(cx-17+n*3,cy+4+(n%3)*2,3,3);}
+ }
  // The native seawall has three 90px openings, matching the walkable piers.
  for(const [x,width] of [[4400,255],[4745,360],[5195,360],[5645,255]]){
   g.fillStyle='#4f5c58';g.fillRect(x,3794,width,12);
   g.fillStyle='#d6bea1';g.fillRect(x,3794,width,4);
  }
  // Cover the full native 90×300px footprint without drawing wood into blocked water.
- const dockAtlas=img('marina-tiles.png');
+ const dockAtlas=img('marina-detail-tiles.png');
  if(dockAtlas)for(const px of PIER_X){
   if(!visible({x:px,y:3800,w:90,h:300},view,0))continue;
   for(let y=3800;y<4100;y+=32){
@@ -122,13 +158,17 @@ function begin(g,opt,t){
    }
   }
  }
- // Approved ROOKIE bollard sprites mark the piers at water level.
-  const bollard=img('bollard.webp');
-  if(bollard)for(const px of PIER_X)for(const py of [3835,3950,4075]){
-    if(!visible({x:px-17,y:py-26,w:96,h:54},view,0))continue;
-    g.drawImage(bollard,px-14,py-26,23,37);
-    g.drawImage(bollard,px+55,py-26,23,37);
-  }
+ // Timber mooring piles: metal collars, weathered grain, pale caps and tied rope.
+ for(const px of PIER_X)for(const py of [3820,3945,4090])for(const xx of [px+3,px+86]){
+  if(!visible({x:xx-7,y:py-27,w:14,h:43},view,0))continue;
+  g.fillStyle='#092b48';g.fillRect(xx-5,py+4,12,14);
+  g.fillStyle='#4e3324';g.fillRect(xx-6,py-21,12,31);
+  g.fillStyle='#be874a';g.fillRect(xx-3,py-20,4,29);
+  g.fillStyle='#edbd72';g.fillRect(xx-2,py-18,2,24);
+  g.fillStyle='#9ea9a6';g.fillRect(xx-6,py-17,12,3);
+  g.fillStyle='#e2d6b3';g.beginPath();g.ellipse(xx,py-23,7,4,0,0,Math.PI*2);g.fill();
+  g.strokeStyle='#b8a77c';g.lineWidth=2;g.beginPath();g.ellipse(xx,py-9,7,3,0,0,Math.PI*2);g.stroke();
+ }
  // Railing segments match native waterfront decors exactly, leaving the native pier mouths open.
  const fence=img('fence_horizontal.webp');
  if(fence){for(const [x,width] of [[4400,255],[4745,360],[5195,360],[5645,255]]){
@@ -144,7 +184,14 @@ function begin(g,opt,t){
   }
   if(o.type==='palm'||o.type==='tree')continue; // foreground layer sway below
   if(o.type==='lamp')continue; // foreground highlights
-  g.imageSmoothingEnabled=false;g.drawImage(sprite,o.x,o.y,o.w,o.h);objectsDrawn++;
+  g.imageSmoothingEnabled=false;paintSprite(g,o.image,o.x,o.y,o.w,o.h);objectsDrawn++;
+ }
+ // Waterfront district placard, placed in the garden behind the walking lane.
+ if(visible({x:5370,y:3575,w:240,h:70},view)){
+  g.fillStyle='#544132';g.fillRect(5395,3600,9,43);g.fillRect(5576,3600,9,43);
+  g.fillStyle='#1b2c3c';g.fillRect(5370,3575,240,37);
+  g.strokeStyle='#d6b785';g.lineWidth=3;g.strokeRect(5370,3575,240,37);
+  g.fillStyle='#fff0ce';g.font='bold 18px "Barlow Condensed",sans-serif';g.textAlign='center';g.fillText('WATERFRONT & DOCKS',5490,3600);
  }
  const boats=[
   {id:'boat-motor.png',x:4524,y:3935,w:65,h:122,p:0},
@@ -156,7 +203,7 @@ function begin(g,opt,t){
  for(const o of boats){if(!visible(o,view))continue;const sprite=img(o.id);if(!sprite)continue;
   const dy=Math.sin(t*.00145+o.p)*3;
   g.fillStyle='rgba(6,38,64,.24)';g.beginPath();g.ellipse(o.x+o.w/2,o.y+o.h/2+11,o.w*.34,11,0,0,Math.PI*2);g.fill();
-  g.drawImage(sprite,o.x,o.y+dy,o.w,o.h);objectsDrawn++;
+  paintSprite(g,o.id,o.x,o.y+dy,o.w,o.h);objectsDrawn++;
  }
  // Water motion: capped number of strokes; no per-pixel pixel data or particles.
  const tphase=Math.floor(t/155),bounds={x:4410,y:3830,w:1660,h:700};
@@ -168,18 +215,31 @@ function begin(g,opt,t){
    const z=hash(x,y,18);let drift=(tphase+z)%54;
    const waveX=x+drift,waveY=y+(z%15),waveW=15+(z%8);
    if(waveY<4100&&PIER_X.some(px=>waveX<px+90&&waveX+waveW>px))continue;
-   g.globalAlpha=.26+(z%5)*.065;g.strokeStyle=z%2?'#b5eadf':'#55c6da';g.lineWidth=2;
+   g.globalAlpha=.15+(z%5)*.035;g.strokeStyle=z%2?'#b5eadf':'#55c6da';g.lineWidth=2;
    g.beginPath();g.moveTo(waveX,waveY);g.lineTo(waveX+waveW,waveY);g.stroke();
+  }
+  g.globalAlpha=1;
+ }
+ // Broken golden lamp trails on water, with a soft rhythm instead of a flat glow disc.
+ if(opt.zoom>.38)for(const lx of [4473,4773,5073,5373,5673]){
+  if(lx<view.x-20||lx>view.x+view.w+20)continue;
+  for(let k=0;k<12;k++){
+   const yy=3820+k*13,xx=lx+Math.sin(t*.0015+k*2)*5;
+   if(PIER_X.some(px=>xx>px-12&&xx<px+102))continue;
+   g.globalAlpha=(1-k/14)*(.28+.1*Math.sin(t*.002+k));
+   g.fillStyle=k%3?'#f6cf6c':'#fff2a9';g.fillRect(xx-(12-k*.6)/2,yy,12-k*.6,2);
   }
   g.globalAlpha=1;
  }
  measure(performance.now()-a);
 }
 function drawNpc(g,a,t){
- const im=img('marina-people.png');if(!im)return;
- const p=a.npcStyle||0,cx=a.x-15,cy=a.y-38;
- g.fillStyle='rgba(15,32,44,.22)';g.beginPath();g.ellipse(a.x,a.y+8,12,5,0,0,Math.PI*2);g.fill();
- g.drawImage(im,p*32,0,32,48,cx,cy+Math.sin(t*.006+a.phase)*.7,32,48);
+ const detail=img('marina-reference-atlas.webp'),p=a.npcStyle||0;
+ g.fillStyle='rgba(9,28,40,.26)';g.beginPath();g.ellipse(a.x,a.y+6,13,5,0,0,Math.PI*2);g.fill();
+ if(detail){const key=p===0?'hero':p===1||p===2?'fisher':'visitor';
+  const bob=a.moving?Math.sin(t*.012)*1.1:0;
+  paintSprite(g,key,a.x-20,a.y-48+bob,40,55);return;}
+ const im=img('marina-people.png');if(im)g.drawImage(im,p*32,0,32,48,a.x-15,a.y-38,32,48);
 }
 function foreground(g,opt,t){
  if(!enabled||!opt||opt.zoom<.14)return;
@@ -188,7 +248,7 @@ function foreground(g,opt,t){
   if(o.type!=='palm'&&o.type!=='tree'&&o.type!=='lamp')continue;
   const sprite=img(o.image);if(!sprite)continue;
   if(o.type==='lamp'){
-   g.drawImage(sprite,o.x,o.y,o.w,o.h);
+   paintSprite(g,o.image,o.x,o.y,o.w,o.h);
    // Tiny amber light flicker; no full-screen shadows.
    if(opt.zoom>.38){g.globalAlpha=.13+.05*Math.sin(t*.002+o.x);
      g.fillStyle='#ffe2a3';g.beginPath();g.arc(o.x+o.w/2,o.y+18,30,0,Math.PI*2);g.fill();g.globalAlpha=1;}
@@ -196,8 +256,10 @@ function foreground(g,opt,t){
   }
   const phase=o.x*.007+o.y*.009;
   const sway=Math.sin(t*.00065+phase)*(o.type==='palm'?2.0:1.15);
-  g.save();g.translate(o.x+o.w/2,o.y+o.h);g.rotate(sway*.0038);g.imageSmoothingEnabled=false;
-  g.drawImage(sprite,-o.w/2,-o.h,o.w,o.h);g.restore();objectsDrawn++;
+  g.save();
+  if(opt.player&&opt.player.x>o.x-10&&opt.player.x<o.x+o.w+10&&opt.player.y>o.y&&opt.player.y<o.y+o.h+12)g.globalAlpha=.42;
+  g.translate(o.x+o.w/2,o.y+o.h);g.rotate(sway*.0038);g.imageSmoothingEnabled=false;
+  paintSprite(g,o.image,-o.w/2,-o.h,o.w,o.h);g.restore();objectsDrawn++;
  }
  const bird=img('marina-gulls.png');if(bird){
   const gulls=[[4660,3833],[5109,3908],[5576,3844],[5818,3805]];
@@ -252,7 +314,7 @@ const onReady=()=>{
  if(toolbar&&!document.getElementById('v116MarinaLaunch')){
   const button=document.createElement('button');button.id='v116MarinaLaunch';button.type='button';
   button.textContent='PLAY SOUTHBAY MARINA · V116';button.title='Walk the real connected-world Southbay Marina (no loading screen)';
-  button.addEventListener('click',()=>{for(const [x,y] of [[5150,3720],[4980,3710],[5340,3720],[4790,3720],[5600,3730]])if(campus.openAt(x,y,1.1))return;});toolbar.appendChild(button);
+  button.addEventListener('click',()=>{for(const [x,y] of [[5150,3720],[4980,3710],[5340,3720],[4790,3720],[5600,3730]])if(campus.openAt(x,y,window.innerWidth>window.innerHeight?Math.max(.5,Math.min(1.1,window.innerWidth/1200)):.85))return;});toolbar.appendChild(button);
  }
  if(/[?&]v116QA=1(?:&|$)/.test(location.search)){
   document.documentElement.dataset.v116Qa='1';

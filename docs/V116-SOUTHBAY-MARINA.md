@@ -87,3 +87,18 @@ Continued from draft source commit `56cc9dd`, without merging or modifying the p
 - Live browser review used **390 × 844 portrait** and **844 × 390 landscape** iframe viewports, including the normal launch flow, zoom control, player visibility and touch-control layout. No game-source browser errors were observed. Browser extension metadata errors were excluded from game findings. This is desktop viewport simulation; physical Android performance and sustained frame pacing remain unverified. No new FPS claim is made.
 
 Changes in this follow-up are limited to the V116 renderer, its regression checks, and this report. Protected `game.js`, `outbreak.css`, all other assets, shared world modules, campaign state and Zombie Outbreak remain unchanged. Classic campaign migration remains outside this pass; PR #9 stays draft and unmerged.
+
+## Reference-detail art pass — October 31, 2026
+
+The uploaded harbor reference revealed substantial material and sprite differences. This pass replaces the flat placeholder appearance with a reference-guided **16-sprite production atlas**, rather than drawing the reference screenshot as a map background. The built-in image generator produced the atlas; its alpha-bound crop rectangles are retained in `assets/v116-marina/marina-reference-atlas.json`. A lossless WebP keeps the original generated pixel data. Original PNG/WebP assets remain unchanged.
+
+Art brief: premium 16-bit overhead harbor with a slight south-facing tilt; orange and blue tiled roofs, shaded timber, lush yellow-green foliage, warm lanterns, blue/white cabin boats, timber sailboats, detailed fishermen, and chibi police sprites. Sixteen isolated transparent cells: office, shed, café, kiosk, broadleaf tree, palm, flowers, lamp, motorboat, sailboat, fishing boat, bench, officer, fisherman, visitor, bin. No full-scene backdrop or baked-in UI.
+
+- Consistent deep-blue water removes the previous patchwork of mismatched tile colors; subtle animated ripples and bounded gold lamp reflections remain live.
+- Rose stone paving, continuous north-facing paths, granite curbs, planted gardens and fencing replace scattered paving fragments.
+- Full-width native docks retain their original coordinates and collision; submerged timber beams, pilings, metal collars, caps and rope details add depth.
+- Denser, larger tree clusters, raised palm planters, detailed building façades and boats use the new reusable sprites. Canopies fade when the player walks beneath them.
+- The existing player and ambient actor loop draw the chibi sprites in the marina. Landscape launch framing is closer to the reference; portrait retains a readable player scale.
+- All existing route/collision tests pass. New checks verify all 16 atlas crop bounds. Live browser review covers landscape and portrait viewport simulation; original mode exclusions remain intact.
+
+**Remaining differences:** this is not a pixel-for-pixel recreation. The original three-pier world layout and building footprints are retained; the reference's family portraits, minimap, health display and four-button HUD are not yet reproduced. The new character atlas contains single poses rather than full directional walking cycles. Physical Android frame pacing still requires testing. The main hosted build and Zombie Outbreak remain untouched; this work is kept on the V116 draft branch.

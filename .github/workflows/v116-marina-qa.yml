@@ -49,6 +49,7 @@ jobs:
           allowed|={'published-game-capture/assets/v116-marina/'+name+'.png' for name in [
             'marina-tiles','marina-cafe','bait-and-tackle','marina-office','boat-service','marina-kiosk',
             'boat-motor','boat-sail','boat-fishing','marina-people','marina-gulls']}
+          allowed|={'tools/generate_v116_detail_tiles.py','published-game-capture/assets/v116-marina/marina-detail-tiles.png','published-game-capture/assets/v116-marina/marina-reference-atlas.webp','published-game-capture/assets/v116-marina/marina-reference-atlas.json'}
           assert files<=allowed, 'Unauthorized changes: '+str(sorted(files-allowed))
           assert not any('zombie' in f.lower() or 'outbreak' in f.lower() for f in files)
           print('PASS V116: source, navigation, campaign engine and Zombie Outbreak remain preserved')

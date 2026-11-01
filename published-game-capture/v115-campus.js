@@ -475,7 +475,7 @@
   function drawOfficer(p,isPlayer,t){
     const marina=window.ROOKIE_V116_MARINA;
     if(isPlayer&&marina&&marina.inMarina(p.x,p.y)){
-      marina.drawNpc(g,{x:p.x,y:p.y,npcStyle:0,phase:0},t);
+      marina.drawNpc(g,{x:p.x,y:p.y,npcStyle:0,phase:0,moving:campus.moved},t);
       g.strokeStyle='#f4cf70';g.lineWidth=3;
       g.beginPath();g.ellipse(p.x,p.y+9,18,8,0,0,Math.PI*2);g.stroke();
       return;
@@ -503,7 +503,7 @@
     function visible(e){return e.x>view.x&&e.x<view.x+view.w&&e.y>view.y&&e.y<view.y+view.h;}
     for(const npc of npcActors)if(visible(npc)){
       const marina=window.ROOKIE_V116_MARINA;
-      if(marina&&npc.npcStyle!==undefined){if(marina.active())marina.drawNpc(g,npc,t);}
+      if(marina&&(npc.npcStyle!==undefined||marina.inMarina(npc.x,npc.y))){if(marina.active())marina.drawNpc(g,npc.npcStyle!==undefined?npc:{...npc,npcStyle:1},t);}
       else drawOfficer(npc,false,t);
     }
     campus.near=null;let best=58;
@@ -545,7 +545,7 @@
     drawStation();
     if(art)art.precinct(g,{zoom:campus.zoom,view,STX,STY,alpha:roofAlpha()},t);
     drawEntityHighlights(t);
-    if(marina)marina.foreground(g,{zoom:campus.zoom,view},t);
+    if(marina)marina.foreground(g,{zoom:campus.zoom,view,player:{x:campus.x,y:campus.y}},t);
     if(pilot)pilot.animated(g,{zoom:campus.zoom,view},t);
     if(art)art.atmosphere(g,{zoom:campus.zoom,view},t);
     g.restore();

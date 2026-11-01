@@ -75,6 +75,8 @@ function buildChunk(cx,cy){
  const atlas=img('marina-tiles.png');if(!atlas)return off;
  for(let row=0;row<8;row++)for(let col=0;col<8;col++){
   const x=cx+col*32,y=cy+row*32,tid=tileIndex(x,y);
+  // An existing north-south street joins the marina here: preserve its road art.
+  if(x>=5712&&x<5888&&y<3900)continue;
   c.drawImage(atlas,(tid%8)*32,Math.floor(tid/8)*32,32,32,col*32,row*32,32,32);
  }
  return off;

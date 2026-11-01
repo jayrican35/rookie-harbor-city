@@ -82,6 +82,12 @@
     }
   }
   function tree(g,x,y,r,detail,seed){
+    // V127: older forest composition reuses the SAME premium tree sprite as
+    // Southbay Marina. Preserve the original deterministic placement and LOD.
+    const premium=detail>=.16&&window.ROOKIE_V127_CITY?.spriteImage?.('tree');
+    if(premium){g.save();g.imageSmoothingEnabled=false;
+      g.drawImage(premium,x-r*1.7,y-r*2.4,r*3.4,r*3.15);
+      g.restore();return;}
     if(detail<.1){g.fillStyle=seed%3?'#1b6b4f':'#3f9968';g.beginPath();g.arc(x,y,r*1.18,0,Math.PI*2);g.fill();return;}
     g.fillStyle='rgba(18,40,34,.30)';g.beginPath();g.ellipse(x+8,y+13,r*.96,r*.48,0,0,Math.PI*2);g.fill();
     g.fillStyle='#574c3e';g.fillRect(x-4,y-5,8,r+17);
@@ -129,6 +135,9 @@
     }
   }
   function palm(g,x,y,z,k){
+    const premium=z>=.16&&window.ROOKIE_V127_CITY?.spriteImage?.('palm');
+    if(premium){g.save();g.imageSmoothingEnabled=false;
+      g.drawImage(premium,x-52,y-103,104,127);g.restore();return;}
     if(z<.1){g.fillStyle='#1b825e';g.beginPath();g.arc(x,y,22,0,7);g.fill();return;}
     g.strokeStyle='#a77753';g.lineWidth=9;g.beginPath();g.moveTo(x+6,y+32);g.lineTo(x,y-25);g.stroke();
     for(let i=0;i<8;i++){

@@ -1,0 +1,83 @@
+name: V120 premium marina visual reconstruction QA
+on:
+  push:
+    branches: [feature/v120-marina-premium-visual-conversion]
+    paths:
+      - 'published-game-capture/v120-marina-art.js'
+      - 'published-game-capture/v116-marina.js'
+      - 'tools/generate_v120_marina_art.py'
+      - 'tools/build_v120_preview.py'
+      - 'qa/check-v120-marina.cjs'
+      - '.github/workflows/v120-marina-qa.yml'
+      - 'docs/V120-IMPLEMENTATION.md'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0, persist-credentials: true}
+      - name: Install offline art dependencies
+        run: python3 -m pip install --disable-pip-version-check pillow numpy
+      - name: Run V120 material and isolation tests
+        run: |
+          node --check published-game-capture/v120-marina-art.js
+          node --check published-game-capture/v116-marina.js
+          node qa/check-v120-marina.cjs
+          node qa/check-v119-water-motion.cjs
+          node qa/check-v118-cinematic.cjs
+      - name: Retain original playable world behavior
+        run: |
+          node qa/check-v115-campus.cjs
+          node qa/check-v115-connected-city.cjs
+          node qa/check-v115-road-layout.cjs
+          node qa/check-v116-marina.cjs
+          node qa/check-v116-hud.cjs
+          node qa/check-v116-walk.cjs
+          node qa/check-v117-jay.cjs
+          node qa/check-v117-interiors.cjs
+      - name: Bake production assets and isolated playable preview
+        run: |
+          cp -a published-game-capture /tmp/v120-preview
+          python3 tools/build_v120_preview.py /tmp/v120-preview
+          node --check /tmp/v120-preview/game-v115.bundle.js
+          grep -q 'v120-marina-art.js?v=' /tmp/v120-preview/index.html
+          test -s /tmp/v120-preview/assets/v120-marina/water-body.png
+          python3 - <<'PY'
+          from PIL import Image
+          from pathlib import Path
+          d=Path('/tmp/v120-preview/assets/v120-marina')
+          for name in ('water-body','water-caustics','water-reef','dock-wood','foam-frames','dock-post','tree-shadows','seawall-light'):
+            im=Image.open(d/(name+'.png'));im.verify()
+          water=Image.open(d/'water-body.png')
+          assert water.getextrema()[1][1]-water.getextrema()[1][0]>20,'Water must not be flat-colored'
+          print('PASS: 8 generated playable pixel-art textures decode; richer blue/teal material')
+          PY
+      - name: Validate original files, assets, saves and Zombie Outbreak remain unchanged
+        run: |
+          python3 - <<'PY'
+          import subprocess
+          base='92a24c044b7b1e6475610860dde2aed0a8db1d74'
+          changed=set(subprocess.check_output(['git','diff','--name-only',base,'HEAD'],text=True).splitlines())
+          allowed={'published-game-capture/v120-marina-art.js','published-game-capture/v116-marina.js',
+            'tools/generate_v120_marina_art.py','tools/build_v120_preview.py',
+            'qa/check-v120-marina.cjs','.github/workflows/v120-marina-qa.yml',
+            'docs/V120-IMPLEMENTATION.md'}
+          assert changed<=allowed,sorted(changed-allowed)
+          assert not any('outbreak' in p.lower() or 'zombie' in p.lower() for p in changed)
+          for f in ('published-game-capture/game.js','published-game-capture/outbreak.css'):
+            assert subprocess.check_output(['git','show',base+':'+f])==open(f,'rb').read(),f
+          print('PASS: original game.js, outbreak.css and all art/audio assets unchanged')
+          PY
+      - name: Commit actual reproducible production PNG atlases into development branch
+        run: |
+          python3 tools/generate_v120_marina_art.py published-game-capture/assets/v120-marina
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f published-game-capture/assets/v120-marina/*.png
+          if ! git diff --cached --quiet; then
+            git commit -m "Bake V120 production atlas textures from audited source"
+            git push origin HEAD:feature/v120-marina-premium-visual-conversion
+          fi

@@ -1,0 +1,87 @@
+name: V121 marina art-direction safety and atlas bake
+on:
+  push:
+    branches: [feature/v121-marina-art-direction-pass]
+    paths:
+      - 'published-game-capture/v120-marina-art.js'
+      - 'tools/generate_v121_marina_art.py'
+      - 'tools/build_v121_preview.py'
+      - 'qa/check-v121-marina.cjs'
+      - '.github/workflows/v121-marina-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0, persist-credentials: true}
+      - name: Install offline atlas dependencies
+        run: python3 -m pip install -q pillow numpy
+      - name: Test V121 rendering without changing gameplay
+        run: |
+          node --check published-game-capture/v120-marina-art.js
+          node --check published-game-capture/v116-marina.js
+          node qa/check-v121-marina.cjs
+          node qa/check-v119-water-motion.cjs
+          node qa/check-v118-cinematic.cjs
+      - name: Run connected city and interior regression suite
+        run: |
+          node qa/check-v115-campus.cjs
+          node qa/check-v115-connected-city.cjs
+          node qa/check-v115-road-layout.cjs
+          node qa/check-v116-marina.cjs
+          node qa/check-v116-hud.cjs
+          node qa/check-v116-walk.cjs
+          node qa/check-v117-jay.cjs
+          node qa/check-v117-interiors.cjs
+      - name: Bake actual playable atlas textures
+        run: |
+          cp -a published-game-capture /tmp/v121-build
+          python3 tools/build_v121_preview.py /tmp/v121-build
+          node --check /tmp/v121-build/game-v115.bundle.js
+          grep -q 'v121-real-material-pass' /tmp/v121-build/index.html
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          folder=Path('/tmp/v121-build/assets/v121-marina')
+          expected=['water-body','water-caustics','water-reef','water-glints','foam-frames',
+                    'dock-wood','dock-post','seawall-light','tree-shadows']
+          assert len(list(folder.glob('*.png')))==len(expected)
+          for name in expected:
+            im=Image.open(folder/(name+'.png'));im.verify()
+          assert Image.open(folder/'water-body.png').getextrema()[1][1]-Image.open(folder/'water-body.png').getextrema()[1][0]>30
+          assert Image.open(folder/'water-glints.png').size==(384,96)
+          assert Image.open(folder/'dock-wood.png').size[0]==90
+          print('PASS V121 water, glitter, foam, dock and sunlight masks decode')
+          PY
+      - name: Verify modified paths and protected files unchanged
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess
+          base='8968acd0b51774e4b8f60fa5702c13e94a062629'
+          changed=set(subprocess.check_output(['git','diff','--name-only',base,'HEAD'],text=True).splitlines())
+          allowed={'published-game-capture/v120-marina-art.js','tools/generate_v121_marina_art.py',
+           'tools/build_v121_preview.py','qa/check-v121-marina.cjs',
+           '.github/workflows/v121-marina-qa.yml','.github/workflows/v121-baseline-capture.yml',
+           'docs/V121-MARINA-ART-DIRECTION.md','qa/capture-v121-comparison.cjs'}
+          assert all(x in allowed or x.startswith('published-game-capture/assets/v121-marina/')
+           or x.startswith('qa/v121-reference/') for x in changed),changed-allowed
+          for file in ['published-game-capture/game.js','published-game-capture/outbreak.css',
+                       'published-game-capture/v115-campus.js','published-game-capture/v116-marina.js']:
+            a=subprocess.check_output(['git','show',base+':'+file]);b=Path(file).read_bytes()
+            assert a==b,file
+          print('PASS: original game, Zombie, camera, collision and existing V116 world byte-identical')
+          PY
+      - name: Commit real generated atlas PNGs to isolated development branch
+        run: |
+          python3 tools/generate_v121_marina_art.py published-game-capture/assets/v121-marina
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add published-game-capture/assets/v121-marina/*.png
+          if ! git diff --cached --quiet; then
+            git commit -m 'Bake nine V121 premium water and dock art materials'
+            git push origin HEAD:feature/v121-marina-art-direction-pass
+          fi

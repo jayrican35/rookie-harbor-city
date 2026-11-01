@@ -1,0 +1,89 @@
+{
+  "officer": {
+    "source_size": [
+      1254,
+      1254
+    ],
+    "atlas_size": [
+      384,
+      512
+    ],
+    "cell": [
+      96,
+      128
+    ],
+    "baseline": 122,
+    "rows": [
+      "down",
+      "left",
+      "right",
+      "up"
+    ],
+    "frames_per_direction": 4,
+    "unique_frames_by_row": [
+      4,
+      4,
+      4,
+      4
+    ],
+    "file": "walk-officer.webp"
+  },
+  "fisher": {
+    "source_size": [
+      1254,
+      1254
+    ],
+    "atlas_size": [
+      384,
+      512
+    ],
+    "cell": [
+      96,
+      128
+    ],
+    "baseline": 122,
+    "rows": [
+      "down",
+      "left",
+      "right",
+      "up"
+    ],
+    "frames_per_direction": 4,
+    "unique_frames_by_row": [
+      4,
+      4,
+      4,
+      4
+    ],
+    "file": "walk-fisher.webp"
+  },
+  "visitor": {
+    "source_size": [
+      1254,
+      1254
+    ],
+    "atlas_size": [
+      384,
+      512
+    ],
+    "cell": [
+      96,
+      128
+    ],
+    "baseline": 122,
+    "rows": [
+      "down",
+      "left",
+      "right",
+      "up"
+    ],
+    "frames_per_direction": 4,
+    "unique_frames_by_row": [
+      4,
+      4,
+      4,
+      4
+    ],
+    "file": "walk-visitor.webp"
+  }
+}

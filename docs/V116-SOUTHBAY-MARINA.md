@@ -1,0 +1,128 @@
+# ROOKIE: Harbor City — V116 Southbay Marina Implementation Report
+
+## Scope and visual benchmark
+
+The user's October 31 waterfront screenshot is the visual quality goal, not replacement geometry. V116 is confined to the existing **Southbay Marina / Waterfront & Docks** area in the V115 connected-world implementation. Source branch: `feature/v115-precinct-tileset-pilot`; implementation branch: `feature/v116-southbay-marina` (draft, unmerged).
+
+## Stage A — renderer audit
+
+The repository is **hybrid**:
+
+- `published-game-capture/game.js` — original self-contained Canvas campaign engine and MAPS, NPCs, missions, vehicle system, and save handling. Its private scope is used by a V115 preview-only bridge; this original file must not change.
+- `published-game-capture/v115-world.js` — shared world origins, real geometry atlas, route and chunk coordinate contract.
+- `published-game-capture/v115-campus.js` — the **actual walkable V115 connected-world canvas** and continuous movement/collision loop. This is the player-controlled scene modified for V116; it is not a static map image.
+- `published-game-capture/v115-reference-art.js` — procedural coast, marina, foliage and city panorama; optional display layer.
+- `published-game-capture/v115-premium-art.js` — SVG mountains, waterfall, lighthouse and boats plus procedural docks.
+- `published-game-capture/assets/exterior/*.webp` — approved pixel-art props including palms, trees, benches, lamps, planters, bollards and trash bins.
+- `published-game-capture/v115-precinct-pilot.js` — first authored raster atlas/layer experiment; V116 extends the modular pattern rather than substituting a new world renderer.
+
+### Geography contracts (verified directly in the protected game.js)
+
+- `worldId`: `harbor-main`; `MAPS.waterfront` is **1500 × 1000**, at V115 world origin **(4400,3220)**. Southbay starts at **(2800,3220)**.
+- Native Waterfront grass spans local y0–520; its actual promenade spans local y430–580 (**world y3650–3800**); water begins at local y580 (**world y3800**).
+- The real game's **three walkable piers** are local x255–345, 705–795 and 1155–1245, world x **4655, 5105, 5555**, from world y**3800 to 4100**. Water outside these gaps is in the original `pedSolids`; the southern strip remains blocked.
+- Native Marina Office is x**4580**, y**3360**, 300×200, with entrance near (4730,3578). Boat Shed B is at x**5020**, y**3400**, 220×150, with interaction at (5130,3572). Both existing quest sites keep their IDs and world footprints.
+- Original `v115-premium-art.js` had six **decorative** piers at different world coordinates, which did not match gameplay `MAPS.waterfront`. V116 intentionally paints over that visual mismatch and restores the **three original functional piers**. No source MAPS or navigation changes.
+- V116 art rectangle: x **4352–6144**, y **3220–4656**, extending into non-walkable visual sea beyond native map bounds without altering street geometry. The native North/Southbay entrances remain open.
+
+## Implemented V116 art pipeline and gameplay integration
+
+- 11 original reusable raster resources in `assets/v116-marina`: a **32×32 tile atlas**, four roof+facade pixel sprites, a kiosk, three boat classes, a 6-frame character sprite sheet, and a 2-frame seabird sheet.
+- Reuses seven preapproved exterior WebP sprite types; does **not** copy the user reference screenshot into production textures.
+- Deterministic 256×256 camera-culled raster tile chunks, capped at 40 cached chunks (10 MiB theoretical maximum RGBA cache), nearest-neighbor filtering.
+- Detailed plaza, promenade, seawall, reusable dock plank material, beach/water transition; transparent terrain over existing street entry so the north-south road is not visually replaced.
+- Animated water glints, subtle boat bobbing, independent tree sway, warm lamp glow and resting gulls.
+- Five marina NPCs with stable world IDs and short deterministic waypoints. Integrated into the existing `npcActors` array and simulation tick, not a second global game loop.
+- Nine short inspect/speech interactions registered in the existing `worldSpots`/LOOK system. No campaign mission writes.
+- V116 UI keeps movement and LOOK controls, hides showcase labels, debug coordinates and oversized instruction panels while the connected-world scene is open.
+- One-tap `PLAY SOUTHBAY MARINA · V116` launch in the existing map overlay. Uses the existing canvas/camera, not a new level or page.
+- Save namespace `rookie:v116-marina-sandbox:` — no production or regular V115 save changes.
+
+## Compatibility boundaries and honest limitations
+
+This is a **playable connected-world marina implementation**, not merely an art mockup. It is **not yet merged into the classic campaign engine**. The original mission/vehicle systems remain in `game.js`; their migration into V115/V116 connected-world gameplay is a separate task. The newly added shop roofs are environmental exteriors rather than fully enterable shop interiors. No actual multi-device server or network state sync was added.
+
+All protected originals remain untouched: `game.js`, `outbreak.css`, all Zombie Outbreak maps, assets, AI, mechanics, music, controls, settings and balance. Changes are confined to V116 feature modules, one preview-only connected-world adapter, build helpers, tests, and new artwork.
+
+## Rendering and performance validation
+
+- Static 256×256 tile cache capped at 40 chunks; tile draw calls are bounded by camera and zoom.
+- Water uses bounded simple strokes; boat/tree/seabird animations use monotonic frame time and fixed instances, not per-frame particle allocations.
+- QA captures real game Canvas before/after at **identical coordinates (5180,3880)** and identical zoom separately for simulated Android portrait (390×844) and landscape (844×390).
+- `qa/check-v116-marina.cjs` checks sprite existence, gameplay integration hooks, collision semantics and Zombie exclusions.
+- `qa/capture-v116-marina.cjs` checks live browser rendering, loaded assets, walkable paths, blocked water, hidden debug panels and JavaScript errors. Its evidence and performance JSON are published under `/preview/v116-marina/evidence/` when GitHub Pages deployment succeeds.
+- Actual physical Android FPS cannot be established by headless desktop Chromium; verify on the user's phone before merging or claiming sustained 60 FPS.
+
+## Next review gates
+
+1. Review mobile before/after screenshots and test the real connected-world marina at normal zoom.
+2. Adjust artwork density, scale, collision and NPC routines where actual devices reveal problems.
+3. Verify two-way walking connections from nearby streets and dock accessibility at multiple camera scales.
+4. Only after approval: integrate classic campaign missions, vehicles, and persistent world state through a shared simulation boundary, without affecting Zombie Outbreak.
+
+**Do not merge or overwrite production until approved.**
+
+## Verified live-browser performance (optimized V116)
+
+GitHub Actions deployment run [41259730858](https://github.com/jayrican35/rookie-harbor-city/actions/runs/41259730858) completed successfully, including the screenshot and gameplay acceptance tests for both Android-sized viewports.
+
+| Simulated viewport | Prior renderer FPS (art disabled) | V116 art enabled FPS | V116 95th-percentile module paint time | Cached terrain chunks |
+| --- | ---: | ---: | ---: | ---: |
+| Portrait, 390×844 | 57.3 | 55.5 | 0.3 ms | 24 |
+| Landscape, 844×390 | 60.0 | 60.0 | 0.3 ms | 20 |
+
+The previous 18-chunk cache caused visible-viewport cache thrashing in portrait: an earlier run dropped from **51.1** without art to **32.2 FPS** with art enabled. Raising the fixed upper limit to **40 chunks** stopped the active-viewport rebuild churn; maximum cached RGBA memory is now **10 MiB** (40×256×256×4 bytes), but the test frames held 24 (portrait) and 20 (landscape) chunks. Real-device battery, memory and frame pacing still require Android verification; these FPS measurements are from headless desktop Chromium simulating mobile dimensions. All 19 PNG/WebP assets decoded without browser errors. The test additionally confirmed the original three-pier collision geometry, promenade access, and hidden development overlays.
+
+Evidence is deployed at [the identical-camera V116 screenshot comparison](https://jayrican35.github.io/rookie-harbor-city/preview/v116-marina/evidence/): portrait and landscape before/after Canvas captures plus live UI screenshots and metrics JSON. Camera world position **(5180,3880)** for both; portrait zoom **0.82**, landscape zoom **1.04**. No screenshots from an unrelated mockup.
+
+## Follow-up QA and fixes — October 31, 2026
+
+Continued from draft source commit `56cc9dd`, without merging or modifying the preferred hosted build.
+
+- Dock textures now cover each original **90 × 300** world-unit pier exactly. The former two-tile pass covered only 64 units and extended beyond the native endpoint. The seawall now leaves the three native entrances visually open, and animated water highlights skip the wood.
+- Terrain placeholders are no longer cached before the atlas finishes decoding. A delayed image now recovers on the next rendered frame instead of leaving permanently transparent chunks.
+- Chunk drawing stops at the visible right/bottom edges, avoiding the previous extra offscreen row and column; the 40-chunk / 10 MiB cap is retained.
+- Native-solid route sampling exposed a marina worker path through a bench and a stroller path too close to one. Both routes now follow clear promenade space. Original collision geometry is unchanged.
+- Extended `qa/check-v116-marina.cjs` verifies delayed texture recovery, exact pier surface coverage, no water highlights on the docks, bounded cache at four zoom values, both directions along the promenade and north entrances, all three dock approaches, and every ambient actor route using the original MAPS finalizer.
+- Live browser review used **390 × 844 portrait** and **844 × 390 landscape** iframe viewports, including the normal launch flow, zoom control, player visibility and touch-control layout. No game-source browser errors were observed. Browser extension metadata errors were excluded from game findings. This is desktop viewport simulation; physical Android performance and sustained frame pacing remain unverified. No new FPS claim is made.
+
+Changes in this follow-up are limited to the V116 renderer, its regression checks, and this report. Protected `game.js`, `outbreak.css`, all other assets, shared world modules, campaign state and Zombie Outbreak remain unchanged. Classic campaign migration remains outside this pass; PR #9 stays draft and unmerged.
+
+## Reference-detail art pass — October 31, 2026
+
+The uploaded harbor reference revealed substantial material and sprite differences. This pass replaces the flat placeholder appearance with a reference-guided **16-sprite production atlas**, rather than drawing the reference screenshot as a map background. The built-in image generator produced the atlas; its alpha-bound crop rectangles are retained in `assets/v116-marina/marina-reference-atlas.json`. A lossless WebP keeps the original generated pixel data. Original PNG/WebP assets remain unchanged.
+
+Art brief: premium 16-bit overhead harbor with a slight south-facing tilt; orange and blue tiled roofs, shaded timber, lush yellow-green foliage, warm lanterns, blue/white cabin boats, timber sailboats, detailed fishermen, and chibi police sprites. Sixteen isolated transparent cells: office, shed, café, kiosk, broadleaf tree, palm, flowers, lamp, motorboat, sailboat, fishing boat, bench, officer, fisherman, visitor, bin. No full-scene backdrop or baked-in UI.
+
+- Consistent deep-blue water removes the previous patchwork of mismatched tile colors; subtle animated ripples and bounded gold lamp reflections remain live.
+- Rose stone paving, continuous north-facing paths, granite curbs, planted gardens and fencing replace scattered paving fragments.
+- Full-width native docks retain their original coordinates and collision; submerged timber beams, pilings, metal collars, caps and rope details add depth.
+- Denser, larger tree clusters, raised palm planters, detailed building façades and boats use the new reusable sprites. Canopies fade when the player walks beneath them.
+- The existing player and ambient actor loop draw the chibi sprites in the marina. Landscape launch framing is closer to the reference; portrait retains a readable player scale.
+- All existing route/collision tests pass. New checks verify all 16 atlas crop bounds. Live browser review covers landscape and portrait viewport simulation; original mode exclusions remain intact.
+
+**Remaining differences:** this is not a pixel-for-pixel recreation. The original three-pier world layout and building footprints are retained; the reference's family portraits, minimap, health display and four-button HUD are not yet reproduced. The new character atlas contains single poses rather than full directional walking cycles. Physical Android frame pacing still requires testing. The main hosted build and Zombie Outbreak remain untouched; this work is kept on the V116 draft branch.
+
+## Presentation refinement — family HUD, map and material depth
+
+Added `v116-marina-hud.js`, injected only by the V116 preview builder. It shows the actual selected family profile, approved family portraits, a throttled live marina locator, and a case card. The four adventure buttons perform real actions: Case File reads the current objective, Map opens local navigation with an option to open the original city map, Gear opens the existing inventory menu, and Team opens the existing profile chooser. Family cards open that same chooser; they do not silently switch profiles. No artificial level, health, armor or progress values are displayed.
+
+Case/map panels pause the connected-world movement simulation, block underlying movement/interaction keys, support Escape, and trap keyboard focus. Closing the world hides the panel. The HUD hides outside the marina and the original Academy/Zombie mode exclusions remain in place. The minimap draws at most every 120 ms within the existing frame callback; no second animation loop, multiplayer transport, profile writes or save namespace changes were added.
+
+The landscape camera now shows the complete native dock lengths and building fronts at the launch position. World-seeded ripple bands break up tile repetition; small boat ripples and foliage shadows add depth without changing geometry. Styled vector action icons replace the earlier bare control treatment. Portrait layout keeps touch controls separated from the new panels.
+
+Validation: existing marina, campus, connected-city and road suites, a HUD behavior harness covering objective/profile reads and map/gear/team callbacks, and a real simulation pause regression. Browser QA covers landscape/portrait, case readout, keyboard dismissal and profile/inventory handoff. This remains viewport simulation, not a physical Android performance measurement. The new material work does not add or modify protected assets.
+
+Remaining visual differences include single-pose chibi world characters, the use of approved illustrated family portraits rather than the reference's chibi portraits, and original geography. This refinement is a draft update, not an assertion of a pixel-perfect reference match.
+
+## Directional walking — replacing sliding single-pose characters
+
+Added three 16-frame directional sheets for the existing marina officer, fisherman and orange-haired visitor designs. Each contains four authored poses for each of down, left, right and up. `tools/prepare_v116_walk_sheets.py` aligns the generated cells to one fixed foot baseline and saves 384×512 lossless WebP atlases (96×128 per frame). Generated originals are retained separately. All rows have four distinct frame hashes; normalization metadata is in `assets/v116-marina/walk-sheets.json`.
+
+`v116-marina-walk.js` selects the pose from actual travel distance and facing. Player distance comes from the existing accumulated movement stride, not elapsed time. NPCs accumulate distance only while their waypoint simulation actually moves them, with a shorter step length for slow pedestrians. Standing actors hold a fixed pose; movement into a collision does not keep cycling the feet. All frames share one source cell size and destination foot anchor, preventing size changes and drifting between frames. The previous single-pose art remains a loading fallback.
+
+The animation module has no game-state, save, profile, map, input or network writes and no extra animation loop. Existing `game.js`, Zombie Outbreak source/assets, navigation geometry, walking speeds, camera and HUD are preserved. This is the marina officer and ambient cast animation pass; it does not recreate the approved family portraits or claim new unique walk sheets for all five family members.
+
+Checks cover all directions/phases, idle freeze, distance-driven progression, fixed foot anchors, costume selection, texture fallback and actual campus simulation integration. Existing collision, NPC route, HUD and mode exclusion tests also pass. Browser close-up QA verified direction changes and authored moving-NPC poses. Physical Android frame pacing remains unmeasured.
+
+The final V116 builder fingerprints local script/style URLs so returning phone browsers request the new animation renderer instead of retaining the previous single-pose version.

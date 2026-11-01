@@ -1,0 +1,66 @@
+name: V116 Southbay Marina — Gameplay and Zombie Protection
+on:
+  push:
+    branches: [feature/v116-southbay-marina]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  v116-marina:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - name: Syntax, existing topology, new marina collisions and animation tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check published-game-capture/game.js
+          node --check published-game-capture/v115-campus.js
+          node --check published-game-capture/v116-marina.js
+          node qa/check-v115-campus.cjs
+          node qa/check-v115-connected-city.cjs
+          node qa/check-v115-road-layout.cjs
+          node qa/check-v116-marina.cjs
+          node qa/check-v116-hud.cjs
+          node qa/check-v116-walk.cjs
+          node qa/check-v117-jay.cjs
+          node --check published-game-capture/v117-jay.js
+          node --check published-game-capture/v116-marina-walk.js
+          node --check published-game-capture/v116-marina-hud.js
+          python3 -m py_compile tools/build_v116_preview.py
+          grep -q "rookie:v116-marina-sandbox:" published-game-capture/v115-preview-save-isolation.js
+      - name: Verify original game, original Zombie mode and all non-marina files unchanged
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin feature/v115-precinct-tileset-pilot
+          base=origin/feature/v115-precinct-tileset-pilot
+          for f in published-game-capture/game.js published-game-capture/outbreak.css; do
+            test "$(git rev-parse "$base:$f")" = "$(git rev-parse "HEAD:$f")" || {
+              echo "PROTECTED FILE MODIFIED: $f"; exit 1;
+            }
+          done
+          python3 - <<'PY'
+          import subprocess
+          files=set(subprocess.check_output(['git','diff','--name-only','origin/feature/v115-precinct-tileset-pilot','HEAD'],text=True).splitlines())
+          allowed={
+            'published-game-capture/v115-campus.js','published-game-capture/v116-marina.js','published-game-capture/v116-marina.css',
+            'published-game-capture/v115-preview-save-isolation.js',
+            'tools/build_v115_reference_preview.py','tools/build_v115_premium_preview.py','tools/build_v115_precinct_pilot_preview.py',
+            'tools/build_v116_preview.py','tools/generate_v116_marina_art.py','qa/check-v116-marina.cjs','qa/capture-v116-marina.cjs',
+            'qa/V116-MARINA-COMPARE.html','docs/V116-SOUTHBAY-MARINA.md','.github/workflows/v116-marina-qa.yml'
+          }
+          allowed|={'published-game-capture/assets/v116-marina/'+name+'.png' for name in [
+            'marina-tiles','marina-cafe','bait-and-tackle','marina-office','boat-service','marina-kiosk',
+            'boat-motor','boat-sail','boat-fishing','marina-people','marina-gulls']}
+          allowed|={'published-game-capture/v116-marina-hud.js','qa/check-v116-hud.cjs','qa/check-v115-campus.cjs','tools/generate_v116_detail_tiles.py','published-game-capture/assets/v116-marina/marina-detail-tiles.png','published-game-capture/assets/v116-marina/marina-reference-atlas.webp','published-game-capture/assets/v116-marina/marina-reference-atlas.json'}
+          allowed|={'published-game-capture/v116-marina-walk.js','qa/check-v116-walk.cjs','tools/prepare_v116_walk_sheets.py','published-game-capture/assets/v116-marina/walk-sheets.json'}
+          allowed|={'published-game-capture/assets/v116-marina/walk-'+key+'.webp' for key in ['officer','fisher','visitor']}
+          allowed|={'published-game-capture/v117-jay.js','published-game-capture/v117-jay-bridge.js','published-game-capture/v117-jay.css','tools/prepare_v117_jay.py','qa/check-v117-jay.cjs','docs/V117-JAY.md'}
+          allowed|={'published-game-capture/assets/jay-v117/'+name for name in ['jay-walk.webp','jay-run.webp','manifest.json']}
+          assert files<=allowed, 'Unauthorized changes: '+str(sorted(files-allowed))
+          assert not any('zombie' in f.lower() or 'outbreak' in f.lower() for f in files)
+          print('PASS V116: source, navigation, campaign engine and Zombie Outbreak remain preserved')
+          PY

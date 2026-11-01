@@ -93,3 +93,41 @@ sandbox.state.map='station';window.HARBOR.outbreak.active=()=>true;api.open();as
 window.HARBOR.outbreak.active=()=>false;
 api.open();assert.equal(api.isOpen(),true);api.close();
 console.log('PASS V115 Phase 2: 1:1 precinct geometry, aligned front/garage doors, real room walls, continuous footstep crossing, single scene, original saves untouched, Academy/Zombie excluded.');
+api.open();window.ROOKIE_V116_HUD={blocked:()=>true,paint(){},close(){}};
+const paused=api.test.position();
+down({key:'ArrowDown',preventDefault(){},stopImmediatePropagation(){}},true);
+for(let i=0;i<12;i++){const n=queue.keys().next().value;if(n){const fn=queue.get(n);queue.delete(n);fn(2000+i*16.67);}}
+assert.deepEqual(api.test.position(),paused,'HUD dialog must pause the actual movement loop');
+api.close();
+console.log('PASS marina modal pauses player simulation and blocks held movement');
+
+// Actual player movement must supply accumulated distance and facing to marina art.
+let lastPose=null;
+window.ROOKIE_V116_HUD=undefined;
+window.ROOKIE_V116_MARINA={inMarina:()=>true,drawNpc(g,a){if(a.npcStyle===0)lastPose=a;},
+ actors:[],interactions:[],stepNPCs(){},blocksProp:()=>false,background(){},foreground(){},active:()=>true};
+api.open();
+const tick=(start,n)=>{for(let i=0;i<n;i++){const id=queue.keys().next().value;if(id){const fn=queue.get(id);queue.delete(id);fn(start+i*16.67);}}};
+down({key:'ArrowDown',preventDefault(){},stopImmediatePropagation(){}},true);tick(4000,5);
+assert(lastPose?.moving&&lastPose.distance>0&&lastPose.dir==='down','Real movement must reach the walk renderer');
+const travelled=lastPose.distance;
+window.events.keyup_capture({key:'ArrowDown',preventDefault(){},stopImmediatePropagation(){}});tick(4200,4);
+assert(!lastPose.moving&&lastPose.distance===travelled,'No idle pedaling or time-only frame updates');
+api.close();console.log('PASS actual movement passes facing/travel into sprites and stops advancing at idle');
+
+// Shared Jay must render outside marina too, with actual collision-controlled travel.
+let sharedPaints=0,sharedUpdates=[],runRequested=false;
+window.ROOKIE_JAY={eligible:()=>true,reset(){},requestRun:()=>runRequested,
+ advanceSpeed(speed,target,dt){return {speed:target,distance:target*dt};},
+ update(id,a,dt){sharedUpdates.push({...a,dt});},draw(g,id,a){sharedPaints++;assert.equal(a.map,'harbor-main');}};
+window.ROOKIE_V116_MARINA=undefined;
+assert(api.openAt(948,1210,1.1));tick(8000,3);
+assert(sharedPaints>0,'Jay must use shared renderer outside marina');
+const startWalk=api.test.position();down({key:'ArrowDown',preventDefault(){},stopImmediatePropagation(){}});tick(8200,12);
+const endWalk=api.test.position();assert(endWalk.y>startWalk.y);
+assert(sharedUpdates.length>0);assert(sharedUpdates.every(a=>a.dir==='down'));
+window.events.keyup_capture({key:'ArrowDown',preventDefault(){},stopImmediatePropagation(){}});tick(8500,2);
+const still=api.test.position();tick(8600,2);assert.deepEqual(api.test.position(),still);
+runRequested=true;down({key:'ArrowDown',preventDefault(){},stopImmediatePropagation(){}});tick(8800,12);
+const endRun=api.test.position();assert(endRun.y-still.y>endWalk.y-startWalk.y,'Running must travel faster over equal frames');
+api.close();console.log('PASS shared Jay: precinct grounds uses same renderer, actual movement reaches tracker, idle stops and running is faster');

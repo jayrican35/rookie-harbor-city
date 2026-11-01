@@ -99,6 +99,13 @@ jobs:
           path: v117-interiors
           persist-credentials: false
 
+      - name: Check out isolated V118 cinematic marina preview
+        uses: actions/checkout@v4
+        with:
+          ref: 2ebdebd5e237668d2580b1fa235741988aaf22df # passing V118 checks; pinned, preview only
+          path: v118-marina
+          persist-credentials: false
+
       - name: Recover missing main-campaign environment art
         shell: bash
         working-directory: visual-preview
@@ -466,6 +473,42 @@ jobs:
           cmp -s game-backup/published-game-capture/game.js site/game.js
           grep -q 'v117-continuous-world' site/preview/v117-interiors/index.html
           echo 'PASS: four seamless furnished buildings; original root, V116 and Zombie Outbreak unchanged'
+
+      - name: Build isolated V118 premium cinematic marina preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v118-cinematic
+          cp -a v118-marina/published-game-capture/. site/preview/v118-cinematic/
+          python3 v118-marina/tools/build_v118_preview.py site/preview/v118-cinematic
+          node --check site/preview/v118-cinematic/v118-cinematic.js
+          node --check site/preview/v118-cinematic/game-v115.bundle.js
+          (cd v118-marina && node qa/check-v118-cinematic.cjs)
+          (cd v118-marina && node qa/check-v117-interiors.cjs)
+          (cd v118-marina && node qa/check-v116-marina.cjs)
+          (cd v118-marina && node qa/check-v115-campus.cjs)
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s v117-interiors/published-game-capture/game.js site/preview/v118-cinematic/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v118-cinematic/outbreak.css
+          grep -q 'v118-cinematic.js?v=' site/preview/v118-cinematic/index.html
+          grep -q 'v118-cinematic.css?v=' site/preview/v118-cinematic/index.html
+          echo 'PASS: V118 isolated cinema preview only; V117, approved root and Zombie unchanged'
+
+      - name: Capture V118 real-game cinematic portrait and landscape evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          V116_URL='http://127.0.0.1:8765/preview/v118-cinematic/?v116QA=1&pilotQA=1' \
+            V116_EVIDENCE="$PWD/site/preview/v118-cinematic/evidence" \
+            node v118-marina/qa/capture-v116-marina.cjs
+          cp v118-marina/qa/V116-MARINA-COMPARE.html site/preview/v118-cinematic/evidence/index.html
+          for f in portrait-before portrait-after portrait-gameplay landscape-before landscape-after landscape-gameplay; do
+            test -s "site/preview/v118-cinematic/evidence/$f.png"
+          done
+          test -s site/preview/v118-cinematic/evidence/metrics.json
+          echo 'PASS: V118 playable portrait and landscape Canvas evidence; Android-sized simulation'
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

@@ -82,20 +82,23 @@ function boatWake(g,boat,t){
 function footsteps(g,a,t){
  if(!a?.moving||!Number.isFinite(a.x)||!Number.isFinite(a.y))return;
  const distance=Number.isFinite(a.distance)?a.distance:0;
- const phase=((distance/15)%1+1)%1,alpha=((1-phase)*.56).toFixed(3);
+ const stride=a.run?29:21;
+ const phase=((distance/stride)%1+1)%1,alpha=((1-phase)*(a.run?.28:.36)).toFixed(3);
  const wood=a.y>=3800&&PIER.some(px=>a.x>=px&&a.x<=px+90);
- const side=Math.floor(distance/15)%2?1:-1;
+ const side=Math.floor(distance/stride)%2?1:-1;
  const dx=(a.dir==='left'?7:a.dir==='right'?-7:side*9);
  const dy=a.dir==='up'?8:a.dir==='down'?-5:3;
  g.save();g.fillStyle=wood?'rgba(195,235,236,'+alpha+')':'rgba(252,213,145,'+alpha+')';
  g.fillRect(Math.round(a.x+dx-2),Math.round(a.y+dy+5),8,3);
  g.fillRect(Math.round(a.x+dx+4),Math.round(a.y+dy+3),4,2);
- if(a.run){g.fillStyle='rgba(244,227,173,'+(alpha*.8)+')';g.fillRect(a.x+dx-side*9,a.y+dy+8,12,2);}
+ if(a.run){g.fillStyle='rgba(244,227,173,'+(alpha*.48)+')';g.fillRect(a.x+dx-side*6,a.y+dy+8,5,1);}
  g.restore();state.footstepFrames++;
 }
 function characterBob(a,t){
  const time=reduced?0:t;
- return a?.moving?Math.abs(Math.sin((a.distance||0)*.25))*2.3:Math.max(0,Math.sin(time*.002+(a?.x||0)*.1))*.8;
+ // V126: old 0.25-rad/world-unit bob jittered at ~13Hz while running.
+ // Cadence follows real traveled distance; subdued bounce keeps legs planted.
+ return a?.moving?Math.abs(Math.sin((a.distance||0)*.095))*(a.run?1.0:.85):0;
 }
 window.ROOKIE_V119_MOTION=Object.freeze({
  version:'119-water-character-motion',waterSurface,boatWake,footsteps,characterBob,

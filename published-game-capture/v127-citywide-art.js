@@ -58,7 +58,7 @@ function tileChunk(type,cx,cy){
      const id=ids[n%ids.length];
      g.drawImage(atlas,(id%8)*32,Math.floor(id/8)*32,32,32,x,y,32,32);
    }else if(type==='road'||type==='stone'||type==='sand'){
-     g.fillStyle=type==='road'?['#414a53','#3c4851','#45505a'][n%3]:
+     g.fillStyle=type==='road'?['#404a53','#3f4953','#414b54'][n%3]:
        type==='stone'?['#adaba0','#b6b1a5','#c1b9ad'][n%3]:
        ['#b8a97d','#c5af7d','#b5a475'][n%3];
      g.fillRect(x,y,32,32);
@@ -284,7 +284,7 @@ function map(g,x,y){
 window.ROOKIE_V127_CITY=Object.freeze({
  version:'127-citywide-material-continuity',worldId:'harbor-main',
  base,surface,colorKind,districtGround,road,coastline,walkways,depthProps,drawDepthProp,
- building,handlesDecor,waterBlocked:coastalWater,location,map,
+ building,handlesDecor,spriteImage:type=>spriteReady(type)?sprites[type]:null,waterBlocked:coastalWater,location,map,
  metrics:()=>({...metrics,cacheMax:CAP,atlasReady:atlas.complete&&atlas.naturalWidth>0})
 });
 })();

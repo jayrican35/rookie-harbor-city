@@ -113,6 +113,13 @@ jobs:
           path: v119-marina
           persist-credentials: false
 
+      - name: Check out isolated V120 premium marina artwork and renderer
+        uses: actions/checkout@v4
+        with:
+          ref: 2b96c3f66ce49af8eb0769e27ea1adcf3859ce55 # reviewed V120 feature snapshot only
+          path: v120-marina
+          persist-credentials: false
+
       - name: Recover missing main-campaign environment art
         shell: bash
         working-directory: visual-preview
@@ -558,6 +565,60 @@ jobs:
           (folder/'index.html').write_text(html)
           PY
           echo 'PASS V119: actual gameplay screenshot comparisons at equal camera + viewport'
+
+      - name: Build isolated V120 production-textured game
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install --disable-pip-version-check pillow numpy
+          mkdir -p site/preview/v120-premium
+          cp -a v120-marina/published-game-capture/. site/preview/v120-premium/
+          python3 v120-marina/tools/build_v120_preview.py site/preview/v120-premium
+          node --check site/preview/v120-premium/game-v115.bundle.js
+          node --check site/preview/v120-premium/v120-marina-art.js
+          (cd v120-marina && node qa/check-v120-marina.cjs)
+          (cd v120-marina && node qa/check-v117-interiors.cjs)
+          (cd v120-marina && node qa/check-v116-marina.cjs)
+          (cd v120-marina && node qa/check-v115-campus.cjs)
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v120-premium/outbreak.css
+          cmp -s v119-marina/published-game-capture/game.js site/preview/v120-premium/game.js
+          grep -q 'v120-marina-art.js?v=' site/preview/v120-premium/index.html
+          echo 'PASS V120 real art atlases in working connected city; original game and Zombie protected'
+
+      - name: Compare actual V119 and V120 gameplay at identical mobile cameras
+        shell: bash
+        run: |
+          set -euo pipefail
+          V120_BEFORE_URL='http://127.0.0.1:8765/preview/v119-water-motion/?v116QA=1&pilotQA=1' \
+            V120_AFTER_URL='http://127.0.0.1:8765/preview/v120-premium/?v116QA=1&pilotQA=1' \
+            V120_EVIDENCE="$PWD/site/preview/v120-premium/evidence" \
+            node v120-marina/qa/capture-v120-comparison.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageChops
+          import json
+          folder=Path('site/preview/v120-premium/evidence')
+          d={}
+          for key in ('portrait','landscape'):
+            a=Image.open(folder/f'{key}-before-canvas.png').convert('RGB')
+            b=Image.open(folder/f'{key}-after-canvas.png').convert('RGB')
+            assert a.size==b.size
+            diff=ImageChops.difference(a,b).convert('L')
+            hist=diff.histogram()
+            fraction=sum(hist[20:])/max(1,sum(hist))
+            d[key]=round(fraction,3)
+            assert fraction>.12, f'V120 has insufficient visible change {key}: {fraction}'
+          (folder/'image-difference.json').write_text(json.dumps(d,indent=2))
+          sections=''.join(f'<section><h2>{k.title()} — matched in-game camera</h2><div><figure><img src="{k}-before-gameplay.png"><figcaption>Before: V119</figcaption></figure><figure><img src="{k}-after-gameplay.png"><figcaption>After: V120</figcaption></figure></div></section>' for k in ('portrait','landscape'))
+          html='<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROOKIE V120 Live Comparison</title><style>body{background:#0c2635;color:#fff0cf;font:16px system-ui;margin:0;padding:20px}h1{font-size:26px}section{margin:25px 0}section>div{display:flex;flex-wrap:wrap;gap:16px}figure{margin:0;flex:1;min-width:min(100%,290px)}img{width:100%;max-width:460px;border:2px solid #c9aa65;border-radius:9px}figcaption{padding:7px}</style><h1>V120: Real Playable Game Comparison</h1><p>Actual Canvas, identical in-world coordinates and zoom. Desktop Chromium viewport emulating Android sizes—not physical device FPS.</p>'+sections
+          (folder/'index.html').write_text(html)
+          print('PASS: actual rendered scene visibly changed',d)
+          PY
+          for f in portrait-before-canvas portrait-after-canvas landscape-before-canvas landscape-after-canvas; do test -s "site/preview/v120-premium/evidence/$f.png"; done
+          echo 'PASS V120 genuine game screenshot evidence and material rendering comparison'
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

@@ -19,6 +19,7 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
   await page.waitForFunction(()=>window.HARBOR.seamlessCampusV115.metrics().ambientDistrictsInitialized===9,{timeout:8000});
   const cityMetrics=await page.evaluate(()=>window.HARBOR.seamlessCampusV115.metrics());
   assert(cityMetrics.ambientPedestrians>0&&cityMetrics.ambientPedestrians<=16,'Living-city pedestrians must be actually active without duplicate NPCs');
+  assert(cityMetrics.streetCars===18,'Native arterial pilot has 18 bounded traffic cars');
   await page.screenshot({path:path.join(folder,'v128-idle.png')});
   await page.keyboard.down('Shift');await page.keyboard.down('ArrowUp');
   await page.waitForFunction(()=>window.ROOKIE_JAY.snapshot('connected-jay')?.mode==='run',{timeout:6000});
@@ -30,8 +31,20 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
   const stopped=await page.evaluate(()=>window.ROOKIE_JAY.snapshot('connected-jay'));
   assert.equal(stopped.mode,'idle','RUN to idle must settle with player planted');
   assert(running.x!==stopped.x||running.y!==stopped.y||running.mode==='run');
+  // The real connected game draws all newly joined streets in the same
+  // Canvas. Capture distinct intersections for mobile-size visual review.
+  const roadShots=[
+    {id:'precinct-arterial',x:1000,y:1784},
+    {id:'southbay-loop-junction',x:3545,y:3744},
+    {id:'northgate-arterial',x:5855,y:1784}
+  ];
+  for(const road of roadShots){
+    assert(await page.evaluate(v=>window.HARBOR.seamlessCampusV115.qaCamera(v.x,v.y,1.05),road));
+    await page.waitForTimeout(170);
+    await page.screenshot({path:path.join(folder,'road-'+road.id+'.png')});
+  }
   assert.equal(errors.length,0,'No JS console errors: '+errors.join(', '));
-  fs.writeFileSync(path.join(folder,'v128-run-metrics.json'),JSON.stringify({running:{mode:running.mode,phase:running.phase},stopped:{mode:stopped.mode,phase:stopped.phase},ambientPedestrians:cityMetrics.ambientPedestrians,ambientDistrictsInitialized:cityMetrics.ambientDistrictsInitialized,viewport:'390x844 Chromium emulated mobile',errors},null,2));
+  fs.writeFileSync(path.join(folder,'v128-run-metrics.json'),JSON.stringify({running:{mode:running.mode,phase:running.phase},stopped:{mode:stopped.mode,phase:stopped.phase},ambientPedestrians:cityMetrics.ambientPedestrians,ambientDistrictsInitialized:cityMetrics.ambientDistrictsInitialized,streetCars:cityMetrics.streetCars,roadShots:roadShots.map(r=>r.id),viewport:'390x844 Chromium emulated mobile',errors},null,2));
   console.log('PASS V128 live mobile-size gameplay RUN / idle transition in the original single player/camera world');
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exit(1)});

@@ -88,7 +88,7 @@ jobs:
       - name: Check out V116 Southbay Marina game integration
         uses: actions/checkout@v4
         with:
-          ref: ad1cf2dfabf40214101ce7529ab90ed1796faf66 # verified marina HUD + art refinement
+          ref: e92bf6ac11615ec680e341473b872da26e18cf55 # verified directional walk cycles
           path: v116-marina
           persist-credentials: false
 
@@ -404,6 +404,10 @@ jobs:
           grep -q 'CAP=40' site/preview/v116-marina/v116-marina.js
           (cd v116-marina && node qa/check-v116-marina.cjs)
           (cd v116-marina && node qa/check-v116-hud.cjs)
+          (cd v116-marina && node qa/check-v116-walk.cjs)
+          node --check site/preview/v116-marina/v116-marina-walk.js
+          grep -q 'v116-marina-walk.js?v=' site/preview/v116-marina/index.html
+          test -s site/preview/v116-marina/assets/v116-marina/walk-officer.webp
           node --check site/preview/v116-marina/v116-marina-hud.js
           grep -q 'v116-marina-hud.js' site/preview/v116-marina/index.html
           test -s site/preview/v116-marina/assets/v116-marina/marina-reference-atlas.webp

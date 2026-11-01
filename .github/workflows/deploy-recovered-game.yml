@@ -148,6 +148,13 @@ jobs:
           path: v124-depth
           persist-credentials: false
 
+      - name: Check out separate V125 campaign HUD upgrade
+        uses: actions/checkout@v4
+        with:
+          ref: 47c8d16de49effaac41c9b16a5600963974c132f # audited single input / HUD source
+          path: v125-mobile
+          persist-credentials: false
+
       - name: Recover missing main-campaign environment art
         shell: bash
         working-directory: visual-preview
@@ -858,6 +865,54 @@ jobs:
           (p/'index.html').write_text(html)
           print('PASS V124 validated front/back lamp and office roof game screenshots')
           PY
+
+      - name: Build modern V125 playable campaign HUD in existing continuous city
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v125-mobile
+          cp -a v125-mobile/published-game-capture/. site/preview/v125-mobile/
+          python3 v125-mobile/tools/build_v125_preview.py site/preview/v125-mobile
+          node --check site/preview/v125-mobile/v115-campus.js
+          node --check site/preview/v125-mobile/v116-marina-hud.js
+          node --check site/preview/v125-mobile/game-v115.bundle.js
+          (cd v125-mobile && node qa/check-v125-mobile-hud.cjs)
+          (cd v125-mobile && node qa/check-v116-hud.cjs)
+          (cd v125-mobile && node qa/check-v115-campus.cjs)
+          (cd v125-mobile && node qa/check-v117-jay.cjs)
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v125-mobile/outbreak.css
+          cmp -s game-backup/published-game-capture/controls.css site/preview/v125-mobile/controls.css
+          cmp -s v124-depth/published-game-capture/game.js site/preview/v125-mobile/game.js
+          grep -q 'v125-native-campaign-ui' site/preview/v125-mobile/index.html
+          echo 'PASS V125 original campaign and Zombie unaffected; only connected-city HUD changes'
+
+      - name: Capture actual V125 mobile portrait and landscape touch gameplay
+        shell: bash
+        run: |
+          set -euo pipefail
+          V125_URL='http://127.0.0.1:8765/preview/v125-mobile/?v116QA=0&pilotQA=1' \
+            V125_EVIDENCE="$PWD/site/preview/v125-mobile/evidence" \
+            node v125-mobile/qa/capture-v125-mobile-hud.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          import json
+          folder=Path('site/preview/v125-mobile/evidence')
+          result=json.loads((folder/'metrics.json').read_text())
+          assert len(result['views'])==2
+          cards=''.join(f'<section><h2>{x.title()}</h2><div><figure><img src="{x}-gameplay.png"><figcaption>Normal gameplay — compact native HUD</figcaption></figure><figure><img src="{x}-expanded-menu.png"><figcaption>Existing game menu expanded</figcaption></figure></div></section>' for x in ('portrait','landscape'))
+          html='<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROOKIE V125 Actual HUD Screenshots</title><style>body{padding:20px;margin:0;background:#0d2638;color:#ffefc8;font:16px system-ui}section{margin:25px 0}section>div{display:flex;gap:14px;flex-wrap:wrap}figure{margin:0;flex:1;min-width:min(100%,285px)}img{border:2px solid #ccb276;width:100%;max-width:500px;border-radius:9px}figcaption{padding:8px}</style><h1>V125: Real Playable Mobile HUD</h1><p>Actual connected-world game captured in mobile-size Chromium with touch, sprint, menu and keyboard tests—not a concept illustration or physical-device FPS benchmark.</p>'+cards
+          (folder/'index.html').write_text(html)
+          for mode in ('portrait','landscape'):
+            for state in ('gameplay','expanded-menu'):
+              f=folder/f'{mode}-{state}.png'
+              im=Image.open(f);im.verify()
+          print('PASS V125 genuine portrait and landscape captures',[(v['name'],v['runHoldPassed']) for v in result['views']])
+          PY
+          echo 'PASS V125 actual gameplay screenshots and all controls verified before publishing'
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

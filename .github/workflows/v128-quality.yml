@@ -1,0 +1,35 @@
+name: V128 Run Scale and City Quality (isolated)
+on:
+  push:
+    branches:
+      - feature/v128-citywide-quality-run-scale
+  pull_request:
+    paths:
+      - 'published-game-capture/v117-jay.js'
+      - 'published-game-capture/v127-citywide-art.js'
+      - 'published-game-capture/v115-campus.js'
+      - 'qa/check-v128-quality.cjs'
+      - 'tools/build_v128_preview.py'
+jobs:
+  source-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run new V128 graphics, Jay size, protected mode tests
+        run: |
+          set -euo pipefail
+          node --check published-game-capture/v117-jay.js
+          node --check published-game-capture/v127-citywide-art.js
+          node --check published-game-capture/v115-campus.js
+          node qa/check-v128-quality.cjs
+          node qa/check-v127-citywide.cjs
+          node qa/check-v126-polish.cjs
+          node qa/check-v117-jay.cjs
+      - name: Ensure modifications stay isolated to connected-world art
+        run: |
+          set -euo pipefail
+          git diff --name-only ${{ github.event.before || 'HEAD^' }} HEAD | grep -Ev '^(published-game-capture/(v117-jay\.js|v115-campus\.js|v127-citywide-art\.js)|qa/check-v128-quality\.cjs|tools/build_v128_preview\.py|docs/V128-WORLD-QUALITY\.md|\.github/workflows/v128-quality\.yml)$' > /tmp/out-of-scope || true
+          if [ -s /tmp/out-of-scope ]; then cat /tmp/out-of-scope; exit 1; fi

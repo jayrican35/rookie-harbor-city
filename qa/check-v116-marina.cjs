@@ -65,7 +65,7 @@ const finalStart=engine.indexOf('Object.keys(MAPS).forEach(function(id){');
 const finalEnd=engine.indexOf('/* ==================== PEDESTRIANS',finalStart);
 vm.runInNewContext(engine.slice(finalStart,finalEnd),geo);
 function blockedInWorld(x,y,r=12){
- if(m.blocksProp(x,y,r))return true;
+ if(m.blocksScenery(x,y,r))return true; // Static walkability: moving NPCs have dynamic, not permanent, obstacles.
  for(const [id,ox,oy] of [['waterfront',4400,3220],['southbay',2800,3220]]){
   for(const b of geo.MAPS[id].pedSolids){
    const dx=x-Math.max(b.x+ox,Math.min(x,b.x+ox+b.w)),dy=y-Math.max(b.y+oy,Math.min(y,b.y+oy+b.h));

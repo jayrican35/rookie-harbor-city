@@ -28,11 +28,22 @@ const cases=[{key:'portrait',w:390,h:844,z:.82},{key:'landscape',w:844,h:390,z:1
     document.body.classList.add('v116-play-mode');
   },{z:c.z});
   const canvas=page.locator('#v115CampusCanvas');
+  const sampledFps=()=>page.evaluate(()=>new Promise(resolve=>{
+    let first=null,last=null,count=0;
+    function step(t){if(first===null)first=t;last=t;count++;
+      if(t-first<1100)requestAnimationFrame(step);
+      else resolve(Math.round(1000*(count-1)/(last-first)*10)/10);
+    }requestAnimationFrame(step);
+  }));
   await page.evaluate(()=>window.ROOKIE_V116_MARINA.setTestEnabled(false));
-  await page.waitForTimeout(450);await canvas.screenshot({path:path.join(output,c.key+'-before.png')});
+  await page.waitForTimeout(450);
+  const fpsBefore=await sampledFps();
+  await canvas.screenshot({path:path.join(output,c.key+'-before.png')});
   const b0=await page.evaluate(()=>window.ROOKIE_V116_MARINA.metrics());
   await page.evaluate(()=>window.ROOKIE_V116_MARINA.setTestEnabled(true));
-  await page.waitForTimeout(900);await canvas.screenshot({path:path.join(output,c.key+'-after.png')});
+  await page.waitForTimeout(900);
+  const fpsAfter=await sampledFps();
+  await canvas.screenshot({path:path.join(output,c.key+'-after.png')});
   await page.screenshot({path:path.join(output,c.key+'-gameplay.png')});
   const runtime=await page.evaluate(()=>{
     const api=window.HARBOR.seamlessCampusV115,m=window.ROOKIE_V116_MARINA;
@@ -45,8 +56,8 @@ const cases=[{key:'portrait',w:390,h:844,z:.82},{key:'landscape',w:844,h:390,z:1
   if(!runtime.dockWalkable||!runtime.openWaterBlocked||!runtime.pathWalkable)throw Error('Dock/shore collision regression: '+JSON.stringify(runtime));
   if(runtime.uiHidden!==true)throw Error('Mobile debug panel still visible');
   if(errors.length)throw Error('Browser errors: '+errors.join(' | '));
-  report.cases.push({entry,name:c.key,viewport:[c.w,c.h],zoom:c.z,errors,before:b0,after:runtime});
-  console.log('PASS V116 real game canvas',c.key,JSON.stringify({decoded:runtime.metrics.decoded,p95PaintMs:runtime.metrics.p95PaintMs,chunkCache:runtime.metrics.chunkCacheCount}));
+  report.cases.push({entry,fpsBefore,fpsAfter,name:c.key,viewport:[c.w,c.h],zoom:c.z,errors,before:b0,after:runtime});
+  console.log('PASS V116 real game canvas',c.key,JSON.stringify({decoded:runtime.metrics.decoded,fpsBefore,fpsAfter,p95PaintMs:runtime.metrics.p95PaintMs,chunkCache:runtime.metrics.chunkCacheCount}));
   await page.close();
  }
  fs.writeFileSync(path.join(output,'metrics.json'),JSON.stringify(report,null,2));

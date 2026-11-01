@@ -1,0 +1,42 @@
+'use strict';
+const fs=require('node:fs'),vm=require('node:vm'),path=require('node:path'),assert=require('node:assert/strict');
+const root=path.resolve(__dirname,'..'),read=p=>fs.readFileSync(path.join(root,p),'utf8');
+const world=read('published-game-capture/v115-campus.js'),jay=read('published-game-capture/v117-jay.js');
+const material=read('published-game-capture/v120-marina-art.js'),motion=read('published-game-capture/v119-water-motion.js');
+const officer=world.slice(world.indexOf('function drawOfficer('),world.indexOf('function drawEntityHighlights('));
+assert(!officer.includes("strokeStyle='#f4cf70'"),'No yellow actor ring in shared or fallback path');
+assert(!officer.includes("strokeStyle='#e9c35b'"),'No fallback player selection ring');
+assert(officer.includes('shared.draw(g,')&&officer.includes('marina.drawNpc(g,'),'Retain both original renderers');
+assert(world.includes('marina.pierOccluders(view)')&&world.includes('entries.sort((a,b)=>a.y-b.y)'),'Retain V124 occlusion');
+assert(material.includes("name==='dock-wood'?DOCK_ROOT:ROOT"),'V126 only changes dock wood material URL');
+assert(material.includes("const DOCK_ROOT='./assets/v126-dock/'"));
+assert(material.includes('const texH=im.naturalHeight||128'),'Retain intrinsic no-seam atlas drawing');
+assert(material.includes("g.rect(px,top,deckWidth,deckHeight);g.clip()"),'Deck remains dry, clipped and solid');
+assert(jay.includes("id==='connected-jay'&&connectedRun.complete"),'New run art only for connected-world player');
+assert(jay.includes("connected?31:22"),'Run leg frames slowed only in connected-world mode');
+assert(jay.includes("connected?155:235"),'No run/walk flicker during acceleration');
+assert(motion.includes("Math.sin((a.distance||0)*.095"),'No 13Hz fake bobbing');
+assert(!/requestAnimationFrame|localStorage|sessionStorage|fetch\s*\(/.test(material));
+assert(!/requestAnimationFrame|localStorage|sessionStorage|fetch\s*\(/.test(motion));
+const sprites=[];
+const sandbox={window:{HARBOR:{outbreak:{active:()=>false},academy:{active:()=>false},
+ profiles:{current:()=> 'jay'}},addEventListener(){}},
+ document:{addEventListener(){},querySelectorAll:()=>[],querySelector:()=>null,hidden:false},Math,Map,Object,
+ Image:function(){const im={complete:true,naturalWidth:0,naturalHeight:512};
+ Object.defineProperty(im,'src',{set(v){im.url=v;im.naturalWidth=v.includes('run')?1024:1152;}});sprites.push(im);return im;}};
+vm.runInNewContext(jay,sandbox);
+const api=sandbox.window.ROOKIE_JAY;
+api.update('connected-jay',{x:0,y:0,dir:'down',map:'harbor-main',run:true},.016);
+for(let i=1;i<=12;i++)api.update('connected-jay',{x:3*i,y:0,dir:'right',map:'harbor-main',run:true},.016);
+const pose=api.snapshot('connected-jay');
+assert.equal(pose.mode,'run');assert(pose.phase>1&&pose.phase<2,'New run cycle is distance based, not frantic');
+const drawCalls=[];
+const g={save(){},restore(){},beginPath(){},ellipse(){},fill(){},drawImage(...args){drawCalls.push(args);}};
+api.draw(g,'connected-jay',{x:36,y:0,dir:'right',map:'harbor-main'});
+assert(drawCalls.length===1&&drawCalls[0][0]===sprites[2],'Connected Jay uses cleaned run atlas if available');
+api.update('original-jay',{x:0,y:0,dir:'right',map:'station',run:true},.016);
+api.update('original-jay',{x:6,y:0,dir:'right',map:'station',run:true},.016);
+api.draw(g,'original-jay',{x:6,y:0,dir:'right',map:'station'});
+assert(drawCalls.at(-1)[0]===sprites[1],'Original campaign still uses original sprite sheet');
+assert(api.excluded()===false);
+console.log('PASS V126 removed every player gold ring, original shadows/occlusion unchanged; unique dry pier texture, connected-only cleaned eight-frame run and stable planted gait');

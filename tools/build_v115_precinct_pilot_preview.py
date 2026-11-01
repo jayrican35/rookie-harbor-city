@@ -10,7 +10,7 @@ assert html.count('<script src="./v115-premium-art.js"></script>')==1
 assert html.count('</head>')==1
 assert 'src="./v115-precinct-pilot.js"' not in html
 save=(root/'v115-preview-save-isolation.js').read_text()
-assert 'rookie:v115-precinct-pilot-sandbox:' in save
+assert any(p in save for p in ('rookie:v115-precinct-pilot-sandbox:', 'rookie:v116-marina-sandbox:'))
 html=html.replace('</head>', '<link rel="stylesheet" href="./v115-precinct-pilot.css" />\n</head>')
 html=html.replace('<script src="./v115-premium-art.js"></script>',
  '<script src="./v115-premium-art.js"></script>\n<script src="./v115-precinct-pilot.js"></script>')

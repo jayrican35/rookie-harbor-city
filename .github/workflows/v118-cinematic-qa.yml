@@ -1,0 +1,60 @@
+name: V118 modern cinematic marina foundation
+on:
+  push:
+    branches: [feature/v118-cinematic-marina-foundation]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - name: Syntax and V118 effect isolation
+        run: |
+          node --check published-game-capture/v118-cinematic.js
+          node --check published-game-capture/v115-campus.js
+          node qa/check-v118-cinematic.cjs
+      - name: Preserve working connected city, NPCs, interiors, HUD and Jay
+        run: |
+          node qa/check-v115-campus.cjs
+          node qa/check-v115-connected-city.cjs
+          node qa/check-v115-road-layout.cjs
+          node qa/check-v116-marina.cjs
+          node qa/check-v116-hud.cjs
+          node qa/check-v116-walk.cjs
+          node qa/check-v117-jay.cjs
+          node qa/check-v117-interiors.cjs
+      - name: Build isolated playable V118 and validate compiled engine
+        run: |
+          cp -a published-game-capture /tmp/v118-build
+          python3 tools/build_v118_preview.py /tmp/v118-build
+          node --check /tmp/v118-build/game-v115.bundle.js
+          node qa/check-v117-jay.cjs /tmp/v118-build/game-v115.bundle.js
+          grep -q 'rookie-visual-foundation' /tmp/v118-build/index.html
+          grep -q 'v118-cinematic.js?v=' /tmp/v118-build/index.html
+          test -s /tmp/v118-build/v118-cinematic.css
+      - name: Verify protected original game and Zombie Outbreak assets unchanged
+        run: |
+          python3 - <<'PY'
+          import subprocess
+          base='a460dea29f7d2e89e6b0faaffb92cb33b24fced1'
+          changed=set(subprocess.check_output(['git','diff','--name-only',base,'HEAD'],text=True).splitlines())
+          allowed={
+            'published-game-capture/v115-campus.js',
+            'published-game-capture/v118-cinematic.js',
+            'published-game-capture/v118-cinematic.css',
+            'tools/build_v118_preview.py',
+            'qa/check-v118-cinematic.cjs',
+            '.github/workflows/v118-cinematic-qa.yml',
+            'docs/V118-CINEMATIC-FOUNDATION.md',
+          }
+          assert changed<=allowed,sorted(changed-allowed)
+          assert not any('outbreak' in p.lower() or 'zombie' in p.lower() or '/assets/' in p for p in changed)
+          for path in ('published-game-capture/game.js','published-game-capture/outbreak.css'):
+            old=subprocess.check_output(['git','show',base+':'+path])
+            new=open(path,'rb').read()
+            assert old==new,path
+          print('PASS: protected campaign engine, Zombie mode and original assets byte-identical')
+          PY

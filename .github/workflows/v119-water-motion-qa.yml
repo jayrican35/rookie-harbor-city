@@ -1,0 +1,53 @@
+name: V119 visible water and character motion
+on:
+  push:
+    branches: [feature/v119-water-and-character-motion]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - name: Syntax and visible effect tests
+        run: |
+          node --check published-game-capture/v119-water-motion.js
+          node --check published-game-capture/v116-marina.js
+          node --check published-game-capture/v115-campus.js
+          node qa/check-v119-water-motion.cjs
+          node qa/check-v118-cinematic.cjs
+      - name: Preserve original connected-game behavior and four interiors
+        run: |
+          node qa/check-v115-campus.cjs
+          node qa/check-v115-connected-city.cjs
+          node qa/check-v115-road-layout.cjs
+          node qa/check-v116-marina.cjs
+          node qa/check-v116-hud.cjs
+          node qa/check-v116-walk.cjs
+          node qa/check-v117-jay.cjs
+          node qa/check-v117-interiors.cjs
+      - name: Build V119 playable preview without altering original game
+        run: |
+          cp -a published-game-capture /tmp/v119-build
+          python3 tools/build_v119_preview.py /tmp/v119-build
+          node --check /tmp/v119-build/game-v115.bundle.js
+          grep -q 'rookie-water-motion' /tmp/v119-build/index.html
+          grep -q 'v119-water-motion.js?v=' /tmp/v119-build/index.html
+      - name: Byte compare protected original game and Zombie assets
+        run: |
+          python3 - <<'PY'
+          import subprocess
+          base='feature/v118-cinematic-marina-foundation'
+          changed=set(subprocess.check_output(['git','diff','--name-only',base,'HEAD'],text=True).splitlines())
+          allowed={'published-game-capture/v116-marina.js','published-game-capture/v115-campus.js',
+            'published-game-capture/v119-water-motion.js','tools/build_v119_preview.py',
+            'qa/check-v119-water-motion.cjs','.github/workflows/v119-water-motion-qa.yml',
+            'docs/V119-WATER-MOTION.md','qa/capture-v119-comparison.cjs'}
+          assert changed<=allowed,changed-allowed
+          assert not any('outbreak' in p.lower() or 'zombie' in p.lower() or '/assets/' in p for p in changed)
+          for f in ('published-game-capture/game.js','published-game-capture/outbreak.css'):
+            assert subprocess.check_output(['git','show',base+':'+f])==open(f,'rb').read(),f
+          print('PASS protected originals byte-identical')
+          PY

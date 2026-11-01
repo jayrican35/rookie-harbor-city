@@ -165,6 +165,56 @@ function location(x,y){
  if(x<8156)return 'EASTSIDE';
  return 'INDUSTRIAL DISTRICT';
 }
+// V127 buildings keep the ORIGINAL district footprints/door positions.
+// Only the flat-colored fallback is upgraded; recovered Midtown sprites win.
+function building(g,b,zoom){
+ const x=b.x,y=b.y,w=b.w,h=b.h;
+ if(![x,y,w,h].every(Number.isFinite)||w<32||h<35)return false;
+ const seed=hash(Math.floor(x),Math.floor(y),31);
+ const roofs=['#a45743','#326982','#b57449','#6c727c','#528177','#995d52'];
+ const roof=roofs[seed%roofs.length],face=['#d5b998','#dac8aa','#b6c3bf'][seed%3];
+ const roofH=Math.max(26,Math.min(h*.67,h-31));
+ g.save();g.imageSmoothingEnabled=false;
+ g.fillStyle='rgba(12,26,43,.29)';g.fillRect(x+9,y+10,w,h);
+ g.fillStyle='#675344';g.fillRect(x,y+10,w,h-10);
+ g.fillStyle=face;g.fillRect(x+4,y+roofH,w-8,h-roofH-6);
+ g.fillStyle='#e9d7bc';g.fillRect(x+4,y+roofH,w-8,5);
+ // Stepped roofing, light-facing bevel and dark structural fascia.
+ g.fillStyle='#453b3e';g.fillRect(x-5,y+6,w+10,roofH+5);
+ g.fillStyle=roof;g.fillRect(x-4,y+1,w+8,roofH);
+ g.fillStyle='rgba(255,225,166,.36)';g.fillRect(x-4,y+2,w+8,4);
+ g.fillStyle='rgba(23,37,52,.26)';g.fillRect(x-4,y+roofH-5,w+8,5);
+ for(let yy=y+12;yy<y+roofH-7;yy+=12){
+  g.fillStyle='rgba(17,29,43,.21)';g.fillRect(x,yy,w,2);
+  g.fillStyle='rgba(252,213,155,.17)';g.fillRect(x+1,yy+3,w-2,1);
+  for(let xx=x+12+(yy%2?10:0);xx<x+w-8;xx+=28)
+    g.fillRect(xx,yy+2,2,8);
+ }
+ const wallTop=y+roofH+5;
+ if(h-roofH>32){
+  const doorX=x+w*.5-11,doorY=y+h-30;
+  g.fillStyle='#264452';g.fillRect(doorX,doorY,22,27);
+  g.fillStyle='#47717d';g.fillRect(doorX+3,doorY+3,16,20);
+  g.fillStyle='#e9d29a';g.fillRect(doorX+16,doorY+15,2,2);
+  const available=w/2-30;
+  if(available>19){
+   for(const wx of [x+16,x+w-34]){
+    g.fillStyle='#18384e';g.fillRect(wx,wallTop+8,21,17);
+    g.fillStyle='#83b2b5';g.fillRect(wx+3,wallTop+10,15,9);
+    g.fillStyle='rgba(246,237,192,.42)';g.fillRect(wx+4,wallTop+11,5,3);
+    g.fillStyle='#d6c49e';g.fillRect(wx-2,wallTop+25,25,4);
+   }
+  }
+  g.fillStyle='rgba(31,43,46,.32)';g.fillRect(x+4,y+h-7,w-8,5);
+ }
+ if(seed%3===0&&w>115){
+  const vx=x+w*.72,vy=y+roofH*.37;
+  g.fillStyle='#7c929c';g.fillRect(vx,vy,27,17);
+  g.fillStyle='#304d5d';g.fillRect(vx+5,vy+4,17,9);
+  g.fillStyle='rgba(255,239,196,.48)';g.fillRect(vx+1,vy+1,25,2);
+ }
+ g.restore();return true;
+}
 function handlesDecor(o){
  return !!spriteFiles[o?.t]&&spriteReady(o.t);
 }
@@ -222,8 +272,8 @@ function map(g,x,y){
 }
 window.ROOKIE_V127_CITY=Object.freeze({
  version:'127-citywide-material-continuity',worldId:'harbor-main',
- base,districtGround,road,coastline,walkways,depthProps,drawDepthProp,
- handlesDecor,waterBlocked:coastalWater,location,map,
+ base,surface,districtGround,road,coastline,walkways,depthProps,drawDepthProp,
+ building,handlesDecor,waterBlocked:coastalWater,location,map,
  metrics:()=>({...metrics,cacheMax:CAP,atlasReady:atlas.complete&&atlas.naturalWidth>0})
 });
 })();

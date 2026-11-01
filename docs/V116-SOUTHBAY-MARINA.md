@@ -114,3 +114,15 @@ The landscape camera now shows the complete native dock lengths and building fro
 Validation: existing marina, campus, connected-city and road suites, a HUD behavior harness covering objective/profile reads and map/gear/team callbacks, and a real simulation pause regression. Browser QA covers landscape/portrait, case readout, keyboard dismissal and profile/inventory handoff. This remains viewport simulation, not a physical Android performance measurement. The new material work does not add or modify protected assets.
 
 Remaining visual differences include single-pose chibi world characters, the use of approved illustrated family portraits rather than the reference's chibi portraits, and original geography. This refinement is a draft update, not an assertion of a pixel-perfect reference match.
+
+## Directional walking — replacing sliding single-pose characters
+
+Added three 16-frame directional sheets for the existing marina officer, fisherman and orange-haired visitor designs. Each contains four authored poses for each of down, left, right and up. `tools/prepare_v116_walk_sheets.py` aligns the generated cells to one fixed foot baseline and saves 384×512 lossless WebP atlases (96×128 per frame). Generated originals are retained separately. All rows have four distinct frame hashes; normalization metadata is in `assets/v116-marina/walk-sheets.json`.
+
+`v116-marina-walk.js` selects the pose from actual travel distance and facing. Player distance comes from the existing accumulated movement stride, not elapsed time. NPCs accumulate distance only while their waypoint simulation actually moves them, with a shorter step length for slow pedestrians. Standing actors hold a fixed pose; movement into a collision does not keep cycling the feet. All frames share one source cell size and destination foot anchor, preventing size changes and drifting between frames. The previous single-pose art remains a loading fallback.
+
+The animation module has no game-state, save, profile, map, input or network writes and no extra animation loop. Existing `game.js`, Zombie Outbreak source/assets, navigation geometry, walking speeds, camera and HUD are preserved. This is the marina officer and ambient cast animation pass; it does not recreate the approved family portraits or claim new unique walk sheets for all five family members.
+
+Checks cover all directions/phases, idle freeze, distance-driven progression, fixed foot anchors, costume selection, texture fallback and actual campus simulation integration. Existing collision, NPC route, HUD and mode exclusion tests also pass. Browser close-up QA verified direction changes and authored moving-NPC poses. Physical Android frame pacing remains unmeasured.
+
+The final V116 builder fingerprints local script/style URLs so returning phone browsers request the new animation renderer instead of retaining the previous single-pose version.

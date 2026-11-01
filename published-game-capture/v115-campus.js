@@ -477,7 +477,7 @@
   function drawOfficer(p,isPlayer,t){
     const marina=window.ROOKIE_V116_MARINA;
     if(isPlayer&&marina&&marina.inMarina(p.x,p.y)){
-      marina.drawNpc(g,{x:p.x,y:p.y,npcStyle:0,phase:0,moving:campus.moved},t);
+      marina.drawNpc(g,{x:p.x,y:p.y,npcStyle:0,phase:0,moving:campus.moved,dir:campus.dir,distance:campus.stride/.055},t);
       g.strokeStyle='#f4cf70';g.lineWidth=3;
       g.beginPath();g.ellipse(p.x,p.y+9,18,8,0,0,Math.PI*2);g.stroke();
       return;

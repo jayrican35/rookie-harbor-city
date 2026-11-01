@@ -253,6 +253,7 @@ function begin(g,opt,t){
 function drawNpc(g,a,t){
  const detail=img('marina-reference-atlas.webp'),p=a.npcStyle||0;
  g.fillStyle='rgba(9,28,40,.26)';g.beginPath();g.ellipse(a.x,a.y+6,13,5,0,0,Math.PI*2);g.fill();
+ if(window.ROOKIE_V116_WALK?.draw(g,a))return;
  if(detail){const key=p===0?'hero':p===1||p===2?'fisher':'visitor';
   const bob=a.moving?Math.sin(t*.012)*1.1:0;
   paintSprite(g,key,a.x-20,a.y-48+bob,40,55);return;}
@@ -302,10 +303,12 @@ function blocksProp(x,y,r){
 }
 function stepNPCs(dt){
  if(!enabled)return;
- for(const a of actors){if(!a.speed||a.route.length===1)continue;
+ for(const a of actors){a.moving=false;if(!a.speed||a.route.length===1)continue;
   const next=a.route[(a.step+1)%a.route.length];const dx=next[0]-a.x,dy=next[1]-a.y,len=Math.hypot(dx,dy);
   if(len<2){a.step=(a.step+1)%a.route.length;continue;}
-  const step=Math.min(len,a.speed*Math.min(.05,dt));a.x+=dx/len*step;a.y+=dy/len*step;
+  const step=Math.max(0,Math.min(len,a.speed*Math.min(.05,dt)));a.x+=dx/len*step;a.y+=dy/len*step;
+  a.moving=step>.001;a.distance=(a.distance||0)+step;a.stepLength=Math.max(4,a.speed*.13);
+  if(a.moving)a.dir=Math.abs(dx)>Math.abs(dy)?(dx>0?'right':'left'):(dy>0?'down':'up');
  }
  for(const s of interactions){if(!s.id.startsWith('v116:'))continue;
   const a=actors.find(p=>p.id===s.id);if(a){s.x=a.x;s.y=a.y;}

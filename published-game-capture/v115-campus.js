@@ -535,8 +535,16 @@
     // an actor behind a piling is covered; in front of it, the actor covers it.
     if(marina?.active()&&marina.pierOccluders)
       for(const post of marina.pierOccluders(view))entries.push({y:post.depthY,pierPost:post});
+    // V124 all structural silhouettes use the same sorted actor queue:
+    // lamp behind player when Jay's feet are south of its base, roof behind
+    // Jay outside the frontage, and only truly rear props occlude the player.
+    if(marina?.active()&&marina.depthProps)
+      for(const prop of marina.depthProps(view))entries.push({y:prop.depthY,depthProp:prop});
     entries.push({y:campus.y,player:true});entries.sort((a,b)=>a.y-b.y);
     for(const entry of entries){
+      if(entry.depthProp){
+        marina.drawDepthProp(g,entry.depthProp,{zoom:campus.zoom,view,player:{x:campus.x,y:campus.y}},t);continue;
+      }
       if(entry.pierPost){marina.drawPierPost(g,entry.pierPost);continue;}
       if(entry.player){drawOfficer({x:campus.x,y:campus.y,color:'#2b467a'},true,t);continue;}
       if(entry.furniture){marina.drawInteriorFurniture(g,entry.furniture);continue;}

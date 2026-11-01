@@ -12,7 +12,8 @@ In `v115-campus.js`, `drawEntityHighlights()` drew Jay and NPCs before `v116-mar
 2. The late `foreground()` renderer now handles **only existing ambient birds**, not structural scenery. The new depth renderer maintains the existing lamp bloom, tree sway, furniture/room vegetation clipping, texture artwork and smooth alpha roof fade.
 3. Building roofs sort by the doorway-wall base (door.y - 2). Jay standing south/in front of the facade renders *in front* of the building; if his feet are behind the building wall, the building visually occludes him. There is no new scene, camera or duplicated frame loop.
 4. Roof fading now requires foot position **inside the actual door opening**, horizontally inset by 5px and within 6px inside to 18px outside the threshold, or the player already inside the room. Standing alongside the building or passing a nearby wall keeps the roof closed.
-5. V123 physical collisions, doorway fences, NPC sprites, V122 dock elevation, V121 premium water, audio, quests, HUD, saved data and Zombie Outbreak are unchanged.
+5. Benches, flower planters, trash bins and the waterfront kiosk now also sort by their physical object-base y rather than painting under every character. The existing native collider footprints remain authoritative.
+6. V123 physical collisions, doorway fences, NPC sprites, V122 dock elevation, V121 premium water, audio, quests, HUD, saved data and Zombie Outbreak are unchanged.
 
 ## Quality assurance
 

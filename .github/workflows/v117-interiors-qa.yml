@@ -1,0 +1,40 @@
+name: V117 seamless marina interiors
+on:
+  push:
+    branches: [feature/v117-marina-seamless-interiors]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - name: Existing world, seamless doors, furniture, animation and protected modes
+        run: |
+          node --check published-game-capture/v115-campus.js
+          node --check published-game-capture/v116-marina.js
+          node qa/check-v115-campus.cjs
+          node qa/check-v115-connected-city.cjs
+          node qa/check-v115-road-layout.cjs
+          node qa/check-v116-marina.cjs
+          node qa/check-v116-hud.cjs
+          node qa/check-v116-walk.cjs
+          node qa/check-v117-jay.cjs
+          node qa/check-v117-interiors.cjs
+          cp -a published-game-capture /tmp/v117-build
+          python3 tools/build_v117_preview.py /tmp/v117-build
+          node --check /tmp/v117-build/game-v115.bundle.js
+          node qa/check-v117-jay.cjs /tmp/v117-build/game-v115.bundle.js
+      - name: Only targeted changes; every other file remains identical
+        run: |
+          python3 - <<'PY'
+          import subprocess
+          base='8de8d85016f0cec91a60addedae29f5ee6d25a7a'
+          changed=set(subprocess.check_output(['git','diff','--name-only',base,'HEAD'],text=True).splitlines())
+          allowed={'published-game-capture/v115-campus.js','published-game-capture/v116-marina.js','qa/check-v116-marina.cjs','qa/check-v117-interiors.cjs','tools/build_v117_preview.py','.github/workflows/v117-interiors-qa.yml','docs/V117-MARINA-INTERIORS.md'}
+          assert changed<=allowed,changed-allowed
+          assert not any('outbreak' in f.lower() or 'zombie' in f.lower() for f in changed)
+          print('PASS: original game.js, all artwork, Jay animations, missions, saves, camera controls, Zombie code/assets/settings remain identical')
+          PY

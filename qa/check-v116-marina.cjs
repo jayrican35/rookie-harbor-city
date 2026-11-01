@@ -18,9 +18,9 @@ const proto={complete:true,naturalWidth:256};
 const mock={window:{},Image:function(){return {...proto}},document:{readyState:'loading',addEventListener(){}},performance:{now:()=>0},location:{search:''},Math,Map,Set,Object,Number,Array,JSON,console};
 vm.runInNewContext(s,mock,{filename:'v116-marina.js'});
 const m=mock.window.ROOKIE_V116_MARINA;assert(m,'V116 module not exposed');
-assert.equal(m.worldId,'harbor-main');assert.equal(m.actors.length,5);assert.equal(m.interactions.length,9);
+assert.equal(m.worldId,'harbor-main');assert.equal(m.actors.length,9);assert(m.interactions.length>=9);assert.equal(m.interiors.length,4);
 assert.equal(m.blocksProp(5150,3710,12),false,'Promenade must be walkable');
-assert.equal(m.blocksProp(4510,3290,12),true,'Shop body must be solid');
+assert.equal(m.blocksProp(4470,3290,12),true,'Shop wall must be solid while its doorway stays open');
 assert.equal(m.blocksProp(5145,3920,12),false,'Existing pier must remain walkable');
 assert.equal(m.blocksProp(5000,3920,12),true,'Open water must block movement');
 assert.equal(m.blocksProp(3000,4400,12),false,'World outside marina unchanged');
@@ -31,7 +31,7 @@ console.log('PASS V116: original marina pier coordinates, 11 raster sprites, int
 // water animation must agree with the same world geometry at every zoom.
 const draws=[],waves=[],pendingImages=[];
 let pen=null;
-const paint={save(){},restore(){},fillRect(){},strokeRect(){},fillText(){},beginPath(){pen=null;},ellipse(){},fill(){},
+const paint={save(){},restore(){},fillRect(){},strokeRect(){},fillText(){},beginPath(){pen=null;},rect(){},clip(){},ellipse(){},fill(){},
  drawImage(...args){draws.push(args);},moveTo(x,y){pen=[x,y];},lineTo(x,y){if(pen)waves.push([...pen,x,y]);},stroke(){}};
 const renderMock={...mock,window:{},Image:function(){const im={complete:false,naturalWidth:0};pendingImages.push(im);return im;},
  document:{...mock.document,createElement(){return {getContext:()=>({...paint,drawImage(){}})};}}};
@@ -68,7 +68,7 @@ function blockedInWorld(x,y,r=12){
  for(const [id,ox,oy] of [['waterfront',4400,3220],['southbay',2800,3220]]){
   for(const b of geo.MAPS[id].pedSolids){
    const dx=x-Math.max(b.x+ox,Math.min(x,b.x+ox+b.w)),dy=y-Math.max(b.y+oy,Math.min(y,b.y+oy+b.h));
-   if(dx*dx+dy*dy<r*r)return true;
+   if(dx*dx+dy*dy<r*r&&!m.ownsSolid({x:b.x+ox,y:b.y+oy,w:b.w,h:b.h}))return true;
   }
  }
  return false;

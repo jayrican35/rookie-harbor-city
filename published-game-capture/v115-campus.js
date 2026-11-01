@@ -505,8 +505,11 @@
     if(art)art.ground(g,{zoom:campus.zoom,view},t);
     const reference=window.ROOKIE_V115_REFERENCE;
     if(reference)reference.terrain(g,{zoom:campus.zoom,view},t);
+    const premium=window.ROOKIE_V115_PREMIUM;
+    if(premium)premium.terrain(g,{zoom:campus.zoom,view},t);
     drawLinkedDistricts(t);
     if(reference)reference.gameOverlay(g,{zoom:campus.zoom,view,districts:districtEntries},t);
+    if(premium)premium.overlay(g,{zoom:campus.zoom,view,districts:districtEntries},t);
     if(art)art.streets(g,{zoom:campus.zoom,view},t);
     drawOutdoorDecor();drawStation();
     if(art)art.precinct(g,{zoom:campus.zoom,view,STX,STY,alpha:roofAlpha()},t);

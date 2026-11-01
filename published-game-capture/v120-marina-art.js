@@ -129,18 +129,31 @@ function boat(g,b,t){
 }
 function dock(g,px,view){
  const im=drawable('dock-wood');if(!im)return false;
- if(!intersects({x:px,y:3800,w:90,h:300},view))return true;
+ const top=3800,deckHeight=300,deckWidth=90;
+ if(!intersects({x:px-14,y:top,w:118,h:deckHeight+12},view))return true;
  g.save();g.imageSmoothingEnabled=false;
- g.fillStyle='rgba(2,25,45,.7)';g.fillRect(px-13,3800,13,300);
- g.fillRect(px+90,3800,17,300);
- for(let y=3800;y<4100;y+=128){
-  const h=Math.min(128,4100-y);
+ // V122: dark *understructure* sits on water OUTSIDE the solid walkable deck,
+ // not on top of timber. Tight side shadows and a clear lower face create height.
+ g.fillStyle='rgba(2,23,42,.36)';g.fillRect(px-13,top+8,12,deckHeight+3);
+ g.fillStyle='rgba(2,19,37,.43)';g.fillRect(px+90,top+8,14,deckHeight+3);
+ g.fillStyle='#76503b';g.fillRect(px-4,top+6,4,deckHeight-1);
+ g.fillStyle='#513524';g.fillRect(px+90,top+6,4,deckHeight-1);
+ // Only the actual deck surface receives the atlas. V121 atlas is 90×192,
+ // unlike old 90×128: use intrinsic height to avoid visible repeated cuts.
+ g.save();g.beginPath();g.rect(px,top,deckWidth,deckHeight);g.clip();
+ const texH=im.naturalHeight||128;
+ for(let y=top;y<top+deckHeight;y+=texH){
+  const h=Math.min(texH,top+deckHeight-y);
   g.drawImage(im,0,0,90,h,px,y,90,h);stats.dockTiles++;
  }
- // Continuous plank edging and dimensional cast shadows on water.
- g.fillStyle='rgba(9,25,34,.32)';g.fillRect(px,3800,4,300);
- g.fillStyle='rgba(255,201,123,.23)';g.fillRect(px+6,3800,2,300);
- g.fillStyle='rgba(3,18,39,.40)';g.fillRect(px+86,3800,4,300);
+ // Sunlit edge trim belongs on the actual deck top, not the water.
+ g.fillStyle='rgba(255,223,155,.45)';g.fillRect(px+3,top,3,deckHeight);
+ g.fillStyle='rgba(37,23,28,.35)';g.fillRect(px+86,top,4,deckHeight);
+ g.restore();
+ // Raised planked end-cap: clearly visible thickness above the sea.
+ g.fillStyle='#754b30';g.fillRect(px,top+deckHeight,90,8);
+ g.fillStyle='#e5b574';g.fillRect(px,top+deckHeight-2,90,3);
+ g.fillStyle='#3c2c28';g.fillRect(px+1,top+deckHeight+6,88,2);
  g.restore();return true;
 }
 function post(g,x,y){

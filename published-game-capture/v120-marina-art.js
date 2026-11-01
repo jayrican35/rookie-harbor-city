@@ -195,12 +195,27 @@ function waterReflections(g,opt,t){
  for(const [a,b] of [[4400,4655],[4745,5105],[5195,5555],[5645,5900]]){
   for(let x=a+68;x<b-24;x+=115){
    if(x<view.x-48||x>view.x+view.w+48||view.y>4060)continue;
+   // Golden reflections are sparse broken *sparkles*, not horizontal bars.
+   // Short points travel with subtle wave displacement beneath their real lamp.
    const flicker=Math.sin(time*.0011+x*.4)*.07;
-   for(let k=0;k<11;k++){
-    const y=3822+k*18,xx=x+Math.sin(k*.89+time*.001)*((k+1)*2);
-    const width=34*(1-k/15);
-    g.fillStyle='rgba(255,210,101,'+Math.max(.05,.51-k*.034+flicker)+')';
-    g.fillRect(xx-width/2,y,width,3+(k%3===0?2:0));stats.reflectionDraws++;
+   for(let k=0;k<14;k++){
+    const y=3822+k*15;
+    const drift=Math.sin(k*.89+time*.001+x*.03)*(5+k*1.25);
+    const seed=(Math.imul((x|0)+k,2654435761)>>>0);
+    const xx=Math.round(x+drift+(seed%21-10));
+    const brightness=Math.max(.07,.64-k*.034+flicker);
+    const size=2+(seed%4);
+    g.fillStyle='rgba(255,230,157,'+brightness.toFixed(3)+')';
+    g.fillRect(xx,y,size,2);
+    if(k%3===0){
+     g.fillStyle='rgba(255,252,212,'+Math.min(.86,brightness*.9).toFixed(3)+')';
+     g.fillRect(xx+1,y-2,2,6);
+    }
+    if(k%4===1){
+     g.fillStyle='rgba(244,174,72,'+(brightness*.56).toFixed(3)+')';
+     g.fillRect(xx-5,y+4,3,2);
+    }
+    stats.reflectionDraws++;
    }
   }
  }

@@ -399,6 +399,60 @@ function building(g,b,zoom){
      }
    }
  }
+ // Distinct building finishes, all within the original physical shell.
+ // Preserve source storefront sprites and existing doors/footprints.
+ if(zoom>.43){
+  if(district==='industrial'){
+   // Steel loading door, rails, warning bands and weathered metal roof.
+   const loadingW=Math.min(w-22,Math.max(46,w*.55)),lx=x+w/2-loadingW/2;
+   const ly=y+h-Math.min(39,h-roofH-9);
+   g.fillStyle='#354d5a';g.fillRect(lx-5,ly-5,loadingW+10,37);
+   g.fillStyle='#8799a0';g.fillRect(lx,ly,loadingW,28);
+   g.fillStyle='#526c79';
+   for(let q=4;q<27;q+=6)g.fillRect(lx+2,ly+q,loadingW-4,2);
+   g.fillStyle='#d7b26f';g.fillRect(lx-7,ly+28,8,3);g.fillRect(lx+loadingW-1,ly+28,8,3);
+   for(let j=0;j<3;j++){
+    const px=x+13+j*(w-30)/3,py=y+13+((seed>>>j)%7);
+    g.fillStyle='#a5a79a';g.fillRect(px,py,18,9);
+    g.fillStyle='#354e56';g.fillRect(px+3,py+3,12,3);
+   }
+  }else if(district==='residential'||kind==='house'){
+   // Door stoop with roof overhang, porch rail, front window planters.
+   g.fillStyle='rgba(30,44,51,.39)';g.fillRect(x+8,y+h-14,w-16,5);
+   g.fillStyle='#d8cbad';g.fillRect(x+w/2-29,y+h-11,58,6);
+   g.fillStyle='#837e72';g.fillRect(x+w/2-26,y+h-5,52,4);
+   if(w>96){
+    for(const wx of [x+18,x+w-39]){
+     g.fillStyle='#777a64';g.fillRect(wx,y+h-27,24,4);
+     g.fillStyle='#507749';g.fillRect(wx+2,y+h-34,20,7);
+     g.fillStyle=seed%2?'#e1bd86':'#d29282';
+     g.fillRect(wx+6,y+h-32,4,3);g.fillRect(wx+15,y+h-33,3,3);
+    }
+   }
+   g.fillStyle='rgba(238,220,178,.50)';g.fillRect(x+6,y+roofH-3,w-12,3);
+  }else if(district==='downtown'||district==='midtown'){
+   // Commercial street frontage with readable fascia and mullioned glass.
+   const fw=w-18,fy=y+h-49;
+   if(fw>56){
+    g.fillStyle='#394f5a';g.fillRect(x+9,fy,fw,30);
+    g.fillStyle='#93b2b5';g.fillRect(x+13,fy+3,fw-8,22);
+    g.fillStyle='#365a63';
+    for(let wx=x+28;wx<x+w-16;wx+=26)g.fillRect(wx,fy+3,3,23);
+    g.fillStyle='#233f4e';g.fillRect(x+10,fy-13,fw-2,10);
+    g.fillStyle=seed%2?'#d9aa64':'#d4c692';g.fillRect(x+17,fy-9,Math.min(fw-18,46),3);
+   }
+  }else if(district==='northgate'||district==='westfield'){
+   // Stone pier bases and timber frame trusses for mountain-side buildings.
+   g.fillStyle='#8e8975';
+   for(const px of [x+8,x+w-19])g.fillRect(px,y+h-30,11,22);
+   g.fillStyle='rgba(31,57,56,.4)';g.fillRect(x+8,y+roofH-3,w-16,5);
+  }else if(district==='eastside'||district==='southbay'){
+   // Coastal facades have cooler lintels, deep sills and sunlit wall accents.
+   g.fillStyle='#f2dcb5';g.fillRect(x+5,y+roofH+2,w-10,4);
+   g.fillStyle='#607e80';g.fillRect(x+11,y+h-16,w-22,4);
+   if(w>128){g.fillStyle='rgba(173,212,198,.65)';g.fillRect(x+21,y+roofH+15,18,7);}
+  }
+ }
  g.restore();return true;
 }
 function handlesDecor(o){

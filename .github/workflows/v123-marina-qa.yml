@@ -12,6 +12,7 @@ on:
       - 'qa/check-v117-interiors.cjs'
       - '.github/workflows/v123-marina-qa.yml'
       - 'docs/V123-COLLISION-AND-NPC-ART.md'
+      - 'qa/capture-v123-review.cjs'
   workflow_dispatch:
 permissions:
   contents: write
@@ -64,7 +65,7 @@ jobs:
           base='e424f9029a191e077d14f6ef5a537cb919b092f8'
           changed=set(subprocess.check_output(['git','diff','--name-only',base,'HEAD'],text=True).splitlines())
           allowed={'published-game-capture/v116-marina.js','published-game-capture/v116-marina-walk.js',
-                   'qa/check-v116-marina.cjs','qa/check-v117-interiors.cjs','qa/check-v123-collision.cjs',
+                   'qa/check-v116-marina.cjs','qa/check-v117-interiors.cjs','qa/check-v123-collision.cjs','qa/capture-v123-review.cjs',
                    'tools/clean_v123_npc_atlases.py','tools/build_v123_preview.py',
                    '.github/workflows/v123-marina-qa.yml','docs/V123-COLLISION-AND-NPC-ART.md'}
           assert all(p in allowed or p.startswith('published-game-capture/assets/v123-marina-npcs/') or p.startswith('qa/v122-reference/') for p in changed),sorted(changed-allowed)

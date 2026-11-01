@@ -1,0 +1,76 @@
+name: V126 marina material and running-animation QA
+on:
+  push:
+    branches: [feature/v126-marina-dock-and-run-polish]
+    paths:
+      - 'published-game-capture/v115-campus.js'
+      - 'published-game-capture/v117-jay.js'
+      - 'published-game-capture/v119-water-motion.js'
+      - 'published-game-capture/v120-marina-art.js'
+      - 'tools/generate_v126_dock.py'
+      - 'tools/clean_v126_run.py'
+      - 'tools/build_v126_preview.py'
+      - 'qa/check-v126-polish.cjs'
+      - 'qa/capture-v126-polish.cjs'
+      - '.github/workflows/v126-marina-qa.yml'
+      - 'docs/V126-REVIEW.md'
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - name: JS syntax and V126 author-controlled regression tests
+        run: |
+          node --check published-game-capture/v115-campus.js
+          node --check published-game-capture/v117-jay.js
+          node --check published-game-capture/v119-water-motion.js
+          node --check published-game-capture/v120-marina-art.js
+          node qa/check-v126-polish.cjs
+          node qa/check-v117-jay.cjs
+          node qa/check-v119-water-motion.cjs
+          node qa/check-v121-marina.cjs
+          node qa/check-v122-pier.cjs
+          node qa/check-v124-depth.cjs
+          node qa/check-v125-mobile-hud.cjs
+          node qa/check-v123-collision.cjs
+          node qa/check-v116-marina.cjs
+          node qa/check-v115-campus.cjs
+      - name: Build actual V126 from existing V125 playable game (offline assets only)
+        run: |
+          python3 -m pip install --disable-pip-version-check -q pillow numpy
+          cp -a published-game-capture /tmp/v126-play
+          python3 tools/build_v126_preview.py /tmp/v126-play
+          grep -q 'v126-no-selection-halo-distinct-wood-run-gait' /tmp/v126-play/index.html
+          node --check /tmp/v126-play/game-v115.bundle.js
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          root=Path('/tmp/v126-play')
+          assert Image.open(root/'assets/v126-dock/dock-wood.png').size==(90,320)
+          assert Image.open(root/'assets/v126-jay/jay-run-clean.png').size==(1024,512)
+          assert (root/'assets/jay-v117/jay-run.webp').stat().st_size>100000
+          print('PASS V126 new full-length dry wood and original 4x8 run atlas cleaned without source overwrite')
+          PY
+      - name: Verify exact original and Zombie Outbreak preservation
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess
+          base='11bb1b46937549cb1bd88ddc25b8e53e620600a3'
+          changed=set(subprocess.check_output(['git','diff','--name-only',base,'HEAD'],text=True).splitlines())
+          allowed={'published-game-capture/v115-campus.js','published-game-capture/v117-jay.js',
+            'published-game-capture/v119-water-motion.js','published-game-capture/v120-marina-art.js',
+            'tools/generate_v126_dock.py','tools/clean_v126_run.py','tools/build_v126_preview.py',
+            'qa/check-v126-polish.cjs','qa/capture-v126-polish.cjs','.github/workflows/v126-marina-qa.yml',
+            'docs/V126-REVIEW.md'}
+          assert changed<=allowed, sorted(changed-allowed)
+          for p in ('published-game-capture/game.js','published-game-capture/outbreak.css',
+                    'published-game-capture/controls.css','published-game-capture/v116-marina.js',
+                    'published-game-capture/v116-marina-hud.js','published-game-capture/v125-mobile-hud.css'):
+            assert subprocess.check_output(['git','show',base+':'+p])==Path(p).read_bytes(),p
+          assert not any('zombie' in p.lower() or 'outbreak' in p.lower() or '/assets/' in p for p in changed)
+          print('PASS all original game/vehicle/Zombie files unchanged, V125 HUD unchanged, new assets generated separately')
+          PY

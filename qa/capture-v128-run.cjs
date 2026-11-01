@@ -16,6 +16,9 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
   assert(await page.evaluate(()=>window.HARBOR.seamlessCampusV115.openAt(4700,3950,.95)));
   await page.waitForFunction(()=>document.body.classList.contains('v116-play-mode')&&window.ROOKIE_JAY.ready(),{timeout:35000});
   await page.waitForTimeout(1100);
+  await page.waitForFunction(()=>window.HARBOR.seamlessCampusV115.metrics().ambientDistrictsInitialized===9,{timeout:8000});
+  const cityMetrics=await page.evaluate(()=>window.HARBOR.seamlessCampusV115.metrics());
+  assert(cityMetrics.ambientPedestrians>0&&cityMetrics.ambientPedestrians<=16,'Living-city pedestrians must be actually active without duplicate NPCs');
   await page.screenshot({path:path.join(folder,'v128-idle.png')});
   await page.keyboard.down('Shift');await page.keyboard.down('ArrowUp');
   await page.waitForFunction(()=>window.ROOKIE_JAY.snapshot('connected-jay')?.mode==='run',{timeout:6000});
@@ -28,7 +31,7 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
   assert.equal(stopped.mode,'idle','RUN to idle must settle with player planted');
   assert(running.x!==stopped.x||running.y!==stopped.y||running.mode==='run');
   assert.equal(errors.length,0,'No JS console errors: '+errors.join(', '));
-  fs.writeFileSync(path.join(folder,'v128-run-metrics.json'),JSON.stringify({running:{mode:running.mode,phase:running.phase},stopped:{mode:stopped.mode,phase:stopped.phase},viewport:'390x844 Chromium emulated mobile',errors},null,2));
+  fs.writeFileSync(path.join(folder,'v128-run-metrics.json'),JSON.stringify({running:{mode:running.mode,phase:running.phase},stopped:{mode:stopped.mode,phase:stopped.phase},ambientPedestrians:cityMetrics.ambientPedestrians,ambientDistrictsInitialized:cityMetrics.ambientDistrictsInitialized,viewport:'390x844 Chromium emulated mobile',errors},null,2));
   console.log('PASS V128 live mobile-size gameplay RUN / idle transition in the original single player/camera world');
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exit(1)});

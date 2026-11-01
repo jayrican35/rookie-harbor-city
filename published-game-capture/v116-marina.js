@@ -50,9 +50,112 @@ const objects=Object.freeze([
  ...[4460,4760,5060,5360,5660].map((x,i)=>({id:'marina:lamp-'+i,type:'lamp',image:'lamp.webp',x,y:3655,w:27,h:85})),
  ...[4500,4900,5290,5680].map((x,i)=>({id:'marina:bin-'+i,type:'trash',image:'trash_bin.webp',x,y:3748,w:20,h:28}))
 ]);
-// Collision for *new* opaque structures only: old source solids remain in V115.
-// Preserve broad pedestrian promenade 3900..4220 and pier approaches.
-const solidBoxes=Object.freeze(objects.filter(o=>o.solid).map(o=>Object.freeze({id:o.id,x:o.x+12,y:o.y+19,w:o.w-24,h:o.h-38})));
+// Building shells now share the existing world: walls, open doorway, furnishings.
+// Coordinates derive from the approved exterior objects; no second scene/map.
+const interiors=[];
+function defineInterior(id,label,kind,doorFraction=.5){
+ const exterior=objects.find(o=>o.id===id),floor={x:exterior.x+10,y:exterior.y+18,w:exterior.w-20,h:exterior.h-24,label,fill:kind==='workshop'?'#999b94':'#c9ad83'};
+ const door={x:Math.round(exterior.x+exterior.w*doorFraction),y:floor.y+floor.h,w:kind==='workshop'?64:44};
+ const b={id,label,kind,exterior,floor,door,roof:1,inside:false,furniture:[],walls:[]};
+ const left=door.x-door.w/2,right=door.x+door.w/2;
+ b.walls=[{x:floor.x,y:floor.y,w:floor.w,h:6},{x:floor.x,y:floor.y,w:6,h:floor.h},
+  {x:floor.x+floor.w-6,y:floor.y,w:6,h:floor.h},{x:floor.x,y:door.y-6,w:left-floor.x,h:6},{x:right,y:door.y-6,w:floor.x+floor.w-right,h:6}];
+ function item(key,type,x,y,w,h,art,text,solid=true){b.furniture.push({id:id+':'+key,type,x:floor.x+x,y:floor.y+y,w,h,art,text,solid});}
+ if(kind==='cafe'){
+  item('counter','counter',68,35,floor.w-78,16,null,'House coffee, cocoa, and cinnamon rolls. The barista recommends the harbor blend.');
+  item('table-a','table',68,57,24,24,'cafeA','A cup, a receipt, and a folded napkin. The table is ready for the next customer.');
+  item('table-b','table',123,73,24,24,'cafeB','The window table overlooks the marina. Please leave the gulls outside.');
+  item('chair-a','bench',69,84,20,9,null,'A polished wooden café chair.');
+  item('chair-b','bench',122,56,20,9,null,'A chair beside the window table.');
+  item('espresso','machine',114,19,22,13,null,'The espresso machine is warm. A little sign says: GOOD COFFEE TAKES PATIENCE.',false);
+  item('shelf','shelf',7,8,46,12,'shelf120','Cups, tea tins, and freshly stocked napkins.');
+  item('plant','plant',floor.w-21,51,15,18,null,'A sunny little windowsill plant.');
+  item('menu','board',61,8,39,14,null,'MARINA CAFÉ: coffee, cocoa, cinnamon rolls. Water is always free.',false);
+ }else if(kind==='office'){
+  item('desk','desk',22,59,62,28,null,'The harbormaster checks berth reservations and helps visitors find the correct pier.');
+  item('log','board',22,15,55,16,null,'PUBLIC HARBOR BOARD: tide information, berth numbers, and visitor guidance. Official case records are unchanged.',false);
+  item('shelf','shelf',147,14,91,20,'shelf120','Charts, safety binders, and neatly sorted harbor records.');
+  item('meeting-table','table',180,98,46,29,'coffee','A harbor chart and a quiet place to plan a safe trip.');
+  item('visitor-chair','bench',177,140,43,11,null,'Seating for marina visitors.');
+  item('cabinet','counter',235,53,27,38,null,'Life-jacket forms and spare harbor guides.');
+  item('plant','plant',20,132,19,23,null,'A well-watered office plant.');
+ }else if(kind==='bait'){
+  item('tackle-rack','shelf',88,14,91,20,'shelf120','Fishing line, hooks, and tackle sorted by size. Keep the sharp hooks in their cases.');
+  item('counter','counter',91,56,88,18,null,'Ask the shopkeeper about local fishing rules and suitable tackle.');
+  item('bait-crate','crate',142,102,32,26,'crate90','Sealed bait tubs. Please keep the lids closed.');
+  item('seat','bench',83,105,36,11,null,'A short bench for trying on fishing boots.');
+  item('notice','board',8,13,55,18,null,'FISH RESPONSIBLY: observe posted limits, collect your line, and keep the shoreline clean.',false);
+  item('plant','plant',11,74,18,22,null,'A hardy little plant beside the shop window.');
+ }else if(kind==='workshop'){
+  item('workbench','table',10,44,62,32,'workbench','A clamped wooden part, hand tools, and a checklist. Ask before touching a repair.');
+  item('tool-rack','shelf',142,28,45,18,'shelf120','Tools return to their marked places after every job.');
+  item('parts','crate',147,90,32,25,'crate90','Labeled spare parts for routine boat maintenance.');
+  item('stool','bench',13,92,23,10,null,'The mechanic keeps the center aisle clear.');
+  item('safety','board',10,10,58,17,null,'WORKSHOP SAFETY: engine off, tools secured, and walkways clear.',false);
+ }
+
+ interiors.push(b);return b;
+}
+defineInterior('marina:cafe','Marina Café','cafe',.25);
+defineInterior('marina:office','Marina Office','office');
+defineInterior('marina:bait','Harbor Bait & Tackle','bait',.25);
+defineInterior('marina:shed-b','Boat Service Workshop','workshop');
+// The source district's old full-building solids are excluded only by exact
+// footprint match in the connected-world collision loop. All other solids stay.
+function ownsSolid(rect){return enabled&&(!rect.id||rect.id==='waterfront')&&interiors.some(b=>{
+ const e=b.exterior;
+ // The live classic renderer also supplies centered, alpha-trimmed building
+ // bodies. Match only the same full-height envelope and center; small props,
+ // walls, roads, water and unrelated buildings never meet this ownership rule.
+ return Math.abs(rect.x+rect.w/2-e.x-e.w/2)<.01&&Math.abs(rect.y-e.y)<.01&&Math.abs(rect.h-e.h)<.01&&rect.w>=e.w*.5&&rect.w<=e.w+.01;
+});}
+function interiorAt(x,y){return interiors.find(b=>x>b.floor.x+5&&x<b.floor.x+b.floor.w-5&&y>b.floor.y+5&&y<b.door.y-5)||null;}
+function updateInteriors(player,dt){
+ const a=1-Math.exp(-12*Math.max(0,Math.min(.05,dt||0)));
+ for(const b of interiors){
+  const f=b.floor;b.inside=interiorAt(player.x,player.y)===b;
+  // Reveal while the feet approach the threshold, before the roof can hide Jay.
+  const approach=Math.abs(player.x-b.door.x)<b.door.w/2+12&&player.y>=b.door.y-12&&player.y<b.door.y+40;
+  const target=b.inside||approach?0:1;b.roof+=(target-b.roof)*a;
+  if(Math.abs(b.roof-target)<.002)b.roof=target;
+ }
+}
+const solidBoxes=Object.freeze(objects.filter(o=>o.solid&&!interiors.some(b=>b.id===o.id)).map(o=>Object.freeze({id:o.id,x:o.x+12,y:o.y+19,w:o.w-24,h:o.h-38})));
+const interiorSolids=Object.freeze(solidBoxes.concat(interiors.flatMap(b=>b.walls.concat(b.furniture.filter(f=>f.solid)))));
+function drawInteriorFloor(g,b){
+ const f=b.floor;g.save();g.beginPath();g.rect(f.x,f.y,f.w,f.h);g.clip();
+ g.fillStyle=f.fill;g.fillRect(f.x,f.y,f.w,f.h);
+ const tiles=img('marina-detail-tiles.png');
+ if(b.kind!=='workshop'&&tiles){for(let y=f.y;y<f.y+f.h;y+=32)for(let x=f.x;x<f.x+f.w;x+=32){const tid=12+hash(x,y,17)%4;g.drawImage(tiles,tid%8*32,Math.floor(tid/8)*32,32,32,x,y,32,32);}}
+ else{g.strokeStyle='#777f7e';g.lineWidth=1;for(let x=f.x;x<f.x+f.w;x+=24){g.beginPath();g.moveTo(x,f.y);g.lineTo(x,f.y+f.h);g.stroke();}for(let y=f.y;y<f.y+f.h;y+=24){g.beginPath();g.moveTo(f.x,y);g.lineTo(f.x+f.w,y);g.stroke();}}
+ g.restore();
+ // Physical wall faces and caps, drawn in the same coordinate space as floors.
+ for(const w of b.walls){g.fillStyle='#736047';g.fillRect(w.x,w.y-14,w.w,w.h+14);g.fillStyle='#dfccac';g.fillRect(w.x,w.y-14,w.w,3);g.fillStyle='#9e8464';g.fillRect(w.x,w.y+w.h-2,w.w,2);}
+ g.fillStyle='#dac59e';g.fillRect(b.door.x-b.door.w/2,b.door.y-5,b.door.w,5);
+ g.fillStyle='#81684b';g.fillRect(b.door.x-b.door.w/2,b.door.y-1,b.door.w,2);
+}
+function bLabel(f){return f.id.endsWith('menu')?'MENU':'HARBOR';}
+function drawInteriorFurniture(g,f){
+ const asset=window.HARBOR?.worldFurniture?.art[f.art];
+ if(asset?.complete&&asset.naturalWidth){g.imageSmoothingEnabled=false;g.drawImage(asset,f.x,f.y-8,f.w,f.h+8);return;}
+ if(f.type==='machine'){
+  g.fillStyle='#213445';g.fillRect(f.x,f.y-12,f.w,f.h+12);g.fillStyle='#c7d2cf';g.fillRect(f.x+2,f.y-10,f.w-4,11);
+  g.fillStyle='#ddf2df';g.fillRect(f.x+4,f.y-7,5,4);g.fillStyle='#c49342';g.fillRect(f.x+13,f.y-7,4,4);
+  g.fillStyle='#111e2a';g.fillRect(f.x+3,f.y+3,f.w-6,5);g.fillStyle='#fff0d0';g.fillRect(f.x+7,f.y+2,6,6);return;
+ }
+ // Explicit footprint-sized fittings avoid the classic precinct's native-size
+ // furniture overrides. Existing native world-table/shelf art is reused above.
+ if(f.type==='plant'){
+  const plant=window.HARBOR?.receptionRoom?.plant;
+  if(plant?.complete&&plant.naturalWidth){g.drawImage(plant,91,82,842,1351,f.x,f.y-12,f.w,f.h+12);return;}
+  g.fillStyle='#94613e';g.fillRect(f.x+3,f.y+f.h-7,f.w-6,7);g.fillStyle='#4a863d';g.fillRect(f.x,f.y,f.w,13);return;
+ }
+ if(f.type==='board'){g.fillStyle='#6e4932';g.fillRect(f.x,f.y-12,f.w,f.h+12);g.fillStyle='#193d3a';g.fillRect(f.x+2,f.y-10,f.w-4,f.h+8);g.fillStyle='#fff0bf';g.font='bold 6px sans-serif';g.textAlign='center';g.fillText(bLabel(f),f.x+f.w/2,f.y-3);for(let k=0;k<3;k++)g.fillRect(f.x+5,f.y+2+k*3,f.w-10,1);return;}
+ if(f.type==='bench'){g.fillStyle='#473325';g.fillRect(f.x+2,f.y+f.h-3,3,5);g.fillRect(f.x+f.w-5,f.y+f.h-3,3,5);g.fillStyle='#805b39';g.fillRect(f.x,f.y-5,f.w,4);g.fillStyle='#bb8b52';g.fillRect(f.x,f.y,f.w,f.h-2);g.fillStyle='#dab37a';g.fillRect(f.x+1,f.y,f.w-2,2);return;}
+ g.fillStyle='#5b4030';g.fillRect(f.x,f.y-7,f.w,f.h+7);g.fillStyle='#ab794b';g.fillRect(f.x+2,f.y+1,f.w-4,f.h-3);g.fillStyle='#e1c494';g.fillRect(f.x-1,f.y-9,f.w+2,10);g.fillStyle='#f8e4bd';g.fillRect(f.x,f.y-9,f.w,2);
+ if(f.type==='desk'){g.fillStyle='#334d60';g.fillRect(f.x+6,f.y-17,20,13);g.fillStyle='#94c6c6';g.fillRect(f.x+8,f.y-15,16,9);g.fillStyle='#ede4ce';g.fillRect(f.x+f.w-22,f.y-7,15,8);}
+
+}
 const actors=[
  {id:'v116:fisher',name:'Fisherman',npcStyle:1,x:5142,y:3876,route:[[5142,3876],[5142,3944]],speed:11,phase:0,dialogue:'I almost caught a legendary fish. It was THIS big! ...Maybe.'},
  {id:'v116:worker',name:'Marina worker',npcStyle:2,x:5400,y:3758,route:[[5400,3758],[5480,3758],[5515,3758],[5400,3758]],speed:27,phase:1,dialogue:'The gulls stole another sandwich. I think they have a schedule.'},
@@ -67,6 +170,14 @@ const interactions=[
  {id:'v116:kiosk',label:'Waterfront information',x:5710,y:3670,text:'Southbay Marina: three piers, a café, boat shed, and exceptionally confident seagulls.'},
  ...actors.map(a=>({id:a.id,label:a.name,x:a.x,y:a.y,text:a.dialogue}))
 ];
+for(const b of interiors){
+ const f=b.floor,staffPoint={cafe:[f.w-36,21],office:[114,45],bait:[55,36],workshop:[112,28]}[b.kind];
+ const staff={building:b.id,id:'v116:'+b.kind+'-staff',name:{cafe:'Marina barista',office:'Harbor assistant',bait:'Tackle shopkeeper',workshop:'Boat mechanic'}[b.kind],npcStyle:b.kind==='workshop'?2:3,x:f.x+staffPoint[0],y:f.y+staffPoint[1],
+  route:[[f.x+staffPoint[0],f.y+staffPoint[1]]],speed:0,phase:0,step:0,dir:'down',dialogue:'Welcome to '+b.label+'. Take your time and have a look around.'};
+ staff.serviceOffset=b.kind==='cafe'?{x:f.x+68-staff.x,y:f.y+58-staff.y}:{x:0,y:0};
+ actors.push(staff);interactions.push({id:staff.id,label:staff.name,x:staff.x+staff.serviceOffset.x,y:staff.y+staff.serviceOffset.y,text:staff.dialogue,building:b.id});
+ for(const f of b.furniture)if(f.text)interactions.push({id:'v116:'+f.id,label:b.label+' · '+f.id.split(':').at(-1).replaceAll('-',' '),x:f.x+f.w/2,y:f.y+f.h+13,text:f.text,building:b.id});
+}
 const visible=(r,view,p=75)=>!view||(r.x<view.x+view.w+p&&r.x+(r.w||0)>view.x-p&&r.y<view.y+view.h+p&&r.y+(r.h||0)>view.y-p);
 function hash(x,y,s){let a=Math.imul(x|0,374761393)+Math.imul(y|0,668265263)+Math.imul(s|0,1442695041);a=(a^(a>>>13));a=Math.imul(a,1274126177);return (a^(a>>>16))>>>0;}
 function tileIndex(x,y){
@@ -200,6 +311,8 @@ function begin(g,opt,t){
   }
   if(o.type==='palm'||o.type==='tree')continue; // foreground layer sway below
   if(o.type==='lamp')continue; // foreground highlights
+  const interior=interiors.find(b=>b.id===o.id);
+  if(interior){drawInteriorFloor(g,interior);continue;}
   g.imageSmoothingEnabled=false;paintSprite(g,o.image,o.x,o.y,o.w,o.h);objectsDrawn++;
  }
  // Waterfront district placard, placed in the garden behind the walking lane.
@@ -262,6 +375,7 @@ function drawNpc(g,a,t){
 function foreground(g,opt,t){
  if(!enabled||!opt||opt.zoom<.14)return;
  const view=opt.view,a=performance.now();
+ for(const b of interiors)if(b.roof>.001&&visible(b.exterior,view,60)){g.save();g.globalAlpha=opt.zoom<.3?1:b.roof;const o=b.exterior;paintSprite(g,o.image,o.x,o.y,o.w,o.h);g.restore();}
  for(const o of objects){if(!visible(o,view,40))continue;
   if(o.type!=='palm'&&o.type!=='tree'&&o.type!=='lamp')continue;
   const sprite=img(o.image);if(!sprite)continue;
@@ -275,6 +389,10 @@ function foreground(g,opt,t){
   const phase=o.x*.007+o.y*.009;
   const sway=Math.sin(t*.00065+phase)*(o.type==='palm'?2.0:1.15);
   g.save();
+  // Existing canopy art stays outside the revealed room, including overlapping grove edges.
+  for(const b of interiors){const f=b.floor;if(b.roof<.995&&o.x<f.x+f.w&&o.x+o.w>f.x&&o.y<f.y+f.h&&o.y+o.h>f.y){
+   g.beginPath();g.rect(o.x-20,o.y-20,o.w+40,o.h+40);g.rect(f.x,f.y,f.w,f.h);g.clip('evenodd');
+  }}
   if(opt.player&&opt.player.x>o.x-10&&opt.player.x<o.x+o.w+10&&opt.player.y>o.y&&opt.player.y<o.y+o.h+12)g.globalAlpha=.42;
   g.translate(o.x+o.w/2,o.y+o.h);g.rotate(sway*.0038);g.imageSmoothingEnabled=false;
   paintSprite(g,o.image,-o.w/2,-o.h,o.w,o.h);g.restore();objectsDrawn++;
@@ -298,7 +416,7 @@ function waterBlocked(x,y,r=12){
 }
 function blocksProp(x,y,r){
  if(!enabled)return false;
- for(const b of solidBoxes){const ax=Math.max(b.x,Math.min(x,b.x+b.w));const ay=Math.max(b.y,Math.min(y,b.y+b.h));if((x-ax)**2+(y-ay)**2<r*r)return true;}
+ for(const b of interiorSolids){const ax=Math.max(b.x,Math.min(x,b.x+b.w));const ay=Math.max(b.y,Math.min(y,b.y+b.h));if((x-ax)**2+(y-ay)**2<r*r)return true;}
  return waterBlocked(x,y,r);
 }
 function stepNPCs(dt){
@@ -311,7 +429,7 @@ function stepNPCs(dt){
   if(a.moving)a.dir=Math.abs(dx)>Math.abs(dy)?(dx>0?'right':'left'):(dy>0?'down':'up');
  }
  for(const s of interactions){if(!s.id.startsWith('v116:'))continue;
-  const a=actors.find(p=>p.id===s.id);if(a){s.x=a.x;s.y=a.y;}
+  const a=actors.find(p=>p.id===s.id);if(a){s.x=a.x+(a.serviceOffset?.x||0);s.y=a.y+(a.serviceOffset?.y||0);}
  }
 }
 function metrics(){const sorted=samples.slice().sort((a,b)=>a-b);return Object.freeze({version:'116-marina-1',worldId:WORLD,
@@ -323,6 +441,10 @@ function metrics(){const sorted=samples.slice().sort((a,b)=>a-b);return Object.f
  campaignEngineModified:false,zombieOutbreakModified:false,multiplayerTransport:'none'});}
 const api={inMarina:(x,y)=>enabled&&x>4400&&x<5900&&y>3220&&y<4220,version:'116-marina-1',worldId:WORLD,region:Object.freeze(TERRAIN),piers:PIER_X,objects,actors,interactions,
  background:begin,foreground,stepNPCs,drawNpc,blocksProp,metrics,
+ interiors,interiorAt,updateInteriors,ownsSolid,drawInteriorFurniture,
+ interiorFurniture:(view)=>interiors.flatMap(b=>b.roof<.995&&visible(b.exterior,view,60)?b.furniture:[]),
+ interiorActorVisible:(npc)=>!npc.building||interiors.some(b=>b.id===npc.building&&b.roof<.995),
+ interactionAvailable:(sp,x,y)=>!sp.building||interiorAt(x,y)?.id===sp.building,
  active:()=>enabled,
  // Only enabled for browser evidence, never a production interaction.
  setTestEnabled:(bool)=>{if(!/[?&]v116QA=1(?:&|$)/.test(location.search))return false;enabled=!!bool;cached.clear();return true;}};

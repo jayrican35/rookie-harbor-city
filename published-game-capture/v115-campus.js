@@ -100,6 +100,7 @@
     } else {
       for(let i=0;i<districtSolids.length;i++){
         const b=districtSolids[i];
+        if(window.ROOKIE_V116_MARINA?.ownsSolid?.(b))continue;
         if(circleHitsRect(x,y,r,b))return true;
       }
     }
@@ -118,7 +119,7 @@
   }
   const campus={open:false,x:FRONT.x,y:FRONT.y+86,dir:'up',stride:0,moved:false,speed:0,
     camX:0,camY:0,zoom:1.15,autoZoom:true,follow:true,keys:new Set(),stick:null,frame:0,last:0,
-    near:null,firstPaint:true,doorCrossings:0,previousRoom:null,visibleChunks:[]};
+    paintCosts:[],paintCount:0,near:null,firstPaint:true,doorCrossings:0,previousRoom:null,visibleChunks:[]};
   const modal=document.createElement('section');modal.id='v115Campus';modal.hidden=true;
   modal.setAttribute('aria-label','V115 seamless precinct and grounds development preview');
   modal.innerHTML=`<canvas id="v115CampusCanvas" aria-label="Continuous 1:1 Precinct 9 interior, grounds and streets"></canvas>
@@ -214,8 +215,9 @@
     if(!blocked(campus.x+dx*step,campus.y,r))campus.x+=dx*step;
     if(!blocked(campus.x,campus.y+dy*step,r))campus.y+=dy*step;
     const dist=Math.hypot(campus.x-ox,campus.y-oy);
-    campus.moved=dist>.04;if(campus.moved)campus.stride+=dist*.055;
+    campus.moved=dist>.04;if(campus.moved){campus.stride+=dist*.055;dialogue.hidden=true;}
     if(shared?.eligible())shared.update('connected-jay',{x:campus.x,y:campus.y,dir:campus.dir,map:WORLD_ID,run},dt);
+    marina?.updateInteriors?.({x:campus.x,y:campus.y},dt);
     const nowRoom=interiorRoom(campus.x,campus.y);
     if((campus.previousRoom===null)!==(nowRoom===null))campus.doorCrossings++;
     campus.previousRoom=nowRoom;
@@ -402,7 +404,7 @@
     for(const o of d.map.decors||[]){
       const x=o.x||0,y=o.y||0;
       if(!nearViewport(d.x+x-130,d.y+y-170,(o.w||240)+260,(o.h||200)+260))continue;
-      if(['bldg','house','shed','lighthouse','mtbldg'].includes(o.t)){paintedBuilding(o);continue;}
+      if(['bldg','house','shed','lighthouse','mtbldg'].includes(o.t)){if(!window.ROOKIE_V116_MARINA?.ownsSolid?.({x:d.x+x,y:d.y+y,w:o.w,h:o.h}))paintedBuilding(o);continue;}
       if(o.t==='tree'||o.t==='bigtree'||o.t==='palm'){districtTree(x,y,o.t==='bigtree'?38:26);continue;}
       if(o.t==='lamp'){g.fillStyle='#1b3b50';g.fillRect(x-3,y-35,6,36);g.fillStyle='#f4df97';g.fillRect(x-8,y-40,16,10);continue;}
       if(o.t==='sign'||o.t==='gate'){g.fillStyle='#2a4458';g.fillRect(x-36,y-22,110,28);g.fillStyle='#fff0c3';g.font='700 15px Barlow Condensed,sans-serif';g.textAlign='left';g.fillText(String(o.text||d.id).slice(0,20),x-32,y-4);continue;}
@@ -455,6 +457,7 @@
     return .95;
   }
   function drawStation(){
+    if(!nearViewport(STX-20,STY-20,ST.w+40,ST.h+60))return;
     const image=stationTexture();
     g.drawImage(image,STX,STY);
     // Foyer, double-wide front entrance and garage threshold share exact world coordinates.
@@ -514,21 +517,29 @@
   function drawEntityHighlights(t){
     const view={x:campus.camX-50,y:campus.camY-60,w:tw/campus.zoom+100,h:th/campus.zoom+120};
     function visible(e){return e.x>view.x&&e.x<view.x+view.w&&e.y>view.y&&e.y<view.y+view.h;}
-    for(const npc of npcActors)if(visible(npc)){
-      const marina=window.ROOKIE_V116_MARINA;
+    const marina=window.ROOKIE_V116_MARINA;
+    // One depth queue: existing actors and new furnishing geometry share it.
+    const entries=npcActors.filter(npc=>visible(npc)&&(!marina?.interiorActorVisible||marina.interiorActorVisible(npc))).map(npc=>({y:npc.y,actor:npc}));
+    if(marina?.interiorFurniture)for(const f of marina.interiorFurniture(view))entries.push({y:f.y+f.h,furniture:f});
+    entries.push({y:campus.y,player:true});entries.sort((a,b)=>a.y-b.y);
+    for(const entry of entries){
+      if(entry.player){drawOfficer({x:campus.x,y:campus.y,color:'#2b467a'},true,t);continue;}
+      if(entry.furniture){marina.drawInteriorFurniture(g,entry.furniture);continue;}
+      const npc=entry.actor;
       if(marina&&(npc.npcStyle!==undefined||marina.inMarina(npc.x,npc.y))){if(marina.active())marina.drawNpc(g,npc.npcStyle!==undefined?npc:{...npc,npcStyle:1},t);}
       else drawOfficer(npc,false,t);
     }
     campus.near=null;let best=58;
     for(const sp of worldSpots){
+      if(marina?.interactionAvailable&&!marina.interactionAvailable(sp,campus.x,campus.y))continue;
       const d=Math.hypot(sp.x-campus.x,sp.y-campus.y);
       if(d<best){best=d;campus.near=sp;}
-      if(!visible(sp)||campus.zoom<.38)continue;
+      if(sp.building||!visible(sp)||campus.zoom<.38)continue;
       g.strokeStyle='rgba(234,193,88,.62)';g.lineWidth=2;g.beginPath();g.arc(sp.x,sp.y,8+2*Math.sin(t/410),0,7);g.stroke();
     }
-    drawOfficer({x:campus.x,y:campus.y,color:'#2b467a'},true,t);
   }
   function paint(t,dt){
+    const paintStart=typeof performance!=='undefined'?performance.now():null;
     cameraFollow(dt);
     const viewW=tw/campus.zoom,viewH=th/campus.zoom;
     campus.visibleChunks=chunkWindow(campus.camX,campus.camY,viewW,viewH);
@@ -569,6 +580,7 @@
     modal.querySelector('#v115CampusCoords').textContent='World '+Math.round(campus.x)+', '+Math.round(campus.y)+'  · '+idOf(campus.x,campus.y)+'  · '+Math.round(campus.zoom*100)+'%';
     if(window.ROOKIE_V116_HUD)window.ROOKIE_V116_HUD.paint({x:campus.x,y:campus.y},t);
     modal.querySelector('#v115CampusInteract').textContent=campus.near?'LOOK · '+campus.near.label:'LOOK';
+    if(paintStart!==null){campus.paintCount++;campus.paintCosts.push(performance.now()-paintStart);if(campus.paintCosts.length>180)campus.paintCosts.shift();}
   }
   function loop(timestamp){
     if(!campus.open)return;
@@ -695,6 +707,7 @@
     },
     toWorld:(areaId,x,y)=>areaId==='station'?{worldId:WORLD_ID,areaId,x:STX+x,y:STY+y}:
       areaId==='plaza'?{worldId:WORLD_ID,areaId:'precinct-campus-v115',x:PLX+x,y:PLY+y}:null,
+    metrics:()=>{const times=campus.paintCosts.slice().sort((a,b)=>a-b);return {frames:campus.paintCount,paintP95Ms:times[Math.floor((times.length-1)*.95)]||0,paintMaxMs:times.at(-1)||0,samples:times.length};},
     snapshot:()=>Object.freeze({schema:1,worldId:WORLD_ID,areaId:districtAt(campus.x,campus.y)?.id||AREA_ID,
       playerId:'local-preview',x:campus.x,y:campus.y,instanceId:districtAt(campus.x,campus.y)?.instanceId||'harbor-main:campus',
       transport:'none',authoritativeServer:false,committedToSave:false}),

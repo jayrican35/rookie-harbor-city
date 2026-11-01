@@ -1,0 +1,65 @@
+name: V125 modern mobile HUD gameplay QA
+on:
+  push:
+    branches: [feature/v125-modern-campaign-mobile-hud]
+    paths:
+      - 'published-game-capture/v115-campus.js'
+      - 'published-game-capture/v116-marina-hud.js'
+      - 'published-game-capture/v125-mobile-hud.css'
+      - 'tools/build_v125_preview.py'
+      - 'qa/check-v125-mobile-hud.cjs'
+      - 'qa/capture-v125-mobile-hud.cjs'
+      - '.github/workflows/v125-mobile-hud-qa.yml'
+      - 'docs/V125-MOBILE-HUD.md'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - name: V125 JS syntax and input architecture tests
+        run: |
+          node --check published-game-capture/v115-campus.js
+          node --check published-game-capture/v116-marina-hud.js
+          node qa/check-v125-mobile-hud.cjs
+          node qa/check-v116-hud.cjs
+          node qa/check-v115-campus.cjs
+          node qa/check-v117-jay.cjs
+      - name: V124/V123 world and prior art integration regressions
+        run: |
+          node qa/check-v124-depth.cjs
+          node qa/check-v123-collision.cjs
+          node qa/check-v122-pier.cjs
+          node qa/check-v121-marina.cjs
+          node qa/check-v116-marina.cjs
+          node qa/check-v117-interiors.cjs
+      - name: Build complete playable V125 preview with old game isolation
+        run: |
+          python3 -m pip install --disable-pip-version-check -q pillow numpy
+          cp -a published-game-capture /tmp/v125-play
+          python3 tools/build_v125_preview.py /tmp/v125-play
+          node --check /tmp/v125-play/game-v115.bundle.js
+          grep -q 'v125-native-campaign-ui' /tmp/v125-play/index.html
+          grep -q 'v125-mobile-hud.css?v=' /tmp/v125-play/index.html
+      - name: Strictly preserve original game, Zombie Outbreak and shared vehicle systems
+        run: |
+          python3 - <<'PY'
+          import subprocess
+          from pathlib import Path
+          base='a77bf0835bfed696025d3760aa150990433a7a2a'
+          changed=set(subprocess.check_output(['git','diff','--name-only',base,'HEAD'],text=True).splitlines())
+          allowed={'published-game-capture/v115-campus.js','published-game-capture/v116-marina-hud.js',
+                   'published-game-capture/v125-mobile-hud.css','tools/build_v125_preview.py',
+                   'qa/check-v125-mobile-hud.cjs','qa/capture-v125-mobile-hud.cjs',
+                   '.github/workflows/v125-mobile-hud-qa.yml','docs/V125-MOBILE-HUD.md'}
+          assert changed<=allowed, sorted(changed-allowed)
+          for p in ('published-game-capture/game.js','published-game-capture/outbreak.css',
+            'published-game-capture/controls.css','published-game-capture/v117-jay.js',
+            'published-game-capture/v116-marina.js','published-game-capture/v116-marina-walk.js'):
+            assert subprocess.check_output(['git','show',base+':'+p])==Path(p).read_bytes(),p
+          assert not any('zombie' in p.lower() or 'outbreak' in p.lower() or '/assets/' in p for p in changed)
+          print('PASS V125: original engine, vehicle UI, Zombie Outbreak files and every game asset byte-identical')
+          PY

@@ -4,6 +4,8 @@
  'use strict';
  const rows={down:0,left:1,right:2,up:3},actors=new Map(),images={};
  for(const mode of ['walk','run']){const im=new Image();im.src='./assets/jay-v117/jay-'+mode+'.webp?v=1';images[mode]=im;}
+ // V126: isolated pre-cleaned RUN art for connected-city Jay only. Original campaign sheets remain intact.
+ const connectedRun=new Image();connectedRun.src='./assets/v126-jay/jay-run-clean.png?v=run-clean-1';
  // Offline-measured actor bounds exclude adjacent-row bleed.
  const frameClips={"walk":[[25,15,77,109],[25,15,78,109],[25,15,77,109],[26,15,76,109],[25,15,77,109],[26,15,76,109],[26,15,78,109],[26,15,76,109],[27,15,75,109],[26,13,75,111],[26,13,76,111],[26,15,76,109],[26,15,76,109],[26,15,75,109],[26,15,76,109],[26,15,76,109],[27,15,75,109],[27,15,75,109],[26,14,76,110],[25,15,77,109],[26,15,76,109],[26,15,76,109],[26,15,76,109],[25,15,77,109],[26,15,76,109],[26,15,76,109],[26,15,76,109],[25,10,78,114],[26,11,76,113],[25,11,77,113],[25,11,77,113],[26,11,76,113],[25,11,77,113],[25,11,77,113],[26,12,76,112],[26,11,76,113]],"run":[[32,31,64,93],[43,30,66,94],[31,32,68,92],[31,30,65,94],[32,32,66,92],[31,32,67,92],[31,31,67,93],[32,31,65,93],[30,23,69,101],[30,23,75,101],[30,24,75,100],[30,25,77,99],[30,24,74,100],[29,25,78,99],[29,24,74,100],[29,24,72,100],[31,12,65,101],[37,12,72,101],[36,11,73,102],[30,13,79,99],[24,12,74,102],[23,12,76,101],[24,12,76,102],[27,13,72,101],[32,20,64,104],[31,21,65,103],[32,24,65,100],[33,28,63,96],[31,21,64,103],[31,23,65,101],[31,21,67,103],[31,21,65,103]]};
  let shift=false,toggle=false;
@@ -19,14 +21,18 @@
   dt=Math.max(0,Math.min(.05,dt||0));let a=actors.get(id);
   const step=a?Math.hypot(input.x-a.x,input.y-a.y):0;
   if(!a||a.map!==input.map||step>Math.max(36,dt*1300)){a={...input,phase:0,mode:'idle',moving:false};actors.set(id,a);return a;}
-  const moving=dt>0&&step>.015,mode=moving?(input.run&&step/dt>235?'run':'walk'):'idle';
-  if(moving)a.phase+=step/(mode==='run'?22:18);
+  const moving=dt>0&&step>.015,connected=id==='connected-jay';
+  // V126: don't flicker between walk/run under acceleration or near collisions.
+  // Source eight-frame running art was rushing by ~15fps at full speed;
+  // ~10.5fps makes complete leg swing/foot plants readable at phone scale.
+  const mode=moving?(input.run&&step/dt>(connected?155:235)?'run':'walk'):'idle';
+  if(moving)a.phase+=step/(mode==='run'?(connected?31:22):18);
   Object.assign(a,input,{mode,moving});return a;
  }
  function pose(a){const row=rows[a.dir]??0;return {mode:a.mode==='run'?'run':'walk',row,col:a.mode==='idle'?0:Math.floor(a.phase||0)%8+(a.mode==='run'?0:1)};}
  function draw(g,id,input){
   const prior=actors.get(id),a={...(prior?.map===input.map?prior:{mode:'idle',phase:0}),...input};
-  let p=pose(a),im=images[p.mode];
+  let p=pose(a),im=(p.mode==='run'&&id==='connected-jay'&&connectedRun.complete&&connectedRun.naturalWidth)?connectedRun:images[p.mode];
   if(!im.complete||!im.naturalWidth){p={mode:'walk',row:rows[a.dir]??0,col:0};im=images.walk;}
   // Claim the player slot while decoding: never switch Jay's identity to a legacy sprite.
   if(!im.complete||!im.naturalWidth)return true;

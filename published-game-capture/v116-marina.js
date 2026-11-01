@@ -181,7 +181,7 @@ function drawInteriorFurniture(g,f){
 const actors=[
  {id:'v116:fisher',name:'Fisherman',npcStyle:1,x:5142,y:3876,route:[[5142,3876],[5142,3944]],speed:11,phase:0,dialogue:'I almost caught a legendary fish. It was THIS big! ...Maybe.'},
  {id:'v116:worker',name:'Marina worker',npcStyle:2,x:5400,y:3758,route:[[5400,3758],[5480,3758],[5515,3758],[5400,3758]],speed:27,phase:1,dialogue:'The gulls stole another sandwich. I think they have a schedule.'},
- {id:'v116:visitor',name:'Visitor',npcStyle:3,x:4920,y:3735,route:[[4920,3735],[5010,3735],[4920,3735]],speed:15,phase:2,dialogue:'I have photographed the same boat eleven times. Art is patience.'},
+ {id:'v116:visitor',name:'Visitor',npcStyle:3,x:4929,y:3758,route:[[4929,3758],[5010,3758],[4929,3758]],speed:15,phase:2,dialogue:'I have photographed the same boat eleven times. Art is patience.'},
  {id:'v116:customer',name:'Café customer',npcStyle:4,x:4558,y:3420,route:[[4558,3420]],speed:0,phase:0,dialogue:'Coffee and sea air. Best shift break ever.'},
  {id:'v116:stroller',name:'Pedestrian',npcStyle:5,x:5570,y:3758,route:[[5570,3758],[5480,3758],[5390,3758],[5570,3758]],speed:30,phase:3,dialogue:'Watch out for the seagull. It has a suspicious résumé.'}
 ].map(a=>({...a,step:0,routeClock:a.phase*2}));

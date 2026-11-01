@@ -1,0 +1,159 @@
+/* V125 — gameplay-only mobile HUD refinement. All selectors scoped to the
+   existing continuous-city modal: no changes to original game/Academy/Zombie. */
+body.v116-play-mode #v115Campus{--v125-safe-top:max(10px,env(safe-area-inset-top,0px));--v125-safe-bottom:max(10px,env(safe-area-inset-bottom,0px))}
+body.v116-play-mode #v115Campus .v115-campus-header,
+body.v116-play-mode #v115Campus .v115-campus-tools,
+body.v116-play-mode #v115Campus #v117ConnectedRun,
+body.v116-play-mode #v115Campus .v115-campus-note,
+body.v116-play-mode #v115Campus .v115-campus-footer{display:none!important}
+/* The old dev return button and zoom/overview remain accessible only in QA. */
+html[data-v116-qa="1"] body.v116-play-mode #v115Campus .v115-campus-header,
+html[data-v116-qa="1"] body.v116-play-mode #v115Campus .v115-campus-tools{display:flex!important}
+html[data-v116-qa="1"] body.v116-play-mode #v115Campus .v115-campus-header{top:calc(env(safe-area-inset-top,0px) + 60px)}
+html[data-v116-qa="1"] body.v116-play-mode #v115Campus .v115-campus-tools{top:calc(env(safe-area-inset-top,0px) + 98px)}
+/* Lightweight lower-left touch REGION; no fixed large d-pad. */
+body.v116-play-mode #v115Campus .v115-campus-pad{
+ display:block!important;position:absolute;z-index:8;left:0!important;
+ bottom:var(--v125-safe-bottom)!important;
+ width:clamp(175px,42vw,260px)!important;height:clamp(156px,31dvh,240px)!important;
+ border:0!important;border-radius:0!important;background:transparent!important;
+ box-shadow:none!important;user-select:none;touch-action:none;overflow:visible;
+}
+body.v116-play-mode #v115Campus .v115-campus-pad::before{
+ content:'MOVE';display:block;position:absolute;inset:auto auto 24px 25px;
+ width:70px;height:70px;border-radius:50%;border:1px solid rgba(215,233,242,.30);
+ background:rgba(12,37,55,.10);color:rgba(240,247,244,.45);
+ font:700 10px 'Barlow',system-ui,sans-serif;letter-spacing:.08em;
+ text-align:center;line-height:70px;pointer-events:none;
+}
+body.v116-play-mode #v115Campus #v125CampusBase{
+ display:none;position:absolute;width:102px;height:102px;transform:translate(-50%,-50%);
+ border:1.5px solid rgba(242,219,163,.60);border-radius:50%;
+ box-shadow:0 0 0 7px rgba(9,33,52,.09),inset 0 0 24px rgba(74,171,210,.12);
+ background:rgba(11,41,65,.33);pointer-events:none;
+}
+body.v116-play-mode #v115Campus #v125CampusBase.active{display:block}
+body.v116-play-mode #v115Campus #v115CampusKnob{
+ position:absolute;top:50%;left:50%;width:44px;height:44px;
+ transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;
+ border:2px solid #eed89a;background:radial-gradient(circle at 36% 28%,#5ea9c7b8,#103956da);
+ box-shadow:0 0 12px #53d4ef50,0 3px 9px #031a30ad;
+}
+/* Right thumb: contextual action and hold-to-run reuse existing handlers. */
+body.v116-play-mode #v115Campus #v115CampusInteract,
+body.v116-play-mode #v115Campus #v125CampusSprint{
+ display:grid!important;place-items:center;position:absolute;z-index:9;
+ border:1.5px solid rgba(220,197,139,.77);border-radius:50%;
+ color:#fff3dc;background:linear-gradient(155deg,rgba(24,71,90,.91),rgba(8,29,48,.88));
+ box-shadow:0 4px 18px #031b36bb,inset 0 0 0 2px #ffffff13;
+ font:800 13px 'Barlow Condensed',system-ui,sans-serif!important;letter-spacing:.02em;
+ padding:5px!important;max-width:none!important;touch-action:none;
+ -webkit-tap-highlight-color:transparent;
+}
+body.v116-play-mode #v115Campus #v115CampusInteract{
+ right:calc(12px + env(safe-area-inset-right,0px))!important;
+ bottom:calc(16px + env(safe-area-inset-bottom,0px))!important;
+ width:70px;height:70px;min-height:70px!important;
+}
+body.v116-play-mode #v115Campus #v125CampusSprint{
+ right:calc(22px + env(safe-area-inset-right,0px));
+ bottom:calc(98px + env(safe-area-inset-bottom,0px));
+ width:54px;height:54px;min-height:54px;
+}
+body.v116-play-mode #v115Campus #v125CampusSprint.held{
+ border-color:#ffe3a8;background:linear-gradient(155deg,#328394eb,#145777ed);
+ box-shadow:0 0 17px #5fe2ed99,inset 0 0 0 2px #fff4c33b;
+}
+body.v116-play-mode #v115Campus #v115CampusInteract:disabled{opacity:.60;filter:saturate(.6);box-shadow:none}
+body.v116-play-mode #v115Campus #v115CampusInteract:not(:disabled):active{background:#236981}
+/* The single authoritative V116 profile and minimap: compact and readable. */
+body.v116-play-mode #v116MarinaHUD.v125-ready .v116-identity{
+ top:calc(8px + env(safe-area-inset-top,0px))!important;
+ left:calc(8px + env(safe-area-inset-left,0px))!important;
+ width:138px;height:49px;border-radius:13px;gap:5px;padding:4px;
+ background:linear-gradient(135deg,rgba(16,43,66,.92),rgba(7,23,43,.85));
+ border:1px solid #d6bb85b9;box-shadow:0 3px 12px #051a32bb;
+}
+body.v116-play-mode #v116MarinaHUD.v125-ready .v116-identity img{width:40px;height:40px;border-width:1.5px}
+body.v116-play-mode #v116MarinaHUD.v125-ready .v116-identity strong{font-size:18px}
+body.v116-play-mode #v116MarinaHUD.v125-ready .v116-identity i{font-size:8px;margin-top:2px}
+body.v116-play-mode #v116MarinaHUD.v125-ready .v116-minimap{
+ top:calc(8px + env(safe-area-inset-top,0px))!important;
+ right:calc(8px + env(safe-area-inset-right,0px))!important;
+ width:102px;border-radius:13px;padding:3px;
+ background:linear-gradient(160deg,#24485bdc,#10273fef);
+ border:1px solid #e0c588ba;box-shadow:0 3px 12px #041629c0;
+}
+body.v116-play-mode #v116MarinaHUD.v125-ready .v116-minimap>span{font-size:11px}
+body.v116-play-mode #v116MarinaHUD.v125-ready .v116-minimap canvas{height:58px}
+body.v116-play-mode #v116MarinaHUD.v125-ready .v116-case,
+body.v116-play-mode #v116MarinaHUD.v125-ready .v118-team-toggle,
+body.v116-play-mode #v116MarinaHUD.v125-ready .v116-team{display:none!important}
+/* One menu replaces the old four permanent bottom-right buttons. */
+body.v116-play-mode #v116MarinaHUD.v125-ready #v125HudMenu{
+ display:block;position:absolute;top:calc(68px + env(safe-area-inset-top,0px));
+ left:calc(8px + env(safe-area-inset-left,0px));z-index:12;
+ min-width:67px;min-height:44px;padding:8px 10px;border-radius:12px;
+ font:700 12px 'Barlow',system-ui,sans-serif;
+ background:rgba(12,38,61,.84);color:#ffefd1;
+ border:1px solid #d4bd8ca8;box-shadow:0 2px 10px #071b2d77;
+}
+body.v116-play-mode #v116MarinaHUD.v125-ready #v125HudMenu[aria-expanded="true"]{background:#1e5b74}
+body.v116-play-mode #v116MarinaHUD.v125-ready .v116-actions{
+ display:none!important;position:absolute;z-index:13;
+ left:calc(8px + env(safe-area-inset-left,0px));right:auto!important;
+ top:calc(118px + env(safe-area-inset-top,0px));bottom:auto!important;
+ width:128px;gap:5px;flex-direction:column;align-items:stretch;
+ border:1px solid #d6bd8c9c;border-radius:13px;
+ background:rgba(10,30,48,.94);box-shadow:0 10px 24px #00192fb0;
+ padding:7px;pointer-events:auto;
+}
+body.v116-play-mode #v116MarinaHUD.v125-ready.v125-menu-open .v116-actions{display:flex!important}
+body.v116-play-mode #v116MarinaHUD.v125-ready .v116-actions button{
+ width:100%!important;height:44px!important;min-height:44px!important;
+ display:flex;flex-direction:row;gap:7px;padding:5px 7px;
+ border-radius:9px;font-size:12px!important;justify-content:flex-start;
+ box-shadow:none;border:1px solid #879ca166;background:#173951cc;
+}
+body.v116-play-mode #v116MarinaHUD.v125-ready .v116-actions svg{width:27px;height:27px;flex:none}
+body.v116-play-mode #v116MarinaHUD.v125-ready #v125HudSettings,
+body.v116-play-mode #v116MarinaHUD.v125-ready #v125HudExit{
+ display:none;position:absolute;z-index:14;left:calc(15px + env(safe-area-inset-left,0px));
+ width:114px;height:40px;min-height:40px;border-radius:9px;
+ padding:6px;font:700 12px 'Barlow',system-ui,sans-serif;
+ background:#173951;color:#fff0ca;border:1px solid #8ea4a36d;
+}
+body.v116-play-mode #v116MarinaHUD.v125-ready.v125-menu-open #v125HudSettings{display:block;top:calc(321px + env(safe-area-inset-top,0px))}
+body.v116-play-mode #v116MarinaHUD.v125-ready.v125-menu-open #v125HudExit{display:block;top:calc(365px + env(safe-area-inset-top,0px))}
+/* Context modals pause the player and use safe-area-aware geometry. */
+body.v116-play-mode #v116MarinaHUD.v125-ready .v116-panel{
+ width:min(88vw,460px);max-height:calc(90dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));
+ border-radius:15px;padding:22px;
+}
+/* Short screens: five-item menu opens horizontally to stay on screen. */
+@media (orientation:landscape) and (max-height:560px){
+ body.v116-play-mode #v116MarinaHUD.v125-ready .v116-identity{width:128px;height:43px}
+ body.v116-play-mode #v116MarinaHUD.v125-ready .v116-minimap{width:88px}
+ body.v116-play-mode #v116MarinaHUD.v125-ready .v116-minimap canvas{height:43px}
+ body.v116-play-mode #v116MarinaHUD.v125-ready #v125HudMenu{top:calc(56px + env(safe-area-inset-top,0px))}
+ body.v116-play-mode #v116MarinaHUD.v125-ready .v116-actions{
+   top:calc(103px + env(safe-area-inset-top,0px));flex-direction:row;width:min(76vw,340px);flex-wrap:wrap;
+ }
+ body.v116-play-mode #v116MarinaHUD.v125-ready .v116-actions button{width:calc(50% - 3px)!important}
+ body.v116-play-mode #v116MarinaHUD.v125-ready.v125-menu-open #v125HudSettings{top:calc(208px + env(safe-area-inset-top,0px))}
+ body.v116-play-mode #v116MarinaHUD.v125-ready.v125-menu-open #v125HudExit{
+   top:calc(208px + env(safe-area-inset-top,0px));left:calc(136px + env(safe-area-inset-left,0px));
+ }
+ body.v116-play-mode #v115Campus .v115-campus-pad{height:min(55dvh,165px)!important;width:min(32vw,205px)!important}
+ body.v116-play-mode #v115Campus #v125CampusSprint{bottom:calc(77px + env(safe-area-inset-bottom,0px))}
+ body.v116-play-mode #v115Campus #v115CampusInteract{width:58px;height:58px;min-height:58px!important}
+}
+@media(max-width:360px){
+ body.v116-play-mode #v116MarinaHUD.v125-ready .v116-identity{width:123px}
+ body.v116-play-mode #v116MarinaHUD.v125-ready .v116-minimap{width:90px}
+ body.v116-play-mode #v115Campus .v115-campus-pad{width:44vw!important}
+}
+@media(prefers-reduced-motion:reduce){
+ body.v116-play-mode #v115Campus *,
+ body.v116-play-mode #v116MarinaHUD *{transition:none!important;animation:none!important}
+}

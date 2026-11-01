@@ -95,7 +95,7 @@ jobs:
       - name: Check out V117 seamless marina interiors
         uses: actions/checkout@v4
         with:
-          ref: 9bb7743a75437c82dde2c93feb231833e1fe8094 # verified clear café aisle, service interaction and seamless interiors
+          ref: a460dea29f7d2e89e6b0faaffb92cb33b24fced1 # verified live door collisions and furnished continuous interiors
           path: v117-interiors
           persist-credentials: false
 

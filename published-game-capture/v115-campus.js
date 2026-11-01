@@ -113,6 +113,7 @@
     // World Completion: authored-feeling new groves are physical at their trunk
     // feet, and use the SAME player radius and native collision response.
     if(window.ROOKIE_V127_CITY?.scenicBlocked(x,y,r,districtEntries))return true;
+    if(trafficBlocked(x,y,r))return true;
     // The blank northeast corner of the irregular station footprint is not
     // usable interior. Existing station west/east/south wall gaps stay real.
     return false;
@@ -194,6 +195,90 @@
     }
     return null;
   }
+
+  // World Completion: bounded non-interactive street traffic on the ONE native
+  // Harbor Avenue road graph. Existing main-campaign driving is untouched.
+  // Cars share this simulation clock and depth queue, with zero new RAF loops.
+  const streetTraffic=[];
+  let streetTrafficInitialized=false;
+  const avenueStart=-2850,avenueEnd=9380;
+  const avenueTop=1754,avenueBottom=1815;
+  const avenueLength=avenueEnd-avenueStart,trafficLoop=2*avenueLength+2*(avenueBottom-avenueTop);
+  const trafficColors=['#557e9a','#a66852','#7d8b76','#c5a975','#597b7c','#ac7671'];
+  function streetPose(distance){
+    let p=((distance%trafficLoop)+trafficLoop)%trafficLoop;
+    if(p<avenueLength)return {x:avenueStart+p,y:avenueTop,dir:'right'};
+    p-=avenueLength;
+    if(p<avenueBottom-avenueTop)return {x:avenueEnd,y:avenueTop+p,dir:'down'};
+    p-=avenueBottom-avenueTop;
+    if(p<avenueLength)return {x:avenueEnd-p,y:avenueBottom,dir:'left'};
+    p-=avenueLength;
+    return {x:avenueStart,y:avenueBottom-p,dir:'up'};
+  }
+  function initializeStreetTraffic(){
+    if(streetTrafficInitialized)return;
+    streetTrafficInitialized=true;
+    // Verify the authored lane is truly linked from the western borough
+    // through the precinct to the east. Otherwise, fail closed, no fake cars.
+    const required=['harbor-ave-west','harbor-precinct-link','harbor-ave-east','harbor-east-through'];
+    if(!required.every(id=>links.some(r=>r.id===id)))return;
+    for(let i=0;i<18;i++){
+      const phase=trafficLoop*i/18+390*(i%3),kind=i%9===0?'patrol':i%5===0?'delivery':'civilian';
+      streetTraffic.push({id:'street:'+i,progress:phase,speed:98+i%5*12,
+        color:trafficColors[i%trafficColors.length],kind,...streetPose(phase)});
+    }
+  }
+  function stepStreetTraffic(dt){
+    initializeStreetTraffic();
+    const seconds=Math.max(0,Math.min(.05,dt||0));
+    for(const car of streetTraffic){
+      // Civilian traffic yields near the player; it never injures or shoves Jay.
+      const nearJay=Math.abs(car.x-campus.x)<145&&Math.abs(car.y-campus.y)<62;
+      const speed=nearJay?0:car.speed;
+      car.progress=(car.progress+seconds*speed)%trafficLoop;
+      Object.assign(car,streetPose(car.progress));
+      car.stopped=nearJay;
+    }
+  }
+  function trafficBlocked(x,y,r=12){
+    for(const car of streetTraffic){
+      if(Math.abs(x-car.x)<43+r&&Math.abs(y-car.y)<19+r)return true;
+    }
+    return false;
+  }
+  function drawStreetTraffic(g,car){
+    if(campus.zoom<.19)return;
+    const dir=car.dir||'right';
+    g.save();g.translate(car.x,car.y);
+    g.rotate(dir==='left'?Math.PI:dir==='down'?Math.PI/2:dir==='up'?-Math.PI/2:0);
+    g.fillStyle='rgba(9,25,36,.34)';g.beginPath();g.ellipse(0,6,48,20,0,0,Math.PI*2);g.fill();
+    g.fillStyle='#192b34';for(const px of [-29,24])for(const py of [-19,13])g.fillRect(px,py,13,7);
+    const long=car.kind==='delivery',bodyW=long?104:86,half=bodyW/2;
+    g.fillStyle='#1f3442';g.fillRect(-half-2,-17,bodyW+4,34);
+    g.fillStyle=car.kind==='patrol'?'#e6e4d7':car.color;g.fillRect(-half,-15,bodyW,30);
+    g.fillStyle='rgba(255,234,188,.25)';g.fillRect(-half+4,-13,bodyW-8,3);
+    g.fillStyle='rgba(20,43,53,.24)';g.fillRect(-half+4,10,bodyW-8,3);
+    g.fillStyle='#294957';
+    if(long){
+      g.fillRect(-half+10,-12,49,24);
+      g.fillStyle='#9eb5b6';g.fillRect(-half+60,-10,23,20);
+    }else{
+      g.fillRect(-17,-12,36,24);
+      g.fillStyle='#83abb6';g.fillRect(-14,-9,13,18);g.fillRect(3,-9,13,18);
+    }
+    if(car.kind==='patrol'){
+      g.fillStyle='#193c63';g.fillRect(-half+7,-15,22,30);
+      g.fillStyle='#cb333e';g.fillRect(-3,-19,9,4);
+      g.fillStyle='#468cca';g.fillRect(6,-19,9,4);
+    }else if(car.kind==='delivery'){
+      g.fillStyle='#efe0b9';g.fillRect(-half+17,-3,26,5);
+      g.fillStyle='#36586a';g.fillRect(-half+18,4,14,3);
+    }
+    g.fillStyle='#efcc8d';g.fillRect(half-4,-12,5,7);g.fillRect(half-4,5,5,7);
+    g.fillStyle='#aa4252';g.fillRect(-half-1,-12,4,7);g.fillRect(-half-1,5,4,7);
+    g.restore();
+  }
+
   const campus={open:false,x:FRONT.x,y:FRONT.y+86,dir:'up',stride:0,moved:false,speed:0,
     camX:0,camY:0,zoom:1.15,autoZoom:true,follow:true,keys:new Set(),stick:null,runHeld:false,frame:0,last:0,
     paintCosts:[],paintCount:0,near:null,firstPaint:true,doorCrossings:0,previousRoom:null,visibleChunks:[]};
@@ -283,6 +368,7 @@
     const marina=window.ROOKIE_V116_MARINA;
     if(marina)marina.stepNPCs(dt);
     stepAmbientPedestrians(dt);
+    stepStreetTraffic(dt);
     let {dx,dy}=direction();
     const shared=window.ROOKIE_JAY,run=!!shared?.requestRun()||!!(campus.runHeld&&shared?.eligible());
     if(Math.hypot(dx,dy)<.08){dx=0;dy=0;}
@@ -628,6 +714,9 @@
     const marina=window.ROOKIE_V116_MARINA;
     // One depth queue: existing actors and new furnishing geometry share it.
     const entries=npcActors.filter(npc=>visible(npc)&&(!marina?.interiorActorVisible||marina.interiorActorVisible(npc))).map(npc=>({y:npc.y,actor:npc}));
+    // Vehicles join Jay, NPCs, roofs and trees in the SAME world-depth queue.
+    if(campus.zoom>=.19)for(const car of streetTraffic)if(visible(car))
+      entries.push({y:car.y,trafficCar:car});
     if(marina?.interiorFurniture)for(const f of marina.interiorFurniture(view))entries.push({y:f.y+f.h,furniture:f});
     // V122: native marina piling bases join the SAME y-sorted draw queue as
     // Jay, ambient NPCs and interior furniture. This gives genuine occlusion:
@@ -645,6 +734,7 @@
     }
     entries.push({y:campus.y,player:true});entries.sort((a,b)=>a.y-b.y);
     for(const entry of entries){
+      if(entry.trafficCar){drawStreetTraffic(g,entry.trafficCar);continue;}
       if(entry.cityProp){window.ROOKIE_V127_CITY.drawDepthProp(g,entry.cityProp);continue;}
       if(entry.depthProp){
         marina.drawDepthProp(g,entry.depthProp,{zoom:campus.zoom,view,player:{x:campus.x,y:campus.y}},t);continue;
@@ -881,7 +971,7 @@
     },
     toWorld:(areaId,x,y)=>areaId==='station'?{worldId:WORLD_ID,areaId,x:STX+x,y:STY+y}:
       areaId==='plaza'?{worldId:WORLD_ID,areaId:'precinct-campus-v115',x:PLX+x,y:PLY+y}:null,
-    metrics:()=>{const times=campus.paintCosts.slice().sort((a,b)=>a-b);return {frames:campus.paintCount,paintP95Ms:times[Math.floor((times.length-1)*.95)]||0,paintMaxMs:times.at(-1)||0,samples:times.length,ambientPedestrians:ambientRoutes.length,ambientDistrictsInitialized:ambientInit};},
+    metrics:()=>{const times=campus.paintCosts.slice().sort((a,b)=>a-b);return {frames:campus.paintCount,paintP95Ms:times[Math.floor((times.length-1)*.95)]||0,paintMaxMs:times.at(-1)||0,samples:times.length,ambientPedestrians:ambientRoutes.length,ambientDistrictsInitialized:ambientInit,streetCars:streetTraffic.length,stoppedCars:streetTraffic.filter(c=>c.stopped).length};},
     snapshot:()=>Object.freeze({schema:1,worldId:WORLD_ID,areaId:districtAt(campus.x,campus.y)?.id||AREA_ID,
       playerId:'local-preview',x:campus.x,y:campus.y,instanceId:districtAt(campus.x,campus.y)?.instanceId||'harbor-main:campus',
       transport:'none',authoritativeServer:false,committedToSave:false}),

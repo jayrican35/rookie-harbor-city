@@ -174,6 +174,8 @@
     // Shared coordinate art, drawn beneath original district geometry.
     const reference=window.ROOKIE_V115_REFERENCE;
     if(reference){mapctx.save();mapctx.scale(s,s);reference.atlasTerrain(mapctx,{zoom:s});mapctx.restore();}
+    const premium=window.ROOKIE_V115_PREMIUM;
+    if(premium){mapctx.save();mapctx.scale(s,s);premium.atlasTerrain(mapctx,{zoom:s});mapctx.restore();}
     // Real map extents. The space between rectangles identifies areas where
     // the new connecting roads must still be designed and built.
     zoneIds.forEach(id => {
@@ -236,6 +238,9 @@
     }
     // Landmarks use the same world coordinates as the playable canvas.
     if(reference){mapctx.save();mapctx.scale(s,s);reference.atlasLandmarks(mapctx,{zoom:s});mapctx.restore();}
+    if(premium){mapctx.save();mapctx.scale(s,s);
+      premium.atlasOverlay(mapctx,{zoom:s,districts:zoneIds.map(id=>({...cells[id],map:MAPS[id]}))});
+      mapctx.restore();}
     mapctx.restore();
   }
   function mapPos(mapId, x, y) {

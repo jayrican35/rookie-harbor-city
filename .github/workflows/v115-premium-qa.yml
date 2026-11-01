@@ -1,0 +1,60 @@
+name: V115 Premium Environment — Source and Survival Guardrails
+on:
+  push:
+    branches: [feature/v115-premium-environments-pass2]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+jobs:
+  premium-art-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - name: Validate source and premium artwork
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check published-game-capture/v115-premium-art.js
+          node --check published-game-capture/v115-campus.js
+          node --check published-game-capture/v115-world.js
+          node --check published-game-capture/game.js
+          node qa/check-v115-world.cjs published-game-capture/v115-world.js
+          node qa/check-v115-campus.cjs
+          node qa/check-v115-connected-city.cjs
+          node qa/check-v115-road-layout.cjs
+          node qa/check-v115-showcase.cjs
+          node qa/check-v115-reference.cjs
+          node qa/check-v115-premium.cjs
+          python3 -m py_compile tools/build_v115_premium_preview.py
+          grep -q 'rookie:v115-premium-sandbox:' published-game-capture/v115-preview-save-isolation.js
+      - name: Assert no source, mission or Zombie Outbreak changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin feature/v115-reference-city-composition
+          for f in published-game-capture/game.js published-game-capture/outbreak.css; do
+            test "$(git rev-parse origin/feature/v115-reference-city-composition:$f)" = "$(git rev-parse HEAD:$f)" || { echo "Protected gameplay file changed: $f"; exit 1; }
+          done
+          python3 - <<'PY'
+          import subprocess
+          changed=set(subprocess.check_output(['git','diff','--name-only','origin/feature/v115-reference-city-composition','HEAD'],text=True).splitlines())
+          permitted={
+             'published-game-capture/v115-world.js',
+             'published-game-capture/v115-campus.js',
+             'published-game-capture/v115-premium-art.js',
+             'published-game-capture/v115-premium.css',
+             'published-game-capture/v115-preview-save-isolation.js',
+             'tools/build_v115_premium_preview.py',
+             'tools/build_v115_reference_preview.py',
+             'qa/check-v115-premium.cjs',
+             'docs/v115-premium-environments.md',
+             '.github/workflows/v115-premium-qa.yml'
+          }
+          permitted|={'published-game-capture/assets/v115-premium/'+n for n in ('mountain-north.svg','waterfall-cliff.svg','marina-lighthouse.svg','marina-sailboat-1.svg','marina-sailboat-2.svg')}
+          assert changed <= permitted, 'Unexpected modifications: '+str(sorted(changed-permitted))
+          assert 'published-game-capture/v115-premium-art.js' in changed
+          print('PASS: no protected engine, mission, Academy, Zombie or unrelated art changes')
+          PY

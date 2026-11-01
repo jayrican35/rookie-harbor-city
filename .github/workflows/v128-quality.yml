@@ -1,4 +1,4 @@
-name: V128 Run Scale and City Quality (isolated)
+name: Harbor City World Completion (isolated)
 on:
   push:
     branches:
@@ -9,6 +9,7 @@ on:
       - 'published-game-capture/v127-citywide-art.js'
       - 'published-game-capture/v115-campus.js'
       - 'qa/check-v128-quality.cjs'
+      - 'qa/check-world-completion.cjs'
       - 'tools/build_v128_preview.py'
 jobs:
   source-regression:
@@ -18,13 +19,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Run new V128 graphics, Jay size, protected mode tests
+      - name: Run whole-world graphics, grounded Jay, protected-mode tests
         run: |
           set -euo pipefail
           node --check published-game-capture/v117-jay.js
           node --check published-game-capture/v127-citywide-art.js
           node --check published-game-capture/v115-campus.js
           node qa/check-v128-quality.cjs
+          node qa/check-world-completion.cjs
           node qa/check-v127-citywide.cjs
           node qa/check-v126-polish.cjs
           node qa/check-v117-jay.cjs

@@ -245,7 +245,10 @@
     drawGrass();
     g.save();g.translate(PLX,PLY);
     for(const v of PL.ground){
-      g.fillStyle=v.c;g.fillRect(v.x,v.y,v.w,v.h);
+      const city=window.ROOKIE_V127_CITY;
+      if(city)city.surface(g,{x:v.x,y:v.y,w:v.w,h:v.h},city.colorKind(v.c),
+        {x:campus.camX-PLX,y:campus.camY-PLY,w:tw/campus.zoom,h:th/campus.zoom});
+      else{g.fillStyle=v.c;g.fillRect(v.x,v.y,v.w,v.h);}
     }
     if(PL.dashes){g.fillStyle='rgba(246,208,98,.62)';for(let x=PL.dashes.from;x<PL.dashes.to;x+=52)g.fillRect(x,PL.dashes.at-2,28,4);}
     g.restore();
@@ -372,6 +375,9 @@
     // is used only when the source sprite is unavailable in this preview.
     if(window.ROOKIE_V115_SHOWCASE &&
        window.ROOKIE_V115_SHOWCASE.buildingFallback(g,d,campus.zoom))return;
+    // V127: source sprite first; new shared architecture in place of older
+    // simple color rectangles, with exactly the original wall footprint.
+    if(window.ROOKIE_V127_CITY?.building(g,{x:bx,y:by,w:bw,h:bh},campus.zoom))return;
     const roof=d.roof||'#615a55',wall=d.c||'#c1a98e';
     g.fillStyle='rgba(12,25,37,.27)';g.fillRect(bx+8,by+9,bw,bh);
     g.fillStyle=wall;g.fillRect(bx,by+18,bw,Math.max(20,bh-18));

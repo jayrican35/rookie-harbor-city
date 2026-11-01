@@ -5,11 +5,12 @@
 (function(){
 'use strict';
 const ROOT='./assets/v121-marina/';
+const DOCK_ROOT='./assets/v126-dock/'; // full-length original timber texture; no repeat
 const W={x:4400,y:3800,w:1500,h:856},PIERS=[4655,5105,5555];
 const tile=512,files=['water-body','water-caustics','water-reef','dock-wood','dock-post','foam-frames','seawall-light','tree-shadows','water-glints'];
 const art=Object.create(null);
 for(const name of files){
- const im=new Image();im.decoding='async';im.src=ROOT+name+'.png';art[name]=im;
+ const im=new Image();im.decoding='async';im.src=(name==='dock-wood'?DOCK_ROOT:ROOT)+name+'.png';art[name]=im;
 }
 const drawable=(name)=>{const im=art[name];return im&&im.complete&&im.naturalWidth>0?im:null;};
 const reduced=!!window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
@@ -147,8 +148,8 @@ function dock(g,px,view){
   g.drawImage(im,0,0,90,h,px,y,90,h);stats.dockTiles++;
  }
  // Sunlit edge trim belongs on the actual deck top, not the water.
- g.fillStyle='rgba(255,223,155,.45)';g.fillRect(px+3,top,3,deckHeight);
- g.fillStyle='rgba(37,23,28,.35)';g.fillRect(px+86,top,4,deckHeight);
+ g.fillStyle='rgba(255,223,155,.23)';g.fillRect(px+4,top,2,deckHeight);
+ g.fillStyle='rgba(37,23,28,.27)';g.fillRect(px+86,top,3,deckHeight);
  g.restore();
  // Raised planked end-cap: clearly visible thickness above the sea.
  g.fillStyle='#754b30';g.fillRect(px,top+deckHeight,90,8);

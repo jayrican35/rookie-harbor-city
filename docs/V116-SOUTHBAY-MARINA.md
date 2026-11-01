@@ -16,12 +16,14 @@ The repository is **hybrid**:
 - `published-game-capture/assets/exterior/*.webp` — approved pixel-art props including palms, trees, benches, lamps, planters, bollards and trash bins.
 - `published-game-capture/v115-precinct-pilot.js` — first authored raster atlas/layer experiment; V116 extends the modular pattern rather than substituting a new world renderer.
 
-### Geography contracts
+### Geography contracts (verified directly in the protected game.js)
 
-- `worldId`: `harbor-main`; V115 `waterfront` starts at `(4400, 3220)` and `southbay` at `(2800, 3220)`.
-- V115 established piers at world x values **4590, 4850, 5140, 5420, 5660, 5920**, with waterfront walkway and seawall near **y=4200**. V116 preserves those positions.
-- V116 art rectangle: x **4352–6144**, y **3504–4656**. No map size or road topology changes.
-- Source collision stays intact. V116 adds bounded physical footprints for the four new shops/kiosk and blocks open water while leaving the existing piers accessible.
+- `worldId`: `harbor-main`; `MAPS.waterfront` is **1500 × 1000**, at V115 world origin **(4400,3220)**. Southbay starts at **(2800,3220)**.
+- Native Waterfront grass spans local y0–520; its actual promenade spans local y430–580 (**world y3650–3800**); water begins at local y580 (**world y3800**).
+- The real game's **three walkable piers** are local x255–345, 705–795 and 1155–1245, world x **4655, 5105, 5555**, from world y**3800 to 4100**. Water outside these gaps is in the original `pedSolids`; the southern strip remains blocked.
+- Native Marina Office is x**4580**, y**3360**, 300×200, with entrance near (4730,3578). Boat Shed B is at x**5020**, y**3400**, 220×150, with interaction at (5130,3572). Both existing quest sites keep their IDs and world footprints.
+- Original `v115-premium-art.js` had six **decorative** piers at different world coordinates, which did not match gameplay `MAPS.waterfront`. V116 intentionally paints over that visual mismatch and restores the **three original functional piers**. No source MAPS or navigation changes.
+- V116 art rectangle: x **4352–6144**, y **3220–4656**, extending into non-walkable visual sea beyond native map bounds without altering street geometry. The native North/Southbay entrances remain open.
 
 ## Implemented V116 art pipeline and gameplay integration
 
@@ -46,7 +48,7 @@ All protected originals remain untouched: `game.js`, `outbreak.css`, all Zombie 
 
 - Static 256×256 tile cache capped at 18 chunks; tile draw calls are bounded by camera and zoom.
 - Water uses bounded simple strokes; boat/tree/seabird animations use monotonic frame time and fixed instances, not per-frame particle allocations.
-- QA captures real game Canvas before/after at **identical coordinates (5130,4150)** and identical zoom separately for simulated Android portrait (390×844) and landscape (844×390).
+- QA captures real game Canvas before/after at **identical coordinates (5180,3880)** and identical zoom separately for simulated Android portrait (390×844) and landscape (844×390).
 - `qa/check-v116-marina.cjs` checks sprite existence, gameplay integration hooks, collision semantics and Zombie exclusions.
 - `qa/capture-v116-marina.cjs` checks live browser rendering, loaded assets, walkable paths, blocked water, hidden debug panels and JavaScript errors. Its evidence and performance JSON are published under `/preview/v116-marina/evidence/` when GitHub Pages deployment succeeds.
 - Actual physical Android FPS cannot be established by headless desktop Chromium; verify on the user's phone before merging or claiming sustained 60 FPS.

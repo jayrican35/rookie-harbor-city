@@ -20,7 +20,7 @@ for file in assets:
     parsed=ET.parse(p)
     assert parsed.getroot().tag.endswith('svg'),f'Invalid SVG: {p}'
     raw=p.read_text()
-    assert '<script' not in raw and 'http://' not in raw and '<foreignObject' not in raw, f'Unsafe SVG: {p}'
+    assert '<script' not in raw and '<foreignObject' not in raw and 'javascript:' not in raw and 'href="http' not in raw and 'url(http' not in raw, f'Unsafe SVG: {p}'
 htmlpath=root/'index.html';html=htmlpath.read_text()
 needle='<script src="./v115-reference-art.js"></script>'
 assert html.count(needle)==1,'Reference world script missing or repeated'

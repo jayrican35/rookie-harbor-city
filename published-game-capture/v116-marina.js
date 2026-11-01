@@ -114,8 +114,9 @@ function updateInteriors(player,dt){
  const a=1-Math.exp(-12*Math.max(0,Math.min(.05,dt||0)));
  for(const b of interiors){
   const f=b.floor;b.inside=interiorAt(player.x,player.y)===b;
-  // Reveal while the feet approach the threshold, before the roof can hide Jay.
-  const approach=Math.abs(player.x-b.door.x)<b.door.w/2+12&&player.y>=b.door.y-12&&player.y<b.door.y+40;
+  // V124 reveal only on the real doorway, never along the rest of a building.
+  const withinDoor=Math.abs(player.x-b.door.x)<=Math.max(8,b.door.w/2-5);
+  const approach=withinDoor&&player.y>=b.door.y-6&&player.y<=b.door.y+18;
   const target=b.inside||approach?0:1;b.roof+=(target-b.roof)*a;
   if(Math.abs(b.roof-target)<.002)b.roof=target;
  }
@@ -445,31 +446,55 @@ function drawPierPost(g,post){
  g.strokeStyle='#b8a77c';g.lineWidth=2;g.beginPath();g.ellipse(xx,py-9,7,3,0,0,Math.PI*2);g.stroke();
  g.restore();
 }
+// V124: use a common world foot-depth for actors, lamp bases, trees and roofs.
+function depthProps(view){
+ if(!enabled)return [];
+ const all=[];
+ for(const b of interiors)if(b.roof>.001&&visible(b.exterior,view,60))
+   all.push({kind:'roof',building:b,depthY:b.door.y-2});
+ for(const o of objects){
+  if(!['palm','tree','lamp'].includes(o.type)||!visible(o,view,40))continue;
+  all.push({kind:'tall',object:o,depthY:o.y+o.h-3});
+ }
+ return all;
+}
+function drawDepthProp(g,entry,opt,t){
+ if(!enabled||!entry||!opt||opt.zoom<.14)return;
+ g.save();
+ if(entry.kind==='roof'){
+  const b=entry.building,o=b.exterior;
+  g.globalAlpha=opt.zoom<.3?1:b.roof;
+  paintSprite(g,o.image,o.x,o.y,o.w,o.h);
+  g.restore();return;
+ }
+ const o=entry.object;
+ if(!img(o.image)){g.restore();return;}
+ if(o.type==='lamp'){
+  paintSprite(g,o.image,o.x,o.y,o.w,o.h);
+  if(opt.zoom>.38){
+   g.globalAlpha=.13+.05*Math.sin(t*.002+o.x);
+   g.fillStyle='#ffe2a3';g.beginPath();g.arc(o.x+o.w/2,o.y+18,30,0,Math.PI*2);g.fill();
+  }
+  g.restore();return;
+ }
+ const phase=o.x*.007+o.y*.009;
+ const sway=Math.sin(t*.00065+phase)*(o.type==='palm'?2.0:1.15);
+ for(const b of interiors){
+  const f=b.floor;
+  if(b.roof<.995&&o.x<f.x+f.w&&o.x+o.w>f.x&&o.y<f.y+f.h&&o.y+o.h>f.y){
+   g.beginPath();g.rect(o.x-20,o.y-20,o.w+40,o.h+40);
+   g.rect(f.x,f.y,f.w,f.h);g.clip('evenodd');
+  }
+ }
+ g.translate(o.x+o.w/2,o.y+o.h);g.rotate(sway*.0038);g.imageSmoothingEnabled=false;
+ paintSprite(g,o.image,-o.w/2,-o.h,o.w,o.h);
+ objectsDrawn++;g.restore();
+}
 function foreground(g,opt,t){
  if(!enabled||!opt||opt.zoom<.14)return;
  const view=opt.view,a=performance.now();
- for(const b of interiors)if(b.roof>.001&&visible(b.exterior,view,60)){g.save();g.globalAlpha=opt.zoom<.3?1:b.roof;const o=b.exterior;paintSprite(g,o.image,o.x,o.y,o.w,o.h);g.restore();}
- for(const o of objects){if(!visible(o,view,40))continue;
-  if(o.type!=='palm'&&o.type!=='tree'&&o.type!=='lamp')continue;
-  const sprite=img(o.image);if(!sprite)continue;
-  if(o.type==='lamp'){
-   paintSprite(g,o.image,o.x,o.y,o.w,o.h);
-   // Tiny amber light flicker; no full-screen shadows.
-   if(opt.zoom>.38){g.globalAlpha=.13+.05*Math.sin(t*.002+o.x);
-     g.fillStyle='#ffe2a3';g.beginPath();g.arc(o.x+o.w/2,o.y+18,30,0,Math.PI*2);g.fill();g.globalAlpha=1;}
-   continue;
-  }
-  const phase=o.x*.007+o.y*.009;
-  const sway=Math.sin(t*.00065+phase)*(o.type==='palm'?2.0:1.15);
-  g.save();
-  // Existing canopy art stays outside the revealed room, including overlapping grove edges.
-  for(const b of interiors){const f=b.floor;if(b.roof<.995&&o.x<f.x+f.w&&o.x+o.w>f.x&&o.y<f.y+f.h&&o.y+o.h>f.y){
-   g.beginPath();g.rect(o.x-20,o.y-20,o.w+40,o.h+40);g.rect(f.x,f.y,f.w,f.h);g.clip('evenodd');
-  }}
-  if(opt.player&&opt.player.x>o.x-10&&opt.player.x<o.x+o.w+10&&opt.player.y>o.y&&opt.player.y<o.y+o.h+12)g.globalAlpha=.42;
-  g.translate(o.x+o.w/2,o.y+o.h);g.rotate(sway*.0038);g.imageSmoothingEnabled=false;
-  paintSprite(g,o.image,-o.w/2,-o.h,o.w,o.h);g.restore();objectsDrawn++;
- }
+ // Ambient birds remain on the original layer. Large scenery is now y-sorted
+ // alongside Jay, rather than painted unconditionally on top of his face.
  const bird=img('marina-gulls.png');if(bird){
   const gulls=[[4660,3833],[5109,3908],[5576,3844],[5818,3805]];
   for(let i=0;i<gulls.length;i++){
@@ -532,7 +557,7 @@ function metrics(){const sorted=samples.slice().sort((a,b)=>a-b);return Object.f
  sceneryColliders:outdoorSolids.length,postColliders:pilingSolids.length,
  campaignEngineModified:false,zombieOutbreakModified:false,multiplayerTransport:'none'});}
 const api={inMarina:(x,y)=>enabled&&x>4400&&x<5900&&y>3220&&y<4220,version:'116-marina-1',worldId:WORLD,region:Object.freeze(TERRAIN),piers:PIER_X,objects,actors,interactions,
- background:begin,foreground,stepNPCs,drawNpc,blocksProp,blocksScenery,metrics,
+ background:begin,foreground,depthProps,drawDepthProp,stepNPCs,drawNpc,blocksProp,blocksScenery,metrics,
  pierOccluders,drawPierPost,
  interiors,interiorAt,updateInteriors,ownsSolid,drawInteriorFurniture,
  interiorFurniture:(view)=>interiors.flatMap(b=>b.roof<.995&&visible(b.exterior,view,60)?b.furniture:[]),

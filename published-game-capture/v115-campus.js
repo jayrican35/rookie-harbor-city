@@ -365,7 +365,7 @@
     if(tree.complete&&tree.naturalWidth>0){g.drawImage(tree,x-r*1.25,y-r*2.25,r*2.5,r*2.7);}
     else drawTree(x,y,r);
   }
-  function paintedBuilding(d){
+  function paintedBuilding(d,districtId){
     const bx=d.t==='mtbldg'?(d.bx||d.x):(d.x||0),
       by=d.t==='mtbldg'?(d.btop||d.y):(d.y||0),
       bw=d.t==='mtbldg'?(d.bw||d.w):(d.w||200),
@@ -380,7 +380,7 @@
        window.ROOKIE_V115_SHOWCASE.buildingFallback(g,d,campus.zoom))return;
     // V127: source sprite first; new shared architecture in place of older
     // simple color rectangles, with exactly the original wall footprint.
-    if(window.ROOKIE_V127_CITY?.building(g,{x:bx,y:by,w:bw,h:bh},campus.zoom))return;
+    if(window.ROOKIE_V127_CITY?.building(g,{x:bx,y:by,w:bw,h:bh,kind:d.t,district:districtId},campus.zoom))return;
     const roof=d.roof||'#615a55',wall=d.c||'#c1a98e';
     g.fillStyle='rgba(12,25,37,.27)';g.fillRect(bx+8,by+9,bw,bh);
     g.fillStyle=wall;g.fillRect(bx,by+18,bw,Math.max(20,bh-18));
@@ -417,7 +417,7 @@
     for(const o of d.map.decors||[]){
       const x=o.x||0,y=o.y||0;
       if(!nearViewport(d.x+x-130,d.y+y-170,(o.w||240)+260,(o.h||200)+260))continue;
-      if(['bldg','house','shed','lighthouse','mtbldg'].includes(o.t)){if(!window.ROOKIE_V116_MARINA?.ownsSolid?.({x:d.x+x,y:d.y+y,w:o.w,h:o.h}))paintedBuilding(o);continue;}
+      if(['bldg','house','shed','lighthouse','mtbldg'].includes(o.t)){if(!window.ROOKIE_V116_MARINA?.ownsSolid?.({x:d.x+x,y:d.y+y,w:o.w,h:o.h}))paintedBuilding(o,d.id);continue;}
       // Native world decoration sprites now depth-sort with Jay, not underfoot.
       if(window.ROOKIE_V127_CITY?.handlesDecor(o))continue;
       if(o.t==='tree'||o.t==='bigtree'||o.t==='palm'){districtTree(x,y,o.t==='bigtree'?38:26);continue;}

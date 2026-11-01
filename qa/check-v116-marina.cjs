@@ -27,3 +27,60 @@ assert.equal(m.blocksProp(3000,4400,12),false,'World outside marina unchanged');
 assert.equal(m.setTestEnabled(false),false,'No release runtime debug toggle');
 assert.equal(m.metrics().multiplayerTransport,'none');
 console.log('PASS V116: original marina pier coordinates, 11 raster sprites, integrated actors, world collision and scope-safe renderer');
+// Render regressions: delayed atlas decoding, exact native pier coverage and
+// water animation must agree with the same world geometry at every zoom.
+const draws=[],waves=[],pendingImages=[];
+let pen=null;
+const paint={save(){},restore(){},fillRect(){},beginPath(){pen=null;},ellipse(){},fill(){},
+ drawImage(...args){draws.push(args);},moveTo(x,y){pen=[x,y];},lineTo(x,y){if(pen)waves.push([...pen,x,y]);},stroke(){}};
+const renderMock={...mock,window:{},Image:function(){const im={complete:false,naturalWidth:0};pendingImages.push(im);return im;},
+ document:{...mock.document,createElement(){return {getContext:()=>({...paint,drawImage(){}})};}}};
+vm.runInNewContext(s,renderMock);
+const renderer=renderMock.window.ROOKIE_V116_MARINA;
+const view={x:4352,y:3220,w:1792,h:1436};
+renderer.background(paint,{zoom:1.1,view},0);
+assert.equal(renderer.metrics().chunkCacheCount,0,'Undecoded atlas must not create permanent blank chunks');
+for(const im of pendingImages){im.complete=true;im.naturalWidth=256;}
+for(const zoom of [.35,.82,1.04,1.8]){
+ draws.length=0;waves.length=0;
+ renderer.background(paint,{zoom,view},12345);
+ assert(renderer.metrics().chunkCacheCount>0,'Terrain must recover after decode without reload');
+ assert(renderer.metrics().chunkCacheCount<=40,'Fixed memory budget must hold');
+ for(const px of renderer.piers){
+  const wood=draws.filter(d=>d.length===9&&d[0].src.endsWith('marina-tiles.png')&&d[5]>=px&&d[5]<px+90&&d[6]>=3800);
+  assert.equal(wood.reduce((area,d)=>area+d[7]*d[8],0),90*300,'Wood must cover the entire native pier: '+px);
+  assert(wood.every(d=>d[5]+d[7]<=px+90&&d[6]+d[8]<=4100),'Wood cannot spill into blocked water');
+  assert(!waves.some(([x,y,x2])=>y<4100&&x<px+90&&x2>px),'Water sparkles cannot be painted over dock planks');
+ }
+}
+
+// Use authentic MAPS and the original finalizer for continuous foot-route checks.
+const engine=fs.readFileSync(path.join(dir,'game.js'),'utf8'),geo={MAPS:{}};
+for(const id of ['waterfront','southbay']){
+ const start=engine.indexOf('MAPS.'+id+' = {'),end=engine.indexOf('\n};',start)+3;
+ assert(start>=0&&end>start);vm.runInNewContext(engine.slice(start,end),geo);
+}
+const finalStart=engine.indexOf('Object.keys(MAPS).forEach(function(id){');
+const finalEnd=engine.indexOf('/* ==================== PEDESTRIANS',finalStart);
+vm.runInNewContext(engine.slice(finalStart,finalEnd),geo);
+function blockedInWorld(x,y,r=12){
+ if(m.blocksProp(x,y,r))return true;
+ for(const [id,ox,oy] of [['waterfront',4400,3220],['southbay',2800,3220]]){
+  for(const b of geo.MAPS[id].pedSolids){
+   const dx=x-Math.max(b.x+ox,Math.min(x,b.x+ox+b.w)),dy=y-Math.max(b.y+oy,Math.min(y,b.y+oy+b.h));
+   if(dx*dx+dy*dy<r*r)return true;
+  }
+ }
+ return false;
+}
+function walk(a,b){const length=Math.hypot(b[0]-a[0],b[1]-a[1]);
+ for(let i=0;i<=Math.ceil(length/3);i++){const f=i/Math.max(1,Math.ceil(length/3)),x=a[0]+(b[0]-a[0])*f,y=a[1]+(b[1]-a[1])*f;
+  assert(!blockedInWorld(x,y),'Blocked route '+JSON.stringify({a,b,x,y}));}
+}
+const routes=[[[4300,3744],[5800,3744]],[[5150,3200],[5150,3320]],[[5570,3200],[5570,3320]],
+ ...Array.from(m.piers,px=>[[px+45,3750],[px+45,4075]])];
+for(const [a,b] of routes){walk(a,b);walk(b,a);}
+for(const a of m.actors){
+ for(let i=0;i<a.route.length;i++)walk(a.route[i],a.route[(i+1)%a.route.length]);
+}
+console.log('PASS V116: slow texture recovery, 90×300 pier art, dry docks, bounded cache at four scales, two-way street/pier routes and NPC paths against native solids');

@@ -46,10 +46,10 @@ const objects=Object.freeze([
 const solidBoxes=Object.freeze(objects.filter(o=>o.solid).map(o=>Object.freeze({id:o.id,x:o.x+12,y:o.y+19,w:o.w-24,h:o.h-38})));
 const actors=[
  {id:'v116:fisher',name:'Fisherman',npcStyle:1,x:5142,y:3876,route:[[5142,3876],[5142,3944]],speed:11,phase:0,dialogue:'I almost caught a legendary fish. It was THIS big! ...Maybe.'},
- {id:'v116:worker',name:'Marina worker',npcStyle:2,x:5300,y:3715,route:[[5300,3715],[5400,3690],[5440,3735],[5300,3715]],speed:27,phase:1,dialogue:'The gulls stole another sandwich. I think they have a schedule.'},
+ {id:'v116:worker',name:'Marina worker',npcStyle:2,x:5400,y:3758,route:[[5400,3758],[5480,3758],[5515,3758],[5400,3758]],speed:27,phase:1,dialogue:'The gulls stole another sandwich. I think they have a schedule.'},
  {id:'v116:visitor',name:'Visitor',npcStyle:3,x:4920,y:3735,route:[[4920,3735],[5010,3735],[4920,3735]],speed:15,phase:2,dialogue:'I have photographed the same boat eleven times. Art is patience.'},
  {id:'v116:customer',name:'Café customer',npcStyle:4,x:4558,y:3420,route:[[4558,3420]],speed:0,phase:0,dialogue:'Coffee and sea air. Best shift break ever.'},
- {id:'v116:stroller',name:'Pedestrian',npcStyle:0,x:5570,y:3733,route:[[5570,3733],[5480,3733],[5390,3720],[5570,3733]],speed:30,phase:3,dialogue:'Watch out for the seagull. It has a suspicious résumé.'}
+ {id:'v116:stroller',name:'Pedestrian',npcStyle:0,x:5570,y:3758,route:[[5570,3758],[5480,3758],[5390,3758],[5570,3758]],speed:30,phase:3,dialogue:'Watch out for the seagull. It has a suspicious résumé.'}
 ].map(a=>({...a,step:0,routeClock:a.phase*2}));
 const interactions=[
  {id:'v116:cafe',label:'Marina Café',x:4551,y:3390,text:'The café smells like cinnamon and sea salt. Someone named a muffin “The Great Wave.”'},
@@ -82,6 +82,8 @@ function buildChunk(cx,cy){
  return off;
 }
 function chunkAt(cx,cy){
+ // Do not retain transparent placeholders while the asynchronously decoded atlas loads.
+ if(!img('marina-tiles.png'))return null;
  const key=cx+':'+cy;
  if(!cached.has(key)){
   cached.set(key,buildChunk(cx,cy));
@@ -98,20 +100,26 @@ function begin(g,opt,t){
  if(!visible(region,view,0))return;
  const x0=Math.max(TERRAIN.x,TERRAIN.x+Math.floor((Math.max(TERRAIN.x,view.x)-TERRAIN.x)/256)*256);
  const y0=Math.max(TERRAIN.y,TERRAIN.y+Math.floor((Math.max(TERRAIN.y,view.y)-TERRAIN.y)/256)*256);
- for(let y=y0;y<TERRAIN.y+TERRAIN.h&&y<=view.y+view.h+256;y+=256){
-  for(let x=x0;x<TERRAIN.x+TERRAIN.w&&x<=view.x+view.w+256;x+=256){
-   const tile=chunkAt(x,y);g.save();g.imageSmoothingEnabled=false;g.drawImage(tile,x,y);g.restore();cacheDraws++;
+ for(let y=y0;y<TERRAIN.y+TERRAIN.h&&y<view.y+view.h;y+=256){
+  for(let x=x0;x<TERRAIN.x+TERRAIN.w&&x<view.x+view.w;x+=256){
+   const tile=chunkAt(x,y);if(!tile)continue;g.save();g.imageSmoothingEnabled=false;g.drawImage(tile,x,y);g.restore();cacheDraws++;
   }
  }
- // Seawall: anchored to the same y=4200 shoreline as the V115 premium marina.
- g.fillStyle='#4f5c58';g.fillRect(4400,3794,1500,12);
- g.fillStyle='#d6bea1';g.fillRect(4400,3794,1500,4);
- // Keep pre-existing piers in their source positions, upgrade surface only.
- for(const px of PIER_X){
-  if(!visible({x:px-5,y:3800,w:95,h:325},view,0))continue;
-  for(let y=3804;y<4106;y+=32){
-   const a=hash(px,y,11)%4,b=[12,13,14,15][a],atlas=img('marina-tiles.png');
-   if(atlas){g.drawImage(atlas,b%8*32,Math.floor(b/8)*32,32,32,px,y,32,32);g.drawImage(atlas,b%8*32,Math.floor(b/8)*32,32,32,px+32,y,32,32);}
+ // The native seawall has three 90px openings, matching the walkable piers.
+ for(const [x,width] of [[4400,255],[4745,360],[5195,360],[5645,255]]){
+  g.fillStyle='#4f5c58';g.fillRect(x,3794,width,12);
+  g.fillStyle='#d6bea1';g.fillRect(x,3794,width,4);
+ }
+ // Cover the full native 90×300px footprint without drawing wood into blocked water.
+ const dockAtlas=img('marina-tiles.png');
+ if(dockAtlas)for(const px of PIER_X){
+  if(!visible({x:px,y:3800,w:90,h:300},view,0))continue;
+  for(let y=3800;y<4100;y+=32){
+   const tid=[12,13,14,15][hash(px,y,11)%4],h=Math.min(32,4100-y);
+   for(let dx=0;dx<90;dx+=32){
+    const w=Math.min(32,90-dx);
+    g.drawImage(dockAtlas,tid%8*32,Math.floor(tid/8)*32,w,h,px+dx,y,w,h);
+   }
   }
  }
  // Approved ROOKIE bollard sprites mark the piers at water level.
@@ -156,9 +164,12 @@ function begin(g,opt,t){
   const sx=Math.max(4410,Math.floor(view.x/90)*90);
   const ex=Math.min(6070,view.x+view.w+100);
   for(let x=sx;x<ex;x+=90)for(let y=3830;y<4590;y+=68){
+   if(y+15<view.y||y>view.y+view.h)continue;
    const z=hash(x,y,18);let drift=(tphase+z)%54;
+   const waveX=x+drift,waveY=y+(z%15),waveW=15+(z%8);
+   if(waveY<4100&&PIER_X.some(px=>waveX<px+90&&waveX+waveW>px))continue;
    g.globalAlpha=.26+(z%5)*.065;g.strokeStyle=z%2?'#b5eadf':'#55c6da';g.lineWidth=2;
-   g.beginPath();g.moveTo(x+drift,y+(z%15));g.lineTo(x+drift+15+(z%8),y+(z%15));g.stroke();
+   g.beginPath();g.moveTo(waveX,waveY);g.lineTo(waveX+waveW,waveY);g.stroke();
   }
   g.globalAlpha=1;
  }

@@ -46,7 +46,7 @@ All protected originals remain untouched: `game.js`, `outbreak.css`, all Zombie 
 
 ## Rendering and performance validation
 
-- Static 256×256 tile cache capped at 18 chunks; tile draw calls are bounded by camera and zoom.
+- Static 256×256 tile cache capped at 40 chunks; tile draw calls are bounded by camera and zoom.
 - Water uses bounded simple strokes; boat/tree/seabird animations use monotonic frame time and fixed instances, not per-frame particle allocations.
 - QA captures real game Canvas before/after at **identical coordinates (5180,3880)** and identical zoom separately for simulated Android portrait (390×844) and landscape (844×390).
 - `qa/check-v116-marina.cjs` checks sprite existence, gameplay integration hooks, collision semantics and Zombie exclusions.
@@ -74,3 +74,16 @@ GitHub Actions deployment run [41259730858](https://github.com/jayrican35/rookie
 The previous 18-chunk cache caused visible-viewport cache thrashing in portrait: an earlier run dropped from **51.1** without art to **32.2 FPS** with art enabled. Raising the fixed upper limit to **40 chunks** stopped the active-viewport rebuild churn; maximum cached RGBA memory is now **10 MiB** (40×256×256×4 bytes), but the test frames held 24 (portrait) and 20 (landscape) chunks. Real-device battery, memory and frame pacing still require Android verification; these FPS measurements are from headless desktop Chromium simulating mobile dimensions. All 19 PNG/WebP assets decoded without browser errors. The test additionally confirmed the original three-pier collision geometry, promenade access, and hidden development overlays.
 
 Evidence is deployed at [the identical-camera V116 screenshot comparison](https://jayrican35.github.io/rookie-harbor-city/preview/v116-marina/evidence/): portrait and landscape before/after Canvas captures plus live UI screenshots and metrics JSON. Camera world position **(5180,3880)** for both; portrait zoom **0.82**, landscape zoom **1.04**. No screenshots from an unrelated mockup.
+
+## Follow-up QA and fixes — October 31, 2026
+
+Continued from draft source commit `56cc9dd`, without merging or modifying the preferred hosted build.
+
+- Dock textures now cover each original **90 × 300** world-unit pier exactly. The former two-tile pass covered only 64 units and extended beyond the native endpoint. The seawall now leaves the three native entrances visually open, and animated water highlights skip the wood.
+- Terrain placeholders are no longer cached before the atlas finishes decoding. A delayed image now recovers on the next rendered frame instead of leaving permanently transparent chunks.
+- Chunk drawing stops at the visible right/bottom edges, avoiding the previous extra offscreen row and column; the 40-chunk / 10 MiB cap is retained.
+- Native-solid route sampling exposed a marina worker path through a bench and a stroller path too close to one. Both routes now follow clear promenade space. Original collision geometry is unchanged.
+- Extended `qa/check-v116-marina.cjs` verifies delayed texture recovery, exact pier surface coverage, no water highlights on the docks, bounded cache at four zoom values, both directions along the promenade and north entrances, all three dock approaches, and every ambient actor route using the original MAPS finalizer.
+- Live browser review used **390 × 844 portrait** and **844 × 390 landscape** iframe viewports, including the normal launch flow, zoom control, player visibility and touch-control layout. No game-source browser errors were observed. Browser extension metadata errors were excluded from game findings. This is desktop viewport simulation; physical Android performance and sustained frame pacing remain unverified. No new FPS claim is made.
+
+Changes in this follow-up are limited to the V116 renderer, its regression checks, and this report. Protected `game.js`, `outbreak.css`, all other assets, shared world modules, campaign state and Zombie Outbreak remain unchanged. Classic campaign migration remains outside this pass; PR #9 stays draft and unmerged.

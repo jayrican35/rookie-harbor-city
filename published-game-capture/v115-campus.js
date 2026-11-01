@@ -503,6 +503,8 @@
     const view={x:campus.camX,y:campus.camY,w:viewW,h:viewH};
     drawCampusGround();
     if(art)art.ground(g,{zoom:campus.zoom,view},t);
+    const pilot=window.ROOKIE_V115_PRECINCT_PILOT;
+    if(pilot)pilot.ground(g,{zoom:campus.zoom,view},t);
     const reference=window.ROOKIE_V115_REFERENCE;
     if(reference)reference.terrain(g,{zoom:campus.zoom,view},t);
     const premium=window.ROOKIE_V115_PREMIUM;
@@ -511,9 +513,12 @@
     if(reference)reference.gameOverlay(g,{zoom:campus.zoom,view,districts:districtEntries},t);
     if(premium)premium.overlay(g,{zoom:campus.zoom,view,districts:districtEntries},t);
     if(art)art.streets(g,{zoom:campus.zoom,view},t);
-    drawOutdoorDecor();drawStation();
+    drawOutdoorDecor();
+    if(pilot)pilot.props(g,{zoom:campus.zoom,view},t);
+    drawStation();
     if(art)art.precinct(g,{zoom:campus.zoom,view,STX,STY,alpha:roofAlpha()},t);
     drawEntityHighlights(t);
+    if(pilot)pilot.animated(g,{zoom:campus.zoom,view},t);
     if(art)art.atmosphere(g,{zoom:campus.zoom,view},t);
     g.restore();
     const region=interiorRoom(campus.x,campus.y);
@@ -631,6 +636,13 @@
     geometry:()=>({walls:walls.length,furniture:furniture.length,rooms:roomRects.length,spots:worldSpots.length,
       stationFootprint:{x:STX,y:STY,w:ST.w,h:ST.h},plazaPlacement:{x:PLX,y:PLY},
       separateSceneLoads:0,doorTransitions:'world-space-continuous'}),
+    // Screenshot-only deterministic camera: query-gated, cannot mutate world state or saves.
+    qaCamera:(x,y,z)=>{
+      if(!/[?&]pilotQA=1(?:&|$)/.test(window.location.search)||!campus.open)return false;
+      campus.zoom=clamp(z,.35,1.8);campus.follow=false;
+      campus.camX=x-tw/(2*campus.zoom);campus.camY=y-th/(2*campus.zoom);
+      return true;
+    },
     test:{blocked,interiorRoom,chunkAt,moveTo:(x,y)=>{if(blocked(x,y))return false;campus.x=x;campus.y=y;return true;},
       position:()=>({x:campus.x,y:campus.y}),doorCrossings:()=>campus.doorCrossings},
     scope:'Connected district geography and precinct foot exploration share one camera. Missions, street NPC routines, interiors beyond Precinct 9, live multiplayer and cars still require migration.'};

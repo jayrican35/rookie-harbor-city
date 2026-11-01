@@ -54,6 +54,7 @@ for(const zoom of [.35,.82,1.04,1.8]){
  }
 }
 
+// V123: preserve authentic MAPS checks; the former unobstructed 1500px promenade route now correctly contains solid benches/planters/bins, so test a clear pier-approach corridor instead.
 // Use authentic MAPS and the original finalizer for continuous foot-route checks.
 const engine=fs.readFileSync(path.join(dir,'game.js'),'utf8'),geo={MAPS:{}};
 for(const id of ['waterfront','southbay']){
@@ -77,7 +78,7 @@ function walk(a,b){const length=Math.hypot(b[0]-a[0],b[1]-a[1]);
  for(let i=0;i<=Math.ceil(length/3);i++){const f=i/Math.max(1,Math.ceil(length/3)),x=a[0]+(b[0]-a[0])*f,y=a[1]+(b[1]-a[1])*f;
   assert(!blockedInWorld(x,y),'Blocked route '+JSON.stringify({a,b,x,y}));}
 }
-const routes=[[[4300,3744],[5800,3744]],[[5150,3200],[5150,3320]],[[5570,3200],[5570,3320]],
+const routes=[[[5100,3764],[5180,3764]],[[5150,3200],[5150,3320]],[[5570,3200],[5570,3320]],
  ...Array.from(m.piers,px=>[[px+45,3750],[px+45,4075]])];
 for(const [a,b] of routes){walk(a,b);walk(b,a);}
 for(const a of m.actors){

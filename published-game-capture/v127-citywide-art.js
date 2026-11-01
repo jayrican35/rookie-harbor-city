@@ -26,7 +26,7 @@ for(const [type,file] of Object.entries(spriteFiles)){
  const im=new Image();im.decoding='async';im.src='./assets/exterior/'+file;sprites[type]=im;
 }
 const spriteReady=type=>!!(sprites[type]?.complete&&sprites[type]?.naturalWidth>0);
-const cache=new Map();const metrics={chunks:0,drawn:0,props:0,coast:0};
+const cache=new Map();const metrics={chunks:0,drawn:0,props:0,coast:0,details:0};
 let frameZoom=1; // use color LOD only when whole-city overview is zoomed far out
 // Invalidate fallback-color chunks as soon as the shared atlas decodes.
 // Otherwise first-frame blank tiles could remain cached across the whole city.
@@ -74,8 +74,11 @@ function tileChunk(type,cx,cy){
      g.fillStyle='rgba(102,80,54,.16)';
      for(let k=0;k<6;k++)g.fillRect(x+hash(k,n)%29,y+hash(n,k+2)%29,2,1);
    }else if(type==='brick'){
-     g.fillStyle='rgba(255,228,181,.09)';
-     g.fillRect(x+5,y+4,20,1);
+     // World-anchored masonry: staggered joins, mortar and occasional edge wear.
+     g.fillStyle='rgba(255,228,181,.14)';g.fillRect(x+3,y+4,24,1);
+     g.fillStyle='rgba(59,57,53,.18)';g.fillRect(x,y+30,32,2);
+     g.fillRect(x+(n%2?15:26),y+5,1,24);
+     if(n%7===0){g.fillStyle='rgba(83,89,74,.22)';g.fillRect(x+2,y+27,5,2);}
    }
  }
  if(cache.size>=CAP)cache.delete(cache.keys().next().value);
@@ -100,13 +103,37 @@ function base(g,opt){
  const view=opt.view||{x:WORLD.minX,y:0,w:WORLD.maxX-WORLD.minX,h:WORLD.maxY};
  surface(g,{x:WORLD.minX,y:0,w:WORLD.maxX-WORLD.minX,h:WORLD.maxY},'grass',view);
 }
+// Subtle art-directed ground dressing follows *existing* district ground layers.
+// Nothing new is collidable, interactive, or saved. Chunk-independent coordinates
+// ensure no seams as the same camera crosses district boundaries.
 function districtGround(g,d,view){
- const m=d.map;
+ const m=d.map,ground=m.ground||[];
  surface(g,{x:d.x,y:d.y,w:d.w,h:d.h},colorKind(m.base||'#729763'),view);
- for(const r of m.ground||[]){
+ for(const r of ground){
    const abs={x:d.x+r.x,y:d.y+r.y,w:r.w,h:r.h};
    if(!visible(abs,view))continue;
    surface(g,abs,colorKind(r.c),view);
+ }
+ if(frameZoom<.45)return;
+ const step=92,fromX=Math.max(d.x,Math.floor(view.x/step)*step),
+   fromY=Math.max(d.y,Math.floor(view.y/step)*step);
+ const maxX=Math.min(d.x+d.w,view.x+view.w+step),
+   maxY=Math.min(d.y+d.h,view.y+view.h+step);
+ for(let y=fromY;y<maxY;y+=step)for(let x=fromX;x<maxX;x+=step){
+   const n=hash(Math.floor(x/step),Math.floor(y/step),d.id.length);
+   if(n%4===0)continue;
+   const lx=x-d.x+19+(n%37),ly=y-d.y+20+((n>>>5)%37);
+   if(lx<8||ly<8||lx>d.w-8||ly>d.h-8)continue;
+   let type=colorKind(m.base||'#729763');
+   for(const r of ground)if(lx>=r.x&&lx<r.x+r.w&&ly>=r.y&&ly<r.y+r.h)type=colorKind(r.c);
+   if(type!=='grass')continue; // never plant tufts onto streets or brick
+   const px=d.x+lx,py=d.y+ly;
+   // Grass blades, leaf litter and occasional tiny wildflowers (not fake trees).
+   g.fillStyle=n%2?'rgba(28,92,46,.42)':'rgba(194,221,114,.46)';
+   g.fillRect(px,py-3,2,6);g.fillRect(px-4,py,4,2);g.fillRect(px+3,py-2,3,3);
+   if(n%9===0){g.fillStyle='#e7d18a';g.fillRect(px+8,py-4,3,3);
+     g.fillStyle='#476a45';g.fillRect(px+9,py-1,1,3);}
+   metrics.details++;
  }
 }
 function road(g,r,view){surface(g,r,'road',view);}
@@ -154,10 +181,16 @@ function walkways(g,opt){
   const from=Math.max(x1,Math.floor(v.x/64)*64);
   g.save();g.beginPath();g.rect(r.x,r.y,r.w,r.h);g.clip();
   g.fillStyle='rgba(56,61,58,.22)';g.fillRect(x1,3778,x2-x1,6);
-  g.fillStyle='rgba(249,217,166,.26)';g.fillRect(x1,3652,x2-x1,3);
+  g.fillStyle='rgba(249,217,166,.34)';g.fillRect(x1,3652,x2-x1,3);
   for(let x=from;x<x2&&x<v.x+v.w+64;x+=64){
    const h=hash(x/64,57);
-   if(h%5===0){g.fillStyle='rgba(32,64,58,.16)';g.fillRect(x+12,3709,3,2);}
+   // Mortar breaks and restrained drainage details replace the flat ribbon.
+   g.fillStyle='rgba(62,58,51,.15)';g.fillRect(x,3660,2,111);
+   if(h%5===0){g.fillStyle='rgba(32,64,58,.30)';g.fillRect(x+12,3709,6,2);}
+   if(h%7===0){
+     g.fillStyle='#7b8278';g.fillRect(x+36,3754,18,6);
+     g.fillStyle='#3e5360';for(let k=0;k<4;k++)g.fillRect(x+38+k*4,3755,1,4);
+   }
   }
   g.restore();
  }
@@ -181,7 +214,14 @@ function building(g,b,zoom){
  const x=b.x,y=b.y,w=b.w,h=b.h;
  if(![x,y,w,h].every(Number.isFinite)||w<32||h<35)return false;
  const seed=hash(Math.floor(x),Math.floor(y),31);
- const roofs=['#a45743','#326982','#b57449','#6c727c','#528177','#995d52'];
+ const district=b.district||'',kind=b.kind||'';
+ const palettes={
+   residential:['#945748','#7d685a','#647b78','#9b6d56'],
+   industrial:['#62737a','#677b75','#717780','#715e57'],
+   downtown:['#9c5545','#426780','#9b734c','#527b78'],
+   northgate:['#786c69','#54747a','#a17150','#6b7777']
+ };
+ const roofs=palettes[district]||['#a45743','#326982','#b57449','#6c727c','#528177','#995d52'];
  const roof=roofs[seed%roofs.length],face=['#d5b998','#dac8aa','#b6c3bf'][seed%3];
  const roofH=Math.max(26,Math.min(h*.67,h-31));
  g.save();g.imageSmoothingEnabled=false;
@@ -222,6 +262,32 @@ function building(g,b,zoom){
   g.fillStyle='#7c929c';g.fillRect(vx,vy,27,17);
   g.fillStyle='#304d5d';g.fillRect(vx+5,vy+4,17,9);
   g.fillStyle='rgba(255,239,196,.48)';g.fillRect(vx+1,vy+1,25,2);
+ }
+ // Original coordinates, richer structural articulation: vent stacks, roof
+ // flashing, bay windows and storefront shade. No replacement asset or collider.
+ if(zoom>.26){
+   g.fillStyle='rgba(22,36,47,.34)';
+   g.fillRect(x+3,y+roofH+3,w-6,3);
+   if(w>98&&h>105){
+     const ux=x+19+seed%29,uy=y+16+(seed>>>3)%13;
+     g.fillStyle='#5c6e72';g.fillRect(ux+3,uy+7,28,21);
+     g.fillStyle='#9eb4b2';g.fillRect(ux,uy,28,15);
+     g.fillStyle='#3e565b';g.fillRect(ux+5,uy+5,18,7);
+     g.fillStyle='rgba(255,238,190,.42)';g.fillRect(ux+2,uy+2,24,2);
+   }
+   if(kind==='house'||district==='residential'){
+     g.fillStyle='#ece1c3';
+     for(const wx of [x+11,x+w-22])if(wx>x+5&&wx<x+w-10)
+       {g.fillRect(wx,wallTop+6,3,24);g.fillRect(wx+19,wallTop+6,3,24);}
+   }else if(w>94&&h-roofH>44){
+     const awnY=y+h-37;
+     g.fillStyle='#2d4a58';g.fillRect(x+6,awnY+7,w-12,5);
+     g.fillStyle=seed%2?'#b76e55':'#638b86';
+     g.fillRect(x+6,awnY,w-12,8);
+     for(let xx=x+11;xx<x+w-11;xx+=18){
+       g.fillStyle='rgba(244,223,181,.5)';g.fillRect(xx,awnY+1,7,6);
+     }
+   }
  }
  g.restore();return true;
 }

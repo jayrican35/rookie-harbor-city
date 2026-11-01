@@ -1,0 +1,40 @@
+name: V121 capture existing V120 actual gameplay reference
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/v121-marina-art-direction-pass]
+    paths: ['.github/workflows/v121-baseline-capture.yml']
+permissions:
+  contents: write
+jobs:
+  capture-baseline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: true}
+      - name: Capture production V120 screenshot reference for engineering review
+        run: |
+          set -euo pipefail
+          python3 -m pip install -q pillow requests
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          import requests,io
+          folder=Path('qa/v121-reference');folder.mkdir(parents=True,exist_ok=True)
+          for view in ('portrait','landscape'):
+            url=f'https://jayrican35.github.io/rookie-harbor-city/preview/v120-premium/evidence/{view}-after-gameplay.png'
+            response=requests.get(url,timeout=45);response.raise_for_status()
+            im=Image.open(io.BytesIO(response.content)).convert('RGB')
+            im.thumbnail((610,1000))
+            im.save(folder/f'v120-{view}.jpg',quality=82,optimize=True)
+            print('Captured',view,'image',im.size)
+          PY
+      - name: Commit only reference screenshot evidence
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add qa/v121-reference/*.jpg
+          if ! git diff --cached --quiet; then
+            git commit -m 'Save V120 real-game captures for V121 visual verification'
+            git push origin HEAD:feature/v121-marina-art-direction-pass
+          fi

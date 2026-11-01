@@ -39,7 +39,7 @@ jobs:
         run: |
           python3 - <<'PY'
           import subprocess
-          base='feature/v118-cinematic-marina-foundation'
+          base='origin/feature/v118-cinematic-marina-foundation'
           changed=set(subprocess.check_output(['git','diff','--name-only',base,'HEAD'],text=True).splitlines())
           allowed={'published-game-capture/v116-marina.js','published-game-capture/v115-campus.js',
             'published-game-capture/v119-water-motion.js','tools/build_v119_preview.py',

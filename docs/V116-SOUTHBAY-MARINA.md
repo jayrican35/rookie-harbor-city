@@ -29,7 +29,7 @@ The repository is **hybrid**:
 
 - 11 original reusable raster resources in `assets/v116-marina`: a **32×32 tile atlas**, four roof+facade pixel sprites, a kiosk, three boat classes, a 6-frame character sprite sheet, and a 2-frame seabird sheet.
 - Reuses seven preapproved exterior WebP sprite types; does **not** copy the user reference screenshot into production textures.
-- Deterministic 256×256 camera-culled raster tile chunks, capped at 18 cached chunks (~4.5 MiB theoretical RGBA cache), nearest-neighbor filtering.
+- Deterministic 256×256 camera-culled raster tile chunks, capped at 40 cached chunks (10 MiB theoretical maximum RGBA cache), nearest-neighbor filtering.
 - Detailed plaza, promenade, seawall, reusable dock plank material, beach/water transition; transparent terrain over existing street entry so the north-south road is not visually replaced.
 - Animated water glints, subtle boat bobbing, independent tree sway, warm lamp glow and resting gulls.
 - Five marina NPCs with stable world IDs and short deterministic waypoints. Integrated into the existing `npcActors` array and simulation tick, not a second global game loop.
@@ -61,3 +61,16 @@ All protected originals remain untouched: `game.js`, `outbreak.css`, all Zombie 
 4. Only after approval: integrate classic campaign missions, vehicles, and persistent world state through a shared simulation boundary, without affecting Zombie Outbreak.
 
 **Do not merge or overwrite production until approved.**
+
+## Verified live-browser performance (optimized V116)
+
+GitHub Actions deployment run [41259730858](https://github.com/jayrican35/rookie-harbor-city/actions/runs/41259730858) completed successfully, including the screenshot and gameplay acceptance tests for both Android-sized viewports.
+
+| Simulated viewport | Prior renderer FPS (art disabled) | V116 art enabled FPS | V116 95th-percentile module paint time | Cached terrain chunks |
+| --- | ---: | ---: | ---: | ---: |
+| Portrait, 390×844 | 57.3 | 55.5 | 0.3 ms | 24 |
+| Landscape, 844×390 | 60.0 | 60.0 | 0.3 ms | 20 |
+
+The previous 18-chunk cache caused visible-viewport cache thrashing in portrait: an earlier run dropped from **51.1** without art to **32.2 FPS** with art enabled. Raising the fixed upper limit to **40 chunks** stopped the active-viewport rebuild churn; maximum cached RGBA memory is now **10 MiB** (40×256×256×4 bytes), but the test frames held 24 (portrait) and 20 (landscape) chunks. Real-device battery, memory and frame pacing still require Android verification; these FPS measurements are from headless desktop Chromium simulating mobile dimensions. All 19 PNG/WebP assets decoded without browser errors. The test additionally confirmed the original three-pier collision geometry, promenade access, and hidden development overlays.
+
+Evidence is deployed at [the identical-camera V116 screenshot comparison](https://jayrican35.github.io/rookie-harbor-city/preview/v116-marina/evidence/): portrait and landscape before/after Canvas captures plus live UI screenshots and metrics JSON. Camera world position **(5180,3880)** for both; portrait zoom **0.82**, landscape zoom **1.04**. No screenshots from an unrelated mockup.

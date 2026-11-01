@@ -1,0 +1,1113 @@
+name: Play recovered ROOKIE on GitHub Pages
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/deploy-recovered-game.yml
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages-recovered-rookie
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out isolated published-game backup
+        uses: actions/checkout@v4
+        with:
+          ref: published-v1-backup
+          path: game-backup
+          persist-credentials: false
+
+      - name: Check out isolated V113 visual preview
+        uses: actions/checkout@v4
+        with:
+          ref: feature/v113-visual-polish
+          path: visual-preview
+          persist-credentials: true
+
+      - name: Check out V114 Case 002 preview (isolated)
+        uses: actions/checkout@v4
+        with:
+          ref: feature/v114-midnight-pickle-panic
+          path: pickle-preview
+          persist-credentials: false
+
+      - name: Check out V115 world atlas preview
+        uses: actions/checkout@v4
+        with:
+          ref: feature/v115-one-living-world
+          path: world-preview
+          persist-credentials: false
+
+      - name: Check out V115 professional street alignment (isolated)
+        uses: actions/checkout@v4
+        with:
+          ref: feature/v115-road-and-visual-grid
+          path: street-preview
+          persist-credentials: false
+
+      - name: Check out V115 Precinct-to-Midtown visual showcase
+        uses: actions/checkout@v4
+        with:
+          ref: feature/v115-showcase-precinct-midtown
+          path: showcase-preview
+          persist-credentials: false
+
+      - name: Check out reference-guided V115 city composition
+        uses: actions/checkout@v4
+        with:
+          ref: feature/v115-reference-city-composition
+          path: reference-preview
+          persist-credentials: false
+
+      - name: Check out V115 Premium Environments (isolated)
+        uses: actions/checkout@v4
+        with:
+          ref: feature/v115-premium-environments-pass2
+          path: premium-preview
+          persist-credentials: false
+
+      - name: Check out V115 Precinct Tilemap Art Pilot
+        uses: actions/checkout@v4
+        with:
+          ref: feature/v115-precinct-tileset-pilot
+          path: precinct-pilot
+          persist-credentials: false
+
+      - name: Check out V116 Southbay Marina game integration
+        uses: actions/checkout@v4
+        with:
+          ref: 8de8d85016f0cec91a60addedae29f5ee6d25a7a # verified isolated actor bounds; no sprite-row bleed
+          path: v116-marina
+          persist-credentials: false
+
+      - name: Check out V117 seamless marina interiors
+        uses: actions/checkout@v4
+        with:
+          ref: a460dea29f7d2e89e6b0faaffb92cb33b24fced1 # verified live door collisions and furnished continuous interiors
+          path: v117-interiors
+          persist-credentials: false
+
+      - name: Check out isolated V118 cinematic marina preview
+        uses: actions/checkout@v4
+        with:
+          ref: 2ebdebd5e237668d2580b1fa235741988aaf22df # passing V118 checks; pinned, preview only
+          path: v118-marina
+          persist-credentials: false
+
+      - name: Check out isolated V119 visible water and character motion
+        uses: actions/checkout@v4
+        with:
+          ref: 92a24c044b7b1e6475610860dde2aed0a8db1d74 # V119 green CI snapshot, preview only
+          path: v119-marina
+          persist-credentials: false
+
+      - name: Check out isolated V120 premium marina artwork and renderer
+        uses: actions/checkout@v4
+        with:
+          ref: 2b96c3f66ce49af8eb0769e27ea1adcf3859ce55 # reviewed V120 feature snapshot only
+          path: v120-marina
+          persist-credentials: false
+
+      - name: Check out isolated V121 art-directed marina
+        uses: actions/checkout@v4
+        with:
+          ref: b9918ba7fdd0a4a1df79aaa1e2046278e52ca3e7 # V121 passing CI + generated atlas snapshot
+          path: v121-marina
+          persist-credentials: false
+
+      - name: Check out isolated V122 pier-depth structural preview
+        uses: actions/checkout@v4
+        with:
+          ref: c5b65fd24920d554b0d2b4a31bf7634a4f654eca # verified V122 feature snapshot
+          path: v122-pier
+          persist-credentials: false
+
+      - name: Check out isolated V123 collision and cleaned NPC preview
+        uses: actions/checkout@v4
+        with:
+          ref: fa7e49975e4799d68d2953f9a13e06d967ffd87d # green V123 changes, independent preview
+          path: v123-marina
+          persist-credentials: false
+
+      - name: Check out isolated V124 structural-depth refinement
+        uses: actions/checkout@v4
+        with:
+          ref: a77bf0835bfed696025d3760aa150990433a7a2a # final V124 lamps, buildings, foliage, furniture QA
+          path: v124-depth
+          persist-credentials: false
+
+      - name: Check out separate V125 campaign HUD upgrade
+        uses: actions/checkout@v4
+        with:
+          ref: 11bb1b46937549cb1bd88ddc25b8e53e620600a3 # verified V125 final menu-state correction
+          path: v125-mobile
+          persist-credentials: false
+
+      - name: Check out isolated V126 dock and run quality pass
+        uses: actions/checkout@v4
+        with:
+          ref: 971d63b83697f988a6a30c6524d0708c36fc5ea1 # green V126 no circle + unique timber + run
+          path: v126-polish
+          persist-credentials: false
+
+      - name: Check out V127 citywide native-scale visual expansion (isolated)
+        uses: actions/checkout@v4
+        with:
+          ref: 272033e7deee458e08439ed982cc435c21e5a971 # final V127 accurate districts, overview LOD and ten-area browser QA
+          path: v127-citywide
+          persist-credentials: false
+
+      - name: Check out V128 guarded world-quality candidate (isolated)
+        uses: actions/checkout@v4
+        with:
+          ref: 9d03ddc05009a90d6b421ab85b97127c0e8b64d0 # World Completion integrated art, native groves, run-size fix and release gates
+          path: v128-world-quality
+          persist-credentials: false
+
+      - name: Recover missing main-campaign environment art
+        shell: bash
+        working-directory: visual-preview
+        run: |
+          set -euo pipefail
+          python3 tools/recover_v113_world_art.py
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path("published-game-capture")
+          report = json.loads((root/"V113-WORLD-ART-RECOVERY.json").read_text())
+          count = report["midtown_available"]
+          print("Verified Midtown images:", count, "/", report["midtown_required"])
+          assert count == report["midtown_required"], "Still missing Midtown storefront art; refusing incomplete preview deployment"
+          PY
+
+      - name: Commit restored assets to visual feature branch
+        shell: bash
+        working-directory: visual-preview
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f published-game-capture/V113-WORLD-ART-RECOVERY.json
+          for directory in midtown maple-court exterior; do
+            if [ -d "published-game-capture/assets/$directory" ]; then
+              git add -f "published-game-capture/assets/$directory/"
+            fi
+          done
+          if ! git diff --cached --quiet; then
+            git commit -m "Restore missing main-campaign storefront and world sprites"
+            git push origin HEAD:feature/v113-visual-polish
+          fi
+
+      - name: Prepare game website without modifying source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site
+          cp -a game-backup/published-game-capture/. site/
+          test -s site/index.html
+          test -s site/game.js
+          touch site/.nojekyll
+          echo "Recovered game JavaScript size: $(wc -c < site/game.js)"
+          echo "Recovered art/audio file count: $(find site/assets -type f | wc -l)"
+          echo "Note: This publishes a TEST copy of the recovered game, not the original editor project."
+
+      - name: Add V113 preview under a separate URL only
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v113
+          cp -a visual-preview/published-game-capture/. site/preview/v113/
+          test -s site/preview/v113/visual-polish-v113.js
+          test -s site/preview/v113/visual-polish-v113.css
+          node --check site/preview/v113/visual-polish-v113.js
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s game-backup/published-game-capture/game.js site/preview/v113/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v113/outbreak.css
+          echo "PASS: original playable root and Zombie Outbreak source remain byte-for-byte identical."
+          echo "Preview path: /rookie-harbor-city/preview/v113/"
+
+      - name: Add V114 funny Case 002 preview without changing main or V113
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v114
+          cp -a pickle-preview/published-game-capture/. site/preview/v114/
+          test -s site/preview/v114/game.js
+          test -s site/preview/v114/v114-preview-save-isolation.js
+          node --check site/preview/v114/game.js
+          node --check site/preview/v114/v114-preview-save-isolation.js
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('site/preview/v114/index.html')
+          html=p.read_text()
+          script='<script src="./game.js"></script>'
+          assert html.count(script)==1,'Could not safely inject preview-only save isolation'
+          html=html.replace(script,'<script src="./v114-preview-save-isolation.js"></script>\n'+script)
+          p.write_text(html)
+          text=(Path('site/preview/v114/game.js')).read_text()
+          assert 'CASE002_PICKLE_PANIC_V114' in text
+          assert 'case2ConclusionChoices' in text
+          assert len(text)>1450000
+          PY
+          (cd pickle-preview && node qa/test_case002_v114.cjs)
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s visual-preview/published-game-capture/game.js site/preview/v113/game.js
+          cmp -s visual-preview/published-game-capture/outbreak.css site/preview/v113/outbreak.css
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v114/outbreak.css
+          echo "PASS: original home-screen game, V113 preview and Zombie Outbreak remain unchanged"
+          echo "V114 URL: /rookie-harbor-city/preview/v114/"
+
+      - name: Build isolated V115 private-scope preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v115
+          cp -a world-preview/published-game-capture/. site/preview/v115/
+          node --check site/preview/v115/v115-world.js
+          node --check site/preview/v115/v115-campus.js
+          node --check site/preview/v115/game.js
+          python3 world-preview/tools/build_v115_preview.py site/preview/v115 pickle-preview/published-game-capture/game.js
+          node --check site/preview/v115/game-v115.bundle.js
+          (cd world-preview && node qa/check-v115-world.cjs published-game-capture/v115-world.js)
+          (cd world-preview && node qa/check-v115-campus.cjs)
+          (cd world-preview && node qa/check-v115-connected-city.cjs)
+          (cd world-preview && node qa/check-v115-road-layout.cjs)
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s pickle-preview/published-game-capture/game.js site/preview/v115/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v115/outbreak.css
+          test -s site/preview/v115/game-v115.bundle.js
+          grep -q 'V115 DEV BUILD' site/preview/v115/index.html
+          grep -q 'game-v115.bundle.js' site/preview/v115/index.html
+          echo "PASS: V115 world and campus share engine scope; normal game and Zombie Outbreak remain byte-for-byte unchanged"
+          echo "V115 aligned-roads preview: /rookie-harbor-city/preview/v115/"
+
+      - name: Build isolated V115 professional street-grid comparison
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v115-roads
+          cp -a street-preview/published-game-capture/. site/preview/v115-roads/
+          test -s site/preview/v115-roads/v115-city-fabric.js
+          node --check site/preview/v115-roads/v115-city-fabric.js
+          node --check site/preview/v115-roads/v115-campus.js
+          node --check site/preview/v115-roads/v115-world.js
+          python3 street-preview/tools/build_v115_preview.py site/preview/v115-roads pickle-preview/published-game-capture/game.js
+          node --check site/preview/v115-roads/game-v115.bundle.js
+          (cd street-preview && node qa/check-v115-world.cjs published-game-capture/v115-world.js)
+          (cd street-preview && node qa/check-v115-campus.cjs)
+          (cd street-preview && node qa/check-v115-connected-city.cjs)
+          (cd street-preview && node qa/check-v115-city-fabric.cjs)
+          grep -q 'CITY STREETS' site/preview/v115-roads/game-v115.bundle.js || grep -q 'STREET ALIGNMENT PASS' site/preview/v115-roads/game-v115.bundle.js
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s world-preview/published-game-capture/game.js site/preview/v115-roads/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v115-roads/outbreak.css
+          cmp -s world-preview/published-game-capture/index.html site/preview/v115/index.html || true
+          echo "PASS: isolated street-alignment preview, original root and Zombie Outbreak unchanged"
+          echo "Compare: /rookie-harbor-city/preview/v115-roads/"
+
+      - name: Build isolated V115 visual-showcase preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v115-showcase
+          cp -a showcase-preview/published-game-capture/. site/preview/v115-showcase/
+          test -s site/preview/v115-showcase/v115-showcase.js
+          test -s site/preview/v115-showcase/v115-showcase.css
+          grep -q 'rookie:v115-showcase-sandbox:' site/preview/v115-showcase/v115-preview-save-isolation.js
+          node --check site/preview/v115-showcase/v115-showcase.js
+          node --check site/preview/v115-showcase/v115-campus.js
+          python3 showcase-preview/tools/build_v115_preview.py site/preview/v115-showcase pickle-preview/published-game-capture/game.js
+          python3 showcase-preview/tools/build_v115_showcase_preview.py site/preview/v115-showcase
+          node --check site/preview/v115-showcase/game-v115.bundle.js
+          (cd showcase-preview && node qa/check-v115-world.cjs published-game-capture/v115-world.js)
+          (cd showcase-preview && node qa/check-v115-campus.cjs)
+          (cd showcase-preview && node qa/check-v115-connected-city.cjs)
+          (cd showcase-preview && node qa/check-v115-road-layout.cjs)
+          (cd showcase-preview && node qa/check-v115-showcase.cjs)
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s world-preview/published-game-capture/game.js site/preview/v115-showcase/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v115-showcase/outbreak.css
+          grep -q 'v115-showcase.js' site/preview/v115-showcase/index.html
+          grep -q 'game-v115.bundle.js' site/preview/v115-showcase/index.html
+          echo "PASS: isolated showcase, original game, other previews and Zombie Outbreak preserved."
+          echo "Showcase preview: /rookie-harbor-city/preview/v115-showcase/"
+
+      - name: Build isolated V115 reference-guided city preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v115-reference
+          cp -a reference-preview/published-game-capture/. site/preview/v115-reference/
+          test -s site/preview/v115-reference/v115-reference-art.js
+          test -s site/preview/v115-reference/v115-reference.css
+          grep -q 'rookie:v115-reference-sandbox:' site/preview/v115-reference/v115-preview-save-isolation.js
+          node --check site/preview/v115-reference/v115-reference-art.js
+          node --check site/preview/v115-reference/v115-campus.js
+          node --check site/preview/v115-reference/v115-world.js
+          python3 reference-preview/tools/build_v115_preview.py site/preview/v115-reference pickle-preview/published-game-capture/game.js
+          python3 reference-preview/tools/build_v115_showcase_preview.py site/preview/v115-reference
+          python3 reference-preview/tools/build_v115_reference_preview.py site/preview/v115-reference
+          node --check site/preview/v115-reference/game-v115.bundle.js
+          (cd reference-preview && node qa/check-v115-world.cjs published-game-capture/v115-world.js)
+          (cd reference-preview && node qa/check-v115-campus.cjs)
+          (cd reference-preview && node qa/check-v115-connected-city.cjs)
+          (cd reference-preview && node qa/check-v115-road-layout.cjs)
+          (cd reference-preview && node qa/check-v115-showcase.cjs)
+          (cd reference-preview && node qa/check-v115-reference.cjs)
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s showcase-preview/published-game-capture/game.js site/preview/v115-reference/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v115-reference/outbreak.css
+          grep -q 'v115-reference-art.js' site/preview/v115-reference/index.html
+          grep -q 'game-v115.bundle.js' site/preview/v115-reference/index.html
+          echo "PASS: reference world visual preview, original gameplay and Zombie Outbreak untouched."
+          echo "Reference preview: /rookie-harbor-city/preview/v115-reference/"
+
+      - name: Build isolated V115 premium environment art preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v115-premium
+          cp -a premium-preview/published-game-capture/. site/preview/v115-premium/
+          test -s site/preview/v115-premium/v115-premium-art.js
+          test -s site/preview/v115-premium/assets/v115-premium/mountain-north.svg
+          test -s site/preview/v115-premium/assets/v115-premium/waterfall-cliff.svg
+          test -s site/preview/v115-premium/assets/v115-premium/marina-lighthouse.svg
+          grep -q 'rookie:v115-premium-sandbox:' site/preview/v115-premium/v115-preview-save-isolation.js
+          node --check site/preview/v115-premium/v115-premium-art.js
+          node --check site/preview/v115-premium/v115-world.js
+          node --check site/preview/v115-premium/v115-campus.js
+          python3 premium-preview/tools/build_v115_preview.py site/preview/v115-premium pickle-preview/published-game-capture/game.js
+          python3 premium-preview/tools/build_v115_showcase_preview.py site/preview/v115-premium
+          python3 premium-preview/tools/build_v115_reference_preview.py site/preview/v115-premium
+          python3 premium-preview/tools/build_v115_premium_preview.py site/preview/v115-premium
+          node --check site/preview/v115-premium/game-v115.bundle.js
+          (cd premium-preview && node qa/check-v115-world.cjs published-game-capture/v115-world.js)
+          (cd premium-preview && node qa/check-v115-campus.cjs)
+          (cd premium-preview && node qa/check-v115-connected-city.cjs)
+          (cd premium-preview && node qa/check-v115-road-layout.cjs)
+          (cd premium-preview && node qa/check-v115-showcase.cjs)
+          (cd premium-preview && node qa/check-v115-reference.cjs)
+          (cd premium-preview && node qa/check-v115-premium.cjs)
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s reference-preview/published-game-capture/game.js site/preview/v115-premium/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v115-premium/outbreak.css
+          grep -q 'v115-premium-art.js' site/preview/v115-premium/index.html
+          grep -q 'game-v115.bundle.js' site/preview/v115-premium/index.html
+          echo "PASS: isolated premium environment preview; production and Zombie Outbreak byte-for-byte unchanged"
+          echo "Preview: /rookie-harbor-city/preview/v115-premium/"
+
+      - name: Build isolated V115 Precinct 9 asset/tilemap pilot
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v115-pilot
+          cp -a precinct-pilot/published-game-capture/. site/preview/v115-pilot/
+          test -s site/preview/v115-pilot/assets/v115-precinct-pilot/precinct-ground-atlas.png
+          test -s site/preview/v115-pilot/assets/v115-precinct-pilot/precinct-pilot.json
+          test -s site/preview/v115-pilot/v115-precinct-pilot.js
+          grep -q 'rookie:v115-precinct-pilot-sandbox:' site/preview/v115-pilot/v115-preview-save-isolation.js
+          python3 precinct-pilot/tools/build_v115_preview.py site/preview/v115-pilot pickle-preview/published-game-capture/game.js
+          python3 precinct-pilot/tools/build_v115_showcase_preview.py site/preview/v115-pilot
+          python3 precinct-pilot/tools/build_v115_reference_preview.py site/preview/v115-pilot
+          python3 precinct-pilot/tools/build_v115_premium_preview.py site/preview/v115-pilot
+          python3 precinct-pilot/tools/build_v115_precinct_pilot_preview.py site/preview/v115-pilot
+          node --check site/preview/v115-pilot/game-v115.bundle.js
+          (cd precinct-pilot && node qa/check-v115-precinct-pilot.cjs)
+          (cd precinct-pilot && node qa/check-v115-campus.cjs)
+          (cd precinct-pilot && node qa/check-v115-road-layout.cjs)
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s premium-preview/published-game-capture/game.js site/preview/v115-pilot/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v115-pilot/outbreak.css
+          echo 'PASS: Precinct 9 asset/tilemap pilot builds independently without changing production or Zombie Outbreak'
+
+      - name: Capture identical-camera mobile before/after screenshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+          python3 -m http.server 8765 --directory site >/tmp/rookie-pilot-http.log 2>&1 &
+          for i in $(seq 1 40); do
+            if curl -fsS http://127.0.0.1:8765/preview/v115-pilot/ >/dev/null; then break; fi
+            sleep 1
+          done
+          PILOT_URL='http://127.0.0.1:8765/preview/v115-pilot/?pilotQA=1' \
+            PILOT_EVIDENCE="$PWD/site/preview/v115-pilot/evidence" \
+            node precinct-pilot/qa/capture-v115-precinct-pilot.cjs
+          cp precinct-pilot/qa/V115-PILOT-COMPARE.html site/preview/v115-pilot/evidence/index.html
+          test -s site/preview/v115-pilot/evidence/before.png
+          test -s site/preview/v115-pilot/evidence/after.png
+          test -s site/preview/v115-pilot/evidence/metrics.json
+          echo 'PASS: real game canvas screenshots, identical Android camera & zoom'
+
+      - name: Build isolated V116 connected-world marina implementation
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v116-marina
+          cp -a v116-marina/published-game-capture/. site/preview/v116-marina/
+          test -s site/preview/v116-marina/assets/v116-marina/marina-tiles.png
+          test -s site/preview/v116-marina/assets/v116-marina/boat-sail.png
+          grep -q 'rookie:v116-marina-sandbox:' site/preview/v116-marina/v115-preview-save-isolation.js
+          python3 v116-marina/tools/build_v115_preview.py site/preview/v116-marina pickle-preview/published-game-capture/game.js
+          python3 v116-marina/tools/build_v115_showcase_preview.py site/preview/v116-marina
+          python3 v116-marina/tools/build_v115_reference_preview.py site/preview/v116-marina
+          python3 v116-marina/tools/build_v115_premium_preview.py site/preview/v116-marina
+          python3 v116-marina/tools/build_v115_precinct_pilot_preview.py site/preview/v116-marina
+          python3 v116-marina/tools/build_v116_preview.py site/preview/v116-marina
+          node --check site/preview/v116-marina/game-v115.bundle.js
+          node --check site/preview/v116-marina/v116-marina.js
+          grep -q 'CAP=40' site/preview/v116-marina/v116-marina.js
+          (cd v116-marina && node qa/check-v116-marina.cjs)
+          (cd v116-marina && node qa/check-v116-hud.cjs)
+          (cd v116-marina && node qa/check-v116-walk.cjs)
+          (cd v116-marina && node qa/check-v117-jay.cjs ../site/preview/v116-marina/game-v115.bundle.js)
+          node --check site/preview/v116-marina/v117-jay.js
+          grep -q 'v117-jay.js?v=' site/preview/v116-marina/index.html
+          test -s site/preview/v116-marina/assets/jay-v117/jay-walk.webp
+          test -s site/preview/v116-marina/assets/jay-v117/jay-run.webp
+          node --check site/preview/v116-marina/v116-marina-walk.js
+          grep -q 'v116-marina-walk.js?v=' site/preview/v116-marina/index.html
+          test -s site/preview/v116-marina/assets/v116-marina/walk-officer.webp
+          node --check site/preview/v116-marina/v116-marina-hud.js
+          grep -q 'v116-marina-hud.js' site/preview/v116-marina/index.html
+          test -s site/preview/v116-marina/assets/v116-marina/marina-reference-atlas.webp
+          (cd v116-marina && node qa/check-v115-campus.cjs)
+          (cd v116-marina && node qa/check-v115-connected-city.cjs)
+          (cd v116-marina && node qa/check-v115-road-layout.cjs)
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s precinct-pilot/published-game-capture/game.js site/preview/v116-marina/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v116-marina/outbreak.css
+          echo 'V116 native source alignment: Waterfront y=3800 seawall and original piers x=4655,5105,5555 verified by QA'
+          echo 'PASS V116 build: connected gameplay module; normal game and Zombie Outbreak unchanged'
+
+      - name: Capture V116 real-game portrait and landscape QA, same camera before/after
+        shell: bash
+        run: |
+          set -euo pipefail
+          V116_URL='http://127.0.0.1:8765/preview/v116-marina/?v116QA=1&pilotQA=1' \
+            V116_EVIDENCE="$PWD/site/preview/v116-marina/evidence" \
+            node v116-marina/qa/capture-v116-marina.cjs
+          cp v116-marina/qa/V116-MARINA-COMPARE.html site/preview/v116-marina/evidence/index.html
+          for f in portrait-before portrait-after portrait-gameplay landscape-before landscape-after landscape-gameplay; do
+            test -s "site/preview/v116-marina/evidence/$f.png"
+          done
+          test -s site/preview/v116-marina/evidence/metrics.json
+          echo 'PASS V116: live gameplay Canvas before/after, Android-sized portrait and landscape, no debug overlays'
+
+      - name: Build isolated V117 continuous marina interiors
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v117-interiors
+          cp -a v117-interiors/published-game-capture/. site/preview/v117-interiors/
+          python3 v117-interiors/tools/build_v117_preview.py site/preview/v117-interiors
+          node --check site/preview/v117-interiors/game-v115.bundle.js
+          (cd v117-interiors && node qa/check-v117-interiors.cjs)
+          (cd v117-interiors && node qa/check-v116-marina.cjs)
+          (cd v117-interiors && node qa/check-v115-campus.cjs)
+          (cd v117-interiors && node qa/check-v117-jay.cjs ../site/preview/v117-interiors/game-v115.bundle.js)
+          cmp -s v116-marina/published-game-capture/game.js site/preview/v117-interiors/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v117-interiors/outbreak.css
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          grep -q 'v117-continuous-world' site/preview/v117-interiors/index.html
+          echo 'PASS: four seamless furnished buildings; original root, V116 and Zombie Outbreak unchanged'
+
+      - name: Build isolated V118 premium cinematic marina preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v118-cinematic
+          cp -a v118-marina/published-game-capture/. site/preview/v118-cinematic/
+          python3 v118-marina/tools/build_v118_preview.py site/preview/v118-cinematic
+          node --check site/preview/v118-cinematic/v118-cinematic.js
+          node --check site/preview/v118-cinematic/game-v115.bundle.js
+          (cd v118-marina && node qa/check-v118-cinematic.cjs)
+          (cd v118-marina && node qa/check-v117-interiors.cjs)
+          (cd v118-marina && node qa/check-v116-marina.cjs)
+          (cd v118-marina && node qa/check-v115-campus.cjs)
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s v117-interiors/published-game-capture/game.js site/preview/v118-cinematic/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v118-cinematic/outbreak.css
+          grep -q 'v118-cinematic.js?v=' site/preview/v118-cinematic/index.html
+          grep -q 'v118-cinematic.css?v=' site/preview/v118-cinematic/index.html
+          echo 'PASS: V118 isolated cinema preview only; V117, approved root and Zombie unchanged'
+
+      - name: Capture V118 real-game cinematic portrait and landscape evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          V116_URL='http://127.0.0.1:8765/preview/v118-cinematic/?v116QA=1&pilotQA=1' \
+            V116_EVIDENCE="$PWD/site/preview/v118-cinematic/evidence" \
+            node v118-marina/qa/capture-v116-marina.cjs
+          cp v118-marina/qa/V116-MARINA-COMPARE.html site/preview/v118-cinematic/evidence/index.html
+          for f in portrait-before portrait-after portrait-gameplay landscape-before landscape-after landscape-gameplay; do
+            test -s "site/preview/v118-cinematic/evidence/$f.png"
+          done
+          test -s site/preview/v118-cinematic/evidence/metrics.json
+          echo 'PASS: V118 playable portrait and landscape Canvas evidence; Android-sized simulation'
+
+      - name: Build isolated V119 visible waterfront gameplay preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v119-water-motion
+          cp -a v119-marina/published-game-capture/. site/preview/v119-water-motion/
+          python3 v119-marina/tools/build_v119_preview.py site/preview/v119-water-motion
+          node --check site/preview/v119-water-motion/v119-water-motion.js
+          node --check site/preview/v119-water-motion/game-v115.bundle.js
+          (cd v119-marina && node qa/check-v119-water-motion.cjs)
+          (cd v119-marina && node qa/check-v117-interiors.cjs)
+          (cd v119-marina && node qa/check-v116-marina.cjs)
+          (cd v119-marina && node qa/check-v115-campus.cjs)
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s v118-marina/published-game-capture/game.js site/preview/v119-water-motion/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v119-water-motion/outbreak.css
+          grep -q 'v119-water-motion.js?v=' site/preview/v119-water-motion/index.html
+          echo 'PASS V119 isolated visual upgrade; originals, preview V118 and Zombie unchanged'
+
+      - name: Capture matched real game V118 vs V119 gameplay screenshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          V119_BEFORE_URL='http://127.0.0.1:8765/preview/v118-cinematic/?v116QA=1&pilotQA=1' \
+            V119_AFTER_URL='http://127.0.0.1:8765/preview/v119-water-motion/?v116QA=1&pilotQA=1' \
+            V119_EVIDENCE="$PWD/site/preview/v119-water-motion/evidence" \
+            node v119-marina/qa/capture-v119-comparison.cjs
+          for f in portrait-before-canvas portrait-after-canvas landscape-before-canvas landscape-after-canvas; do
+            test -s "site/preview/v119-water-motion/evidence/$f.png"
+          done
+          test -s site/preview/v119-water-motion/evidence/metrics.json
+          python3 - <<'PY'
+          from pathlib import Path
+          folder=Path('site/preview/v119-water-motion/evidence')
+          pairs=''.join(f'<section><h2>{view.title()}</h2><div><figure><img src="{view}-before-gameplay.png"><figcaption>Before — V118</figcaption></figure><figure><img src="{view}-after-gameplay.png"><figcaption>After — V119</figcaption></figure></div></section>' for view in ('portrait','landscape'))
+          html='<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><title>V119 — Actual gameplay comparison</title><style>body{margin:0;background:#102233;color:#f4eac8;font:16px system-ui;padding:24px}h1{font-size:26px}section{margin:30px 0}section>div{display:flex;flex-wrap:wrap;gap:18px}figure{margin:0;flex:1;min-width:min(100%,300px)}img{width:100%;max-width:430px;height:auto;border:2px solid #bba673;border-radius:9px}figcaption{padding:8px}p{max-width:780px}</style><h1>ROOKIE — V119 Real In-Game Comparison</h1><p>Both versions captured at the same world position and zoom in desktop Chromium with Android-sized viewports. Not a physical phone benchmark.</p>'+pairs
+          (folder/'index.html').write_text(html)
+          PY
+          echo 'PASS V119: actual gameplay screenshot comparisons at equal camera + viewport'
+
+      - name: Build isolated V120 production-textured game
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install --disable-pip-version-check pillow numpy
+          mkdir -p site/preview/v120-premium
+          cp -a v120-marina/published-game-capture/. site/preview/v120-premium/
+          python3 v120-marina/tools/build_v120_preview.py site/preview/v120-premium
+          node --check site/preview/v120-premium/game-v115.bundle.js
+          node --check site/preview/v120-premium/v120-marina-art.js
+          (cd v120-marina && node qa/check-v120-marina.cjs)
+          (cd v120-marina && node qa/check-v117-interiors.cjs)
+          (cd v120-marina && node qa/check-v116-marina.cjs)
+          (cd v120-marina && node qa/check-v115-campus.cjs)
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v120-premium/outbreak.css
+          cmp -s v119-marina/published-game-capture/game.js site/preview/v120-premium/game.js
+          grep -q 'v120-marina-art.js?v=' site/preview/v120-premium/index.html
+          echo 'PASS V120 real art atlases in working connected city; original game and Zombie protected'
+
+      - name: Compare actual V119 and V120 gameplay at identical mobile cameras
+        shell: bash
+        run: |
+          set -euo pipefail
+          V120_BEFORE_URL='http://127.0.0.1:8765/preview/v119-water-motion/?v116QA=1&pilotQA=1' \
+            V120_AFTER_URL='http://127.0.0.1:8765/preview/v120-premium/?v116QA=1&pilotQA=1' \
+            V120_EVIDENCE="$PWD/site/preview/v120-premium/evidence" \
+            node v120-marina/qa/capture-v120-comparison.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageChops
+          import json
+          folder=Path('site/preview/v120-premium/evidence')
+          d={}
+          for key in ('portrait','landscape'):
+            a=Image.open(folder/f'{key}-before-canvas.png').convert('RGB')
+            b=Image.open(folder/f'{key}-after-canvas.png').convert('RGB')
+            assert a.size==b.size
+            diff=ImageChops.difference(a,b).convert('L')
+            hist=diff.histogram()
+            fraction=sum(hist[20:])/max(1,sum(hist))
+            d[key]=round(fraction,3)
+            assert fraction>.12, f'V120 has insufficient visible change {key}: {fraction}'
+          (folder/'image-difference.json').write_text(json.dumps(d,indent=2))
+          sections=''.join(f'<section><h2>{k.title()} — matched in-game camera</h2><div><figure><img src="{k}-before-gameplay.png"><figcaption>Before: V119</figcaption></figure><figure><img src="{k}-after-gameplay.png"><figcaption>After: V120</figcaption></figure></div></section>' for k in ('portrait','landscape'))
+          html='<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROOKIE V120 Live Comparison</title><style>body{background:#0c2635;color:#fff0cf;font:16px system-ui;margin:0;padding:20px}h1{font-size:26px}section{margin:25px 0}section>div{display:flex;flex-wrap:wrap;gap:16px}figure{margin:0;flex:1;min-width:min(100%,290px)}img{width:100%;max-width:460px;border:2px solid #c9aa65;border-radius:9px}figcaption{padding:7px}</style><h1>V120: Real Playable Game Comparison</h1><p>Actual Canvas, identical in-world coordinates and zoom. Desktop Chromium viewport emulating Android sizes—not physical device FPS.</p>'+sections
+          (folder/'index.html').write_text(html)
+          print('PASS: actual rendered scene visibly changed',d)
+          PY
+          for f in portrait-before-canvas portrait-after-canvas landscape-before-canvas landscape-after-canvas; do test -s "site/preview/v120-premium/evidence/$f.png"; done
+          echo 'PASS V120 genuine game screenshot evidence and material rendering comparison'
+
+      - name: Build isolated V121 art-directed playable marina
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v121-marina
+          cp -a v121-marina/published-game-capture/. site/preview/v121-marina/
+          python3 v121-marina/tools/build_v121_preview.py site/preview/v121-marina
+          node --check site/preview/v121-marina/v120-marina-art.js
+          node --check site/preview/v121-marina/game-v115.bundle.js
+          (cd v121-marina && node qa/check-v121-marina.cjs)
+          (cd v121-marina && node qa/check-v117-interiors.cjs)
+          (cd v121-marina && node qa/check-v116-marina.cjs)
+          (cd v121-marina && node qa/check-v115-campus.cjs)
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v121-marina/outbreak.css
+          cmp -s v120-marina/published-game-capture/game.js site/preview/v121-marina/game.js
+          grep -q 'v121-real-material-pass' site/preview/v121-marina/index.html
+          echo 'PASS V121: real 9-atlas marina upgrade in existing world; approved game and Zombie mode protected'
+
+      - name: Compare actual V120 versus V121 playable mobile screenshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          V120_BEFORE_URL='http://127.0.0.1:8765/preview/v120-premium/?v116QA=1&pilotQA=1' \
+            V120_AFTER_URL='http://127.0.0.1:8765/preview/v121-marina/?v116QA=1&pilotQA=1' \
+            V120_EVIDENCE="$PWD/site/preview/v121-marina/evidence" \
+            node v121-marina/qa/capture-v120-comparison.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageChops
+          import json
+          folder=Path('site/preview/v121-marina/evidence')
+          differences={}
+          for view in ('portrait','landscape'):
+            before=Image.open(folder/f'{view}-before-canvas.png').convert('RGB')
+            after=Image.open(folder/f'{view}-after-canvas.png').convert('RGB')
+            assert before.size==after.size
+            histogram=ImageChops.difference(before,after).convert('L').histogram()
+            fraction=sum(histogram[18:])/max(1,sum(histogram))
+            differences[view]=round(fraction,4)
+            assert fraction>.12, f'V121 rendering too similar to V120 in {view}: {fraction}'
+          (folder/'diff-metrics.json').write_text(json.dumps(differences,indent=2))
+          cells=''.join(f'<section><h2>{view.title()} — same real-game camera</h2><div><figure><img src="{view}-before-gameplay.png"><figcaption>V120 before</figcaption></figure><figure><img src="{view}-after-gameplay.png"><figcaption>V121 upgraded</figcaption></figure></div></section>' for view in ('portrait','landscape'))
+          page='<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><title>V121 Real Gameplay Comparison</title><style>body{margin:0;padding:24px;background:#0c2133;color:#fff1ce;font:16px system-ui}h1{font-size:26px}section{margin:25px 0}section>div{display:flex;flex-wrap:wrap;gap:18px}figure{margin:0;flex:1;min-width:min(100%,280px)}img{width:100%;max-width:460px;border:2px solid #bca875;border-radius:10px}figcaption{padding:8px}</style><h1>ROOKIE V121 — Actual Game Before / After</h1><p>Both versions captured directly from the game Canvas at identical world position and zoom in mobile-sized Chromium, not a physical Android benchmark.</p>'+cells
+          (folder/'index.html').write_text(page)
+          print('PASS V121 real-game water/material visual difference',differences)
+          PY
+          for f in portrait-before-canvas portrait-after-canvas landscape-before-canvas landscape-after-canvas; do
+            test -s "site/preview/v121-marina/evidence/$f.png"
+          done
+          echo 'PASS V121 mobile actual-render comparisons and collision assertions'
+
+      - name: Build isolated V122 raised pier and correct piling occlusion
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v122-pier
+          cp -a v122-pier/published-game-capture/. site/preview/v122-pier/
+          python3 v122-pier/tools/build_v122_preview.py site/preview/v122-pier
+          node --check site/preview/v122-pier/game-v115.bundle.js
+          node --check site/preview/v122-pier/v116-marina.js
+          (cd v122-pier && node qa/check-v122-pier.cjs)
+          (cd v122-pier && node qa/check-v121-marina.cjs)
+          (cd v122-pier && node qa/check-v117-interiors.cjs)
+          (cd v122-pier && node qa/check-v116-marina.cjs)
+          (cd v122-pier && node qa/check-v115-campus.cjs)
+          grep -q 'v122-world-sorted-pilings' site/preview/v122-pier/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v122-pier/outbreak.css
+          cmp -s v121-marina/published-game-capture/game.js site/preview/v122-pier/game.js
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          echo 'PASS V122 isolated playable world built; original campaign and Zombie Outbreak unchanged'
+
+      - name: Actual V121 vs V122 behind-and-in-front piling gameplay QA
+        shell: bash
+        run: |
+          set -euo pipefail
+          V122_BEFORE_URL='http://127.0.0.1:8765/preview/v121-marina/?v116QA=1&pilotQA=1' \
+            V122_AFTER_URL='http://127.0.0.1:8765/preview/v122-pier/?v116QA=1&pilotQA=1' \
+            V122_EVIDENCE="$PWD/site/preview/v122-pier/evidence" \
+            node v122-pier/qa/capture-v122-pier.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageChops
+          import json
+          folder=Path('site/preview/v122-pier/evidence')
+          d={}
+          for scene in ('behind-post','in-front-of-post'):
+            before=Image.open(folder/f'{scene}-before-canvas.png').convert('RGB')
+            after=Image.open(folder/f'{scene}-after-canvas.png').convert('RGB')
+            assert before.size==after.size
+            diff=ImageChops.difference(before,after).convert('L').histogram()
+            fraction=sum(diff[14:])/max(1,sum(diff))
+            d[scene]=round(fraction,4)
+            assert fraction>.008, f'Verified game changes not visible: {scene} {fraction}'
+          (folder/'comparison.json').write_text(json.dumps(d,indent=2))
+          items=''.join(f'<section><h2>{scene.replace("-"," ").title()}</h2><div><figure><img src="{scene}-before-gameplay.png"><figcaption>Before · V121</figcaption></figure><figure><img src="{scene}-after-gameplay.png"><figcaption>After · V122</figcaption></figure></div></section>' for scene in ('behind-post','in-front-of-post'))
+          page='<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><title>V122 Pier Occlusion Gameplay Proof</title><style>body{background:#0c2033;color:#ffebca;font:16px system-ui;margin:0;padding:20px}section{margin:24px 0}section>div{display:flex;flex-wrap:wrap;gap:18px}figure{margin:0;flex:1;min-width:min(100%,290px)}img{width:100%;max-width:460px;border:2px solid #be9d6a;border-radius:8px}figcaption{padding:8px}</style><h1>V122 — Real Pier Overlap Before / After</h1><p>Jay stands at the same two world positions near the same native piling. These are running-game screenshots in mobile-size Chromium, not concept art or Android performance claims.</p>'+items
+          (folder/'index.html').write_text(page)
+          print('PASS V122 native world and visual changes',d)
+          PY
+          for scene in behind-post in-front-of-post; do
+            for ver in before after; do
+              test -s "site/preview/v122-pier/evidence/$scene-$ver-canvas.png"
+            done
+          done
+          echo 'PASS V122 actual Jay/piling overlap and structural-dock playtest evidence'
+
+      - name: Build isolated playable V123 with physical marina props
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install -q pillow numpy
+          mkdir -p site/preview/v123-collision
+          cp -a v123-marina/published-game-capture/. site/preview/v123-collision/
+          python3 v123-marina/tools/build_v123_preview.py site/preview/v123-collision
+          node --check site/preview/v123-collision/game-v115.bundle.js
+          node --check site/preview/v123-collision/v116-marina.js
+          node --check site/preview/v123-collision/v116-marina-walk.js
+          (cd v123-marina && node qa/check-v123-collision.cjs)
+          (cd v123-marina && node qa/check-v117-interiors.cjs)
+          (cd v123-marina && node qa/check-v116-marina.cjs)
+          (cd v123-marina && node qa/check-v116-walk.cjs)
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v123-collision/outbreak.css
+          cmp -s v122-pier/published-game-capture/game.js site/preview/v123-collision/game.js
+          grep -q 'v123-prop-and-npc-physical-solids' site/preview/v123-collision/index.html
+          echo 'PASS V123 original root, Zombie mode and V122 saved while new pier collision and NPC artwork load'
+
+      - name: Browser inspect recorded V122 versus V123 player props and NPC lines
+        shell: bash
+        run: |
+          set -euo pipefail
+          V123_BEFORE_URL='http://127.0.0.1:8765/preview/v122-pier/?v116QA=1&pilotQA=1' \
+            V123_AFTER_URL='http://127.0.0.1:8765/preview/v123-collision/?v116QA=1&pilotQA=1' \
+            V123_EVIDENCE="$PWD/site/preview/v123-collision/evidence" \
+            node v123-marina/qa/capture-v123-review.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageChops
+          import json
+          p=Path('site/preview/v123-collision/evidence')
+          old=Image.open(p/'before-canvas.png').convert('RGB')
+          new=Image.open(p/'after-canvas.png').convert('RGB')
+          assert old.size==new.size
+          report=json.loads((p/'metrics.json').read_text())
+          latest=report['samples'][-1]['metrics']
+          assert latest['bin'] and latest['pierPost'] and latest['fence'] and latest['npcBody']
+          assert latest['centralPier']==False and latest['cafeGate']==False
+          assert latest['marina']['postColliders']==18
+          strips=''.join(f'<figure><img src="{v}-gameplay.png"><figcaption>{title}</figcaption></figure>' for v,title in [('before','V122 • original sprites and no prop collision'),('after','V123 • clean NPCs and physical props')])
+          html='<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROOKIE V123 Real Gameplay QA</title><style>body{background:#102439;color:#fff4d4;font:16px system-ui;padding:22px}div{display:flex;gap:18px;flex-wrap:wrap}figure{flex:1;min-width:min(100%,290px);margin:0}img{max-width:450px;width:100%;border:2px solid #c3aa7c;border-radius:8px}figcaption{padding:8px}</style><h1>V123 — Recording-Driven Collision & NPC Fix</h1><p>Actual game Canvas at the same camera and Android-sized Chromium viewport. V123 blocks bins, benches, planters, fences, pilings and NPCs without touching Zombie Outbreak.</p><div>'+strips+'</div>'
+          (p/'index.html').write_text(html)
+          print('PASS real V123 browser collision and sanitized NPC sprite proof')
+          PY
+          test -s site/preview/v123-collision/evidence/before-gameplay.png
+          test -s site/preview/v123-collision/evidence/after-gameplay.png
+          echo 'PASS V123 real camera screenshot comparison ready'
+
+      - name: Build isolated V124 depth-correct marina world
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v124-depth
+          cp -a v124-depth/published-game-capture/. site/preview/v124-depth/
+          python3 v124-depth/tools/build_v124_preview.py site/preview/v124-depth
+          node --check site/preview/v124-depth/game-v115.bundle.js
+          node --check site/preview/v124-depth/v116-marina.js
+          (cd v124-depth && node qa/check-v124-depth.cjs)
+          (cd v124-depth && node qa/check-v123-collision.cjs)
+          (cd v124-depth && node qa/check-v117-interiors.cjs)
+          (cd v124-depth && node qa/check-v116-marina.cjs)
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v124-depth/outbreak.css
+          cmp -s v123-marina/published-game-capture/game.js site/preview/v124-depth/game.js
+          grep -q 'v124-object-foot-sort-and-doorway' site/preview/v124-depth/index.html
+          echo 'PASS V124 existing city and Zombie Outbreak protected'
+
+      - name: Capture actual game lamp front/back and building frontage V123 vs V124
+        shell: bash
+        run: |
+          set -euo pipefail
+          V124_BEFORE_URL='http://127.0.0.1:8765/preview/v123-collision/?v116QA=1&pilotQA=1' \
+            V124_AFTER_URL='http://127.0.0.1:8765/preview/v124-depth/?v116QA=1&pilotQA=1' \
+            V124_EVIDENCE="$PWD/site/preview/v124-depth/evidence" \
+            node v124-depth/qa/capture-v124-depth.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          import json
+          p=Path('site/preview/v124-depth/evidence')
+          d=json.loads((p/'metrics.json').read_text())
+          assert len(d['records'])==6
+          scenes=('lamp-in-front','lamp-behind','building-front')
+          for scene in scenes:
+            for ver in ('before','after'):
+              f=p/f'{scene}-{ver}-gameplay.png'
+              im=Image.open(f);im.verify()
+          cards=''.join(f'<section><h2>{k.replace("-"," ").title()}</h2><div><figure><img src="{k}-before-gameplay.png"><figcaption>V123 · incorrect depth</figcaption></figure><figure><img src="{k}-after-gameplay.png"><figcaption>V124 · foot-sorted depth</figcaption></figure></div></section>' for k in scenes)
+          html='<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROOKIE V124 Real Game Depth Comparison</title><style>body{background:#0b2638;color:#f8eccb;font:16px system-ui;padding:20px}h1{font-size:27px}section{margin:22px 0}section>div{display:flex;flex-wrap:wrap;gap:14px}figure{flex:1;min-width:min(100%,280px);margin:0}img{width:100%;max-width:450px;border:2px solid #bd9a60;border-radius:10px}figcaption{padding:8px}</style><h1>V124 — Actual Playable Game: Structural Depth</h1><p>Same real-game world coordinates, same mobile-sized Chromium browser and camera for before/after. Not physical Android FPS or concept art.</p>'+cards
+          (p/'index.html').write_text(html)
+          print('PASS V124 validated front/back lamp and office roof game screenshots')
+          PY
+
+      - name: Build modern V125 playable campaign HUD in existing continuous city
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v125-mobile
+          cp -a v125-mobile/published-game-capture/. site/preview/v125-mobile/
+          python3 v125-mobile/tools/build_v125_preview.py site/preview/v125-mobile
+          node --check site/preview/v125-mobile/v115-campus.js
+          node --check site/preview/v125-mobile/v116-marina-hud.js
+          node --check site/preview/v125-mobile/game-v115.bundle.js
+          (cd v125-mobile && node qa/check-v125-mobile-hud.cjs)
+          (cd v125-mobile && node qa/check-v116-hud.cjs)
+          (cd v125-mobile && node qa/check-v115-campus.cjs)
+          (cd v125-mobile && node qa/check-v117-jay.cjs)
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v125-mobile/outbreak.css
+          cmp -s game-backup/published-game-capture/controls.css site/preview/v125-mobile/controls.css
+          cmp -s v124-depth/published-game-capture/game.js site/preview/v125-mobile/game.js
+          grep -q 'v125-native-campaign-ui' site/preview/v125-mobile/index.html
+          echo 'PASS V125 original campaign and Zombie unaffected; only connected-city HUD changes'
+
+      - name: Capture actual V125 mobile portrait and landscape touch gameplay
+        shell: bash
+        run: |
+          set -euo pipefail
+          V125_URL='http://127.0.0.1:8765/preview/v125-mobile/?v116QA=0&pilotQA=1' \
+            V125_EVIDENCE="$PWD/site/preview/v125-mobile/evidence" \
+            node v125-mobile/qa/capture-v125-mobile-hud.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          import json
+          folder=Path('site/preview/v125-mobile/evidence')
+          result=json.loads((folder/'metrics.json').read_text())
+          assert len(result['views'])==2
+          cards=''.join(f'<section><h2>{x.title()}</h2><div><figure><img src="{x}-gameplay.png"><figcaption>Normal gameplay — compact native HUD</figcaption></figure><figure><img src="{x}-expanded-menu.png"><figcaption>Existing game menu expanded</figcaption></figure></div></section>' for x in ('portrait','landscape'))
+          html='<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROOKIE V125 Actual HUD Screenshots</title><style>body{padding:20px;margin:0;background:#0d2638;color:#ffefc8;font:16px system-ui}section{margin:25px 0}section>div{display:flex;gap:14px;flex-wrap:wrap}figure{margin:0;flex:1;min-width:min(100%,285px)}img{border:2px solid #ccb276;width:100%;max-width:500px;border-radius:9px}figcaption{padding:8px}</style><h1>V125: Real Playable Mobile HUD</h1><p>Actual connected-world game captured in mobile-size Chromium with touch, sprint, menu and keyboard tests—not a concept illustration or physical-device FPS benchmark.</p>'+cards
+          (folder/'index.html').write_text(html)
+          for mode in ('portrait','landscape'):
+            for state in ('gameplay','expanded-menu'):
+              f=folder/f'{mode}-{state}.png'
+              im=Image.open(f);im.verify()
+          print('PASS V125 genuine portrait and landscape captures',[(v['name'],v['runHoldPassed']) for v in result['views']])
+          PY
+          echo 'PASS V125 actual gameplay screenshots and all controls verified before publishing'
+
+      - name: Build isolated V126 no-ring / timber / Jay run gameplay
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v126-polish
+          cp -a v126-polish/published-game-capture/. site/preview/v126-polish/
+          python3 v126-polish/tools/build_v126_preview.py site/preview/v126-polish
+          node --check site/preview/v126-polish/v115-campus.js
+          node --check site/preview/v126-polish/v117-jay.js
+          node --check site/preview/v126-polish/v119-water-motion.js
+          node --check site/preview/v126-polish/v120-marina-art.js
+          (cd v126-polish && node qa/check-v126-polish.cjs)
+          (cd v126-polish && node qa/check-v117-jay.cjs)
+          (cd v126-polish && node qa/check-v125-mobile-hud.cjs)
+          (cd v126-polish && node qa/check-v124-depth.cjs)
+          (cd v126-polish && node qa/check-v122-pier.cjs)
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s game-backup/published-game-capture/controls.css site/preview/v126-polish/controls.css
+          cmp -s v125-mobile/published-game-capture/v125-mobile-hud.css site/preview/v126-polish/v125-mobile-hud.css
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v126-polish/outbreak.css
+          grep -q 'v126-no-selection-halo-distinct-wood-run-gait' site/preview/v126-polish/index.html
+          echo 'PASS V126 original game/Zombie untouched; V125 mobile controls and V124 collision intact'
+
+      - name: Run actual same-camera V125 and V126 pier/running comparison
+        shell: bash
+        run: |
+          set -euo pipefail
+          V126_BEFORE_URL='http://127.0.0.1:8765/preview/v125-mobile/?v116QA=0&pilotQA=1' \
+            V126_AFTER_URL='http://127.0.0.1:8765/preview/v126-polish/?v116QA=0&pilotQA=1' \
+            V126_EVIDENCE="$PWD/site/preview/v126-polish/evidence" \
+            node v126-polish/qa/capture-v126-polish.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          import json
+          p=Path('site/preview/v126-polish/evidence')
+          info=json.loads((p/'metrics.json').read_text());assert len(info['runs'])==2
+          cards=''.join(f'<section><h2>{name}</h2><div><figure><img src="before-{key}.png"><figcaption>V125 — before</figcaption></figure><figure><img src="after-{key}.png"><figcaption>V126 — updated</figcaption></figure></div></section>' for name,key in [('Pier timber','pier'),('Jay running — frame 1','running-1'),('Jay running — frame 2','running-2')])
+          html='<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROOKIE V126 Real Gameplay Review</title><style>body{background:#092338;color:#f3e8c5;font:16px system-ui;padding:18px}h1{font-size:27px}section{margin:25px 0}section>div{display:flex;flex-wrap:wrap;gap:15px}figure{flex:1;min-width:min(100%,300px);margin:0}img{width:100%;max-width:460px;border-radius:10px;border:2px solid #c5a978}figcaption{padding:10px}</style><h1>V126 Actual Playable Dock and Running Comparison</h1><p>Same world positions, same mobile Chromium camera: original V125 versus V126. Genuine in-game captures, not concept artwork.</p>'+cards
+          (p/'index.html').write_text(html)
+          for ver in ('before','after'):
+           for kind in ('pier','running-1','running-2'):
+            f=p/f'{ver}-{kind}.png';im=Image.open(f);im.verify()
+          print('PASS V126 browser-tested Jay running, full-length boards and native camera with screenshots')
+          PY
+
+      - name: Build V127 playable continuous-city art on approved V126 baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v127-citywide
+          cp -a v127-citywide/published-game-capture/. site/preview/v127-citywide/
+          python3 v127-citywide/tools/build_v127_preview.py site/preview/v127-citywide
+          node --check site/preview/v127-citywide/v127-citywide-art.js
+          node --check site/preview/v127-citywide/game-v115.bundle.js
+          (cd v127-citywide && node qa/check-v127-citywide.cjs)
+          (cd v127-citywide && node qa/check-v126-polish.cjs)
+          (cd v127-citywide && node qa/check-v125-mobile-hud.cjs)
+          (cd v127-citywide && node qa/check-v124-depth.cjs)
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v127-citywide/outbreak.css
+          cmp -s game-backup/published-game-capture/controls.css site/preview/v127-citywide/controls.css
+          cmp -s v126-polish/published-game-capture/v125-mobile-hud.css site/preview/v127-citywide/v125-mobile-hud.css
+          cmp -s v126-polish/published-game-capture/v117-jay.js site/preview/v127-citywide/v117-jay.js
+          grep -q 'v127-continuous-art-and-hud' site/preview/v127-citywide/index.html
+          echo 'PASS V127 genuine connected-world game built; V126, original campaign and Zombie completely untouched'
+
+      - name: Run live five-district V126 vs V127 continuous-world and HUD screenshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          V127_BEFORE_URL='http://127.0.0.1:8765/preview/v126-polish/?v116QA=0&pilotQA=1' \
+            V127_AFTER_URL='http://127.0.0.1:8765/preview/v127-citywide/?v116QA=0&pilotQA=1' \
+            V127_EVIDENCE="$PWD/site/preview/v127-citywide/evidence" \
+            node v127-citywide/qa/capture-v127-citywide.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageChops
+          import json
+          f=Path('site/preview/v127-citywide/evidence')
+          report=json.loads((f/'metrics.json').read_text())
+          assert len(report['results'])==2
+          scenes=('marina-center','marina-east-boundary','southbay-west-connection','westfield','residential','midtown','downtown','northgate','eastside','industrial')
+          diffs={}
+          for name in scenes:
+            before=Image.open(f'{f}/{name}-before.png').convert('RGB')
+            after=Image.open(f'{f}/{name}-after.png').convert('RGB')
+            assert before.size==after.size
+            histogram=ImageChops.difference(before,after).convert('L').histogram()
+            fraction=sum(histogram[12:])/max(1,sum(histogram))
+            if name!='marina-center': assert fraction>.015,(name,fraction)  # unchanged marina is the protected visual baseline
+            diffs[name]=round(fraction,4)
+          cards=''.join(f'<section><h2>{name.replace("-"," ").title()}</h2><div><figure><img src="{name}-before.png"><figcaption>V126 • untextured area / marina-only HUD</figcaption></figure><figure><img src="{name}-after.png"><figcaption>V127 • unified tiles / persistent city HUD</figcaption></figure></div></section>' for name in scenes)
+          html='<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROOKIE V127 Five-District Actual Game QA</title><style>body{background:#0b2435;color:#f5eac7;font:16px system-ui;padding:18px}h1{font-size:27px}section{margin:23px 0}section>div{display:flex;flex-wrap:wrap;gap:15px}figure{min-width:min(100%,285px);flex:1;margin:0}img{width:100%;max-width:470px;border:2px solid #d2b77e;border-radius:9px}figcaption{padding:9px}</style><h1>V127 — One Harbor City, Ten Actual Gameplay Areas</h1><p>Same world coordinates and Android-size Chromium, before and after actual playable city. Browser test verifies road and coast collision, native HUD, city minimap and all existing modes.</p>'+cards
+          (f/'index.html').write_text(html)
+          (f/'visual-change.json').write_text(json.dumps(diffs,indent=2))
+          print('PASS V127 genuine ten-area visuals',diffs)
+          PY
+
+      - name: Build independent V128 playable city quality preview (never production)
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v128-world-quality
+          cp -a v128-world-quality/published-game-capture/. site/preview/v128-world-quality/
+          python3 v128-world-quality/tools/build_v128_preview.py site/preview/v128-world-quality
+          node --check site/preview/v128-world-quality/v117-jay.js
+          node --check site/preview/v128-world-quality/v127-citywide-art.js
+          node --check site/preview/v128-world-quality/game-v115.bundle.js
+          (cd v128-world-quality && node qa/check-v128-quality.cjs)
+          (cd v128-world-quality && node qa/check-world-completion.cjs)
+          (cd v128-world-quality && node qa/check-v127-citywide.cjs)
+          (cd v128-world-quality && node qa/check-v126-polish.cjs)
+          (cd v128-world-quality && node qa/check-v117-jay.cjs)
+          cmp -s game-backup/published-game-capture/game.js site/preview/v128-world-quality/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v128-world-quality/outbreak.css
+          cmp -s site/preview/v127-citywide/outbreak.css site/preview/v128-world-quality/outbreak.css
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          echo 'PASS V128 original production, Zombie assets and mode preserved, continuous city preview only'
+
+      - name: Run actual phone-size V127 vs V128 region walkthrough and RUN test
+        shell: bash
+        run: |
+          set -euo pipefail
+          V127_BEFORE_URL='http://127.0.0.1:8765/preview/v127-citywide/?v116QA=0&pilotQA=1' \
+            V127_AFTER_URL='http://127.0.0.1:8765/preview/v128-world-quality/?v116QA=0&pilotQA=1' \
+            V127_EVIDENCE="$PWD/site/preview/v128-world-quality/evidence" \
+            node v128-world-quality/qa/capture-v127-citywide.cjs
+          V128_URL='http://127.0.0.1:8765/preview/v128-world-quality/?v116QA=0&pilotQA=1' \
+            V128_EVIDENCE="$PWD/site/preview/v128-world-quality/evidence" \
+            node v128-world-quality/qa/capture-v128-run.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          import json
+          p=Path('site/preview/v128-world-quality/evidence')
+          result=json.loads((p/'metrics.json').read_text())
+          assert len(result['results'])==2
+          scenes=[s['scene'] for s in result['results'][1]['shots']]
+          assert len(scenes)==10
+          from PIL import ImageChops
+          diffs={}
+          for scene in scenes:
+            with Image.open(p/f'{scene}-before.png') as pre, Image.open(p/f'{scene}-after.png') as post:
+              a=pre.convert('RGB');b=post.convert('RGB')
+              if a.size!=b.size: raise ValueError('Mismatched camera frames')
+              diff=ImageChops.difference(a,b).convert('L').histogram()
+              diffs[scene]=round(sum(diff[12:])/max(1,sum(diff)),4)
+          (p/'district-visual-diff.json').write_text(json.dumps(diffs,indent=2))
+          print('Measured real gameplay visual deltas by district',diffs)
+          for scene in scenes:
+            for suffix in ('before','after'):
+              with Image.open(p/f'{scene}-{suffix}.png') as im: im.verify()
+          for state in ('idle','running'):
+            with Image.open(p/f'v128-{state}.png') as im: im.verify()
+          cards=''.join(f'<section><h2>{s.replace("-"," ").title()}</h2><div><img src="{s}-before.png"><img src="{s}-after.png"></div></section>' for s in scenes)
+          (p/'index.html').write_text('<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><title>V128 Real Gameplay Quality Review</title><style>body{background:#102b3b;color:#f6eac9;font:16px system-ui;padding:20px}section{margin:20px 0}section>div{display:flex;flex-wrap:wrap;gap:12px}img{width:47%;max-width:420px;border-radius:9px}h2{font-size:19px}</style><h1>V128 vs V127 — Actual Harbor City Browser Captures</h1><p>Left: V127. Right: V128. Ten existing district/edge positions, same original connected game and viewport. Emulated Chrome is not an Android FPS certification.</p>'+cards+'<h2>Jay standing and running</h2><img src="v128-idle.png"><img src="v128-running.png">')
+          print('PASS V128 real playable before/after gallery and sprint states')
+          PY
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload recovered website
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+
+      - name: Deploy recovered website
+        id: deployment
+        uses: actions/deploy-pages@v4

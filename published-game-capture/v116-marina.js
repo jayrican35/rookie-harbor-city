@@ -45,7 +45,7 @@ const objects=Object.freeze([
 // Preserve broad pedestrian promenade 3900..4220 and pier approaches.
 const solidBoxes=Object.freeze(objects.filter(o=>o.solid).map(o=>Object.freeze({id:o.id,x:o.x+12,y:o.y+19,w:o.w-24,h:o.h-38})));
 const actors=[
- {id:'v116:fisher',name:'Fisherman',npcStyle:1,x:4726,y:4308,route:[[4726,4308],[4718,4345]],speed:11,phase:0,dialogue:'I almost caught a legendary fish. It was THIS big! ...Maybe.'},
+ {id:'v116:fisher',name:'Fisherman',npcStyle:1,x:4875,y:4308,route:[[4875,4308],[4878,4380]],speed:11,phase:0,dialogue:'I almost caught a legendary fish. It was THIS big! ...Maybe.'},
  {id:'v116:worker',name:'Marina worker',npcStyle:2,x:5465,y:3912,route:[[5465,3912],[5345,3904],[5310,3994],[5465,3912]],speed:27,phase:1,dialogue:'The gulls stole another sandwich. I think they have a schedule.'},
  {id:'v116:visitor',name:'Visitor',npcStyle:3,x:5070,y:3972,route:[[5070,3972],[5127,3964],[5070,3972]],speed:15,phase:2,dialogue:'I have photographed the same boat eleven times. Art is patience.'},
  {id:'v116:customer',name:'Café customer',npcStyle:4,x:4605,y:3780,route:[[4605,3780]],speed:0,phase:0,dialogue:'Coffee and sea air. Best shift break ever.'},
@@ -114,6 +114,13 @@ function begin(g,opt,t){
    if(atlas){g.drawImage(atlas,b%8*32,Math.floor(b/8)*32,32,32,px,y,32,32);g.drawImage(atlas,b%8*32,Math.floor(b/8)*32,32,32,px+32,y,32,32);}
   }
  }
+ // Approved ROOKIE bollard sprites mark the piers at water level.
+  const bollard=img('bollard.webp');
+  if(bollard)for(const px of PIER_X)for(const py of [4255,4425,4550]){
+    if(!visible({x:px-17,y:py-26,w:96,h:54},view,0))continue;
+    g.drawImage(bollard,px-14,py-26,23,37);
+    g.drawImage(bollard,px+55,py-26,23,37);
+  }
  // Static shoreline and shop sprites, with world-locked shadows.
  for(const o of objects){
   if(!visible(o,view,0))continue;
@@ -126,11 +133,11 @@ function begin(g,opt,t){
   g.imageSmoothingEnabled=false;g.drawImage(sprite,o.x,o.y,o.w,o.h);objectsDrawn++;
  }
  const boats=[
-  {id:'boat-motor.png',x:4635,y:4334,w:66,h:125,p:0},
-  {id:'boat-fishing.png',x:4930,y:4410,w:76,h:140,p:1.7},
-  {id:'boat-sail.png',x:5232,y:4314,w:82,h:150,p:2.4},
-  {id:'boat-motor.png',x:5527,y:4397,w:66,h:120,p:3.1},
-  {id:'boat-sail.png',x:5795,y:4334,w:82,h:150,p:5}
+  {id:'boat-motor.png',x:4680,y:4334,w:66,h:125,p:0},
+  {id:'boat-fishing.png',x:4980,y:4410,w:76,h:140,p:1.7},
+  {id:'boat-sail.png',x:5280,y:4314,w:82,h:150,p:2.4},
+  {id:'boat-motor.png',x:5520,y:4397,w:66,h:120,p:3.1},
+  {id:'boat-sail.png',x:5780,y:4334,w:82,h:150,p:5}
  ];
  for(const o of boats){if(!visible(o,view))continue;const sprite=img(o.id);if(!sprite)continue;
   const dy=Math.sin(t*.00145+o.p)*3;
@@ -227,7 +234,7 @@ const onReady=()=>{
  if(toolbar&&!document.getElementById('v116MarinaLaunch')){
   const button=document.createElement('button');button.id='v116MarinaLaunch';button.type='button';
   button.textContent='PLAY SOUTHBAY MARINA · V116';button.title='Walk the real connected-world Southbay Marina (no loading screen)';
-  button.addEventListener('click',()=>campus.openAt(5190,3970,1.1));toolbar.appendChild(button);
+  button.addEventListener('click',()=>{for(const [x,y] of [[5190,3970],[5130,3940],[5270,3880],[5490,3910],[4610,3920],[5560,4020]])if(campus.openAt(x,y,1.1))return;});toolbar.appendChild(button);
  }
  if(/[?&]v116QA=1(?:&|$)/.test(location.search)){
   document.documentElement.dataset.v116Qa='1';

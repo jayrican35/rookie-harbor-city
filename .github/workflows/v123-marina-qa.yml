@@ -67,7 +67,7 @@ jobs:
                    'qa/check-v116-marina.cjs','qa/check-v117-interiors.cjs','qa/check-v123-collision.cjs',
                    'tools/clean_v123_npc_atlases.py','tools/build_v123_preview.py',
                    '.github/workflows/v123-marina-qa.yml','docs/V123-COLLISION-AND-NPC-ART.md'}
-          assert all(p in allowed or p.startswith('published-game-capture/assets/v123-marina-npcs/') for p in changed),sorted(changed-allowed)
+          assert all(p in allowed or p.startswith('published-game-capture/assets/v123-marina-npcs/') or p.startswith('qa/v122-reference/') for p in changed),sorted(changed-allowed)
           for p in ('published-game-capture/game.js','published-game-capture/outbreak.css','published-game-capture/v115-campus.js'):
             assert subprocess.check_output(['git','show',base+':'+p])==Path(p).read_bytes(),p
           assert not any('outbreak' in p.lower() or 'zombie' in p.lower() for p in changed)

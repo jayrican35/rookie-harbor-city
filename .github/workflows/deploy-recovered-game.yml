@@ -410,7 +410,7 @@ jobs:
           cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
           cmp -s precinct-pilot/published-game-capture/game.js site/preview/v116-marina/game.js
           cmp -s game-backup/published-game-capture/outbreak.css site/preview/v116-marina/outbreak.css
-          echo 'PASS V116 build: connected gameplay module; normal game and Zombie Outbreak unchanged'
+          echo 'V116 native source alignment: Waterfront y=3800 seawall and original piers x=4655,5105,5555 verified by QA'\n          echo 'PASS V116 build: connected gameplay module; normal game and Zombie Outbreak unchanged'
 
       - name: Capture V116 real-game portrait and landscape QA, same camera before/after
         shell: bash

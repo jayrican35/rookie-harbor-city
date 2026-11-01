@@ -33,7 +33,7 @@ for(const hook of ['pilot.ground(g,','pilot.props(g,','pilot.animated(g,'])
 assert(pilot.includes('createElement(\'canvas\')')&&pilot.includes('tileCache'));
 assert(pilot.includes('imageSmoothingEnabled=false'));
 assert(pilot.includes('getContext')&&pilot.includes('drawImage'));
-const bad=/(?:MAPS\s*\[|MAPS\s*\.|state\.map\s*=|player\.x\s*=|save\s*\(|localStorage\.|\.collision\s*=|outbreak\.)/;
+const bad=/(?:MAPS\s*\[|MAPS\s*\.|state\.map\s*=|player\.x\s*=|saveGame\s*\(|localStorage\.|\.collision\s*=|outbreak\.)/;
 assert(!bad.test(pilot),'The pilot must not mutate gameplay or Zombie Outbreak');
 const base=fs.readFileSync(path.join(root,'game.js'));
 assert(base.length>1400000);

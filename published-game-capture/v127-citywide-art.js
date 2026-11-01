@@ -120,7 +120,7 @@ function districtGround(g,d,view){
  const maxX=Math.min(d.x+d.w,view.x+view.w+step),
    maxY=Math.min(d.y+d.h,view.y+view.h+step);
  for(let y=fromY;y<maxY;y+=step)for(let x=fromX;x<maxX;x+=step){
-   const n=hash(Math.floor(x/step),Math.floor(y/step),d.id.length);
+   const n=hash(Math.floor(x/step),Math.floor(y/step),String(d.id||'generic').length);
    if(n%4===0)continue;
    const lx=x-d.x+19+(n%37),ly=y-d.y+20+((n>>>5)%37);
    if(lx<8||ly<8||lx>d.w-8||ly>d.h-8)continue;

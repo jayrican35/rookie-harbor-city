@@ -1,19 +1,19 @@
-/* ROOKIE V120 — Southbay premium marina material pass.
+/* ROOKIE V121 — art-directed Southbay premium marina material pass.
  * Production atlases are baked OFFLINE by tools/generate_v120_marina_art.py.
  * One existing V116 Canvas, one shared camera, no new frame loop or world.
  */
 (function(){
 'use strict';
-const ROOT='./assets/v120-marina/';
+const ROOT='./assets/v121-marina/';
 const W={x:4400,y:3800,w:1500,h:856},PIERS=[4655,5105,5555];
-const tile=512,files=['water-body','water-caustics','water-reef','dock-wood','dock-post','foam-frames','seawall-light','tree-shadows'];
+const tile=512,files=['water-body','water-caustics','water-reef','dock-wood','dock-post','foam-frames','seawall-light','tree-shadows','water-glints'];
 const art=Object.create(null);
 for(const name of files){
  const im=new Image();im.decoding='async';im.src=ROOT+name+'.png';art[name]=im;
 }
 const drawable=(name)=>{const im=art[name];return im&&im.complete&&im.naturalWidth>0?im:null;};
 const reduced=!!window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
-const stats={waterFrames:0,materialsDrawn:0,foamDraws:0,reflectionDraws:0,dockTiles:0,postDraws:0,shadows:0};
+const stats={waterFrames:0,materialsDrawn:0,foamDraws:0,reflectionDraws:0,dockTiles:0,postDraws:0,shadows:0,sparkleDraws:0};
 const intersects=(a,b)=>!b||a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
 function atlas(g,name,x,y,w,h){
  const im=drawable(name);if(!im)return false;
@@ -57,10 +57,32 @@ function water(g,opt,t){
  // horizontally-scrolling lines. All coordinates anchored to harbor-main.
  const sx=Math.round(Math.sin(time*.0003)*22);
  const sy=Math.round(Math.cos(time*.00024)*15);
- material(g,'water-caustics',view,sx,sy,.70);
- material(g,'water-caustics',view,-sy*2,-sx*2,.28);
+ // Sparse refracted sunlight, no hard-edged ice-crack network.
+ material(g,'water-caustics',view,sx,sy,.44);
+ material(g,'water-caustics',view,-sy*2,-sx*2,.12);
+ waterGlints(g,view,time);
  // Stone seawall casts a clear nearshore underwater shade.
  g.fillStyle='rgba(2,24,49,.49)';g.fillRect(4400,3800,1500,21);
+ g.restore();
+}
+// Authored 4-frame sunlight sparkles are camera-culled, stable in world space.
+function waterGlints(g,view,t){
+ const im=drawable('water-glints');if(!im)return;
+ const xa=Math.max(W.x,view.x-100),xb=Math.min(W.x+W.w,view.x+view.w+100);
+ const ya=Math.max(W.y,view.y-100),yb=Math.min(W.y+W.h,view.y+view.h+100);
+ if(xb<=xa||yb<=ya)return;
+ g.save();g.imageSmoothingEnabled=false;
+ for(let iy=Math.floor((ya-W.y)/135);W.y+iy*135<yb;iy++){
+  for(let ix=Math.floor((xa-W.x)/170);W.x+ix*170<xb;ix++){
+   const seed=(Math.imul(ix+71,73856093)^Math.imul(iy+27,19349663))>>>0;
+   if(seed%4===0)continue;
+   const x=W.x+ix*170+seed%81,y=W.y+iy*135+(seed>>>5)%55;
+   const frame=reduced?0:Math.floor(t/230+seed%31)%4;
+   g.globalAlpha=.28+.20*Math.max(0,Math.sin(t*.002+seed%17));
+   g.drawImage(im,frame*96,0,96,96,x-41,y-40,82,82);
+   stats.sparkleDraws++;
+  }
+ }
  g.restore();
 }
 function foam(g,x,y,size=63,t=0,alpha=1){
@@ -80,14 +102,14 @@ function contactWater(g,opt,t){
   if(end<start||view.y>3870||view.y+view.h<3800)continue;
   for(let x=a+20;x<b-15;x+=58){
    if(x<start-40||x>end+40)continue;
-   foam(g,x,3807,55,t+(x%3)*90,.63);
+   foam(g,x,3807,68,t+(x%3)*90,.79);
   }
  }
  // Turbulence around the real original dock piles (not a visual fake).
  for(const px of PIERS)for(const py of [3820,3945,4090])for(const dx of [3,86]){
   const x=px+dx;
   if(!intersects({x:x-45,y:py-50,w:90,h:95},view))continue;
-  foam(g,x,py-5,60,t+px+py,.90);
+  foam(g,x,py-5,78,t+px+py,.98);
  }
  g.restore();
 }
@@ -101,7 +123,7 @@ function boat(g,b,t){
  r.addColorStop(.7,'rgba(2,48,65,.18)');
  r.addColorStop(1,'rgba(2,48,65,0)');
  g.fillStyle=r;g.fillRect(b.x-25,b.y+b.h*.25,b.w+50,b.h);
- foam(g,cx,cy,b.w*1.75,t+b.p*150,.76);
+ foam(g,cx,cy,b.w*1.83,t+b.p*150,.91);
  if(drawable('foam-frames'))foam(g,cx,cy+18,b.w*1.45,t+500,.36);
  g.restore();
 }
@@ -122,7 +144,7 @@ function dock(g,px,view){
  g.restore();return true;
 }
 function post(g,x,y){
- if(atlas(g,'dock-post',x-18,y-39,36,76)){stats.postDraws++;return true;}
+ if(atlas(g,'dock-post',x-22,y-46,44,92)){stats.postDraws++;return true;}
  return false;
 }
 function promenade(g,opt,t){
@@ -130,10 +152,19 @@ function promenade(g,opt,t){
  const v=opt.view;
  const img=drawable('tree-shadows');
  if(!img)return;
- g.save();g.imageSmoothingEnabled=false;g.globalAlpha=.80;
+ g.save();
+ // Golden-hour bounce lives on the actual sidewalk underneath actors and props.
+ g.beginPath();g.rect(4400,3220,1500,576);g.clip();
+ const sun=g.createLinearGradient(4400,3350,5300,3810);
+ sun.addColorStop(0,'rgba(255,193,112,.075)');
+ sun.addColorStop(.65,'rgba(255,207,147,.14)');
+ sun.addColorStop(1,'rgba(252,170,96,.083)');
+ g.fillStyle=sun;g.fillRect(4400,3220,1500,576);
+ g.imageSmoothingEnabled=false;g.globalAlpha=.95;
  for(const [x,y,w,h] of [[4395,3400,270,185],[4790,3390,300,190],
  [5250,3385,300,190],[5530,3420,300,185],[4560,3600,230,120],
- [5120,3540,260,140],[5580,3530,230,125]]){
+ [5120,3540,260,140],[5580,3530,230,125],
+ [4495,3630,275,130],[4830,3570,320,160],[5230,3580,285,155]]){
   if(!intersects({x,y,w,h},v))continue;
   g.drawImage(img,x,y,w,h);stats.shadows++;
  }
@@ -150,7 +181,7 @@ function seawall(g,opt,t){
    if(lights)atlas(g,'seawall-light',x-15,3789,30,23);
    if(typeof g.createRadialGradient==='function'){
     const glow=g.createRadialGradient(x,3808,1,x,3808,61);
-    glow.addColorStop(0,'rgba(255,222,115,.27)');
+    glow.addColorStop(0,'rgba(255,222,115,.47)');
     glow.addColorStop(1,'rgba(255,160,64,0)');
     g.fillStyle=glow;g.fillRect(x-61,3790,122,82);
    }
@@ -167,15 +198,15 @@ function waterReflections(g,opt,t){
    const flicker=Math.sin(time*.0011+x*.4)*.07;
    for(let k=0;k<11;k++){
     const y=3822+k*18,xx=x+Math.sin(k*.89+time*.001)*((k+1)*2);
-    const width=26*(1-k/15);
-    g.fillStyle='rgba(255,210,101,'+Math.max(.05,.40-k*.027+flicker)+')';
+    const width=34*(1-k/15);
+    g.fillStyle='rgba(255,210,101,'+Math.max(.05,.51-k*.034+flicker)+')';
     g.fillRect(xx-width/2,y,width,3+(k%3===0?2:0));stats.reflectionDraws++;
    }
   }
  }
  g.restore();
 }
-function ready(){return ['water-body','water-caustics','dock-wood','dock-post'].every(k=>!!drawable(k));}
+function ready(){return ['water-body','water-caustics','dock-wood','dock-post','water-glints'].every(k=>!!drawable(k));}
 window.ROOKIE_V120_ART=Object.freeze({
  water,contactWater,boat,dock,post,promenade,seawall,waterReflections,ready,
  metrics:()=>Object.freeze({...stats,ready:ready(),decoded:files.filter(f=>drawable(f)).length,

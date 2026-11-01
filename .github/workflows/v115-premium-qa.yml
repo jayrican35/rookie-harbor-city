@@ -48,6 +48,7 @@ jobs:
              'published-game-capture/v115-premium.css',
              'published-game-capture/v115-preview-save-isolation.js',
              'tools/build_v115_premium_preview.py',
+             'tools/build_v115_reference_preview.py',
              'qa/check-v115-premium.cjs',
              'docs/v115-premium-environments.md',
              '.github/workflows/v115-premium-qa.yml'

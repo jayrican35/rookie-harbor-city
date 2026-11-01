@@ -162,6 +162,13 @@ jobs:
           path: v126-polish
           persist-credentials: false
 
+      - name: Check out V127 citywide native-scale visual expansion (isolated)
+        uses: actions/checkout@v4
+        with:
+          ref: 427682f67339ab3e5b3e2ef1568f6a01baf5b8a4 # green V127 citywide material and HUD integration
+          path: v127-citywide
+          persist-credentials: false
+
       - name: Recover missing main-campaign environment art
         shell: bash
         working-directory: visual-preview
@@ -967,6 +974,61 @@ jobs:
            for kind in ('pier','running-1','running-2'):
             f=p/f'{ver}-{kind}.png';im=Image.open(f);im.verify()
           print('PASS V126 browser-tested Jay running, full-length boards and native camera with screenshots')
+          PY
+
+      - name: Build V127 playable continuous-city art on approved V126 baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v127-citywide
+          cp -a v127-citywide/published-game-capture/. site/preview/v127-citywide/
+          python3 v127-citywide/tools/build_v127_preview.py site/preview/v127-citywide
+          node --check site/preview/v127-citywide/v127-citywide-art.js
+          node --check site/preview/v127-citywide/game-v115.bundle.js
+          (cd v127-citywide && node qa/check-v127-citywide.cjs)
+          (cd v127-citywide && node qa/check-v126-polish.cjs)
+          (cd v127-citywide && node qa/check-v125-mobile-hud.cjs)
+          (cd v127-citywide && node qa/check-v124-depth.cjs)
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v127-citywide/outbreak.css
+          cmp -s game-backup/published-game-capture/controls.css site/preview/v127-citywide/controls.css
+          cmp -s v126-polish/published-game-capture/v125-mobile-hud.css site/preview/v127-citywide/v125-mobile-hud.css
+          cmp -s v126-polish/published-game-capture/v117-jay.js site/preview/v127-citywide/v117-jay.js
+          grep -q 'v127-continuous-art-and-hud' site/preview/v127-citywide/index.html
+          echo 'PASS V127 genuine connected-world game built; V126, original campaign and Zombie completely untouched'
+
+      - name: Run live five-district V126 vs V127 continuous-world and HUD screenshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          V127_BEFORE_URL='http://127.0.0.1:8765/preview/v126-polish/?v116QA=0&pilotQA=1' \
+            V127_AFTER_URL='http://127.0.0.1:8765/preview/v127-citywide/?v116QA=0&pilotQA=1' \
+            V127_EVIDENCE="$PWD/site/preview/v127-citywide/evidence" \
+            node v127-citywide/qa/capture-v127-citywide.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageChops
+          import json
+          f=Path('site/preview/v127-citywide/evidence')
+          report=json.loads((f/'metrics.json').read_text())
+          assert len(report['results'])==2
+          scenes=('marina-east-boundary','southbay-west-connection','downtown','residential','industrial')
+          diffs={}
+          for name in scenes:
+            before=Image.open(f'{f}/{name}-before.png').convert('RGB')
+            after=Image.open(f'{f}/{name}-after.png').convert('RGB')
+            assert before.size==after.size
+            histogram=ImageChops.difference(before,after).convert('L').histogram()
+            fraction=sum(histogram[12:])/max(1,sum(histogram))
+            assert fraction>.015,(name,fraction)
+            diffs[name]=round(fraction,4)
+          cards=''.join(f'<section><h2>{name.replace("-"," ").title()}</h2><div><figure><img src="{name}-before.png"><figcaption>V126 • untextured area / marina-only HUD</figcaption></figure><figure><img src="{name}-after.png"><figcaption>V127 • unified tiles / persistent city HUD</figcaption></figure></div></section>' for name in scenes)
+          html='<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROOKIE V127 Five-District Actual Game QA</title><style>body{background:#0b2435;color:#f5eac7;font:16px system-ui;padding:18px}h1{font-size:27px}section{margin:23px 0}section>div{display:flex;flex-wrap:wrap;gap:15px}figure{min-width:min(100%,285px);flex:1;margin:0}img{width:100%;max-width:470px;border:2px solid #d2b77e;border-radius:9px}figcaption{padding:9px}</style><h1>V127 — One Harbor City, Five Actual Gameplay Districts</h1><p>Same world coordinates and Android-size Chromium, before and after actual playable city. Browser test verifies road and coast collision, native HUD, city minimap and all existing modes.</p>'+cards
+          (f/'index.html').write_text(html)
+          (f/'visual-change.json').write_text(json.dumps(diffs,indent=2))
+          print('PASS V127 genuine five-area visuals',diffs)
           PY
 
       - name: Configure GitHub Pages

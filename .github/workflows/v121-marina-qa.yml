@@ -61,7 +61,7 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           import subprocess
-          base='8968acd0b51774e4b8f60fa5702c13e94a062629'
+          base='2b96c3f66ce49af8eb0769e27ea1adcf3859ce55'
           changed=set(subprocess.check_output(['git','diff','--name-only',base,'HEAD'],text=True).splitlines())
           allowed={'published-game-capture/v120-marina-art.js','tools/generate_v121_marina_art.py',
            'tools/build_v121_preview.py','qa/check-v121-marina.cjs',

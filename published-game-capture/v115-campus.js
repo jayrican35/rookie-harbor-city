@@ -118,7 +118,7 @@
     return null;
   }
   const campus={open:false,x:FRONT.x,y:FRONT.y+86,dir:'up',stride:0,moved:false,speed:0,
-    camX:0,camY:0,zoom:1.15,autoZoom:true,follow:true,keys:new Set(),stick:null,frame:0,last:0,
+    camX:0,camY:0,zoom:1.15,autoZoom:true,follow:true,keys:new Set(),stick:null,runHeld:false,frame:0,last:0,
     paintCosts:[],paintCount:0,near:null,firstPaint:true,doorCrossings:0,previousRoom:null,visibleChunks:[]};
   const modal=document.createElement('section');modal.id='v115Campus';modal.hidden=true;
   modal.setAttribute('aria-label','V115 seamless precinct and grounds development preview');
@@ -131,9 +131,10 @@
       <button id="v115CampusOverview" aria-label="Toggle full campus overview">ALL</button>
       <button id="v115CampusZoomIn" aria-label="Zoom in">+</button></div>
     <div class="v115-campus-note" id="v115CampusNote">Continuous roads now share one topology with the city map. Driveable lanes, traffic and missions still need integration.</div>
-    <div class="v115-campus-pad" id="v115CampusPad" aria-label="Movement joystick" role="button" tabindex="0">
-      <div id="v115CampusKnob"></div></div>
-    <button id="v115CampusInteract" class="v115-campus-interact" type="button">LOOK</button>
+    <div class="v115-campus-pad" id="v115CampusPad" aria-label="Floating movement joystick zone" role="button" tabindex="0">
+      <div id="v125CampusBase" aria-hidden="true"><div id="v115CampusKnob"></div></div></div>
+    <button id="v125CampusSprint" type="button" aria-label="Hold to run">RUN</button>
+    <button id="v115CampusInteract" class="v115-campus-interact" type="button">Action</button>
     <footer class="v115-campus-footer">Continuous city streets · joystick / WASD · all districts one canvas · game saves unchanged</footer>`;
   document.body.appendChild(modal);
   const cv=modal.querySelector('canvas'),g=cv.getContext('2d',{alpha:false});
@@ -143,7 +144,7 @@
   let tw=960,th=640,dpr=1,oldCtx=null,cache=null,cacheValid=false,roofCanvas=null;
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
   function pickZoom(z){campus.autoZoom=false;campus.zoom=clamp(z,.024,2.5);campus.follow=campus.zoom>.09;}
-  function clearInput(){window.ROOKIE_JAY?.reset();campus.speed=0;campus.keys.clear();campus.stick=null;modal.querySelector('#v115CampusKnob').style.transform='translate(0,0)';}
+  function clearInput(){window.ROOKIE_JAY?.reset();campus.speed=0;campus.keys.clear();campus.stick=null;campus.runHeld=false;modal.querySelector('#v115CampusKnob').style.transform='translate(-50%,-50%)';modal.querySelector('#v125CampusBase').classList.remove('active');modal.querySelector('#v125CampusSprint').classList.remove('held');}
   function resize(){
     if(!campus.open)return;
     const r=cv.getBoundingClientRect();dpr=Math.min(1.5,window.devicePixelRatio||1);
@@ -205,7 +206,7 @@
     const marina=window.ROOKIE_V116_MARINA;
     if(marina)marina.stepNPCs(dt);
     let {dx,dy}=direction();
-    const shared=window.ROOKIE_JAY,run=!!shared?.requestRun();
+    const shared=window.ROOKIE_JAY,run=!!shared?.requestRun()||!!(campus.runHeld&&shared?.eligible());
     if(Math.hypot(dx,dy)<.08){dx=0;dy=0;}
     const motion=shared?shared.advanceSpeed(campus.speed||0,(dx||dy)?(run?325:210):0,dt):{speed:210,distance:clamp(dt,0,.05)*210};
     campus.speed=motion.speed;const step=motion.distance;
@@ -606,7 +607,11 @@
     modal.querySelector('#v115CampusRegion').textContent=desc;
     modal.querySelector('#v115CampusCoords').textContent='World '+Math.round(campus.x)+', '+Math.round(campus.y)+'  · '+idOf(campus.x,campus.y)+'  · '+Math.round(campus.zoom*100)+'%';
     if(window.ROOKIE_V116_HUD)window.ROOKIE_V116_HUD.paint({x:campus.x,y:campus.y},t);
-    modal.querySelector('#v115CampusInteract').textContent=campus.near?'LOOK · '+campus.near.label:'LOOK';
+    const act=modal.querySelector('#v115CampusInteract');
+    const near=campus.near,actor=near&&marina?.actors?.some(a=>a.id===near.id);
+    const caption=near?(actor?'Talk':'Inspect'):'Action';
+    if(act.textContent!==caption)act.textContent=caption;
+    if(act.disabled===!!near)act.disabled=!near;
     if(paintStart!==null){campus.paintCount++;campus.paintCosts.push(performance.now()-paintStart);if(campus.paintCosts.length>180)campus.paintCosts.shift();}
   }
   function loop(timestamp){
@@ -664,18 +669,53 @@
   });
   const dialogue=document.createElement('output');dialogue.id='v116Dialogue';
   dialogue.hidden=true;dialogue.setAttribute('aria-live','polite');modal.appendChild(dialogue);
+  // V125: retain the existing campus.stick movement vector. Only the touch
+  // origin moves inside the lower-left pad; no second joystick/input loop.
   const pad=modal.querySelector('#v115CampusPad'),knob=modal.querySelector('#v115CampusKnob');
+  const base=modal.querySelector('#v125CampusBase'),sprint=modal.querySelector('#v125CampusSprint');
+  let pointer=null,stickOrigin=null,sprintPointer=null;
   const changeStick=e=>{
-    const r=pad.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
-    let dx=(e.clientX-cx)/42,dy=(e.clientY-cy)/42;
+    if(!stickOrigin)return;
+    let dx=(e.clientX-stickOrigin.x)/46,dy=(e.clientY-stickOrigin.y)/46;
     const len=Math.hypot(dx,dy);if(len>1){dx/=len;dy/=len;}
-    campus.stick={x:dx,y:dy};knob.style.transform='translate('+Math.round(dx*36)+'px,'+Math.round(dy*36)+'px)';
+    if(Math.hypot(dx,dy)<.13){dx=0;dy=0;}
+    campus.stick={x:dx,y:dy};
+    knob.style.transform='translate(calc(-50% + '+Math.round(dx*38)+'px),calc(-50% + '+Math.round(dy*38)+'px))';
   };
-  let pointer=null;
-  pad.addEventListener('pointerdown',e=>{e.preventDefault();pointer=e.pointerId;pad.setPointerCapture(pointer);changeStick(e);});
-  pad.addEventListener('pointermove',e=>{if(e.pointerId===pointer)changeStick(e);});
-  const release=e=>{if(e.pointerId!==pointer)return;pointer=null;campus.stick=null;knob.style.transform='translate(0,0)';};
+  const release=e=>{
+    if(e&&e.pointerId!==pointer)return;
+    pointer=null;stickOrigin=null;campus.stick=null;knob.style.transform='translate(-50%,-50%)';
+    base.classList.remove('active');
+  };
+  pad.addEventListener('pointerdown',e=>{
+    if(pointer!==null||window.ROOKIE_V116_HUD?.blocked())return;
+    e.preventDefault();e.stopPropagation();pointer=e.pointerId;
+    pad.setPointerCapture?.(pointer);
+    const r=pad.getBoundingClientRect();
+    const localX=Math.max(53,Math.min(r.width-53,e.clientX-r.left));
+    const localY=Math.max(53,Math.min(r.height-53,e.clientY-r.top));
+    stickOrigin={x:r.left+localX,y:r.top+localY};
+    base.style.left=localX+'px';base.style.top=localY+'px';base.classList.add('active');
+    changeStick(e);
+  });
+  pad.addEventListener('pointermove',e=>{if(e.pointerId===pointer){e.preventDefault();changeStick(e);}});
   pad.addEventListener('pointerup',release);pad.addEventListener('pointercancel',release);
+  pad.addEventListener('lostpointercapture',release);
+  sprint.addEventListener('pointerdown',e=>{
+    if(sprintPointer!==null||window.ROOKIE_V116_HUD?.blocked())return;
+    e.preventDefault();e.stopPropagation();sprintPointer=e.pointerId;
+    sprint.setPointerCapture?.(sprintPointer);campus.runHeld=true;sprint.classList.add('held');
+  });
+  const releaseSprint=e=>{
+    if(e&&e.pointerId!==sprintPointer)return;
+    sprintPointer=null;campus.runHeld=false;sprint.classList.remove('held');
+  };
+  sprint.addEventListener('pointerup',releaseSprint);sprint.addEventListener('pointercancel',releaseSprint);
+  sprint.addEventListener('lostpointercapture',releaseSprint);
+  // Accessible keyboard activation provides a release-safe hold; no auto-run.
+  sprint.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();campus.runHeld=true;}});
+  sprint.addEventListener('keyup',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();campus.runHeld=false;}});
+  window.addEventListener('blur',()=>{release();releaseSprint();});
   function captureKey(e,down){
     if(!campus.open)return;
     const k=e.key.toLowerCase();

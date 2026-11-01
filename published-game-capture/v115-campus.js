@@ -107,6 +107,9 @@
     // V116 only adds solid coastal structures/water, never replaces legacy solids.
     const marina=window.ROOKIE_V116_MARINA;
     if(marina&&marina.blocksProp(x,y,r))return true;
+    // Citywide coastline uses the SAME player collider. No walking on newly
+    // extended water just outside the original marina material rectangle.
+    if(window.ROOKIE_V127_CITY?.waterBlocked(x,y))return true;
     // The blank northeast corner of the irregular station footprint is not
     // usable interior. Existing station west/east/south wall gaps stay real.
     return false;
@@ -225,6 +228,10 @@
     return nowRoom;
   }
   function drawGrass(){
+    // V127: same Southbay pixel-tile materials across the entire 1:1 world,
+    // rendered before native roads, districts, buildings and interior layers.
+    const city=window.ROOKIE_V127_CITY;
+    if(city){city.base(g,{view:{x:campus.camX,y:campus.camY,w:tw/campus.zoom,h:th/campus.zoom},zoom:campus.zoom});return;}
     g.fillStyle='#608d56';g.fillRect(MIN_X,MIN_Y,W-MIN_X,HGT-MIN_Y);
     const x0=Math.max(MIN_X,Math.floor(campus.camX/48)*48),x1=Math.min(W,campus.camX+tw/campus.zoom+60);
     const y0=Math.max(0,Math.floor(campus.camY/48)*48),y1=Math.min(HGT,campus.camY+th/campus.zoom+60);
@@ -281,7 +288,8 @@
     // Draw at world coordinates. Slightly textured gutters and edge lights
     // bridge imported tileset seams without repainting existing buildings.
     const horizontal=r.w>r.h;
-    g.fillStyle='#3e4852';g.fillRect(r.x,r.y,r.w,r.h);
+    if(window.ROOKIE_V127_CITY)window.ROOKIE_V127_CITY.road(g,r,{x:campus.camX,y:campus.camY,w:tw/campus.zoom,h:th/campus.zoom});
+    else {g.fillStyle='#3e4852';g.fillRect(r.x,r.y,r.w,r.h);}
     g.fillStyle='#717c83';
     if(horizontal){
       g.fillRect(r.x,r.y, r.w,4);g.fillRect(r.x,r.y+r.h-4,r.w,4);
@@ -314,20 +322,15 @@
     }
   }
   function districtGround(d){
-    const m=d.map;
-    g.fillStyle=m.base||'#7c9a67';g.fillRect(d.x,d.y,m.w,m.h);
-    g.save();g.translate(d.x,d.y);
-    for(const r of m.ground||[]){
-      const c=(r.c||'').toLowerCase();
-      g.fillStyle=c||'#c2b8a4';g.fillRect(r.x,r.y,r.w,r.h);
-      if(c==='#3d4148'||c==='#43474e'){
-        g.fillStyle='rgba(255,255,255,.07)';g.fillRect(r.x,r.y+2,r.w,2);
-      }
-      if(c==='#2e6da8'){
-        g.strokeStyle='rgba(255,255,255,.18)';g.lineWidth=2;
-        for(let yy=r.y+25;yy<r.y+r.h;yy+=58){g.beginPath();g.moveTo(r.x+20,yy);g.lineTo(r.x+r.w-20,yy);g.stroke();}
-      }
+    const m=d.map,city=window.ROOKIE_V127_CITY;
+    if(city)city.districtGround(g,d,{x:campus.camX,y:campus.camY,w:tw/campus.zoom,h:th/campus.zoom});
+    else{
+      g.fillStyle=m.base||'#7c9a67';g.fillRect(d.x,d.y,m.w,m.h);
+      g.save();g.translate(d.x,d.y);
+      for(const r of m.ground||[]){g.fillStyle=r.c||'#c2b8a4';g.fillRect(r.x,r.y,r.w,r.h);}
+      g.restore();
     }
+    g.save();g.translate(d.x,d.y);
     if(m.dashes){const a=m.dashes;g.fillStyle='rgba(237,219,153,.65)';
       if(a.axis==='h')for(let x=a.from;x<a.to;x+=58)g.fillRect(x,a.at-2,30,4);
       else for(let y=a.from;y<a.to;y+=58)g.fillRect(a.at-2,y,4,30);
@@ -406,6 +409,8 @@
       const x=o.x||0,y=o.y||0;
       if(!nearViewport(d.x+x-130,d.y+y-170,(o.w||240)+260,(o.h||200)+260))continue;
       if(['bldg','house','shed','lighthouse','mtbldg'].includes(o.t)){if(!window.ROOKIE_V116_MARINA?.ownsSolid?.({x:d.x+x,y:d.y+y,w:o.w,h:o.h}))paintedBuilding(o);continue;}
+      // Native world decoration sprites now depth-sort with Jay, not underfoot.
+      if(window.ROOKIE_V127_CITY?.handlesDecor(o))continue;
       if(o.t==='tree'||o.t==='bigtree'||o.t==='palm'){districtTree(x,y,o.t==='bigtree'?38:26);continue;}
       if(o.t==='lamp'){g.fillStyle='#1b3b50';g.fillRect(x-3,y-35,6,36);g.fillStyle='#f4df97';g.fillRect(x-8,y-40,16,10);continue;}
       if(o.t==='sign'||o.t==='gate'){g.fillStyle='#2a4458';g.fillRect(x-36,y-22,110,28);g.fillStyle='#fff0c3';g.font='700 15px Barlow Condensed,sans-serif';g.textAlign='left';g.fillText(String(o.text||d.id).slice(0,20),x-32,y-4);continue;}
@@ -424,6 +429,13 @@
     // retain their material quality. Crossings seal visibly disjoint seams.
     for(const link of links)if(nearViewport(link.x,link.y,link.w,link.h))roadRect(link);
     for(const d of districtEntries)if(nearViewport(d.x,d.y,d.w,d.h))districtGround(d);
+    // V127 extends waterfront-quality pavement, landscaping materials and
+    // shoreline across the native regions, without a new scene or map switch.
+    const city=window.ROOKIE_V127_CITY;
+    if(city){const view={x:campus.camX,y:campus.camY,w:tw/campus.zoom,h:th/campus.zoom};
+      city.walkways(g,{view,zoom:campus.zoom});
+      city.coastline(g,{view,zoom:campus.zoom});
+    }
     for(const c of crossings)drawCrossing(c);
     const ref=window.ROOKIE_V115_REFERENCE;
     if(ref)ref.gameBlocks(g,{zoom:campus.zoom,view:{x:campus.camX,y:campus.camY,w:tw/campus.zoom,h:th/campus.zoom},districts:districtEntries});
@@ -539,8 +551,13 @@
     // Jay outside the frontage, and only truly rear props occlude the player.
     if(marina?.active()&&marina.depthProps)
       for(const prop of marina.depthProps(view))entries.push({y:prop.depthY,depthProp:prop});
+    if(window.ROOKIE_V127_CITY){
+      for(const prop of window.ROOKIE_V127_CITY.depthProps(view,districtEntries))
+        entries.push({y:prop.depthY,cityProp:prop});
+    }
     entries.push({y:campus.y,player:true});entries.sort((a,b)=>a.y-b.y);
     for(const entry of entries){
+      if(entry.cityProp){window.ROOKIE_V127_CITY.drawDepthProp(g,entry.cityProp);continue;}
       if(entry.depthProp){
         marina.drawDepthProp(g,entry.depthProp,{zoom:campus.zoom,view,player:{x:campus.x,y:campus.y}},t);continue;
       }

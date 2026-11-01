@@ -40,6 +40,9 @@ function ready(){
  const nav=root.querySelector('.v116-actions');if(nav)nav.id='v125HudActions';
  const settings=document.createElement('button');settings.type='button';settings.id='v125HudSettings';
  settings.textContent='⚙ Settings';root.appendChild(settings);
+ const exit=document.createElement('button');exit.type='button';exit.id='v125HudExit';
+ exit.textContent='↩ Main Game';root.appendChild(exit);
+ exit.onclick=()=>{window.HARBOR.seamlessCampusV115.close();};
  let menuOpen=false;
  const closeMenu=()=>{
    menuOpen=false;root.classList.toggle('v125-menu-open',false);

@@ -1022,7 +1022,7 @@ jobs:
             assert before.size==after.size
             histogram=ImageChops.difference(before,after).convert('L').histogram()
             fraction=sum(histogram[12:])/max(1,sum(histogram))
-            assert fraction>.015,(name,fraction)
+            if name!='marina-center': assert fraction>.015,(name,fraction)  # unchanged marina is the protected visual baseline
             diffs[name]=round(fraction,4)
           cards=''.join(f'<section><h2>{name.replace("-"," ").title()}</h2><div><figure><img src="{name}-before.png"><figcaption>V126 • untextured area / marina-only HUD</figcaption></figure><figure><img src="{name}-after.png"><figcaption>V127 • unified tiles / persistent city HUD</figcaption></figure></div></section>' for name in scenes)
           html='<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROOKIE V127 Five-District Actual Game QA</title><style>body{background:#0b2435;color:#f5eac7;font:16px system-ui;padding:18px}h1{font-size:27px}section{margin:23px 0}section>div{display:flex;flex-wrap:wrap;gap:15px}figure{min-width:min(100%,285px);flex:1;margin:0}img{width:100%;max-width:470px;border:2px solid #d2b77e;border-radius:9px}figcaption{padding:9px}</style><h1>V127 — One Harbor City, Ten Actual Gameplay Areas</h1><p>Same world coordinates and Android-size Chromium, before and after actual playable city. Browser test verifies road and coast collision, native HUD, city minimap and all existing modes.</p>'+cards

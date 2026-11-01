@@ -473,6 +473,59 @@ function propGeometry(o,d){
  const [w,h,ox,oy]=sizes[o.t]||[60,52,-30,-46];
  return {x:x+ox,y:y+oy,w,h,depthY:o.t==='bench'||o.t==='flowerbed'?y+14:y+4};
 }
+// Additional authored-feeling grove positions are derived ONCE per native
+// district. Trees render in the existing actor depth queue; their narrow trunks
+// are solid in the existing movement/collision system. No second scene or save.
+const scenicCache=new Map();
+function scenicFor(d){
+ if(!d||!d.id||d.id==='waterfront'||!d.map?.base||!Array.isArray(d.map.ground))
+   return [];
+ const existing=scenicCache.get(d.id);
+ if(existing&&existing.map===d.map)return existing.trees;
+ const trees=[],step=d.id==='industrial'?372:296;
+ const roads=H?.worldV115?.roadNetwork?.().segments||[];
+ const solids=d.map.pedSolids||d.map.solids||[];
+ const features=d.map.decors||[];
+ const reserved=d.map.spots||[];
+ for(let ly=140;ly<d.h-100;ly+=step)for(let lx=120;lx<d.w-100;lx+=step){
+   const seed=hash(Math.floor(lx/step),Math.floor(ly/step),d.id.length*17);
+   if(seed%(d.id==='industrial'?4:6)<(d.id==='industrial'?3:1))continue;
+   const x=lx+((seed>>>4)%91)-45,y=ly+((seed>>>13)%91)-45;
+   if(x<75||y<85||x>d.w-75||y>d.h-85)continue;
+   if(groundTypeAt(d,x,y)!=='grass')continue;
+   if(groundTypeAt(d,x-44,y-40)!=='grass'||groundTypeAt(d,x+44,y+36)!=='grass')continue;
+   const wx=d.x+x,wy=d.y+y;
+   // Original road graph, sidewalks, doors and interaction spots stay clear.
+   if(roads.some(r=>wx>r.x-66&&wx<r.x+r.w+66&&wy>r.y-66&&wy<r.y+r.h+66))continue;
+   if(solids.some(s=>x>s.x-63&&x<s.x+s.w+63&&y>s.y-60&&y<s.y+s.h+67))continue;
+   if(features.some(o=>{
+     const t=o.t||'';
+     if(['tree','bigtree','palm'].includes(t))return Math.hypot(x-(o.x||0),y-(o.y||0))<110;
+     if(!['bldg','house','shed','lighthouse','mtbldg'].includes(t))return false;
+     const bx=t==='mtbldg'?(o.bx??o.x??0):(o.x||0);
+     const by=t==='mtbldg'?(o.btop??o.y??0):(o.y||0);
+     const bw=t==='mtbldg'?(o.bw??o.w??0):(o.w||0);
+     const bh=t==='mtbldg'?(o.bh??o.h??0):(o.h||0);
+     return x>bx-72&&x<bx+bw+72&&y>by-72&&y<by+bh+86;
+   }))continue;
+   if(reserved.some(o=>Number.isFinite(o.x)&&Number.isFinite(o.y)&&Math.hypot(x-o.x,y-o.y)<115))continue;
+   trees.push({t:d.id==='southbay'?'palm':d.id==='industrial'?'tree':seed%7===0?'bigtree':'tree',x,y,generated:true});
+ }
+ scenicCache.set(d.id,{map:d.map,trees});return trees;
+}
+function scenicBlocked(x,y,r=12,districts=[]){
+ for(const d of districts){
+   if(d.id==='waterfront'||x<d.x-24||y<d.y-24||x>d.x+d.w+24||y>d.y+d.h+24)continue;
+   for(const o of scenicFor(d)){
+     // Only the trunk foot is solid; the larger crowns correctly occlude Jay
+     // when he walks behind them, rather than blocking an entire sidewalk.
+     const dx=x-(d.x+o.x),dy=y-(d.y+o.y);
+     if(dx*dx+dy*dy<Math.pow(r+(o.t==='bigtree'?17:12),2))return true;
+   }
+ }
+ return false;
+}
+
 function depthProps(view,districts){
  const entries=[];
  if(frameZoom<.18)return entries; // premium props vanish naturally in overview
@@ -483,6 +536,12 @@ function depthProps(view,districts){
   for(const o of d.map.decors||[]){
    if(!handlesDecor(o))continue;
    const b=propGeometry(o,d);if(visible(b,view,24))entries.push({object:o,district:d,box:b,depthY:b.depthY});
+  }
+  // New groves share the same sorted depth queue and exact native sprites.
+  for(const o of scenicFor(d)){
+   if(!handlesDecor(o))continue;
+   const b=propGeometry(o,d);
+   if(visible(b,view,24))entries.push({object:o,district:d,box:b,depthY:b.depthY});
   }
  }
  metrics.props=entries.length;
@@ -518,7 +577,7 @@ function map(g,x,y){
 window.ROOKIE_V127_CITY=Object.freeze({
  version:'127-citywide-material-continuity',worldId:'harbor-main',
  base,surface,colorKind,districtGround,road,coastline,walkways,depthProps,drawDepthProp,
- building,handlesDecor,spriteImage:type=>spriteReady(type)?sprites[type]:null,waterBlocked:coastalWater,location,map,
+ building,handlesDecor,scenicBlocked,spriteImage:type=>spriteReady(type)?sprites[type]:null,waterBlocked:coastalWater,location,map,
  metrics:()=>({...metrics,cacheMax:CAP,atlasReady:atlas.complete&&atlas.naturalWidth>0})
 });
 })();

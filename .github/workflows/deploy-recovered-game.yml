@@ -85,6 +85,13 @@ jobs:
           path: precinct-pilot
           persist-credentials: false
 
+      - name: Check out V116 Southbay Marina game integration
+        uses: actions/checkout@v4
+        with:
+          ref: feature/v116-southbay-marina
+          path: v116-marina
+          persist-credentials: false
+
       - name: Recover missing main-campaign environment art
         shell: bash
         working-directory: visual-preview
@@ -376,6 +383,48 @@ jobs:
           test -s site/preview/v115-pilot/evidence/after.png
           test -s site/preview/v115-pilot/evidence/metrics.json
           echo 'PASS: real game canvas screenshots, identical Android camera & zoom'
+
+      - name: Build isolated V116 connected-world marina implementation
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v116-marina
+          cp -a v116-marina/published-game-capture/. site/preview/v116-marina/
+          test -s site/preview/v116-marina/assets/v116-marina/marina-tiles.png
+          test -s site/preview/v116-marina/assets/v116-marina/boat-sail.png
+          grep -q 'rookie:v116-marina-sandbox:' site/preview/v116-marina/v115-preview-save-isolation.js
+          python3 v116-marina/tools/build_v115_preview.py site/preview/v116-marina pickle-preview/published-game-capture/game.js
+          python3 v116-marina/tools/build_v115_showcase_preview.py site/preview/v116-marina
+          python3 v116-marina/tools/build_v115_reference_preview.py site/preview/v116-marina
+          python3 v116-marina/tools/build_v115_premium_preview.py site/preview/v116-marina
+          python3 v116-marina/tools/build_v115_precinct_pilot_preview.py site/preview/v116-marina
+          python3 v116-marina/tools/build_v116_preview.py site/preview/v116-marina
+          node --check site/preview/v116-marina/game-v115.bundle.js
+          node --check site/preview/v116-marina/v116-marina.js
+          (cd v116-marina && node qa/check-v116-marina.cjs)
+          (cd v116-marina && node qa/check-v115-campus.cjs)
+          (cd v116-marina && node qa/check-v115-connected-city.cjs)
+          (cd v116-marina && node qa/check-v115-road-layout.cjs)
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s precinct-pilot/published-game-capture/game.js site/preview/v116-marina/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v116-marina/outbreak.css
+          echo 'PASS V116 build: connected gameplay module; normal game and Zombie Outbreak unchanged'
+
+      - name: Capture V116 real-game portrait and landscape QA, same camera before/after
+        shell: bash
+        run: |
+          set -euo pipefail
+          V116_URL='http://127.0.0.1:8765/preview/v116-marina/?v116QA=1&pilotQA=1' \
+            V116_EVIDENCE="$PWD/site/preview/v116-marina/evidence" \
+            node v116-marina/qa/capture-v116-marina.cjs
+          cp v116-marina/qa/V116-MARINA-COMPARE.html site/preview/v116-marina/evidence/index.html
+          for f in portrait-before portrait-after portrait-gameplay landscape-before landscape-after landscape-gameplay; do
+            test -s "site/preview/v116-marina/evidence/$f.png"
+          done
+          test -s site/preview/v116-marina/evidence/metrics.json
+          echo 'PASS V116: live gameplay Canvas before/after, Android-sized portrait and landscape, no debug overlays'
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

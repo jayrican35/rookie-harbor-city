@@ -2,7 +2,7 @@
 const fs=require('node:fs'),vm=require('node:vm'),path=require('node:path'),assert=require('node:assert/strict');
 const dir=path.resolve(__dirname,'..','published-game-capture');
 const read=p=>fs.readFileSync(path.join(dir,p),'utf8');
-const cityCode=read('v127-citywide-art.js'),world=read('v115-campus.js'),hud=read('v116-marina-hud.js');
+const cityCode=read('v127-citywide-art.js'),world=read('v115-campus.js'),hud=read('v116-marina-hud.js'),reference=read('v115-reference-art.js');
 const g={draws:0,save(){},restore(){},beginPath(){},rect(){},clip(){},fillRect(){},strokeRect(){},
  drawImage(){this.draws++},scale(){},translate(){},clearRect(){},moveTo(){},lineTo(){},fill(){},stroke(){},arc(){}};
 let images=0,canvases=0;
@@ -48,6 +48,9 @@ c.map(g,6010,3300);
 assert(images<=14,'Render uses shared atlas and a small constant sprite set');
 assert(canvases<=c.metrics().cacheMax+8);
 assert(world.includes('window.ROOKIE_V127_CITY.depthProps(view,districtEntries)'));
+assert(reference.includes("window.ROOKIE_V127_CITY?.spriteImage?.('tree')"),'Citywide forests must use the real Marina tree sprite');
+assert(reference.includes("window.ROOKIE_V127_CITY?.spriteImage?.('palm')"));
+assert(world.includes("window.ROOKIE_V127_CITY?.spriteImage?.('tree')"));
 assert(world.includes('if(window.ROOKIE_V127_CITY?.waterBlocked(x,y))return true'));
 assert(world.includes('city.districtGround(g,d,'));
 assert(world.includes('city.walkways(g,'));

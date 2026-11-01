@@ -27,6 +27,7 @@ for(const [type,file] of Object.entries(spriteFiles)){
 }
 const spriteReady=type=>!!(sprites[type]?.complete&&sprites[type]?.naturalWidth>0);
 const cache=new Map();const metrics={chunks:0,drawn:0,props:0,coast:0};
+let frameZoom=1; // use color LOD only when whole-city overview is zoomed far out
 // Invalidate fallback-color chunks as soon as the shared atlas decodes.
 // Otherwise first-frame blank tiles could remain cached across the whole city.
 atlas.addEventListener('load',()=>cache.clear());
@@ -82,6 +83,8 @@ function tileChunk(type,cx,cy){
 }
 function surface(g,r,type,view){
  if(!visible(r,view)||r.w<=0||r.h<=0)return;
+ // High-level atlas/overview: no 900-chunk texture thrashing at tiny zoom.
+ if(frameZoom<.16){g.fillStyle=colors[type]||colors.grass;g.fillRect(r.x,r.y,r.w,r.h);return;}
  const left=Math.max(r.x,view?.x??WORLD.minX),right=Math.min(r.x+r.w,(view?.x??WORLD.minX)+(view?.w??(WORLD.maxX-WORLD.minX)));
  const top=Math.max(r.y,view?.y??WORLD.minY),bottom=Math.min(r.y+r.h,(view?.y??WORLD.minY)+(view?.h??WORLD.maxY));
  if(left>=right||top>=bottom)return;
@@ -93,6 +96,7 @@ function surface(g,r,type,view){
  g.restore();
 }
 function base(g,opt){
+ frameZoom=opt.zoom||1;
  const view=opt.view||{x:WORLD.minX,y:0,w:WORLD.maxX-WORLD.minX,h:WORLD.maxY};
  surface(g,{x:WORLD.minX,y:0,w:WORLD.maxX-WORLD.minX,h:WORLD.maxY},'grass',view);
 }
@@ -118,6 +122,7 @@ function coastalWater(x,y){
  return y>=coastY(x)+18;
 }
 function coastline(g,opt){
+ if(opt.zoom<.16)return; // coast remains readable via original atlas at citywide LOD
  const view=opt.view;
  // Match the original marina shore at both boundaries; extend that shoreline
  // into Southbay/Coast Park without a hard water/grass rectangle.
@@ -137,6 +142,7 @@ const promenades=[
  [-3100,-650],[-506,2800],[2800,3460],[3630,4400],[5900,6556],[6556,8156],[8156,9656]
 ];
 function walkways(g,opt){
+ if(opt.zoom<.16)return;
  const v=opt.view;
  // One aligned coastline pedestrian avenue, physically continuous through
  // the same real district coordinate system and original road crossings.
@@ -158,8 +164,9 @@ function walkways(g,opt){
 }
 function location(x,y){
  if(x>=4400&&x<5900&&y>=3220&&y<4220)return 'SOUTHBAY MARINA';
- const area=H?.worldV115?.areas?.().find(a=>x>=a.worldX&&x<a.worldX+a.w&&y>=a.worldY&&y<a.worldY+a.h);
- // Area entries expose origin differently across legacy maps; avoid assuming.
+ const area=H?.worldV115?.areas?.().find(a=>x>=a.x&&x<a.x+a.w&&y>=a.y&&y<a.y+a.h);
+ // Use exact canonical world origin from worldV115 descriptor, not a
+ // guessed worldX/worldY property; overlapping original areas retain order.
  if(area?.name)return String(area.name).toUpperCase();
  if(x<0)return 'WEST HARBOR';
  if(x<2800)return y>2800?'COAST PARK':'PRECINCT DISTRICT';
@@ -234,6 +241,7 @@ function propGeometry(o,d){
 }
 function depthProps(view,districts){
  const entries=[];
+ if(frameZoom<.18)return entries; // premium props vanish naturally in overview
  if(!districts)return entries;
  for(const d of districts){
   if(d.id==='waterfront')continue; // V116 has its own authored depth / props.

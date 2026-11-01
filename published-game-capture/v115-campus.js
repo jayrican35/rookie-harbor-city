@@ -511,8 +511,12 @@
   function drawLinkedDistricts(t){
     // Connected asphalt first; native streets, buildings and natural ground
     // retain their material quality. Crossings seal visibly disjoint seams.
-    for(const link of links)if(nearViewport(link.x,link.y,link.w,link.h))roadRect(link);
+    // Native district pavement remains authoritative on through-roads.
+    // Existing links are left exactly as they were. Genuine new connectors
+    // render AFTER district ground but BEFORE original buildings and actors.
+    for(const link of links)if(!link.newRoad&&nearViewport(link.x,link.y,link.w,link.h))roadRect(link);
     for(const d of districtEntries)if(nearViewport(d.x,d.y,d.w,d.h))districtGround(d);
+    for(const link of links)if(link.newRoad&&!link.underNative&&nearViewport(link.x,link.y,link.w,link.h))roadRect(link);
     // V127 extends waterfront-quality pavement, landscaping materials and
     // shoreline across the native regions, without a new scene or map switch.
     const city=window.ROOKIE_V127_CITY;

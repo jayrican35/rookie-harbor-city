@@ -30,6 +30,21 @@ for(const id of names){
  else assert(count>=20,id+' must have substantial native ground treatment');
  reports[id]=count;
 }
+// New scenic trees must be REAL world objects: one native depth queue and
+// exactly matching narrow physical trunks. The protected Marina has none.
+const testRegion={id:'residential',x:0,y:0,w:1500,h:1200,
+ map:{base:'#68994d',ground:[],decors:[],spots:[],pedSolids:[]}};
+const scene=city.depthProps({x:0,y:0,w:1500,h:1200},[testRegion]);
+assert(scene.length>=5,'Populate vacant district with trees using existing real sprites');
+assert(scene.every(p=>p.object.generated&&Number.isFinite(p.depthY)));
+for(const entry of scene.slice(0,3)){
+ assert(city.scenicBlocked(entry.district.x+entry.object.x,entry.district.y+entry.object.y,12,[testRegion]),
+   'Tree trunks must block using the same player radius as existing walls');
+ city.drawDepthProp(g,entry);
+}
+assert(!city.scenicBlocked(-800,-800,12,[testRegion]),'No global invisible tree collisions');
+const marina={...testRegion,id:'waterfront'};
+assert.equal(city.depthProps({x:0,y:0,w:1500,h:1200},[marina]).length,0,'Never add trees to authored Marina');
 assert(city.metrics().chunks>0&&city.metrics().chunks<=112,'Bounded cache holds existing shared atlas');
 assert(city.colorKind('#3d4148')==='road','Gray road may not become water');
 assert(city.waterBlocked(5100,3950)===false,'Existing Marina shoreline unchanged');

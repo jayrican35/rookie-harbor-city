@@ -40,9 +40,17 @@
   g.save();g.imageSmoothingEnabled=false;g.fillStyle='rgba(6,15,24,.28)';g.beginPath();g.ellipse(a.x,a.y+2,14,5,0,0,Math.PI*2);g.fill();
   const clip=frameClips[p.mode][p.row*(p.mode==='walk'?9:8)+p.col];
   const [cx,cy,cw,ch]=clip,sx=64/w,sy=64/h;
-  // Crop the source AND offset its destination by the same amount: no rescale,
-  // no head/feet shift, and no opaque strip from the neighboring animation row.
-  g.drawImage(im,p.col*w+cx,p.row*h+cy,cw,ch,a.x-32+cx*sx,a.y-61+cy*sy,cw*sx,ch*sy);g.restore();return true;
+  // V128: the cleaned connected-city RUN atlas has a visibly smaller painted
+  // silhouette inside each 128px cell (roughly 93px high versus 109px walking).
+  // Normalize *only* connected-city RUN artwork around the grounded foot anchor.
+  // The world/camera zoom, player collision and original campaign render remain
+  // unchanged; no mode switch may cause a shrinking character or a bouncing foot.
+  const isConnectedRun=id==='connected-jay'&&p.mode==='run'&&im===connectedRun;
+  const scaleX=isConnectedRun?1.18:1,scaleY=isConnectedRun?1.17:1;
+  const destX=a.x+(-32+cx*sx)*scaleX;
+  const destY=a.y+1+(-62+cy*sy)*scaleY;
+  g.drawImage(im,p.col*w+cx,p.row*h+cy,cw,ch,destX,destY,cw*sx*scaleX,ch*sy*scaleY);
+  g.restore();return true;
  }
  function advanceSpeed(speed,target,dt){dt=Math.max(0,Math.min(.05,dt||0));const e=Math.exp(-dt/.10);return {speed:target+(speed-target)*e,distance:target*dt+(speed-target)*.10*(1-e)};}
  function addButton(parent,id){if(!parent||document.getElementById(id))return;const b=document.createElement('button');b.type='button';b.id=id;b.dataset.jayRun='';b.textContent='RUN';b.setAttribute('aria-label','Toggle running');b.setAttribute('aria-pressed','false');b.addEventListener('click',()=>{toggle=!toggle;controls();});parent.appendChild(b);if(id==='v117CampaignRun')b.hidden=true;}

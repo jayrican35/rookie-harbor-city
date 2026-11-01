@@ -78,6 +78,13 @@ jobs:
           path: premium-preview
           persist-credentials: false
 
+      - name: Check out V115 Precinct Tilemap Art Pilot
+        uses: actions/checkout@v4
+        with:
+          ref: feature/v115-precinct-tileset-pilot
+          path: precinct-pilot
+          persist-credentials: false
+
       - name: Recover missing main-campaign environment art
         shell: bash
         working-directory: visual-preview
@@ -323,6 +330,52 @@ jobs:
           grep -q 'game-v115.bundle.js' site/preview/v115-premium/index.html
           echo "PASS: isolated premium environment preview; production and Zombie Outbreak byte-for-byte unchanged"
           echo "Preview: /rookie-harbor-city/preview/v115-premium/"
+
+      - name: Build isolated V115 Precinct 9 asset/tilemap pilot
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v115-pilot
+          cp -a precinct-pilot/published-game-capture/. site/preview/v115-pilot/
+          test -s site/preview/v115-pilot/assets/v115-precinct-pilot/precinct-ground-atlas.png
+          test -s site/preview/v115-pilot/assets/v115-precinct-pilot/precinct-pilot.json
+          test -s site/preview/v115-pilot/v115-precinct-pilot.js
+          grep -q 'rookie:v115-precinct-pilot-sandbox:' site/preview/v115-pilot/v115-preview-save-isolation.js
+          python3 precinct-pilot/tools/build_v115_preview.py site/preview/v115-pilot pickle-preview/published-game-capture/game.js
+          python3 precinct-pilot/tools/build_v115_showcase_preview.py site/preview/v115-pilot
+          python3 precinct-pilot/tools/build_v115_reference_preview.py site/preview/v115-pilot
+          python3 precinct-pilot/tools/build_v115_premium_preview.py site/preview/v115-pilot
+          python3 precinct-pilot/tools/build_v115_precinct_pilot_preview.py site/preview/v115-pilot
+          node --check site/preview/v115-pilot/game-v115.bundle.js
+          (cd precinct-pilot && node qa/check-v115-precinct-pilot.cjs)
+          (cd precinct-pilot && node qa/check-v115-campus.cjs)
+          (cd precinct-pilot && node qa/check-v115-road-layout.cjs)
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s premium-preview/published-game-capture/game.js site/preview/v115-pilot/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v115-pilot/outbreak.css
+          echo 'PASS: Precinct 9 asset/tilemap pilot builds independently without changing production or Zombie Outbreak'
+
+      - name: Capture identical-camera mobile before/after screenshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+          python3 -m http.server 8765 --directory site >/tmp/rookie-pilot-http.log 2>&1 &
+          for i in $(seq 1 40); do
+            if curl -fsS http://127.0.0.1:8765/preview/v115-pilot/ >/dev/null; then break; fi
+            sleep 1
+          done
+          PILOT_URL='http://127.0.0.1:8765/preview/v115-pilot/?pilotQA=1' \
+            PILOT_EVIDENCE="$PWD/site/preview/v115-pilot/evidence" \
+            node precinct-pilot/qa/capture-v115-precinct-pilot.cjs
+          cp precinct-pilot/qa/V115-PILOT-COMPARE.html site/preview/v115-pilot/evidence/index.html
+          test -s site/preview/v115-pilot/evidence/before.png
+          test -s site/preview/v115-pilot/evidence/after.png
+          test -s site/preview/v115-pilot/evidence/metrics.json
+          echo 'PASS: real game canvas screenshots, identical Android camera & zoom'
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

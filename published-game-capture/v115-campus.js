@@ -503,7 +503,7 @@
     function visible(e){return e.x>view.x&&e.x<view.x+view.w&&e.y>view.y&&e.y<view.y+view.h;}
     for(const npc of npcActors)if(visible(npc)){
       const marina=window.ROOKIE_V116_MARINA;
-      if(marina&&npc.npcStyle!==undefined)marina.drawNpc(g,npc,t);
+      if(marina&&npc.npcStyle!==undefined){if(marina.active())marina.drawNpc(g,npc,t);}
       else drawOfficer(npc,false,t);
     }
     campus.near=null;let best=58;

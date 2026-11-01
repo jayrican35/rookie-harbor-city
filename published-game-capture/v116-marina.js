@@ -63,8 +63,8 @@ function defineInterior(id,label,kind,doorFraction=.5){
  function item(key,type,x,y,w,h,art,text,solid=true){b.furniture.push({id:id+':'+key,type,x:floor.x+x,y:floor.y+y,w,h,art,text,solid});}
  if(kind==='cafe'){
   item('counter','counter',68,35,floor.w-78,16,null,'House coffee, cocoa, and cinnamon rolls. The barista recommends the harbor blend.');
-  item('table-a','table',70,57,26,24,'cafeA','A cup, a receipt, and a folded napkin. The table is ready for the next customer.');
-  item('table-b','table',119,73,26,24,'cafeB','The window table overlooks the marina. Please leave the gulls outside.');
+  item('table-a','table',68,57,24,24,'cafeA','A cup, a receipt, and a folded napkin. The table is ready for the next customer.');
+  item('table-b','table',123,73,24,24,'cafeB','The window table overlooks the marina. Please leave the gulls outside.');
   item('chair-a','bench',69,84,20,9,null,'A polished wooden café chair.');
   item('chair-b','bench',122,56,20,9,null,'A chair beside the window table.');
   item('espresso','machine',114,19,22,13,null,'The espresso machine is warm. A little sign says: GOOD COFFEE TAKES PATIENCE.',false);
@@ -168,7 +168,8 @@ for(const b of interiors){
  const f=b.floor,staffPoint={cafe:[f.w-36,21],office:[114,45],bait:[55,36],workshop:[112,28]}[b.kind];
  const staff={building:b.id,id:'v116:'+b.kind+'-staff',name:{cafe:'Marina barista',office:'Harbor assistant',bait:'Tackle shopkeeper',workshop:'Boat mechanic'}[b.kind],npcStyle:b.kind==='workshop'?2:3,x:f.x+staffPoint[0],y:f.y+staffPoint[1],
   route:[[f.x+staffPoint[0],f.y+staffPoint[1]]],speed:0,phase:0,step:0,dir:'down',dialogue:'Welcome to '+b.label+'. Take your time and have a look around.'};
- actors.push(staff);interactions.push({id:staff.id,label:staff.name,x:staff.x,y:staff.y,text:staff.dialogue,building:b.id});
+ staff.serviceOffset=b.kind==='cafe'?{x:f.x+68-staff.x,y:f.y+58-staff.y}:{x:0,y:0};
+ actors.push(staff);interactions.push({id:staff.id,label:staff.name,x:staff.x+staff.serviceOffset.x,y:staff.y+staff.serviceOffset.y,text:staff.dialogue,building:b.id});
  for(const f of b.furniture)if(f.text)interactions.push({id:'v116:'+f.id,label:b.label+' · '+f.id.split(':').at(-1).replaceAll('-',' '),x:f.x+f.w/2,y:f.y+f.h+13,text:f.text,building:b.id});
 }
 const visible=(r,view,p=75)=>!view||(r.x<view.x+view.w+p&&r.x+(r.w||0)>view.x-p&&r.y<view.y+view.h+p&&r.y+(r.h||0)>view.y-p);
@@ -418,7 +419,7 @@ function stepNPCs(dt){
   if(a.moving)a.dir=Math.abs(dx)>Math.abs(dy)?(dx>0?'right':'left'):(dy>0?'down':'up');
  }
  for(const s of interactions){if(!s.id.startsWith('v116:'))continue;
-  const a=actors.find(p=>p.id===s.id);if(a){s.x=a.x;s.y=a.y;}
+  const a=actors.find(p=>p.id===s.id);if(a){s.x=a.x+(a.serviceOffset?.x||0);s.y=a.y+(a.serviceOffset?.y||0);}
  }
 }
 function metrics(){const sorted=samples.slice().sort((a,b)=>a-b);return Object.freeze({version:'116-marina-1',worldId:WORLD,

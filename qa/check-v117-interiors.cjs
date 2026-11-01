@@ -28,6 +28,9 @@ assert(marina.interiorAt(api.test.position().x,api.test.position().y)?.id===b.id
 assert(b.roof<.01,'Roof must reveal the furnished café');
 for(let i=1;i<positions.length;i++)assert(Math.hypot(positions[i].x-positions[i-1].x,positions[i].y-positions[i-1].y)<11,'No teleport at the doorway');
 assert(b.furniture.filter(f=>f.type==='table').length===2);
+const customer={x:door.x,y:b.floor.y+74};assert(!api.test.blocked(customer.x,customer.y));
+const nearest=marina.interactions.filter(sp=>marina.interactionAvailable(sp,customer.x,customer.y)).sort((a,b)=>Math.hypot(a.x-customer.x,a.y-customer.y)-Math.hypot(b.x-customer.x,b.y-customer.y))[0];
+assert.equal(nearest.id,'v116:cafe-staff','Barista must be selectable from customer side of the counter');
 assert(marina.actors.some(a=>a.building===b.id));
 for(const f of b.furniture.filter(f=>f.solid))assert(api.test.blocked(f.x+f.w/2,f.y+f.h/2),'Furniture must be physical: '+f.id);
 for(const wall of b.walls)assert(api.test.blocked(wall.x+wall.w/2,wall.y+wall.h/2));

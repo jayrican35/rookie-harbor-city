@@ -34,8 +34,8 @@ const colors={grass:'#639551',brick:'#bda48c',stone:'#bcae97',road:'#3c4853',wat
 function colorKind(c){
  if(!c||!/^#[\da-f]{6}$/i.test(c))return 'grass';
  const r=parseInt(c.slice(1,3),16),g=parseInt(c.slice(3,5),16),b=parseInt(c.slice(5,7),16);
- if(b>r*1.15&&b>g*.95)return 'water';
  if(Math.max(r,g,b)-Math.min(r,g,b)<28&&r<120)return 'road';
+ if(b>r*1.15&&b>g*.95)return 'water';
  if(g>r*1.13&&g>b*.94)return 'grass';
  if(r>g*1.2&&g>b*.99)return 'sand';
  return r>125?'brick':'stone';

@@ -114,7 +114,7 @@ function districtGround(g,d,view){
    if(!visible(abs,view))continue;
    surface(g,abs,colorKind(r.c),view);
  }
- if(frameZoom<.45)return;
+ if(frameZoom<.45||d.id==='waterfront')return; // protected Marina art is authoritative
  const step=92,fromX=Math.max(d.x,Math.floor(view.x/step)*step),
    fromY=Math.max(d.y,Math.floor(view.y/step)*step);
  const maxX=Math.min(d.x+d.w,view.x+view.w+step),
@@ -197,7 +197,11 @@ function districtFinish(g,d,view){
    if(n%6===0)continue;
    const px=x+34+n%73,py=y+37+((n>>>7)%73),lx=px-d.x,ly=py-d.y;
    if(lx<60||ly<60||lx>d.w-60||ly>d.h-60)continue;
-   if(groundTypeAt(d,lx,ly)!=='grass')continue;
+   if(groundTypeAt(d,lx,ly)!=='grass'||
+      groundTypeAt(d,lx-44,ly-27)!=='grass'||
+      groundTypeAt(d,lx+44,ly-27)!=='grass'||
+      groundTypeAt(d,lx-44,ly+27)!=='grass'||
+      groundTypeAt(d,lx+44,ly+27)!=='grass')continue;
    if(!visible({x:px-46,y:py-27,w:92,h:54},view,4))continue;
    drawGrassFeature(px,py,n);metrics.details++;
  }

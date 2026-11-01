@@ -347,8 +347,9 @@ function begin(g,opt,t){
   if(o.type==='building'||o.type==='kiosk'){
    g.fillStyle='rgba(14,32,42,.25)';g.fillRect(o.x+7,o.y+10,o.w,o.h);
   }
-  if(o.type==='palm'||o.type==='tree')continue; // foreground layer sway below
-  if(o.type==='lamp')continue; // foreground highlights
+  // V124: solid promenade furniture joins actor depth instead of always
+  // painting behind Jay and letting him visually stand on top of a bench.
+  if(['palm','tree','lamp','bench','garden','trash','kiosk'].includes(o.type))continue;
   const interior=interiors.find(b=>b.id===o.id);
   if(interior){drawInteriorFloor(g,interior);continue;}
   g.imageSmoothingEnabled=false;paintSprite(g,o.image,o.x,o.y,o.w,o.h);objectsDrawn++;
@@ -453,7 +454,7 @@ function depthProps(view){
  for(const b of interiors)if(b.roof>.001&&visible(b.exterior,view,60))
    all.push({kind:'roof',building:b,depthY:b.door.y-2});
  for(const o of objects){
-  if(!['palm','tree','lamp'].includes(o.type)||!visible(o,view,40))continue;
+  if(!['palm','tree','lamp','bench','garden','trash','kiosk'].includes(o.type)||!visible(o,view,40))continue;
   all.push({kind:'tall',object:o,depthY:o.y+o.h-3});
  }
  return all;
@@ -476,6 +477,10 @@ function drawDepthProp(g,entry,opt,t){
    g.fillStyle='#ffe2a3';g.beginPath();g.arc(o.x+o.w/2,o.y+18,30,0,Math.PI*2);g.fill();
   }
   g.restore();return;
+ }
+ if(o.type!=='tree'&&o.type!=='palm'){
+  g.imageSmoothingEnabled=false;paintSprite(g,o.image,o.x,o.y,o.w,o.h);
+  objectsDrawn++;g.restore();return;
  }
  const phase=o.x*.007+o.y*.009;
  const sway=Math.sin(t*.00065+phase)*(o.type==='palm'?2.0:1.15);

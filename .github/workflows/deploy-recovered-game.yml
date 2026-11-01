@@ -155,6 +155,13 @@ jobs:
           path: v125-mobile
           persist-credentials: false
 
+      - name: Check out isolated V126 dock and run quality pass
+        uses: actions/checkout@v4
+        with:
+          ref: 971d63b83697f988a6a30c6524d0708c36fc5ea1 # green V126 no circle + unique timber + run
+          path: v126-polish
+          persist-credentials: false
+
       - name: Recover missing main-campaign environment art
         shell: bash
         working-directory: visual-preview
@@ -913,6 +920,54 @@ jobs:
           print('PASS V125 genuine portrait and landscape captures',[(v['name'],v['runHoldPassed']) for v in result['views']])
           PY
           echo 'PASS V125 actual gameplay screenshots and all controls verified before publishing'
+
+      - name: Build isolated V126 no-ring / timber / Jay run gameplay
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v126-polish
+          cp -a v126-polish/published-game-capture/. site/preview/v126-polish/
+          python3 v126-polish/tools/build_v126_preview.py site/preview/v126-polish
+          node --check site/preview/v126-polish/v115-campus.js
+          node --check site/preview/v126-polish/v117-jay.js
+          node --check site/preview/v126-polish/v119-water-motion.js
+          node --check site/preview/v126-polish/v120-marina-art.js
+          (cd v126-polish && node qa/check-v126-polish.cjs)
+          (cd v126-polish && node qa/check-v117-jay.cjs)
+          (cd v126-polish && node qa/check-v125-mobile-hud.cjs)
+          (cd v126-polish && node qa/check-v124-depth.cjs)
+          (cd v126-polish && node qa/check-v122-pier.cjs)
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s game-backup/published-game-capture/controls.css site/preview/v126-polish/controls.css
+          cmp -s v125-mobile/published-game-capture/v125-mobile-hud.css site/preview/v126-polish/v125-mobile-hud.css
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v126-polish/outbreak.css
+          grep -q 'v126-no-selection-halo-distinct-wood-run-gait' site/preview/v126-polish/index.html
+          echo 'PASS V126 original game/Zombie untouched; V125 mobile controls and V124 collision intact'
+
+      - name: Run actual same-camera V125 and V126 pier/running comparison
+        shell: bash
+        run: |
+          set -euo pipefail
+          V126_BEFORE_URL='http://127.0.0.1:8765/preview/v125-mobile/?v116QA=0&pilotQA=1' \
+            V126_AFTER_URL='http://127.0.0.1:8765/preview/v126-polish/?v116QA=0&pilotQA=1' \
+            V126_EVIDENCE="$PWD/site/preview/v126-polish/evidence" \
+            node v126-polish/qa/capture-v126-polish.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          import json
+          p=Path('site/preview/v126-polish/evidence')
+          info=json.loads((p/'metrics.json').read_text());assert len(info['runs'])==2
+          cards=''.join(f'<section><h2>{name}</h2><div><figure><img src="before-{key}.png"><figcaption>V125 — before</figcaption></figure><figure><img src="after-{key}.png"><figcaption>V126 — updated</figcaption></figure></div></section>' for name,key in [('Pier timber','pier'),('Jay running — frame 1','running-1'),('Jay running — frame 2','running-2')])
+          html='<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROOKIE V126 Real Gameplay Review</title><style>body{background:#092338;color:#f3e8c5;font:16px system-ui;padding:18px}h1{font-size:27px}section{margin:25px 0}section>div{display:flex;flex-wrap:wrap;gap:15px}figure{flex:1;min-width:min(100%,300px);margin:0}img{width:100%;max-width:460px;border-radius:10px;border:2px solid #c5a978}figcaption{padding:10px}</style><h1>V126 Actual Playable Dock and Running Comparison</h1><p>Same world positions, same mobile Chromium camera: original V125 versus V126. Genuine in-game captures, not concept artwork.</p>'+cards
+          (p/'index.html').write_text(html)
+          for ver in ('before','after'):
+           for kind in ('pier','running-1','running-2'):
+            f=p/f'{ver}-{kind}.png';im=Image.open(f);im.verify()
+          print('PASS V126 browser-tested Jay running, full-length boards and native camera with screenshots')
+          PY
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

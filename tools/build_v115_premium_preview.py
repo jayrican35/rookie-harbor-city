@@ -26,7 +26,7 @@ needle='<script src="./v115-reference-art.js"></script>'
 assert html.count(needle)==1,'Reference world script missing or repeated'
 assert html.count('</head>')==1
 assert 'v115-premium-art.js' not in html
-assert 'rookie:v115-premium-sandbox:' in (root/'v115-preview-save-isolation.js').read_text()
+assert any(p in (root/'v115-preview-save-isolation.js').read_text() for p in ('rookie:v115-premium-sandbox:', 'rookie:v115-precinct-pilot-sandbox:'))
 html=html.replace('</head>','<link rel="stylesheet" href="./v115-premium.css" />\n<meta name="rookie-art-pass" content="v115-premium-environment-2" />\n</head>')
 html=html.replace(needle,needle+'\n<script src="./v115-premium-art.js"></script>')
 assert html.index('game-v115.bundle.js')<html.index('v115-reference-art.js')<html.index('v115-premium-art.js')

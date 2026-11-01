@@ -8,6 +8,7 @@ on:
       - 'tools/generate_v120_marina_art.py'
       - 'tools/build_v120_preview.py'
       - 'qa/check-v120-marina.cjs'
+      - 'qa/capture-v120-comparison.cjs'
       - '.github/workflows/v120-marina-qa.yml'
       - 'docs/V120-IMPLEMENTATION.md'
   workflow_dispatch:
@@ -65,7 +66,8 @@ jobs:
             'tools/generate_v120_marina_art.py','tools/build_v120_preview.py',
             'qa/check-v120-marina.cjs','.github/workflows/v120-marina-qa.yml',
             'docs/V120-IMPLEMENTATION.md'}
-          assert changed<=allowed,sorted(changed-allowed)
+          allowed.add('qa/capture-v120-comparison.cjs')
+          assert all(p in allowed or p.startswith('published-game-capture/assets/v120-marina/') for p in changed),sorted(p for p in changed if p not in allowed and not p.startswith('published-game-capture/assets/v120-marina/'))
           assert not any('outbreak' in p.lower() or 'zombie' in p.lower() for p in changed)
           for f in ('published-game-capture/game.js','published-game-capture/outbreak.css'):
             assert subprocess.check_output(['git','show',base+':'+f])==open(f,'rb').read(),f

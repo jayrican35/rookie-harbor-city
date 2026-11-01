@@ -27,6 +27,9 @@ for(const [type,file] of Object.entries(spriteFiles)){
 }
 const spriteReady=type=>!!(sprites[type]?.complete&&sprites[type]?.naturalWidth>0);
 const cache=new Map();const metrics={chunks:0,drawn:0,props:0,coast:0};
+// Invalidate fallback-color chunks as soon as the shared atlas decodes.
+// Otherwise first-frame blank tiles could remain cached across the whole city.
+atlas.addEventListener('load',()=>cache.clear());
 function hash(a,b,c=0){let x=Math.imul(a|0,374761393)^Math.imul(b|0,668265263)^Math.imul(c|0,1442695041);x=Math.imul(x^(x>>>13),1274126177);return (x^(x>>>16))>>>0;}
 function visible(r,v,p=32){return !v||(r.x<v.x+v.w+p&&r.x+r.w>v.x-p&&r.y<v.y+v.h+p&&r.y+r.h>v.y-p);}
 function inRect(x,y,r){return x>=r.x&&x<r.x+r.w&&y>=r.y&&y<r.y+r.h;}

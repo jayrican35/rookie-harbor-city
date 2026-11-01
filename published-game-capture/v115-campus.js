@@ -117,6 +117,77 @@
     // usable interior. Existing station west/east/south wall gaps stay real.
     return false;
   }
+  // A small set of real pedestrian routines brings life to connected districts.
+  // Borrow the already-loaded V123 Marina WALK atlases and the existing actor
+  // queue. Movement is advanced inside simulate(dt); no parallel game loop.
+  // Marina's own actors, patrols, interiors and mission data are not changed.
+  const ambientRoutes=[],ambientSpeech={
+    westfield:'Beautiful morning for a walk through Westfield.',
+    residential:'Just heading home. Have a good shift, officer.',
+    midtown:'Every day there is something new happening on this block.',
+    downtown:'The crosswalk was clear when I came through.',
+    eastside:'Nice weather for a little walk around the neighborhood.',
+    industrial:'Delivery should be around the corner shortly.',
+    northgate:'Those trees make this part of town peaceful.',
+    southbay:'The waterfront looks beautiful this afternoon.'
+  };
+  let ambientInit=0;
+  function safeStreetSegment(x1,y1,x2,y2){
+    const length=Math.hypot(x2-x1,y2-y1);
+    if(length<50||length>150)return false;
+    for(let i=0;i<=10;i++){
+      const t=i/10;
+      if(blocked(x1+(x2-x1)*t,y1+(y2-y1)*t,14))return false;
+    }
+    return true;
+  }
+  function prepareDistrictPedestrians(d){
+    if(!d||d.id==='waterfront'||!ambientSpeech[d.id])return;
+    const candidates=[[.26,.36],[.69,.60],[.38,.74],[.56,.28]];
+    const offsets=[[0,0],[-78,0],[0,78],[78,0],[0,-78]];
+    let added=0;
+    for(const [fx,fy] of candidates){
+      if(added>=2)break;
+      let found=null;
+      for(const [ox,oy] of offsets){
+        const x=Math.round(d.x+d.w*fx+ox),y=Math.round(d.y+d.h*fy+oy);
+        // Remain inside this district; don't spawn pedestrians in Marina.
+        if(x<d.x+110||x>d.x+d.w-110||y<d.y+110||y>d.y+d.h-110)continue;
+        for(const [rx,ry] of [[95,0],[0,95],[-95,0],[0,-95]]){
+          const x2=x+rx,y2=y+ry;
+          if(x2<d.x+80||x2>d.x+d.w-80||y2<d.y+80||y2>d.y+d.h-80)continue;
+          if(!safeStreetSegment(x,y,x2,y2))continue;
+          found={x,y,x2,y2};break;
+        }
+        if(found)break;
+      }
+      if(!found)continue;
+      const idx=ambientRoutes.length;
+      const actor={id:'ambient:'+d.id+':'+added,name:'Pedestrian',npcStyle:(idx%3===0?2:3),
+        x:found.x,y:found.y,dir:found.x2>found.x?'right':found.x2<found.x?'left':found.y2>found.y?'down':'up',
+        moving:false,distance:idx*13,route:[[found.x,found.y],[found.x2,found.y2]],speed:22+(idx%4)*5};
+      const spot={id:actor.id,label:'Talk to pedestrian',x:actor.x,y:actor.y,
+        text:ambientSpeech[d.id],ambientActor:actor};
+      actor.interaction=spot;
+      ambientRoutes.push(actor);npcActors.push(actor);worldSpots.push(spot);added++;
+    }
+  }
+  function stepAmbientPedestrians(dt){
+    // Spread district placement across simulation frames to avoid a long
+    // initialization hitch on midrange mobile phones.
+    if(ambientInit<districtEntries.length)prepareDistrictPedestrians(districtEntries[ambientInit++]);
+    for(const a of ambientRoutes){
+      const target=a.route[a.targetIndex||1],vx=target[0]-a.x,vy=target[1]-a.y;
+      const remain=Math.hypot(vx,vy),step=Math.min(remain,a.speed*Math.min(.05,Math.max(0,dt)));
+      if(remain<1.5){a.targetIndex=(a.targetIndex||1)===1?0:1;a.moving=false;continue;}
+      const nx=a.x+vx/remain*step,ny=a.y+vy/remain*step;
+      // Collision remains authoritative and catches late-loaded scenery.
+      if(blocked(nx,ny,13)){a.targetIndex=(a.targetIndex||1)===1?0:1;a.moving=false;continue;}
+      a.dir=Math.abs(vx)>=Math.abs(vy)?(vx>0?'right':'left'):(vy>0?'down':'up');
+      a.x=nx;a.y=ny;a.distance+=step;a.moving=step>.03;
+      a.interaction.x=a.x;a.interaction.y=a.y;
+    }
+  }
   function interiorRoom(x,y){
     for(let i=0;i<roomRects.length;i++){
       const r=roomRects[i];if(x>=r.x&&x<r.x+r.w&&y>=r.y&&y<r.y+r.h)return ST.rooms[i].label;
@@ -211,6 +282,7 @@
     attachMarinaActors();
     const marina=window.ROOKIE_V116_MARINA;
     if(marina)marina.stepNPCs(dt);
+    stepAmbientPedestrians(dt);
     let {dx,dy}=direction();
     const shared=window.ROOKIE_JAY,run=!!shared?.requestRun()||!!(campus.runHeld&&shared?.eligible());
     if(Math.hypot(dx,dy)<.08){dx=0;dy=0;}
@@ -685,6 +757,10 @@
   modal.querySelector('#v115CampusInteract').addEventListener('click',()=>{
     const sp=campus.near;
     const marina=window.ROOKIE_V116_MARINA;
+    if(sp?.ambientActor){
+      const dialogue=modal.querySelector('#v116Dialogue');
+      if(dialogue){dialogue.hidden=false;dialogue.textContent=sp.text;return;}
+    }
     if(sp&&marina&&sp.id.startsWith('v116:')){
       const dialogue=modal.querySelector('#v116Dialogue');
       if(dialogue){dialogue.hidden=false;dialogue.textContent=sp.text||sp.label;}

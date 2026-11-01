@@ -33,7 +33,7 @@ assert(css.includes('v125CampusBase.active'));
 assert(css.includes('#v125HudMenu')&&css.includes('#v125HudSettings'));
 assert(css.includes('html[data-v116-qa="1"]'),'Dev controls are only recoverable in QA');
 assert(builder.includes("build_v124_preview.py"));
-assert(!/outbreak|zombie|academy/i.test(css),'Campaign-only CSS must not target protected modes');
+assert(!/outbreak|zombie|academy/i.test(css.replace(/\/\*[\s\S]*?\*\//g,'')),'Campaign-only CSS selectors must not target protected modes');
 assert(!/localStorage|sessionStorage|fetch\(/.test(hud),'HUD does not write saves or network');
 assert(!/localStorage|sessionStorage/.test(world),'Connected movement does not write saves');
 console.log('PASS V125: canonical state-driven floating joystick, diagonal normalization, release-safe hold-to-run, contextual interaction, collapsed native menu, safe-area CSS and original modes untouched');

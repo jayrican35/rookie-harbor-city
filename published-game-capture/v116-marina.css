@@ -1,0 +1,25 @@
+/* V116: gameplay-only marina UI; debugging stays behind ?v116QA=1 */
+#v116MarinaLaunch{border:1px solid #e3bf74;background:#164a5d;color:#ffeab3;border-radius:8px;padding:9px 12px;font:700 14px 'Barlow Condensed',sans-serif}
+#v116Dialogue[hidden]{display:none!important}
+#v116Dialogue{position:absolute;z-index:6;bottom:calc(205px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);width:min(86vw,390px);color:#fff3d3;background:rgba(12,34,51,.91);border:1px solid #dcbf78;border-radius:10px;padding:11px 14px;font:600 13px/1.45 system-ui,sans-serif;pointer-events:none;text-align:center;box-shadow:0 4px 15px #152b3b66}
+body.v116-play-mode #v115Campus .v115-campus-note,
+body.v116-play-mode #v115Campus .v115-campus-footer,
+body.v116-play-mode #v115Campus .v115-campus-brand,
+body.v116-play-mode #v115Campus .v115-campus-hud,
+body.v116-play-mode #v115PremiumTag,
+body.v116-play-mode #v115PreviewStamp,
+body.v116-play-mode #v115ReferenceTag,
+body.v116-play-mode #v115ShowcaseTag{display:none!important}
+body.v116-play-mode #v115Campus .v115-campus-header{background:transparent;border:0;justify-content:flex-end;pointer-events:none;top:calc(env(safe-area-inset-top,0px) + 4px);padding:6px 8px}
+body.v116-play-mode #v115Campus .v115-campus-header button{pointer-events:auto;min-height:31px;max-width:112px;padding:5px 9px;font:700 12px system-ui,sans-serif;background:rgba(14,40,58,.74);border:1px solid #deb978a0}
+body.v116-play-mode #v115Campus .v115-campus-tools{top:calc(env(safe-area-inset-top,0px) + 50px);right:9px;gap:3px}
+body.v116-play-mode #v115Campus .v115-campus-tools button{min-width:37px;min-height:37px;padding:5px 7px;background:rgba(10,43,66,.68)}
+body.v116-play-mode #v115Campus .v115-campus-pad{width:104px;height:104px;left:12px;bottom:calc(20px + env(safe-area-inset-bottom,0px));border-color:#ffe0a277;background:#10334877}
+body.v116-play-mode #v115Campus .v115-campus-interact{right:12px;bottom:calc(34px + env(safe-area-inset-bottom,0px));min-height:60px;max-width:122px;background:rgba(16,53,79,.74);font-size:12px}
+html[data-v116-qa="1"] #v116Dialogue{display:none!important}
+@media(orientation:landscape) and (max-height:550px){
+ body.v116-play-mode #v115Campus .v115-campus-pad{width:81px;height:81px;bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+ body.v116-play-mode #v115Campus .v115-campus-interact{min-height:49px;bottom:calc(15px + env(safe-area-inset-bottom,0px))}
+ body.v116-play-mode #v115Campus .v115-campus-tools{top:calc(env(safe-area-inset-top,0px) + 45px)}
+ #v116Dialogue{bottom:calc(100px + env(safe-area-inset-bottom,0px));font-size:11px}
+}

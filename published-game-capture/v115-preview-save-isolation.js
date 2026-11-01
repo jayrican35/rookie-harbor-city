@@ -1,13 +1,13 @@
 /* V115 preview-only save isolation. Production saves on the same GitHub Pages
  * origin are READ ONLY: never write/remove the unprefixed production key.
- * This file is loaded ONLY in /preview/v115-premium/, before game.js.
+ * This file is loaded ONLY in /preview/v115-pilot/, before game.js.
  */
 (function () {
   'use strict';
   var originalGet = Storage.prototype.getItem;
   var originalSet = Storage.prototype.setItem;
   var originalRemove = Storage.prototype.removeItem;
-  var prefix = 'rookie:v115-premium-sandbox:';
+  var prefix = 'rookie:v115-precinct-pilot-sandbox:';
   function managed(key) {
     var s = String(key);
     return s.indexOf('rookie:') === 0 || s.indexOf('rookie-') === 0;
@@ -38,6 +38,6 @@
     if (this !== window.localStorage || !managed(key)) return originalRemove.call(this, key);
     return originalRemove.call(this, keyName(key));
   };
-  document.title = 'ROOKIE: Harbor City — V115 Premium Environment Preview';
+  document.title = 'ROOKIE: Harbor City — V115 Precinct Tilemap Pilot';
   window.ROOKIE_V115_PREVIEW = { isolatedSaves:true, productionUntouched:true, premiumArt:true };
 })();

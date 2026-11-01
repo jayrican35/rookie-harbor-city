@@ -511,16 +511,30 @@ function scenicFor(d){
    if(reserved.some(o=>Number.isFinite(o.x)&&Number.isFinite(o.y)&&Math.hypot(x-o.x,y-o.y)<115))continue;
    trees.push({t:d.id==='southbay'?'palm':d.id==='industrial'?'tree':seed%7===0?'bigtree':'tree',x,y,generated:true});
  }
- scenicCache.set(d.id,{map:d.map,trees});return trees;
+ // A compact district-local bucket index avoids scanning every tree twice per
+ // movement frame. Keep physical and drawn positions from the SAME tree data.
+ const CELL=192,cells=new Map();
+ for(const o of trees){
+   const key=Math.floor(o.x/CELL)+':'+Math.floor(o.y/CELL);
+   if(!cells.has(key))cells.set(key,[]);
+   cells.get(key).push(o);
+ }
+ scenicCache.set(d.id,{map:d.map,trees,cells,cellSize:CELL});return trees;
 }
 function scenicBlocked(x,y,r=12,districts=[]){
  for(const d of districts){
    if(d.id==='waterfront'||x<d.x-24||y<d.y-24||x>d.x+d.w+24||y>d.y+d.h+24)continue;
-   for(const o of scenicFor(d)){
-     // Only the trunk foot is solid; the larger crowns correctly occlude Jay
-     // when he walks behind them, rather than blocking an entire sidewalk.
-     const dx=x-(d.x+o.x),dy=y-(d.y+o.y);
-     if(dx*dx+dy*dy<Math.pow(r+(o.t==='bigtree'?17:12),2))return true;
+   scenicFor(d); // lazily build a deterministic index just once per native map
+   const index=scenicCache.get(d.id);if(!index||index.map!==d.map)continue;
+   const dx=x-d.x,dy=y-d.y,rad=Math.max(0,r)+17;
+   const size=index.cellSize;
+   const x0=Math.floor((dx-rad)/size),x1=Math.floor((dx+rad)/size);
+   const y0=Math.floor((dy-rad)/size),y1=Math.floor((dy+rad)/size);
+   for(let cy=y0;cy<=y1;cy++)for(let cx=x0;cx<=x1;cx++){
+     for(const o of index.cells.get(cx+':'+cy)||[]){
+       const px=dx-o.x,py=dy-o.y,limit=r+(o.t==='bigtree'?17:12);
+       if(px*px+py*py<limit*limit)return true;
+     }
    }
  }
  return false;
@@ -538,10 +552,20 @@ function depthProps(view,districts){
    const b=propGeometry(o,d);if(visible(b,view,24))entries.push({object:o,district:d,box:b,depthY:b.depthY});
   }
   // New groves share the same sorted depth queue and exact native sprites.
-  for(const o of scenicFor(d)){
-   if(!handlesDecor(o))continue;
-   const b=propGeometry(o,d);
-   if(visible(b,view,24))entries.push({object:o,district:d,box:b,depthY:b.depthY});
+  // Cull using the same cell index used for player/tree collision.
+  scenicFor(d);
+  const index=scenicCache.get(d.id);
+  if(index?.map===d.map){
+    const size=index.cellSize;
+    const x0=Math.floor((view.x-d.x-170)/size),x1=Math.floor((view.x+view.w-d.x+170)/size);
+    const y0=Math.floor((view.y-d.y-170)/size),y1=Math.floor((view.y+view.h-d.y+170)/size);
+    for(let cy=y0;cy<=y1;cy++)for(let cx=x0;cx<=x1;cx++){
+      for(const o of index.cells.get(cx+':'+cy)||[]){
+        if(!handlesDecor(o))continue;
+        const b=propGeometry(o,d);
+        if(visible(b,view,24))entries.push({object:o,district:d,box:b,depthY:b.depthY});
+      }
+    }
   }
  }
  metrics.props=entries.length;

@@ -457,6 +457,7 @@
     return .95;
   }
   function drawStation(){
+    if(!nearViewport(STX-20,STY-20,ST.w+40,ST.h+60))return;
     const image=stationTexture();
     g.drawImage(image,STX,STY);
     // Foyer, double-wide front entrance and garage threshold share exact world coordinates.

@@ -17,10 +17,12 @@ assert.equal(marina.interiors.length,4);
 const b=marina.interiors[0],door=b.door;
 const tick=(time,n)=>{for(let i=0;i<n;i++){const id=queue.keys().next().value;assert(id);const fn=queue.get(id);queue.delete(id);fn(time+i*1000/60);}};
 const key=(key,pressed)=>window.events[(pressed?'keydown':'keyup')+'_capture']({key,preventDefault(){},stopImmediatePropagation(){}});
+let offscreenStationPaints=0;sandbox.drawRoom=()=>offscreenStationPaints++;
 assert(api.openAt(door.x,3744,2));
 const mapBefore=sandbox.state.map;key('w',true);
 const positions=[];for(let i=0;i<132;i++){tick(100+i*1000/60,1);positions.push(api.test.position());}
 key('w',false);tick(2400,20);
+assert.equal(offscreenStationPaints,0,'Do not bake offscreen precinct rooms while exploring marina');
 assert.equal(api.isOpen(),true);assert.equal(sandbox.state.map,mapBefore);
 assert(marina.interiorAt(api.test.position().x,api.test.position().y)?.id===b.id,'Jay must walk from promenade into café');
 assert(b.roof<.01,'Roof must reveal the furnished café');

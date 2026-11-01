@@ -1,0 +1,56 @@
+name: V115 Precinct Tilemap Pilot — Quality and Protection
+on:
+  push:
+    branches: [feature/v115-precinct-tileset-pilot]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  pilot-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - name: Validate reusable atlas/tilemap renderer
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check published-game-capture/v115-campus.js
+          node --check published-game-capture/v115-precinct-pilot.js
+          node --check published-game-capture/game.js
+          node qa/check-v115-precinct-pilot.cjs
+          node qa/check-v115-campus.cjs
+          node qa/check-v115-road-layout.cjs
+          node qa/check-v115-premium.cjs
+      - name: Assert all game engine/Zombie source is immutable
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin feature/v115-premium-environments-pass2
+          for f in published-game-capture/game.js published-game-capture/outbreak.css; do
+            test "$(git rev-parse origin/feature/v115-premium-environments-pass2:$f)" = "$(git rev-parse HEAD:$f)" || { echo "PROTECTED FILE CHANGED: $f"; exit 1; }
+          done
+          python3 - <<'PY'
+          import subprocess
+          changed=set(subprocess.check_output(['git','diff','--name-only','origin/feature/v115-premium-environments-pass2','HEAD'],text=True).splitlines())
+          assert not [p for p in changed if 'outbreak' in p.lower() or 'zombie' in p.lower() or p.endswith('/game.js')]
+          allowed={
+            'published-game-capture/assets/v115-precinct-pilot/precinct-ground-atlas.png',
+            'published-game-capture/assets/v115-precinct-pilot/precinct-pilot.json',
+            'published-game-capture/v115-campus.js',
+            'published-game-capture/v115-precinct-pilot.js',
+            'published-game-capture/v115-precinct-pilot.css',
+            'published-game-capture/v115-preview-save-isolation.js',
+            'tools/build_v115_reference_preview.py',
+            'tools/build_v115_premium_preview.py',
+            'tools/build_v115_precinct_pilot_preview.py',
+            'qa/check-v115-precinct-pilot.cjs',
+            'qa/capture-v115-precinct-pilot.cjs',
+            'qa/V115-PILOT-COMPARE.html',
+            'docs/V115-PRECINCT-VISUAL-PILOT.md',
+            '.github/workflows/v115-precinct-pilot-qa.yml',
+          }
+          assert changed <= allowed, 'Unexpected file changes: '+str(sorted(changed-allowed))
+          print('PASS: only small pilot assets/render adapters; no mission, collision, Academy or Zombie Outbreak changes')
+          PY

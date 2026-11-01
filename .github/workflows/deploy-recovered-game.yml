@@ -106,6 +106,13 @@ jobs:
           path: v118-marina
           persist-credentials: false
 
+      - name: Check out isolated V119 visible water and character motion
+        uses: actions/checkout@v4
+        with:
+          ref: 92a24c044b7b1e6475610860dde2aed0a8db1d74 # V119 green CI snapshot, preview only
+          path: v119-marina
+          persist-credentials: false
+
       - name: Recover missing main-campaign environment art
         shell: bash
         working-directory: visual-preview
@@ -509,6 +516,48 @@ jobs:
           done
           test -s site/preview/v118-cinematic/evidence/metrics.json
           echo 'PASS: V118 playable portrait and landscape Canvas evidence; Android-sized simulation'
+
+      - name: Build isolated V119 visible waterfront gameplay preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v119-water-motion
+          cp -a v119-marina/published-game-capture/. site/preview/v119-water-motion/
+          python3 v119-marina/tools/build_v119_preview.py site/preview/v119-water-motion
+          node --check site/preview/v119-water-motion/v119-water-motion.js
+          node --check site/preview/v119-water-motion/game-v115.bundle.js
+          (cd v119-marina && node qa/check-v119-water-motion.cjs)
+          (cd v119-marina && node qa/check-v117-interiors.cjs)
+          (cd v119-marina && node qa/check-v116-marina.cjs)
+          (cd v119-marina && node qa/check-v115-campus.cjs)
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s v118-marina/published-game-capture/game.js site/preview/v119-water-motion/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v119-water-motion/outbreak.css
+          grep -q 'v119-water-motion.js?v=' site/preview/v119-water-motion/index.html
+          echo 'PASS V119 isolated visual upgrade; originals, preview V118 and Zombie unchanged'
+
+      - name: Capture matched real game V118 vs V119 gameplay screenshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          V119_BEFORE_URL='http://127.0.0.1:8765/preview/v118-cinematic/?v116QA=1&pilotQA=1' \
+            V119_AFTER_URL='http://127.0.0.1:8765/preview/v119-water-motion/?v116QA=1&pilotQA=1' \
+            V119_EVIDENCE="$PWD/site/preview/v119-water-motion/evidence" \
+            node v119-marina/qa/capture-v119-comparison.cjs
+          for f in portrait-before-canvas portrait-after-canvas landscape-before-canvas landscape-after-canvas; do
+            test -s "site/preview/v119-water-motion/evidence/$f.png"
+          done
+          test -s site/preview/v119-water-motion/evidence/metrics.json
+          python3 - <<'PY'
+          from pathlib import Path
+          folder=Path('site/preview/v119-water-motion/evidence')
+          pairs=''.join(f'<section><h2>{view.title()}</h2><div><figure><img src="{view}-before-gameplay.png"><figcaption>Before — V118</figcaption></figure><figure><img src="{view}-after-gameplay.png"><figcaption>After — V119</figcaption></figure></div></section>' for view in ('portrait','landscape'))
+          html='<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><title>V119 — Actual gameplay comparison</title><style>body{margin:0;background:#102233;color:#f4eac8;font:16px system-ui;padding:24px}h1{font-size:26px}section{margin:30px 0}section>div{display:flex;flex-wrap:wrap;gap:18px}figure{margin:0;flex:1;min-width:min(100%,300px)}img{width:100%;max-width:430px;height:auto;border:2px solid #bba673;border-radius:9px}figcaption{padding:8px}p{max-width:780px}</style><h1>ROOKIE — V119 Real In-Game Comparison</h1><p>Both versions captured at the same world position and zoom in desktop Chromium with Android-sized viewports. Not a physical phone benchmark.</p>'+pairs
+          (folder/'index.html').write_text(html)
+          PY
+          echo 'PASS V119: actual gameplay screenshot comparisons at equal camera + viewport'
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

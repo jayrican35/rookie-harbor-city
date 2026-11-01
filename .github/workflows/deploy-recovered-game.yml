@@ -141,6 +141,13 @@ jobs:
           path: v123-marina
           persist-credentials: false
 
+      - name: Check out isolated V124 structural-depth refinement
+        uses: actions/checkout@v4
+        with:
+          ref: 55c60193dec66bf8872ab7e793245179799eaa12 # verified V124 source only
+          path: v124-depth
+          persist-credentials: false
+
       - name: Recover missing main-campaign environment art
         shell: bash
         working-directory: visual-preview
@@ -804,6 +811,53 @@ jobs:
           test -s site/preview/v123-collision/evidence/before-gameplay.png
           test -s site/preview/v123-collision/evidence/after-gameplay.png
           echo 'PASS V123 real camera screenshot comparison ready'
+
+      - name: Build isolated V124 depth-correct marina world
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v124-depth
+          cp -a v124-depth/published-game-capture/. site/preview/v124-depth/
+          python3 v124-depth/tools/build_v124_preview.py site/preview/v124-depth
+          node --check site/preview/v124-depth/game-v115.bundle.js
+          node --check site/preview/v124-depth/v116-marina.js
+          (cd v124-depth && node qa/check-v124-depth.cjs)
+          (cd v124-depth && node qa/check-v123-collision.cjs)
+          (cd v124-depth && node qa/check-v117-interiors.cjs)
+          (cd v124-depth && node qa/check-v116-marina.cjs)
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v124-depth/outbreak.css
+          cmp -s v123-marina/published-game-capture/game.js site/preview/v124-depth/game.js
+          grep -q 'v124-object-foot-sort-and-doorway' site/preview/v124-depth/index.html
+          echo 'PASS V124 existing city and Zombie Outbreak protected'
+
+      - name: Capture actual game lamp front/back and building frontage V123 vs V124
+        shell: bash
+        run: |
+          set -euo pipefail
+          V124_BEFORE_URL='http://127.0.0.1:8765/preview/v123-collision/?v116QA=1&pilotQA=1' \
+            V124_AFTER_URL='http://127.0.0.1:8765/preview/v124-depth/?v116QA=1&pilotQA=1' \
+            V124_EVIDENCE="$PWD/site/preview/v124-depth/evidence" \
+            node v124-depth/qa/capture-v124-depth.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          import json
+          p=Path('site/preview/v124-depth/evidence')
+          d=json.loads((p/'metrics.json').read_text())
+          assert len(d['records'])==6
+          scenes=('lamp-in-front','lamp-behind','building-front')
+          for scene in scenes:
+            for ver in ('before','after'):
+              f=p/f'{scene}-{ver}-gameplay.png'
+              im=Image.open(f);im.verify()
+          cards=''.join(f'<section><h2>{k.replace("-"," ").title()}</h2><div><figure><img src="{k}-before-gameplay.png"><figcaption>V123 · incorrect depth</figcaption></figure><figure><img src="{k}-after-gameplay.png"><figcaption>V124 · foot-sorted depth</figcaption></figure></div></section>' for k in scenes)
+          html='<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROOKIE V124 Real Game Depth Comparison</title><style>body{background:#0b2638;color:#f8eccb;font:16px system-ui;padding:20px}h1{font-size:27px}section{margin:22px 0}section>div{display:flex;flex-wrap:wrap;gap:14px}figure{flex:1;min-width:min(100%,280px);margin:0}img{width:100%;max-width:450px;border:2px solid #bd9a60;border-radius:10px}figcaption{padding:8px}</style><h1>V124 — Actual Playable Game: Structural Depth</h1><p>Same real-game world coordinates, same mobile-sized Chromium browser and camera for before/after. Not physical Android FPS or concept art.</p>'+cards
+          (p/'index.html').write_text(html)
+          print('PASS V124 validated front/back lamp and office roof game screenshots')
+          PY
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

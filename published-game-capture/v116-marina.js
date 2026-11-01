@@ -279,6 +279,9 @@ function begin(g,opt,t){
   g.fillStyle='#4f5c58';g.fillRect(x,3794,width,12);
   g.fillStyle='#d6bea1';g.fillRect(x,3794,width,4);
  }
+ // V122: disturbance belongs below the raised deck, never over planks.
+ // Previously this call followed the dock draw and made the wood look submerged.
+ if(premium)premium.contactWater(g,opt,t);
  // Cover the full native 90×300px footprint without drawing wood into blocked water.
  const dockAtlas=img('marina-detail-tiles.png');
  if(dockAtlas||premium?.ready())for(const px of PIER_X){
@@ -292,19 +295,8 @@ function begin(g,opt,t){
    }
   }
  }
- if(premium)premium.contactWater(g,opt,t);
- // Timber mooring piles: metal collars, weathered grain, pale caps and tied rope.
- for(const px of PIER_X)for(const py of [3820,3945,4090])for(const xx of [px+3,px+86]){
-  if(!visible({x:xx-18,y:py-40,w:36,h:78},view,0))continue;
-  if(premium?.post(g,xx,py))continue;
-  g.fillStyle='#092b48';g.fillRect(xx-5,py+4,12,14);
-  g.fillStyle='#4e3324';g.fillRect(xx-6,py-21,12,31);
-  g.fillStyle='#be874a';g.fillRect(xx-3,py-20,4,29);
-  g.fillStyle='#edbd72';g.fillRect(xx-2,py-18,2,24);
-  g.fillStyle='#9ea9a6';g.fillRect(xx-6,py-17,12,3);
-  g.fillStyle='#e2d6b3';g.beginPath();g.ellipse(xx,py-23,7,4,0,0,Math.PI*2);g.fill();
-  g.strokeStyle='#b8a77c';g.lineWidth=2;g.beginPath();g.ellipse(xx,py-9,7,3,0,0,Math.PI*2);g.stroke();
- }
+ // V122: piling sprites are drawn in the existing actor/furniture depth queue.
+ // Do not draw them in the scenery pass or they'll always appear behind Jay.
  // Railing segments match native waterfront decors exactly, leaving the native pier mouths open.
  const fence=img('fence_horizontal.webp');
  if(fence){for(const [x,width] of [[4400,255],[4745,360],[5195,360],[5645,255]]){
@@ -392,6 +384,32 @@ function drawNpc(g,a,t){
  const im=img('marina-people.png');if(im)g.drawImage(im,p*32,0,32,48,a.x-15,a.y-38,32,48);
  g.restore();
 }
+// World-space post anchor acts as its depth key (never the white cap position).
+function pierOccluders(view){
+ if(!enabled)return [];
+ const posts=[];
+ for(const px of PIER_X)for(const py of [3820,3945,4090])for(const x of [px+3,px+86]){
+  const rect={x:x-22,y:py-46,w:44,h:92};
+  if(view&&!visible(rect,view,0))continue;
+  posts.push({x,y:py,depthY:py+31,rect});
+ }
+ return posts;
+}
+function drawPierPost(g,post){
+ if(!enabled||!post)return;
+ g.save();
+ const premium=window.ROOKIE_V120_ART;
+ if(premium?.post(g,post.x,post.y)){g.restore();return;}
+ const xx=post.x,py=post.y;
+ g.fillStyle='#092b48';g.fillRect(xx-5,py+4,12,14);
+ g.fillStyle='#4e3324';g.fillRect(xx-6,py-21,12,31);
+ g.fillStyle='#be874a';g.fillRect(xx-3,py-20,4,29);
+ g.fillStyle='#edbd72';g.fillRect(xx-2,py-18,2,24);
+ g.fillStyle='#9ea9a6';g.fillRect(xx-6,py-17,12,3);
+ g.fillStyle='#e2d6b3';g.beginPath();g.ellipse(xx,py-23,7,4,0,0,Math.PI*2);g.fill();
+ g.strokeStyle='#b8a77c';g.lineWidth=2;g.beginPath();g.ellipse(xx,py-9,7,3,0,0,Math.PI*2);g.stroke();
+ g.restore();
+}
 function foreground(g,opt,t){
  if(!enabled||!opt||opt.zoom<.14)return;
  const view=opt.view,a=performance.now();
@@ -461,6 +479,7 @@ function metrics(){const sorted=samples.slice().sort((a,b)=>a-b);return Object.f
  campaignEngineModified:false,zombieOutbreakModified:false,multiplayerTransport:'none'});}
 const api={inMarina:(x,y)=>enabled&&x>4400&&x<5900&&y>3220&&y<4220,version:'116-marina-1',worldId:WORLD,region:Object.freeze(TERRAIN),piers:PIER_X,objects,actors,interactions,
  background:begin,foreground,stepNPCs,drawNpc,blocksProp,metrics,
+ pierOccluders,drawPierPost,
  interiors,interiorAt,updateInteriors,ownsSolid,drawInteriorFurniture,
  interiorFurniture:(view)=>interiors.flatMap(b=>b.roof<.995&&visible(b.exterior,view,60)?b.furniture:[]),
  interiorActorVisible:(npc)=>!npc.building||interiors.some(b=>b.id===npc.building&&b.roof<.995),

@@ -70,6 +70,14 @@
       npcActors.push({id:d.id+':npc:'+i,name:n.name,color:n.color,hat:n.hat,x:d.x+n.x,y:d.y+n.y});
     }
   }
+  let marinaActorsAdded=false;
+  function attachMarinaActors(){
+    const marina=window.ROOKIE_V116_MARINA;
+    if(!marina||marinaActorsAdded)return;
+    for(const a of marina.actors)npcActors.push(a);
+    for(const sp of marina.interactions)worldSpots.push(sp);
+    marinaActorsAdded=true;
+  }
   const idOf=(x,y)=>WORLD_ID+':'+Math.floor(x/CHUNK)+':'+Math.floor(y/CHUNK);
   function chunkAt(x,y){return {id:idOf(x,y),x:Math.floor(x/CHUNK)*CHUNK,y:Math.floor(y/CHUNK)*CHUNK,w:CHUNK,h:CHUNK};}
   function chunkWindow(x,y,viewW,viewH){
@@ -95,6 +103,9 @@
         if(circleHitsRect(x,y,r,b))return true;
       }
     }
+    // V116 only adds solid coastal structures/water, never replaces legacy solids.
+    const marina=window.ROOKIE_V116_MARINA;
+    if(marina&&marina.blocksProp(x,y,r))return true;
     // The blank northeast corner of the irregular station footprint is not
     // usable interior. Existing station west/east/south wall gaps stay real.
     return false;
@@ -187,6 +198,9 @@
     return {dx,dy};
   }
   function simulate(dt){
+    attachMarinaActors();
+    const marina=window.ROOKIE_V116_MARINA;
+    if(marina)marina.stepNPCs(dt);
     const {dx,dy}=direction(),step=clamp(dt,0,.05)*210;
     const ox=campus.x,oy=campus.y,r=12;
     if(dx<0)campus.dir='left';else if(dx>0)campus.dir='right';
@@ -459,6 +473,13 @@
     g.restore();
   }
   function drawOfficer(p,isPlayer,t){
+    const marina=window.ROOKIE_V116_MARINA;
+    if(isPlayer&&marina&&marina.inMarina(p.x,p.y)){
+      marina.drawNpc(g,{x:p.x,y:p.y,npcStyle:0,phase:0},t);
+      g.strokeStyle='#f4cf70';g.lineWidth=3;
+      g.beginPath();g.ellipse(p.x,p.y+9,18,8,0,0,Math.PI*2);g.stroke();
+      return;
+    }
     g.save();g.translate(p.x,p.y);
     g.fillStyle='rgba(6,15,24,.35)';g.beginPath();g.ellipse(0,7,16,6,0,0,7);g.fill();
     g.fillStyle=p.color||'#254a77';g.fillRect(-9,-20,18,25);
@@ -480,7 +501,11 @@
   function drawEntityHighlights(t){
     const view={x:campus.camX-50,y:campus.camY-60,w:tw/campus.zoom+100,h:th/campus.zoom+120};
     function visible(e){return e.x>view.x&&e.x<view.x+view.w&&e.y>view.y&&e.y<view.y+view.h;}
-    for(const npc of npcActors)if(visible(npc))drawOfficer(npc,false,t);
+    for(const npc of npcActors)if(visible(npc)){
+      const marina=window.ROOKIE_V116_MARINA;
+      if(marina&&npc.npcStyle!==undefined)marina.drawNpc(g,npc,t);
+      else drawOfficer(npc,false,t);
+    }
     campus.near=null;let best=58;
     for(const sp of worldSpots){
       const d=Math.hypot(sp.x-campus.x,sp.y-campus.y);
@@ -514,10 +539,13 @@
     if(premium)premium.overlay(g,{zoom:campus.zoom,view,districts:districtEntries},t);
     if(art)art.streets(g,{zoom:campus.zoom,view},t);
     drawOutdoorDecor();
+    const marina=window.ROOKIE_V116_MARINA;
+    if(marina)marina.background(g,{zoom:campus.zoom,view},t);
     if(pilot)pilot.props(g,{zoom:campus.zoom,view},t);
     drawStation();
     if(art)art.precinct(g,{zoom:campus.zoom,view,STX,STY,alpha:roofAlpha()},t);
     drawEntityHighlights(t);
+    if(marina)marina.foreground(g,{zoom:campus.zoom,view},t);
     if(pilot)pilot.animated(g,{zoom:campus.zoom,view},t);
     if(art)art.atmosphere(g,{zoom:campus.zoom,view},t);
     g.restore();
@@ -552,11 +580,12 @@
     closeMap();
     campus.open=true;campus.firstPaint=true;campus.previousRoom=interiorRoom(campus.x,campus.y);
     modal.hidden=false;document.body.classList.add('v115-campus-open');
+    if(window.ROOKIE_V116_MARINA)document.body.classList.add('v116-play-mode');
     clearInput();campus.last=0;resize();campus.frame=requestAnimationFrame(loop);
   }
   function close(){
     if(!campus.open)return;campus.open=false;cancelAnimationFrame(campus.frame);clearInput();
-    modal.hidden=true;document.body.classList.remove('v115-campus-open');
+    modal.hidden=true;document.body.classList.remove('v115-campus-open','v116-play-mode');
   }
   btn.addEventListener('click',open);
   modal.querySelector('#v115CampusExit').addEventListener('click',close);
@@ -569,10 +598,18 @@
   });
   modal.querySelector('#v115CampusInteract').addEventListener('click',()=>{
     const sp=campus.near;
+    const marina=window.ROOKIE_V116_MARINA;
+    if(sp&&marina&&sp.id.startsWith('v116:')){
+      const dialogue=modal.querySelector('#v116Dialogue');
+      if(dialogue){dialogue.hidden=false;dialogue.textContent=sp.text||sp.label;}
+      return;
+    }
     modal.querySelector('#v115CampusNote').textContent=sp?
       sp.label+' · This is a continuous-world geometry preview. Story interactions still run in the main game.':
       'Move near a door or precinct marker to inspect its world position. No mission progress changes here.';
   });
+  const dialogue=document.createElement('output');dialogue.id='v116Dialogue';
+  dialogue.hidden=true;dialogue.setAttribute('aria-live','polite');modal.appendChild(dialogue);
   const pad=modal.querySelector('#v115CampusPad'),knob=modal.querySelector('#v115CampusKnob');
   const changeStick=e=>{
     const r=pad.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
@@ -627,6 +664,14 @@
     roadTopologyVersion:roadNetwork.version,
     districtAt:(x,y)=>districtAt(x,y)?.id||'precinct-campus',
     open,close,isOpen:()=>campus.open,
+    openAt:(x,y,z=1.1)=>{
+      if(!Number.isFinite(x)||!Number.isFinite(y)||blocked(x,y))return false;
+      open();if(!campus.open)return false;
+      campus.x=x;campus.y=y;campus.zoom=clamp(z,.35,2.5);campus.follow=true;
+      campus.camX=x-tw/(2*campus.zoom);campus.camY=y-th/(2*campus.zoom);
+      attachMarinaActors();
+      return true;
+    },
     toWorld:(areaId,x,y)=>areaId==='station'?{worldId:WORLD_ID,areaId,x:STX+x,y:STY+y}:
       areaId==='plaza'?{worldId:WORLD_ID,areaId:'precinct-campus-v115',x:PLX+x,y:PLY+y}:null,
     snapshot:()=>Object.freeze({schema:1,worldId:WORLD_ID,areaId:districtAt(campus.x,campus.y)?.id||AREA_ID,

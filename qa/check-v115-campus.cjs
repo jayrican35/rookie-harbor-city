@@ -93,3 +93,10 @@ sandbox.state.map='station';window.HARBOR.outbreak.active=()=>true;api.open();as
 window.HARBOR.outbreak.active=()=>false;
 api.open();assert.equal(api.isOpen(),true);api.close();
 console.log('PASS V115 Phase 2: 1:1 precinct geometry, aligned front/garage doors, real room walls, continuous footstep crossing, single scene, original saves untouched, Academy/Zombie excluded.');
+api.open();window.ROOKIE_V116_HUD={blocked:()=>true,paint(){},close(){}};
+const paused=api.test.position();
+down({key:'ArrowDown',preventDefault(){},stopImmediatePropagation(){}},true);
+for(let i=0;i<12;i++){const n=queue.keys().next().value;if(n){const fn=queue.get(n);queue.delete(n);fn(2000+i*16.67);}}
+assert.deepEqual(api.test.position(),paused,'HUD dialog must pause the actual movement loop');
+api.close();
+console.log('PASS marina modal pauses player simulation and blocks held movement');

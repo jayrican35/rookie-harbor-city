@@ -88,6 +88,14 @@ function buildChunk(cx,cy){
   if(y<3300&&((x>=5056&&x<5248)||(x>=5472&&x<5672)))continue;
   c.drawImage(atlas,(tid%8)*32,Math.floor(tid/8)*32,32,32,col*32,row*32,32,32);
  }
+ // World-seeded long ripple bands break the 32px tile repetition at chunk boundaries.
+ for(let yy=0;yy<256;yy+=7){
+  if(cy+yy<3800)continue;
+  for(let xx=0;xx<256;xx+=24){const seed=hash(cx+xx,cy+yy,91),w=5+seed%19;
+   c.fillStyle=seed%3===0?'#2486b1':'#0b639e';c.fillRect(xx+seed%7,yy,w,1);
+   if(seed%5===0){c.fillStyle='#61b5cd';c.fillRect(xx+seed%7+3,yy+1,Math.max(2,w-7),1);}
+  }
+ }
  return off;
 }
 function chunkAt(cx,cy){
@@ -113,6 +121,10 @@ function begin(g,opt,t){
   for(let x=x0;x<TERRAIN.x+TERRAIN.w&&x<view.x+view.w;x+=256){
    const tile=chunkAt(x,y);if(!tile)continue;g.save();g.imageSmoothingEnabled=false;g.drawImage(tile,x,y);g.restore();cacheDraws++;
   }
+ }
+ // Foliage casts a small directional shadow onto lawns and paths beneath it.
+ for(const o of objects)if((o.type==='tree'||o.type==='palm')&&visible(o,view,0)){
+  g.fillStyle='rgba(14,46,24,.20)';g.beginPath();g.ellipse(o.x+o.w*.62,o.y+o.h-3,o.w*.48,o.h*.13,-.15,0,Math.PI*2);g.fill();
  }
  // Dark submerged beams and regularly spaced timber pilings make the quay dimensional.
  g.fillStyle='#062e53';g.fillRect(4400,3800,1500,20);
@@ -206,6 +218,7 @@ function begin(g,opt,t){
  ];
  for(const o of boats){if(!visible(o,view))continue;const sprite=img(o.id);if(!sprite)continue;
   const dy=Math.sin(t*.00145+o.p)*3;
+  g.strokeStyle='rgba(116,201,217,.35)';g.lineWidth=1;g.beginPath();g.ellipse(o.x+o.w/2,o.y+o.h-6+dy,o.w*.48,9+Math.sin(t*.001+o.p)*2,0,0,Math.PI*2);g.stroke();
   g.fillStyle='rgba(6,38,64,.24)';g.beginPath();g.ellipse(o.x+o.w/2,o.y+o.h/2+11,o.w*.34,11,0,0,Math.PI*2);g.fill();
   paintSprite(g,o.id,o.x,o.y+dy,o.w,o.h);objectsDrawn++;
  }
@@ -318,7 +331,7 @@ const onReady=()=>{
  if(toolbar&&!document.getElementById('v116MarinaLaunch')){
   const button=document.createElement('button');button.id='v116MarinaLaunch';button.type='button';
   button.textContent='PLAY SOUTHBAY MARINA · V116';button.title='Walk the real connected-world Southbay Marina (no loading screen)';
-  button.addEventListener('click',()=>{for(const [x,y] of [[5150,3720],[4980,3710],[5340,3720],[4790,3720],[5600,3730]])if(campus.openAt(x,y,window.innerWidth>window.innerHeight?Math.max(.5,Math.min(1.1,window.innerWidth/1200)):.85))return;});toolbar.appendChild(button);
+  button.addEventListener('click',()=>{for(const [x,y] of [[5150,3720],[4980,3710],[5340,3720],[4790,3720],[5600,3730]])if(campus.openAt(x,y,window.innerWidth>window.innerHeight?Math.max(.5,Math.min(1.1,window.innerWidth/1688)):.85))return;});toolbar.appendChild(button);
  }
  if(/[?&]v116QA=1(?:&|$)/.test(location.search)){
   document.documentElement.dataset.v116Qa='1';

@@ -102,3 +102,15 @@ Art brief: premium 16-bit overhead harbor with a slight south-facing tilt; orang
 - All existing route/collision tests pass. New checks verify all 16 atlas crop bounds. Live browser review covers landscape and portrait viewport simulation; original mode exclusions remain intact.
 
 **Remaining differences:** this is not a pixel-for-pixel recreation. The original three-pier world layout and building footprints are retained; the reference's family portraits, minimap, health display and four-button HUD are not yet reproduced. The new character atlas contains single poses rather than full directional walking cycles. Physical Android frame pacing still requires testing. The main hosted build and Zombie Outbreak remain untouched; this work is kept on the V116 draft branch.
+
+## Presentation refinement — family HUD, map and material depth
+
+Added `v116-marina-hud.js`, injected only by the V116 preview builder. It shows the actual selected family profile, approved family portraits, a throttled live marina locator, and a case card. The four adventure buttons perform real actions: Case File reads the current objective, Map opens local navigation with an option to open the original city map, Gear opens the existing inventory menu, and Team opens the existing profile chooser. Family cards open that same chooser; they do not silently switch profiles. No artificial level, health, armor or progress values are displayed.
+
+Case/map panels pause the connected-world movement simulation, block underlying movement/interaction keys, support Escape, and trap keyboard focus. Closing the world hides the panel. The HUD hides outside the marina and the original Academy/Zombie mode exclusions remain in place. The minimap draws at most every 120 ms within the existing frame callback; no second animation loop, multiplayer transport, profile writes or save namespace changes were added.
+
+The landscape camera now shows the complete native dock lengths and building fronts at the launch position. World-seeded ripple bands break up tile repetition; small boat ripples and foliage shadows add depth without changing geometry. Styled vector action icons replace the earlier bare control treatment. Portrait layout keeps touch controls separated from the new panels.
+
+Validation: existing marina, campus, connected-city and road suites, a HUD behavior harness covering objective/profile reads and map/gear/team callbacks, and a real simulation pause regression. Browser QA covers landscape/portrait, case readout, keyboard dismissal and profile/inventory handoff. This remains viewport simulation, not a physical Android performance measurement. The new material work does not add or modify protected assets.
+
+Remaining visual differences include single-pose chibi world characters, the use of approved illustrated family portraits rather than the reference's chibi portraits, and original geography. This refinement is a draft update, not an assertion of a pixel-perfect reference match.

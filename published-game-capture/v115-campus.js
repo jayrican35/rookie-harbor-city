@@ -117,7 +117,7 @@
     return null;
   }
   const campus={open:false,x:FRONT.x,y:FRONT.y+86,dir:'up',stride:0,moved:false,
-    camX:0,camY:0,zoom:1.15,follow:true,keys:new Set(),stick:null,frame:0,last:0,
+    camX:0,camY:0,zoom:1.15,autoZoom:true,follow:true,keys:new Set(),stick:null,frame:0,last:0,
     near:null,firstPaint:true,doorCrossings:0,previousRoom:null,visibleChunks:[]};
   const modal=document.createElement('section');modal.id='v115Campus';modal.hidden=true;
   modal.setAttribute('aria-label','V115 seamless precinct and grounds development preview');
@@ -141,12 +141,14 @@
   document.querySelector('#mapOverlay .maptools').appendChild(btn);
   let tw=960,th=640,dpr=1,oldCtx=null,cache=null,cacheValid=false,roofCanvas=null;
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-  function pickZoom(z){campus.zoom=clamp(z,.024,2.5);campus.follow=campus.zoom>.09;}
+  function pickZoom(z){campus.autoZoom=false;campus.zoom=clamp(z,.024,2.5);campus.follow=campus.zoom>.09;}
   function clearInput(){campus.keys.clear();campus.stick=null;modal.querySelector('#v115CampusKnob').style.transform='translate(0,0)';}
   function resize(){
     if(!campus.open)return;
     const r=cv.getBoundingClientRect();dpr=Math.min(1.5,window.devicePixelRatio||1);
+    const wasLandscape=tw>th;
     tw=Math.max(320,Math.round(r.width));th=Math.max(280,Math.round(r.height));
+    if(wasLandscape!==(tw>th)&&campus.autoZoom&&window.ROOKIE_V116_MARINA?.inMarina(campus.x,campus.y)){campus.zoom=tw>th?clamp(tw/1688,.5,1.1):.85;campus.firstPaint=true;}
     cv.width=Math.round(tw*dpr);cv.height=Math.round(th*dpr);
     g.setTransform(dpr,0,0,dpr,0,0);g.imageSmoothingEnabled=false;
     if(campus.firstPaint){campus.camX=campus.x-tw/(2*campus.zoom);campus.camY=campus.y-th/(2*campus.zoom);campus.firstPaint=false;}
@@ -554,12 +556,13 @@
     const desc=region ? 'PRECINCT 9 · '+region : district ? district.map.name : campus.y>1640?'HARBOR CITY · CONNECTED AVENUES':'PRECINCT 9 · GROUNDS';
     modal.querySelector('#v115CampusRegion').textContent=desc;
     modal.querySelector('#v115CampusCoords').textContent='World '+Math.round(campus.x)+', '+Math.round(campus.y)+'  · '+idOf(campus.x,campus.y)+'  · '+Math.round(campus.zoom*100)+'%';
+    if(window.ROOKIE_V116_HUD)window.ROOKIE_V116_HUD.paint({x:campus.x,y:campus.y},t);
     modal.querySelector('#v115CampusInteract').textContent=campus.near?'LOOK · '+campus.near.label:'LOOK';
   }
   function loop(timestamp){
     if(!campus.open)return;
     const dt=campus.last?clamp((timestamp-campus.last)/1000,0,.05):1/60;campus.last=timestamp;
-    if(!document.hidden){simulate(dt);paint(timestamp,dt);}
+    if(!document.hidden){if(!window.ROOKIE_V116_HUD?.blocked())simulate(dt);paint(timestamp,dt);}
     campus.frame=requestAnimationFrame(loop);
   }
   function open(){
@@ -585,6 +588,7 @@
   }
   function close(){
     if(!campus.open)return;campus.open=false;cancelAnimationFrame(campus.frame);clearInput();
+    window.ROOKIE_V116_HUD?.close();
     modal.hidden=true;document.body.classList.remove('v115-campus-open','v116-play-mode');
   }
   btn.addEventListener('click',open);
@@ -625,6 +629,12 @@
   function captureKey(e,down){
     if(!campus.open)return;
     const k=e.key.toLowerCase();
+    if(window.ROOKIE_V116_HUD?.blocked()){
+      clearInput();if(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d','e','m','i','escape'].includes(k)){e.preventDefault();e.stopImmediatePropagation();}
+      if(k==='escape'&&down)window.ROOKIE_V116_HUD.close();return;
+    }
+    if(k==='e'){e.preventDefault();e.stopImmediatePropagation();if(down)modal.querySelector('#v115CampusInteract').click();return;}
+
     if(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d','escape','+','=','-'].includes(k)){
       e.preventDefault();e.stopImmediatePropagation();
       if(k==='escape'&&down)close();
@@ -667,7 +677,7 @@
     openAt:(x,y,z=1.1)=>{
       if(!Number.isFinite(x)||!Number.isFinite(y)||blocked(x,y))return false;
       open();if(!campus.open)return false;
-      campus.x=x;campus.y=y;campus.zoom=clamp(z,.35,2.5);campus.follow=true;
+      campus.x=x;campus.y=y;campus.zoom=clamp(z,.35,2.5);campus.autoZoom=true;campus.follow=true;
       campus.camX=x-tw/(2*campus.zoom);campus.camY=y-th/(2*campus.zoom);
       attachMarinaActors();
       return true;

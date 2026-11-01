@@ -15,16 +15,16 @@ const cases=[{key:'portrait',w:390,h:844,z:.82},{key:'landscape',w:844,h:390,z:1
   await page.waitForFunction(()=>!!(window.HARBOR?.seamlessCampusV115&&window.ROOKIE_V116_MARINA),{timeout:45000});
   const entry=await page.evaluate(()=>{
     const api=window.HARBOR.seamlessCampusV115;
-    const possible=[[5190,3970],[5130,3940],[5270,3880],[5490,3910],[4610,3920],[5560,4020],[5150,4050]];
+    const possible=[[5150,3720],[4980,3710],[5340,3720],[4790,3720],[5600,3730]];
     for(const [x,y] of possible){if(!api.test.blocked(x,y) && api.openAt(x,y,1))return {x,y};}
-    const samples=[];for(let y=3800;y<=4100;y+=60)for(let x=4510;x<=5620;x+=80)if(!api.test.blocked(x,y))samples.push([x,y]);
+    const samples=[];for(let y=3650;y<=3760;y+=30)for(let x=4480;x<=5700;x+=80)if(!api.test.blocked(x,y))samples.push([x,y]);
     if(samples.length){const [x,y]=samples[0];if(api.openAt(x,y,1))return {x,y,sampled:true};}
     return {error:'no clear promenade entry',samples:samples.slice(0,15)};
   });
   if(entry.error||!Number.isFinite(entry.x))throw Error('Cannot enter connected marina: '+JSON.stringify(entry));
   await page.waitForFunction(()=>window.HARBOR.seamlessCampusV115.isOpen()&&window.ROOKIE_V116_MARINA.metrics().decoded>=14,{timeout:30000});
   await page.evaluate(({z})=>{
-    if(!window.HARBOR.seamlessCampusV115.qaCamera(5130,4150,z))throw Error('QA camera blocked');
+    if(!window.HARBOR.seamlessCampusV115.qaCamera(5180,3880,z))throw Error('QA camera blocked');
     document.body.classList.add('v116-play-mode');
   },{z:c.z});
   const canvas=page.locator('#v115CampusCanvas');
@@ -48,8 +48,8 @@ const cases=[{key:'portrait',w:390,h:844,z:.82},{key:'landscape',w:844,h:390,z:1
   const runtime=await page.evaluate(()=>{
     const api=window.HARBOR.seamlessCampusV115,m=window.ROOKIE_V116_MARINA;
     return {snapshot:api.snapshot(),position:api.test.position(),metrics:m.metrics(),
-    dockWalkable:!api.test.blocked(4880,4380),openWaterBlocked:api.test.blocked(4975,4440),
-    pathWalkable:!api.test.blocked(5150,4050),
+    dockWalkable:!api.test.blocked(5145,3940),openWaterBlocked:api.test.blocked(5010,3940),
+    pathWalkable:!api.test.blocked(5150,3710),
     uiHidden:getComputedStyle(document.querySelector('#v115CampusNote')).display==='none',
     sourceAssets:!!document.querySelector('#v116MarinaLaunch')};
   });

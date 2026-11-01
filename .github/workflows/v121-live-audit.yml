@@ -1,0 +1,39 @@
+name: Capture actual published V121 game for visual audit
+on:
+  push:
+    branches: [feature/v121-marina-art-direction-pass]
+    paths: ['.github/workflows/v121-live-audit.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: true}
+      - name: Retrieve live game-rendered screenshots after Pages publication
+        run: |
+          set -euo pipefail
+          python3 -m pip install -q pillow requests
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          import requests,io
+          folder=Path('qa/v121-reference');folder.mkdir(exist_ok=True,parents=True)
+          for view in ('portrait','landscape'):
+            url=f'https://jayrican35.github.io/rookie-harbor-city/preview/v121-marina/evidence/{view}-after-gameplay.png'
+            res=requests.get(url,timeout=45);res.raise_for_status()
+            im=Image.open(io.BytesIO(res.content)).convert('RGB');im.thumbnail((610,1000))
+            im.save(folder/f'v121-{view}.jpg',quality=84,optimize=True)
+            print('Live game screenshot',view,im.size)
+          PY
+      - name: Commit inspection evidence to isolated branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add qa/v121-reference/v121-*.jpg
+          if ! git diff --cached --quiet; then
+            git commit -m 'Capture V121 actual running game for visual signoff'
+            git push origin HEAD:feature/v121-marina-art-direction-pass
+          fi

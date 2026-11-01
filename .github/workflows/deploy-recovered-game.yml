@@ -144,7 +144,7 @@ jobs:
       - name: Check out isolated V124 structural-depth refinement
         uses: actions/checkout@v4
         with:
-          ref: 55c60193dec66bf8872ab7e793245179799eaa12 # verified V124 source only
+          ref: a77bf0835bfed696025d3760aa150990433a7a2a # final V124 lamps, buildings, foliage, furniture QA
           path: v124-depth
           persist-credentials: false
 

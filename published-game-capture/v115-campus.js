@@ -565,11 +565,15 @@
     drawOutdoorDecor();
     const marina=window.ROOKIE_V116_MARINA;
     if(marina)marina.background(g,{zoom:campus.zoom,view},t);
+    // V118 optional camera-culled light/shadow pass; no gameplay state changes.
+    const cinematic=window.ROOKIE_V118_CINEMATIC;
+    if(cinematic)cinematic.ground(g,{zoom:campus.zoom,view},t);
     if(pilot)pilot.props(g,{zoom:campus.zoom,view},t);
     drawStation();
     if(art)art.precinct(g,{zoom:campus.zoom,view,STX,STY,alpha:roofAlpha()},t);
     drawEntityHighlights(t);
     if(marina)marina.foreground(g,{zoom:campus.zoom,view,player:{x:campus.x,y:campus.y}},t);
+    if(cinematic)cinematic.atmosphere(g,{zoom:campus.zoom,view},t);
     if(pilot)pilot.animated(g,{zoom:campus.zoom,view},t);
     if(art)art.atmosphere(g,{zoom:campus.zoom,view},t);
     g.restore();

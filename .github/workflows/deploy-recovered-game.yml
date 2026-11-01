@@ -127,6 +127,13 @@ jobs:
           path: v121-marina
           persist-credentials: false
 
+      - name: Check out isolated V122 pier-depth structural preview
+        uses: actions/checkout@v4
+        with:
+          ref: c5b65fd24920d554b0d2b4a31bf7634a4f654eca # verified V122 feature snapshot
+          path: v122-pier
+          persist-credentials: false
+
       - name: Recover missing main-campaign environment art
         shell: bash
         working-directory: visual-preview
@@ -680,6 +687,63 @@ jobs:
             test -s "site/preview/v121-marina/evidence/$f.png"
           done
           echo 'PASS V121 mobile actual-render comparisons and collision assertions'
+
+      - name: Build isolated V122 raised pier and correct piling occlusion
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v122-pier
+          cp -a v122-pier/published-game-capture/. site/preview/v122-pier/
+          python3 v122-pier/tools/build_v122_preview.py site/preview/v122-pier
+          node --check site/preview/v122-pier/game-v115.bundle.js
+          node --check site/preview/v122-pier/v116-marina.js
+          (cd v122-pier && node qa/check-v122-pier.cjs)
+          (cd v122-pier && node qa/check-v121-marina.cjs)
+          (cd v122-pier && node qa/check-v117-interiors.cjs)
+          (cd v122-pier && node qa/check-v116-marina.cjs)
+          (cd v122-pier && node qa/check-v115-campus.cjs)
+          grep -q 'v122-world-sorted-pilings' site/preview/v122-pier/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v122-pier/outbreak.css
+          cmp -s v121-marina/published-game-capture/game.js site/preview/v122-pier/game.js
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          echo 'PASS V122 isolated playable world built; original campaign and Zombie Outbreak unchanged'
+
+      - name: Actual V121 vs V122 behind-and-in-front piling gameplay QA
+        shell: bash
+        run: |
+          set -euo pipefail
+          V122_BEFORE_URL='http://127.0.0.1:8765/preview/v121-marina/?v116QA=1&pilotQA=1' \
+            V122_AFTER_URL='http://127.0.0.1:8765/preview/v122-pier/?v116QA=1&pilotQA=1' \
+            V122_EVIDENCE="$PWD/site/preview/v122-pier/evidence" \
+            node v122-pier/qa/capture-v122-pier.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageChops
+          import json
+          folder=Path('site/preview/v122-pier/evidence')
+          d={}
+          for scene in ('behind-post','in-front-of-post'):
+            before=Image.open(folder/f'{scene}-before-canvas.png').convert('RGB')
+            after=Image.open(folder/f'{scene}-after-canvas.png').convert('RGB')
+            assert before.size==after.size
+            diff=ImageChops.difference(before,after).convert('L').histogram()
+            fraction=sum(diff[14:])/max(1,sum(diff))
+            d[scene]=round(fraction,4)
+            assert fraction>.008, f'Verified game changes not visible: {scene} {fraction}'
+          (folder/'comparison.json').write_text(json.dumps(d,indent=2))
+          items=''.join(f'<section><h2>{scene.replace("-"," ").title()}</h2><div><figure><img src="{scene}-before-gameplay.png"><figcaption>Before · V121</figcaption></figure><figure><img src="{scene}-after-gameplay.png"><figcaption>After · V122</figcaption></figure></div></section>' for scene in ('behind-post','in-front-of-post'))
+          page='<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><title>V122 Pier Occlusion Gameplay Proof</title><style>body{background:#0c2033;color:#ffebca;font:16px system-ui;margin:0;padding:20px}section{margin:24px 0}section>div{display:flex;flex-wrap:wrap;gap:18px}figure{margin:0;flex:1;min-width:min(100%,290px)}img{width:100%;max-width:460px;border:2px solid #be9d6a;border-radius:8px}figcaption{padding:8px}</style><h1>V122 — Real Pier Overlap Before / After</h1><p>Jay stands at the same two world positions near the same native piling. These are running-game screenshots in mobile-size Chromium, not concept art or Android performance claims.</p>'+items
+          (folder/'index.html').write_text(page)
+          print('PASS V122 native world and visual changes',d)
+          PY
+          for scene in behind-post in-front-of-post; do
+            for ver in before after; do
+              test -s "site/preview/v122-pier/evidence/$scene-$ver-canvas.png"
+            done
+          done
+          echo 'PASS V122 actual Jay/piling overlap and structural-dock playtest evidence'
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

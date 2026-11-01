@@ -88,7 +88,7 @@ jobs:
       - name: Check out V116 Southbay Marina game integration
         uses: actions/checkout@v4
         with:
-          ref: e14214c11b1ba9ab137d37df68b237778b91afdf # verified shared Jay walk/run across city and campaign
+          ref: 8de8d85016f0cec91a60addedae29f5ee6d25a7a # verified isolated actor bounds; no sprite-row bleed
           path: v116-marina
           persist-credentials: false
 

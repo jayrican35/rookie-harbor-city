@@ -1,6 +1,7 @@
 'use strict';
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),path=require('node:path');
 const root=path.join(__dirname,'..'),read=f=>fs.readFileSync(path.join(root,f),'utf8');
+const manifest=JSON.parse(read('published-game-capture/assets/jay-v117/manifest.json'));
 let profile='jay',combat=false;const events={},docEvents={},images=[];
 const window={HARBOR:{profiles:{current:()=>profile},outbreak:{active:()=>combat},academy:{active:()=>false}},addEventListener:(k,fn)=>events[k]=fn};
 const document={querySelector:()=>null,getElementById:()=>null,hidden:false,addEventListener:(k,fn)=>docEvents[k]=fn,querySelectorAll:()=>[]};
@@ -28,7 +29,24 @@ events.keydown({key:'Shift'});assert(jay.requestRun());events.blur();assert(!jay
 combat=true;assert(!jay.eligible());combat=false;profile='rosa';assert(!jay.eligible());profile='jay';
 const calls=[],g={save(){},restore(){},beginPath(){},ellipse(){},fill(){},drawImage(...args){calls.push(args);}};
 for(const map of ['station','harbor-main','midtown'])jay.draw(g,map,{map,x:500,y:600,dir:'up'});
-assert(calls.every(c=>c[0]===images[0]));assert.deepEqual(calls[0].slice(5),[468,539,64,64]);
+assert(calls.every(c=>c[0]===images[0]));const upClip=manifest.walk.frame_bounds[27];
+assert.deepEqual(calls[0].slice(5),[468+upClip[0]/2,539+upClip[1]/2,upClip[2]/2,upClip[3]/2]);
+// Every animation source rect excludes detached pixels and preserves its original
+// cell-to-world transform. Cropping must never stretch or shift Jay's artwork.
+for(const mode of ['walk','run']){
+ const m=manifest[mode];assert.equal(m.frame_bounds.length,m.columns*4);
+ for(let row=0;row<4;row++)for(let col=0;col<m.columns;col++){
+  const clip=m.frame_bounds[row*m.columns+col],[cx,cy,cw,ch]=clip;
+  assert(cx>=0&&cy>=0&&cx+cw<=128&&cy+ch<=128);
+  const idle=mode==='walk'&&col===0;
+  jay.draw(g,'crop',{map:'crop',x:500,y:600,dir:['down','left','right','up'][row],mode:idle?'idle':mode,phase:mode==='walk'?col-1:col});
+  const draw=calls.at(-1);assert.deepEqual(draw.slice(1,5),[col*128+cx,row*128+cy,cw,ch]);
+  assert.equal(draw[5]-cx/2,468);assert.equal(draw[6]-cy/2,539);
+  assert.equal(draw[7]/cw,.5);assert.equal(draw[8]/ch,.5);
+ }
+}
+for(let col=0;col<9;col++)assert(manifest.walk.frame_bounds[9+col][1]>10,'Left-facing walk must exclude the strip above the hair');
+for(let col=0;col<8;col++){const c=manifest.run.frame_bounds[16+col];assert(c[1]+c[3]<118,'Right-facing run must exclude feet leaking from the next row');}
 assert(!/requestAnimationFrame|createElement\(['"]canvas|localStorage/.test(source));
 // Exercise bridge in the real dispatcher contract, including original mode delegation.
 let speed=196,delegate=0,paint,draws=0,open=false,throws=false;
@@ -54,6 +72,5 @@ const bundlePath=process.argv[2];if(bundlePath){
  open=true;combat=true;clock.loop(12016);assert.equal(clock.draws,2,'Original combat loop must remain active');combat=false;
  assert.equal((bundle.match(/jay-shared-v117/g)||[]).length,1);
 }
-const manifest=JSON.parse(read('published-game-capture/assets/jay-v117/manifest.json'));
 for(const mode of ['walk','run']){const m=manifest[mode],bytes=fs.readFileSync(path.join(root,'published-game-capture/assets/jay-v117',m.file));assert.equal(require('node:crypto').createHash('sha256').update(bytes).digest('hex'),m.sha256);assert.deepEqual(m.cell,[128,128]);assert(m.unique_by_row.every(n=>n>=8));}
 console.log('PASS Jay: four facings/eight phases, all maps one identity, actual-distance stride, blocked/idle freeze, run, frame-rate integration, fixed anchor, teleport reset, input cleanup, original combat delegation and one active world');

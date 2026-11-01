@@ -11,3 +11,9 @@ This pass adds no canvas or requestAnimationFrame loop. The existing connected-w
 Validation: shared renderer/tracker and bridge tests, actual connected-player input regression, existing campus/roads/marina/HUD/NPC suites, compiled-bundle syntax and single-registry checks. Browser QA covers original campaign, precinct grounds, marina, movement, running and mobile layouts. This remains the isolated game preview; main Site and original game root are unchanged.
 
 Asset prompts: derive Jay's top views from the supplied animation master sheet; transparent 9x4 walk/idle grid and 8x4 run grid; rows down/left/right/up, consistent chibi proportions, actual alternating limb poses, no labels/scenery. Generated using the built-in image tool; normalized with tools/prepare_v117_jay.py. Production paths: published-game-capture/assets/jay-v117/jay-walk.webp and jay-run.webp. Manifest records exact hashes and dimensions.
+
+## Frame-bound correction
+
+The generated grids contain detached pixels from neighboring rows, including a boot-shaped black strip above every left-facing walk frame. Drawing the entire 128x128 cell exposed that strip at high zoom. The offline preparation helper now measures the principal connected actor island for each of all 68 frames, adds a two-pixel edge gutter, and rejects crops containing other visible islands. The manifest and renderer share these exact source rectangles. drawImage crops the source and offsets the destination by the same scale, preserving every retained character pixel and its world alignment. Atlas files, character design and movement are unchanged. Run this metadata-only repair with `python3 tools/prepare_v117_jay.py --bounds-only`.
+
+Regression checks exercise every crop and the source/destination transform, the reported left-facing strip, and stray pixels below right-facing run frames. Browser review includes magnified live gameplay and all frames against a bright checker background.

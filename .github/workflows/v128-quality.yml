@@ -11,6 +11,7 @@ on:
       - 'qa/check-v128-quality.cjs'
       - 'qa/check-world-completion.cjs'
       - 'qa/check-world-pedestrians.cjs'
+      - 'qa/capture-v128-run.cjs'
       - 'tools/build_v128_preview.py'
 jobs:
   source-regression:
@@ -35,5 +36,5 @@ jobs:
       - name: Ensure modifications stay isolated to connected-world art
         run: |
           set -euo pipefail
-          git diff --name-only ${{ github.event.before || 'HEAD^' }} HEAD | grep -Ev '^(published-game-capture/(v117-jay\.js|v115-campus\.js|v127-citywide-art\.js)|qa/check-v128-quality\.cjs|qa/check-world-completion\.cjs|qa/check-world-pedestrians\.cjs|tools/build_v128_preview\.py|docs/(V128-WORLD-QUALITY|HARBOR-CITY-WORLD-COMPLETION)\.md|\.github/workflows/v128-quality\.yml)$' > /tmp/out-of-scope || true
+          git diff --name-only ${{ github.event.before || 'HEAD^' }} HEAD | grep -Ev '^(published-game-capture/(v117-jay\.js|v115-campus\.js|v127-citywide-art\.js)|qa/check-v128-quality\.cjs|qa/check-world-completion\.cjs|qa/check-world-pedestrians\.cjs|qa/capture-v128-run\.cjs|tools/build_v128_preview\.py|docs/(V128-WORLD-QUALITY|HARBOR-CITY-WORLD-COMPLETION)\.md|\.github/workflows/v128-quality\.yml)$' > /tmp/out-of-scope || true
           if [ -s /tmp/out-of-scope ]; then cat /tmp/out-of-scope; exit 1; fi

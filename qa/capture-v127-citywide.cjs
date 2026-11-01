@@ -5,10 +5,15 @@ const before=process.env.V127_BEFORE_URL||'http://127.0.0.1:8765/preview/v126-po
 const after=process.env.V127_AFTER_URL||'http://127.0.0.1:8765/preview/v127-citywide/?v116QA=0&pilotQA=1';
 const folder=process.env.V127_EVIDENCE||path.resolve('site/preview/v127-citywide/evidence');
 const scenes=[
+ {name:'marina-center',x:5200,y:3758},
  {name:'marina-east-boundary',x:5975,y:3699},
  {name:'southbay-west-connection',x:4185,y:3700},
- {name:'downtown',x:5880,y:2010},
+ {name:'westfield',x:-2450,y:1784},
  {name:'residential',x:-1180,y:1620},
+ {name:'midtown',x:3930,y:1784},
+ {name:'downtown',x:5880,y:2010},
+ {name:'northgate',x:5850,y:950},
+ {name:'eastside',x:7350,y:1784},
  {name:'industrial',x:8520,y:3530}
 ];
 (async()=>{
@@ -92,5 +97,5 @@ const scenes=[
  }
  await browser.close();
  fs.writeFileSync(path.join(folder,'metrics.json'),JSON.stringify({about:'Actual running continuous-world HTML Canvas. Android-size Chromium viewport; not native device FPS.',results},null,2));
- console.log('PASS V127 five real-district screenshot comparisons; premium tile atlas, HUD, native map, coastline and original world physics intact');
+ console.log('PASS V127 ten real-district screenshot comparisons; premium tile atlas, HUD, native map, coastline and original world physics intact');
 })().catch(e=>{console.error(e);process.exit(1)});

@@ -120,6 +120,13 @@ jobs:
           path: v120-marina
           persist-credentials: false
 
+      - name: Check out isolated V121 art-directed marina
+        uses: actions/checkout@v4
+        with:
+          ref: 22c8d8630e65f4218b63a388e54c2c4af9760f1c # V121 passing CI + generated atlas snapshot
+          path: v121-marina
+          persist-credentials: false
+
       - name: Recover missing main-campaign environment art
         shell: bash
         working-directory: visual-preview
@@ -619,6 +626,60 @@ jobs:
           PY
           for f in portrait-before-canvas portrait-after-canvas landscape-before-canvas landscape-after-canvas; do test -s "site/preview/v120-premium/evidence/$f.png"; done
           echo 'PASS V120 genuine game screenshot evidence and material rendering comparison'
+
+      - name: Build isolated V121 art-directed playable marina
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v121-marina
+          cp -a v121-marina/published-game-capture/. site/preview/v121-marina/
+          python3 v121-marina/tools/build_v121_preview.py site/preview/v121-marina
+          node --check site/preview/v121-marina/v120-marina-art.js
+          node --check site/preview/v121-marina/game-v115.bundle.js
+          (cd v121-marina && node qa/check-v121-marina.cjs)
+          (cd v121-marina && node qa/check-v117-interiors.cjs)
+          (cd v121-marina && node qa/check-v116-marina.cjs)
+          (cd v121-marina && node qa/check-v115-campus.cjs)
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v121-marina/outbreak.css
+          cmp -s v120-marina/published-game-capture/game.js site/preview/v121-marina/game.js
+          grep -q 'v121-real-material-pass' site/preview/v121-marina/index.html
+          echo 'PASS V121: real 9-atlas marina upgrade in existing world; approved game and Zombie mode protected'
+
+      - name: Compare actual V120 versus V121 playable mobile screenshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          V120_BEFORE_URL='http://127.0.0.1:8765/preview/v120-premium/?v116QA=1&pilotQA=1' \
+            V120_AFTER_URL='http://127.0.0.1:8765/preview/v121-marina/?v116QA=1&pilotQA=1' \
+            V120_EVIDENCE="$PWD/site/preview/v121-marina/evidence" \
+            node v121-marina/qa/capture-v120-comparison.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageChops
+          import json
+          folder=Path('site/preview/v121-marina/evidence')
+          differences={}
+          for view in ('portrait','landscape'):
+            before=Image.open(folder/f'{view}-before-canvas.png').convert('RGB')
+            after=Image.open(folder/f'{view}-after-canvas.png').convert('RGB')
+            assert before.size==after.size
+            histogram=ImageChops.difference(before,after).convert('L').histogram()
+            fraction=sum(histogram[18:])/max(1,sum(histogram))
+            differences[view]=round(fraction,4)
+            assert fraction>.12, f'V121 rendering too similar to V120 in {view}: {fraction}'
+          (folder/'diff-metrics.json').write_text(json.dumps(differences,indent=2))
+          cells=''.join(f'<section><h2>{view.title()} — same real-game camera</h2><div><figure><img src="{view}-before-gameplay.png"><figcaption>V120 before</figcaption></figure><figure><img src="{view}-after-gameplay.png"><figcaption>V121 upgraded</figcaption></figure></div></section>' for view in ('portrait','landscape'))
+          page='<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><title>V121 Real Gameplay Comparison</title><style>body{margin:0;padding:24px;background:#0c2133;color:#fff1ce;font:16px system-ui}h1{font-size:26px}section{margin:25px 0}section>div{display:flex;flex-wrap:wrap;gap:18px}figure{margin:0;flex:1;min-width:min(100%,280px)}img{width:100%;max-width:460px;border:2px solid #bca875;border-radius:10px}figcaption{padding:8px}</style><h1>ROOKIE V121 — Actual Game Before / After</h1><p>Both versions captured directly from the game Canvas at identical world position and zoom in mobile-sized Chromium, not a physical Android benchmark.</p>'+cells
+          (folder/'index.html').write_text(page)
+          print('PASS V121 real-game water/material visual difference',differences)
+          PY
+          for f in portrait-before-canvas portrait-after-canvas landscape-before-canvas landscape-after-canvas; do
+            test -s "site/preview/v121-marina/evidence/$f.png"
+          done
+          echo 'PASS V121 mobile actual-render comparisons and collision assertions'
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

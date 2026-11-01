@@ -401,6 +401,7 @@ jobs:
           python3 v116-marina/tools/build_v116_preview.py site/preview/v116-marina
           node --check site/preview/v116-marina/game-v115.bundle.js
           node --check site/preview/v116-marina/v116-marina.js
+          grep -q 'CAP=40' site/preview/v116-marina/v116-marina.js
           (cd v116-marina && node qa/check-v116-marina.cjs)
           (cd v116-marina && node qa/check-v115-campus.cjs)
           (cd v116-marina && node qa/check-v115-connected-city.cjs)

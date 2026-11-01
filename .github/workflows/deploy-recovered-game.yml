@@ -134,6 +134,13 @@ jobs:
           path: v122-pier
           persist-credentials: false
 
+      - name: Check out isolated V123 collision and cleaned NPC preview
+        uses: actions/checkout@v4
+        with:
+          ref: fa7e49975e4799d68d2953f9a13e06d967ffd87d # green V123 changes, independent preview
+          path: v123-marina
+          persist-credentials: false
+
       - name: Recover missing main-campaign environment art
         shell: bash
         working-directory: visual-preview
@@ -744,6 +751,59 @@ jobs:
             done
           done
           echo 'PASS V122 actual Jay/piling overlap and structural-dock playtest evidence'
+
+      - name: Build isolated playable V123 with physical marina props
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install -q pillow numpy
+          mkdir -p site/preview/v123-collision
+          cp -a v123-marina/published-game-capture/. site/preview/v123-collision/
+          python3 v123-marina/tools/build_v123_preview.py site/preview/v123-collision
+          node --check site/preview/v123-collision/game-v115.bundle.js
+          node --check site/preview/v123-collision/v116-marina.js
+          node --check site/preview/v123-collision/v116-marina-walk.js
+          (cd v123-marina && node qa/check-v123-collision.cjs)
+          (cd v123-marina && node qa/check-v117-interiors.cjs)
+          (cd v123-marina && node qa/check-v116-marina.cjs)
+          (cd v123-marina && node qa/check-v116-walk.cjs)
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          cmp -s game-backup/published-game-capture/index.html site/index.html
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v123-collision/outbreak.css
+          cmp -s v122-pier/published-game-capture/game.js site/preview/v123-collision/game.js
+          grep -q 'v123-prop-and-npc-physical-solids' site/preview/v123-collision/index.html
+          echo 'PASS V123 original root, Zombie mode and V122 saved while new pier collision and NPC artwork load'
+
+      - name: Browser inspect recorded V122 versus V123 player props and NPC lines
+        shell: bash
+        run: |
+          set -euo pipefail
+          V123_BEFORE_URL='http://127.0.0.1:8765/preview/v122-pier/?v116QA=1&pilotQA=1' \
+            V123_AFTER_URL='http://127.0.0.1:8765/preview/v123-collision/?v116QA=1&pilotQA=1' \
+            V123_EVIDENCE="$PWD/site/preview/v123-collision/evidence" \
+            node v123-marina/qa/capture-v123-review.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageChops
+          import json
+          p=Path('site/preview/v123-collision/evidence')
+          old=Image.open(p/'before-canvas.png').convert('RGB')
+          new=Image.open(p/'after-canvas.png').convert('RGB')
+          assert old.size==new.size
+          report=json.loads((p/'metrics.json').read_text())
+          latest=report['samples'][-1]['metrics']
+          assert latest['bin'] and latest['pierPost'] and latest['fence'] and latest['npcBody']
+          assert latest['centralPier']==False and latest['cafeGate']==False
+          assert latest['marina']['postColliders']==18
+          strips=''.join(f'<figure><img src="{v}-gameplay.png"><figcaption>{title}</figcaption></figure>' for v,title in [('before','V122 • original sprites and no prop collision'),('after','V123 • clean NPCs and physical props')])
+          html='<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROOKIE V123 Real Gameplay QA</title><style>body{background:#102439;color:#fff4d4;font:16px system-ui;padding:22px}div{display:flex;gap:18px;flex-wrap:wrap}figure{flex:1;min-width:min(100%,290px);margin:0}img{max-width:450px;width:100%;border:2px solid #c3aa7c;border-radius:8px}figcaption{padding:8px}</style><h1>V123 — Recording-Driven Collision & NPC Fix</h1><p>Actual game Canvas at the same camera and Android-sized Chromium viewport. V123 blocks bins, benches, planters, fences, pilings and NPCs without touching Zombie Outbreak.</p><div>'+strips+'</div>'
+          (p/'index.html').write_text(html)
+          print('PASS real V123 browser collision and sanitized NPC sprite proof')
+          PY
+          test -s site/preview/v123-collision/evidence/before-gameplay.png
+          test -s site/preview/v123-collision/evidence/after-gameplay.png
+          echo 'PASS V123 real camera screenshot comparison ready'
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

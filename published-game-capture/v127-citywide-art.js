@@ -272,7 +272,7 @@ function map(g,x,y){
 }
 window.ROOKIE_V127_CITY=Object.freeze({
  version:'127-citywide-material-continuity',worldId:'harbor-main',
- base,surface,districtGround,road,coastline,walkways,depthProps,drawDepthProp,
+ base,surface,colorKind,districtGround,road,coastline,walkways,depthProps,drawDepthProp,
  building,handlesDecor,waterBlocked:coastalWater,location,map,
  metrics:()=>({...metrics,cacheMax:CAP,atlasReady:atlas.complete&&atlas.naturalWidth>0})
 });

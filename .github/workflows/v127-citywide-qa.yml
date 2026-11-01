@@ -5,6 +5,7 @@ on:
     paths:
       - 'published-game-capture/v127-citywide-art.js'
       - 'published-game-capture/v115-campus.js'
+      - 'published-game-capture/v115-reference-art.js'
       - 'published-game-capture/v116-marina-hud.js'
       - 'tools/build_v127_preview.py'
       - 'qa/check-v127-citywide.cjs'
@@ -24,6 +25,7 @@ jobs:
         run: |
           node --check published-game-capture/v127-citywide-art.js
           node --check published-game-capture/v115-campus.js
+          node --check published-game-capture/v115-reference-art.js
           node --check published-game-capture/v116-marina-hud.js
           node qa/check-v127-citywide.cjs
       - name: Entire original connected-world and approved mobile gameplay regression suite
@@ -58,7 +60,7 @@ jobs:
           from pathlib import Path
           base='971d63b83697f988a6a30c6524d0708c36fc5ea1'
           changed=set(subprocess.check_output(['git','diff','--name-only',base,'HEAD'],text=True).splitlines())
-          allowed={'published-game-capture/v115-campus.js','published-game-capture/v116-marina-hud.js',
+          allowed={'published-game-capture/v115-campus.js','published-game-capture/v115-reference-art.js','published-game-capture/v116-marina-hud.js',
               'published-game-capture/v127-citywide-art.js','tools/build_v127_preview.py',
               'qa/check-v127-citywide.cjs','qa/capture-v127-citywide.cjs',
               '.github/workflows/v127-citywide-qa.yml','docs/V127-CITYWIDE-PLAN.md'}

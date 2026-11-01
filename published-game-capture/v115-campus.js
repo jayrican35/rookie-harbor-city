@@ -110,6 +110,9 @@
     // Citywide coastline uses the SAME player collider. No walking on newly
     // extended water just outside the original marina material rectangle.
     if(window.ROOKIE_V127_CITY?.waterBlocked(x,y))return true;
+    // World Completion: authored-feeling new groves are physical at their trunk
+    // feet, and use the SAME player radius and native collision response.
+    if(window.ROOKIE_V127_CITY?.scenicBlocked(x,y,r,districtEntries))return true;
     // The blank northeast corner of the irregular station footprint is not
     // usable interior. Existing station west/east/south wall gaps stay real.
     return false;

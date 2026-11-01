@@ -12,12 +12,15 @@ world=(root/'v115-campus.js').read_text()
 bundle=(root/'game-v115.bundle.js').read_text()
 assert "isConnectedRun=id==='connected-jay'&&p.mode==='run'" in source
 assert 'metrics.details++' in city and 'const palettes=' in city
+assert 'function scenicBlocked(' in city and 'function districtFinish(' in city
 assert 'paintedBuilding(o,d.id)' in world and 'paintedBuilding(o,d.id)' in bundle
+assert 'scenicBlocked(x,y,r,districtEntries)' in world
+assert 'scenicBlocked(x,y,r,districtEntries)' in bundle
 assert (root/'game.js').is_file() and (root/'outbreak.css').is_file()
 p=root/'index.html';html=p.read_text()
 assert html.count('</body>')==1 and 'rookie-v128' not in html
-html=html.replace('V127 Citywide Visual Continuity','V128 Citywide Detail + Grounded Run')
-html=html.replace('V127 CONNECTED CITY','V128 WORLD QUALITY')
+html=html.replace('V127 Citywide Visual Continuity','Harbor City World Completion Candidate')
+html=html.replace('V127 CONNECTED CITY','WORLD COMPLETION TEST')
 html=html.replace('</head>','<meta name="rookie-v128" content="grounded-run-citywide-art" />\n</head>')
 p.write_text(html)
-print('PASS V128 isolated preview: run silhouette fixed, 9 districts enriched; canonical controls/camera/mission/Zombie untouched')
+print('PASS World Completion candidate: RUN grounded, 8 district themes, real trunk physics; original Marina/campaign/Zombie untouched')

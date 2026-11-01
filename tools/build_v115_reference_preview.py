@@ -21,7 +21,7 @@ needle='<script src="./v115-showcase.js"></script>'
 assert html.count(needle)==1, 'Showcase script missing or repeated'
 assert html.count('</head>')==1
 assert html.count('v115-reference-art.js')==0
-assert 'rookie:v115-reference-sandbox:' in (root/'v115-preview-save-isolation.js').read_text()
+assert any(prefix in (root/'v115-preview-save-isolation.js').read_text() for prefix in ('rookie:v115-reference-sandbox:', 'rookie:v115-premium-sandbox:')), 'Unrecognized V115 preview save namespace'
 html=html.replace('</head>','<link rel="stylesheet" href="./v115-reference.css" />\n<meta name="rookie-art-pass" content="v115-reference-composition-1" />\n</head>')
 html=html.replace(needle,needle+'\n<script src="./v115-reference-art.js"></script>')
 entry.write_text(html,'utf-8')

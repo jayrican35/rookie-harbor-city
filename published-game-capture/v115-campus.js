@@ -486,7 +486,16 @@
     const shared=window.ROOKIE_JAY;
     if(isPlayer)shared?.control?.('v117ConnectedRun',!!shared.eligible());
     if(isPlayer&&shared?.eligible()){
+      // V119 connected-marina-only step accents and subtle sprite bob.
+      // The existing shared Jay animation, pose, timing and physical feet remain authoritative.
+      const marinaMotion=window.ROOKIE_V119_MOTION;
+      const inMarina=!!(marinaMotion&&window.ROOKIE_V116_MARINA?.inMarina(p.x,p.y));
+      const movement={x:p.x,y:p.y,dir:campus.dir,moving:campus.moved,distance:campus.stride/.055,run:campus.speed>235};
+      if(inMarina)marinaMotion.footsteps(g,movement,t);
+      g.save();
+      if(inMarina)g.translate(0,-marinaMotion.characterBob(movement,t));
       shared.draw(g,'connected-jay',{x:p.x,y:p.y,dir:campus.dir,map:WORLD_ID});
+      g.restore();
       g.strokeStyle='#f4cf70';g.lineWidth=2;g.beginPath();g.ellipse(p.x,p.y+3,18,7,0,0,Math.PI*2);g.stroke();return;
     }
     const marina=window.ROOKIE_V116_MARINA;

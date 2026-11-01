@@ -195,12 +195,13 @@ function buildChunk(cx,cy){
  const atlas=img('marina-detail-tiles.png');if(!atlas)return off;
  for(let row=0;row<8;row++)for(let col=0;col<8;col++){
   const x=cx+col*32,y=cy+row*32,tid=tileIndex(x,y);
+  if(y>=3800&&window.ROOKIE_V120_ART)continue;
   // An existing north-south street joins the marina here: preserve its road art.
   if(y<3300&&((x>=5056&&x<5248)||(x>=5472&&x<5672)))continue;
   c.drawImage(atlas,(tid%8)*32,Math.floor(tid/8)*32,32,32,col*32,row*32,32,32);
  }
  // World-seeded long ripple bands break the 32px tile repetition at chunk boundaries.
- for(let yy=0;yy<256;yy+=7){
+ for(let yy=0;!window.ROOKIE_V120_ART&&yy<256;yy+=7){
   if(cy+yy<3800)continue;
   for(let xx=0;xx<256;xx+=24){const seed=hash(cx+xx,cy+yy,91),w=5+seed%19;
    c.fillStyle=seed%3===0?'#2486b1':'#0b639e';c.fillRect(xx+seed%7,yy,w,1);
@@ -226,6 +227,8 @@ function begin(g,opt,t){
  const a=performance.now(),view=opt.view;
  const region={x:TERRAIN.x,y:TERRAIN.y,w:TERRAIN.w,h:TERRAIN.h};
  if(!visible(region,view,0))return;
+ const premium=window.ROOKIE_V120_ART;
+ if(premium)premium.water(g,opt,t);
  const x0=Math.max(TERRAIN.x,TERRAIN.x+Math.floor((Math.max(TERRAIN.x,view.x)-TERRAIN.x)/256)*256);
  const y0=Math.max(TERRAIN.y,TERRAIN.y+Math.floor((Math.max(TERRAIN.y,view.y)-TERRAIN.y)/256)*256);
  for(let y=y0;y<TERRAIN.y+TERRAIN.h&&y<view.y+view.h;y+=256){
@@ -234,7 +237,8 @@ function begin(g,opt,t){
   }
  }
  // V119 visible wave/depth pass is inside this renderer, before solid piers and boats.
- window.ROOKIE_V119_MOTION?.waterSurface(g,view,t);
+ if(!premium)window.ROOKIE_V119_MOTION?.waterSurface(g,view,t);
+ if(premium)premium.promenade(g,opt,t);
  // Foliage casts a small directional shadow onto lawns and paths beneath it.
  for(const o of objects)if((o.type==='tree'||o.type==='palm')&&visible(o,view,0)){
   g.fillStyle='rgba(14,46,24,.20)';g.beginPath();g.ellipse(o.x+o.w*.62,o.y+o.h-3,o.w*.48,o.h*.13,-.15,0,Math.PI*2);g.fill();
@@ -277,7 +281,8 @@ function begin(g,opt,t){
  }
  // Cover the full native 90×300px footprint without drawing wood into blocked water.
  const dockAtlas=img('marina-detail-tiles.png');
- if(dockAtlas)for(const px of PIER_X){
+ if(dockAtlas||premium?.ready())for(const px of PIER_X){
+  if(premium?.dock(g,px,view))continue;
   if(!visible({x:px,y:3800,w:90,h:300},view,0))continue;
   for(let y=3800;y<4100;y+=32){
    const tid=[12,13,14,15][hash(px,y,11)%4],h=Math.min(32,4100-y);
@@ -287,9 +292,11 @@ function begin(g,opt,t){
    }
   }
  }
+ if(premium)premium.contactWater(g,opt,t);
  // Timber mooring piles: metal collars, weathered grain, pale caps and tied rope.
  for(const px of PIER_X)for(const py of [3820,3945,4090])for(const xx of [px+3,px+86]){
-  if(!visible({x:xx-7,y:py-27,w:14,h:43},view,0))continue;
+  if(!visible({x:xx-18,y:py-40,w:36,h:78},view,0))continue;
+  if(premium?.post(g,xx,py))continue;
   g.fillStyle='#092b48';g.fillRect(xx-5,py+4,12,14);
   g.fillStyle='#4e3324';g.fillRect(xx-6,py-21,12,31);
   g.fillStyle='#be874a';g.fillRect(xx-3,py-20,4,29);
@@ -304,6 +311,7 @@ function begin(g,opt,t){
    if(!visible({x,y:3787,w:width,h:18},view,0))continue;
    for(let xx=x;xx<x+width;xx+=64)g.drawImage(fence,xx,3785,Math.min(64,x+width-xx),16);
  }}
+ if(premium)premium.seawall(g,opt,t);
  // Static shoreline and shop sprites, with world-locked shadows.
  for(const o of objects){
   if(!visible(o,view,0))continue;
@@ -324,6 +332,7 @@ function begin(g,opt,t){
   g.strokeStyle='#d6b785';g.lineWidth=3;g.strokeRect(5370,3575,240,37);
   g.fillStyle='#fff0ce';g.font='bold 18px "Barlow Condensed",sans-serif';g.textAlign='center';g.fillText('WATERFRONT & DOCKS',5490,3600);
  }
+ if(premium)premium.waterReflections(g,opt,t);
  const boats=[
   {id:'boat-motor.png',x:4524,y:3935,w:65,h:122,p:0},
   {id:'boat-fishing.png',x:4800,y:3950,w:76,h:140,p:1.7},
@@ -333,11 +342,14 @@ function begin(g,opt,t){
  ];
  for(const o of boats){if(!visible(o,view))continue;const sprite=img(o.id);if(!sprite)continue;
   const dy=Math.sin(t*.00145+o.p)*5;
-  window.ROOKIE_V119_MOTION?.boatWake(g,o,t);
+  if(premium)premium.boat(g,o,t);
+  else window.ROOKIE_V119_MOTION?.boatWake(g,o,t);
   g.strokeStyle='rgba(116,201,217,.35)';g.lineWidth=1;g.beginPath();g.ellipse(o.x+o.w/2,o.y+o.h-6+dy,o.w*.48,9+Math.sin(t*.001+o.p)*2,0,0,Math.PI*2);g.stroke();
   g.fillStyle='rgba(6,38,64,.24)';g.beginPath();g.ellipse(o.x+o.w/2,o.y+o.h/2+11,o.w*.34,11,0,0,Math.PI*2);g.fill();
   paintSprite(g,o.id,o.x,o.y+dy,o.w,o.h);objectsDrawn++;
  }
+ // Legacy wave strokes and lamp-trails are disabled by V120 artwork.
+ if(!premium){
  // Water motion: capped number of strokes; no per-pixel pixel data or particles.
  const tphase=Math.floor(t/155),bounds={x:4410,y:3830,w:1660,h:700};
  if(visible(bounds,view)){waterFrames++;
@@ -363,6 +375,7 @@ function begin(g,opt,t){
    g.fillStyle=k%3?'#f6cf6c':'#fff2a9';g.fillRect(xx-(12-k*.6)/2,yy,12-k*.6,2);
   }
   g.globalAlpha=1;
+ }
  }
  measure(performance.now()-a);
 }

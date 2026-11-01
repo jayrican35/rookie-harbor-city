@@ -122,6 +122,28 @@ function updateInteriors(player,dt){
 }
 const solidBoxes=Object.freeze(objects.filter(o=>o.solid&&!interiors.some(b=>b.id===o.id)).map(o=>Object.freeze({id:o.id,x:o.x+12,y:o.y+19,w:o.w-24,h:o.h-38})));
 const interiorSolids=Object.freeze(solidBoxes.concat(interiors.flatMap(b=>b.walls.concat(b.furniture.filter(f=>f.solid)))));
+// V123: precise feet-level collision instead of blocking the full sprite image.
+const promenadeSolids=Object.freeze(objects.flatMap(o=>{
+ let inset=null;
+ switch(o.type){
+ case 'tree':inset=[o.w*.38,o.h-25,o.w*.24,19];break;
+ case 'palm':inset=[o.w*.35,o.h-28,o.w*.30,23];break;
+ case 'bench':inset=[8,12,o.w-16,14];break;
+ case 'garden':inset=[5,o.h-12,o.w-10,12];break;
+ case 'lamp':inset=[5,o.h-18,o.w-10,16];break;
+ case 'trash':inset=[2,o.h-15,o.w-4,13];break;
+ default:return [];
+ }
+ const [dx,dy,w,h]=inset;
+ return [{id:o.id,x:o.x+dx,y:o.y+dy,w,h}];
+}));
+const pilingSolids=Object.freeze(PIER_X.flatMap(px=>[3820,3945,4090].flatMap(py=>
+ [px+3,px+86].map(x=>({id:'piling:'+x+':'+py,x:x-7,y:py+9,w:14,h:22})))));
+const marinaFenceSolids=Object.freeze([[4400,285],[4790,285],[5190,295],[5590,310]].map(([x,w])=>
+ ({id:'garden-fence',x,y:3606,w,h:32})));
+const signLegSolids=Object.freeze([5395,5576].map(x=>({id:'waterfront-sign-leg',x:x-3,y:3603,w:15,h:40})));
+const outdoorSolids=Object.freeze([...promenadeSolids,...pilingSolids,...marinaFenceSolids,...signLegSolids]);
+
 function drawInteriorFloor(g,b){
  const f=b.floor;g.save();g.beginPath();g.rect(f.x,f.y,f.w,f.h);g.clip();
  g.fillStyle=f.fill;g.fillRect(f.x,f.y,f.w,f.h);
@@ -452,17 +474,35 @@ function waterBlocked(x,y,r=12){
  const onPier=PIER_X.some(px=>x>=px-r&&x<=px+90+r&&y<=4094);
  return !onPier;
 }
-function blocksProp(x,y,r){
- if(!enabled)return false;
- for(const b of interiorSolids){const ax=Math.max(b.x,Math.min(x,b.x+b.w));const ay=Math.max(b.y,Math.min(y,b.y+b.h));if((x-ax)**2+(y-ay)**2<r*r)return true;}
- return waterBlocked(x,y,r);
+function circleBlocks(x,y,r,b){
+ const ax=Math.max(b.x,Math.min(x,b.x+b.w));
+ const ay=Math.max(b.y,Math.min(y,b.y+b.h));
+ return (x-ax)**2+(y-ay)**2<r*r;
+}
+function blocksScenery(x,y,r=12){
+ if(!enabled||x<4380||x>5920||y<3200||y>4680)return false;
+ return outdoorSolids.some(b=>circleBlocks(x,y,r,b))||interiorSolids.some(b=>circleBlocks(x,y,r,b))||waterBlocked(x,y,r);
+}
+function blocksProp(x,y,r=12){
+ if(blocksScenery(x,y,r))return true;
+ if(!enabled||x<4400||x>5900||y<3220||y>4220)return false;
+ // Dynamic NPC feet circles prevent walking right through other people.
+ for(const a of actors){
+  if(a.building&&interiorAt(x,y)?.id!==a.building)continue;
+  if(Math.hypot(a.x-x,a.y-y)<r+11)return true;
+ }
+ return false;
 }
 function stepNPCs(dt){
  if(!enabled)return;
  for(const a of actors){a.moving=false;if(!a.speed||a.route.length===1)continue;
   const next=a.route[(a.step+1)%a.route.length];const dx=next[0]-a.x,dy=next[1]-a.y,len=Math.hypot(dx,dy);
   if(len<2){a.step=(a.step+1)%a.route.length;continue;}
-  const step=Math.max(0,Math.min(len,a.speed*Math.min(.05,dt)));a.x+=dx/len*step;a.y+=dy/len*step;
+  const step=Math.max(0,Math.min(len,a.speed*Math.min(.05,dt)));
+  const nx=a.x+dx/len*step,ny=a.y+dy/len*step;
+  // Environmental collision also governs ambient routines.
+  if(blocksScenery(nx,ny,8)){a.step=(a.step+1)%a.route.length;continue;}
+  a.x=nx;a.y=ny;
   a.moving=step>.001;a.distance=(a.distance||0)+step;a.stepLength=Math.max(4,a.speed*.13);
   if(a.moving)a.dir=Math.abs(dx)>Math.abs(dy)?(dx>0?'right':'left'):(dy>0?'down':'up');
  }
@@ -476,9 +516,10 @@ function metrics(){const sorted=samples.slice().sort((a,b)=>a-b);return Object.f
  renderSamples:frameCount,avgPaintMs:frameCount?+(frameCost/frameCount).toFixed(3):0,
  p95PaintMs:sorted.length?+sorted[Math.floor((sorted.length-1)*.95)].toFixed(3):0,
  maxPaintMs:+maxCost.toFixed(3),drawnChunks:cacheDraws,drawnObjects:objectsDrawn,waterFrames,
+ sceneryColliders:outdoorSolids.length,postColliders:pilingSolids.length,
  campaignEngineModified:false,zombieOutbreakModified:false,multiplayerTransport:'none'});}
 const api={inMarina:(x,y)=>enabled&&x>4400&&x<5900&&y>3220&&y<4220,version:'116-marina-1',worldId:WORLD,region:Object.freeze(TERRAIN),piers:PIER_X,objects,actors,interactions,
- background:begin,foreground,stepNPCs,drawNpc,blocksProp,metrics,
+ background:begin,foreground,stepNPCs,drawNpc,blocksProp,blocksScenery,metrics,
  pierOccluders,drawPierPost,
  interiors,interiorAt,updateInteriors,ownsSolid,drawInteriorFurniture,
  interiorFurniture:(view)=>interiors.flatMap(b=>b.roof<.995&&visible(b.exterior,view,60)?b.furniture:[]),

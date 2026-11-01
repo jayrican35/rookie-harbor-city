@@ -66,6 +66,7 @@ jobs:
           allowed={'published-game-capture/v120-marina-art.js','tools/generate_v121_marina_art.py',
            'tools/build_v121_preview.py','qa/check-v121-marina.cjs',
            '.github/workflows/v121-marina-qa.yml','.github/workflows/v121-baseline-capture.yml',
+           '.github/workflows/v121-live-audit.yml',
            'docs/V121-MARINA-ART-DIRECTION.md','qa/capture-v121-comparison.cjs'}
           assert all(x in allowed or x.startswith('published-game-capture/assets/v121-marina/')
            or x.startswith('qa/v121-reference/') for x in changed),changed-allowed

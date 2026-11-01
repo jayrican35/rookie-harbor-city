@@ -169,6 +169,13 @@ jobs:
           path: v127-citywide
           persist-credentials: false
 
+      - name: Check out V128 guarded world-quality candidate (isolated)
+        uses: actions/checkout@v4
+        with:
+          ref: 7ad854b0732098ddee0ee80400ea60c9e88b121f # V128 grounded RUN, all-district environmental dressing and QA
+          path: v128-world-quality
+          persist-credentials: false
+
       - name: Recover missing main-campaign environment art
         shell: bash
         working-directory: visual-preview
@@ -1029,6 +1036,57 @@ jobs:
           (f/'index.html').write_text(html)
           (f/'visual-change.json').write_text(json.dumps(diffs,indent=2))
           print('PASS V127 genuine ten-area visuals',diffs)
+          PY
+
+      - name: Build independent V128 playable city quality preview (never production)
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v128-world-quality
+          cp -a v128-world-quality/published-game-capture/. site/preview/v128-world-quality/
+          python3 v128-world-quality/tools/build_v128_preview.py site/preview/v128-world-quality
+          node --check site/preview/v128-world-quality/v117-jay.js
+          node --check site/preview/v128-world-quality/v127-citywide-art.js
+          node --check site/preview/v128-world-quality/game-v115.bundle.js
+          (cd v128-world-quality && node qa/check-v128-quality.cjs)
+          (cd v128-world-quality && node qa/check-v127-citywide.cjs)
+          (cd v128-world-quality && node qa/check-v126-polish.cjs)
+          (cd v128-world-quality && node qa/check-v117-jay.cjs)
+          cmp -s game-backup/published-game-capture/game.js site/preview/v128-world-quality/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/preview/v128-world-quality/outbreak.css
+          cmp -s site/preview/v127-citywide/outbreak.css site/preview/v128-world-quality/outbreak.css
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          echo 'PASS V128 original production, Zombie assets and mode preserved, continuous city preview only'
+
+      - name: Run actual phone-size V127 vs V128 region walkthrough and RUN test
+        shell: bash
+        run: |
+          set -euo pipefail
+          V127_BEFORE_URL='http://127.0.0.1:8765/preview/v127-citywide/?v116QA=0&pilotQA=1' \
+            V127_AFTER_URL='http://127.0.0.1:8765/preview/v128-world-quality/?v116QA=0&pilotQA=1' \
+            V127_EVIDENCE="$PWD/site/preview/v128-world-quality/evidence" \
+            node v128-world-quality/qa/capture-v127-citywide.cjs
+          V128_URL='http://127.0.0.1:8765/preview/v128-world-quality/?v116QA=0&pilotQA=1' \
+            V128_EVIDENCE="$PWD/site/preview/v128-world-quality/evidence" \
+            node v128-world-quality/qa/capture-v128-run.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          import json
+          p=Path('site/preview/v128-world-quality/evidence')
+          result=json.loads((p/'metrics.json').read_text())
+          assert len(result['results'])==2
+          scenes=[s['scene'] for s in result['results'][1]['shots']]
+          assert len(scenes)==10
+          for scene in scenes:
+            for suffix in ('before','after'):
+              with Image.open(p/f'{scene}-{suffix}.png') as im: im.verify()
+          for state in ('idle','running'):
+            with Image.open(p/f'v128-{state}.png') as im: im.verify()
+          cards=''.join(f'<section><h2>{s.replace("-"," ").title()}</h2><div><img src="{s}-before.png"><img src="{s}-after.png"></div></section>' for s in scenes)
+          (p/'index.html').write_text('<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><title>V128 Real Gameplay Quality Review</title><style>body{background:#102b3b;color:#f6eac9;font:16px system-ui;padding:20px}section{margin:20px 0}section>div{display:flex;flex-wrap:wrap;gap:12px}img{width:47%;max-width:420px;border-radius:9px}h2{font-size:19px}</style><h1>V128 vs V127 — Actual Harbor City Browser Captures</h1><p>Left: V127. Right: V128. Ten existing district/edge positions, same original connected game and viewport. Emulated Chrome is not an Android FPS certification.</p>'+cards+'<h2>Jay standing and running</h2><img src="v128-idle.png"><img src="v128-running.png">')
+          print('PASS V128 real playable before/after gallery and sprint states')
           PY
 
       - name: Configure GitHub Pages

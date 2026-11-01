@@ -233,6 +233,8 @@ function begin(g,opt,t){
    const tile=chunkAt(x,y);if(!tile)continue;g.save();g.imageSmoothingEnabled=false;g.drawImage(tile,x,y);g.restore();cacheDraws++;
   }
  }
+ // V119 visible wave/depth pass is inside this renderer, before solid piers and boats.
+ window.ROOKIE_V119_MOTION?.waterSurface(g,view,t);
  // Foliage casts a small directional shadow onto lawns and paths beneath it.
  for(const o of objects)if((o.type==='tree'||o.type==='palm')&&visible(o,view,0)){
   g.fillStyle='rgba(14,46,24,.20)';g.beginPath();g.ellipse(o.x+o.w*.62,o.y+o.h-3,o.w*.48,o.h*.13,-.15,0,Math.PI*2);g.fill();
@@ -330,7 +332,8 @@ function begin(g,opt,t){
   {id:'boat-sail.png',x:5720,y:3900,w:82,h:150,p:5}
  ];
  for(const o of boats){if(!visible(o,view))continue;const sprite=img(o.id);if(!sprite)continue;
-  const dy=Math.sin(t*.00145+o.p)*3;
+  const dy=Math.sin(t*.00145+o.p)*5;
+  window.ROOKIE_V119_MOTION?.boatWake(g,o,t);
   g.strokeStyle='rgba(116,201,217,.35)';g.lineWidth=1;g.beginPath();g.ellipse(o.x+o.w/2,o.y+o.h-6+dy,o.w*.48,9+Math.sin(t*.001+o.p)*2,0,0,Math.PI*2);g.stroke();
   g.fillStyle='rgba(6,38,64,.24)';g.beginPath();g.ellipse(o.x+o.w/2,o.y+o.h/2+11,o.w*.34,11,0,0,Math.PI*2);g.fill();
   paintSprite(g,o.id,o.x,o.y+dy,o.w,o.h);objectsDrawn++;
@@ -366,11 +369,15 @@ function begin(g,opt,t){
 function drawNpc(g,a,t){
  const detail=img('marina-reference-atlas.webp'),p=a.npcStyle||0;
  g.fillStyle='rgba(9,28,40,.26)';g.beginPath();g.ellipse(a.x,a.y+6,13,5,0,0,Math.PI*2);g.fill();
- if(window.ROOKIE_V116_WALK?.draw(g,a))return;
+ const motion=window.ROOKIE_V119_MOTION;
+ motion?.footsteps(g,a,t);
+ g.save();if(motion)g.translate(0,-motion.characterBob(a,t));
+ if(window.ROOKIE_V116_WALK?.draw(g,a)){g.restore();return;}
  if(detail){const key=p===0?'hero':p===1||p===2?'fisher':'visitor';
   const bob=a.moving?Math.sin(t*.012)*1.1:0;
-  paintSprite(g,key,a.x-20,a.y-48+bob,40,55);return;}
+  paintSprite(g,key,a.x-20,a.y-48+bob,40,55);g.restore();return;}
  const im=img('marina-people.png');if(im)g.drawImage(im,p*32,0,32,48,a.x-15,a.y-38,32,48);
+ g.restore();
 }
 function foreground(g,opt,t){
  if(!enabled||!opt||opt.zoom<.14)return;

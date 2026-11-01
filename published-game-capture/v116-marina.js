@@ -127,10 +127,14 @@ function begin(g,opt,t){
   g.fillStyle='#e2d5ae';g.fillRect(x,3642,w,3);
   for(let xx=x;xx<x+w;xx+=24){g.fillStyle='#aaa98c';g.fillRect(xx,3643,1,7);}
  }
- const gardenFence=img('fence_horizontal.webp');
- if(gardenFence)for(const [x,w] of [[4400,285],[4790,285],[5190,295],[5590,310]]){
+ // Fine chain-link garden fencing with iron posts and a pale top rail.
+ for(const [x,w] of [[4400,285],[4790,285],[5190,295],[5590,310]]){
   if(!visible({x,y:3604,w,h:40},view,0))continue;
-  for(let xx=x;xx<x+w;xx+=64)g.drawImage(gardenFence,xx,3604,Math.min(64,x+w-xx),38);
+  g.fillStyle='#233d3c';g.fillRect(x,3606,w,3);g.fillRect(x,3635,w,3);
+  g.fillStyle='#93a98d';g.fillRect(x,3604,w,2);
+  g.strokeStyle='rgba(153,182,158,.65)';g.lineWidth=1;
+  for(let xx=x;xx<x+w-10;xx+=10){g.beginPath();g.moveTo(xx,3610);g.lineTo(Math.min(xx+19,x+w),3634);g.moveTo(xx,3634);g.lineTo(Math.min(xx+19,x+w),3610);g.stroke();}
+  for(let xx=x;xx<=x+w;xx+=62){g.fillStyle='#243c36';g.fillRect(xx,3601,5,39);g.fillStyle='#d7c899';g.fillRect(xx,3601,5,3);}
  }
  // Palm planter foundations sit below foliage and actors.
  for(const o of objects)if(o.type==='palm'){

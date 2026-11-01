@@ -50,7 +50,7 @@ for(const zoom of [.35,.82,1.04,1.8]){
   const wood=draws.filter(d=>d.length===9&&d[0].src.endsWith('marina-detail-tiles.png')&&d[5]>=px&&d[5]<px+90&&d[6]>=3800);
   assert.equal(wood.reduce((area,d)=>area+d[7]*d[8],0),90*300,'Wood must cover the entire native pier: '+px);
   assert(wood.every(d=>d[5]+d[7]<=px+90&&d[6]+d[8]<=4100),'Wood cannot spill into blocked water');
-  assert(!waves.some(([x,y,x2])=>y<4100&&x<px+90&&x2>px),'Water sparkles cannot be painted over dock planks');
+  assert(!waves.some(([x,y,x2])=>y>=3800&&y<4100&&x<px+90&&x2>px),'Water sparkles cannot be painted over dock planks');
  }
 }
 

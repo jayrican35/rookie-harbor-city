@@ -405,7 +405,7 @@
       if(o.t==='mailbox'){g.fillStyle='#28476b';g.fillRect(x-8,y-14,16,16);continue;}
       if(o.t==='fountain'){g.fillStyle='#70b9cc';g.beginPath();g.arc(x,y,35,0,Math.PI*2);g.fill();}
     }
-    if(campus.zoom>.25){g.font='800 28px Barlow Condensed,sans-serif';g.textAlign='center';
+    if(campus.zoom>.25&&!(d.id==='waterfront'&&window.ROOKIE_V116_MARINA?.active())){g.font='800 28px Barlow Condensed,sans-serif';g.textAlign='center';
       g.fillStyle='#fff0b5';g.fillText(d.map.name,d.w/2,46);}
     g.restore();
   }

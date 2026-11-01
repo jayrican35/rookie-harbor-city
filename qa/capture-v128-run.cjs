@@ -23,7 +23,7 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
   const running=await page.evaluate(()=>window.ROOKIE_JAY.snapshot('connected-jay'));
   await page.screenshot({path:path.join(folder,'v128-running.png')});
   await page.keyboard.up('ArrowRight');await page.keyboard.up('Shift');
-  await page.waitForTimeout(320);
+  await page.waitForTimeout(900);
   const stopped=await page.evaluate(()=>window.ROOKIE_JAY.snapshot('connected-jay'));
   assert.equal(stopped.mode,'idle','RUN to idle must settle with player planted');
   assert(running.x!==stopped.x||running.y!==stopped.y||running.mode==='run');

@@ -88,7 +88,7 @@ jobs:
       - name: Check out V116 Southbay Marina game integration
         uses: actions/checkout@v4
         with:
-          ref: e92bf6ac11615ec680e341473b872da26e18cf55 # verified directional walk cycles
+          ref: e14214c11b1ba9ab137d37df68b237778b91afdf # verified shared Jay walk/run across city and campaign
           path: v116-marina
           persist-credentials: false
 
@@ -405,6 +405,11 @@ jobs:
           (cd v116-marina && node qa/check-v116-marina.cjs)
           (cd v116-marina && node qa/check-v116-hud.cjs)
           (cd v116-marina && node qa/check-v116-walk.cjs)
+          (cd v116-marina && node qa/check-v117-jay.cjs ../site/preview/v116-marina/game-v115.bundle.js)
+          node --check site/preview/v116-marina/v117-jay.js
+          grep -q 'v117-jay.js?v=' site/preview/v116-marina/index.html
+          test -s site/preview/v116-marina/assets/jay-v117/jay-walk.webp
+          test -s site/preview/v116-marina/assets/jay-v117/jay-run.webp
           node --check site/preview/v116-marina/v116-marina-walk.js
           grep -q 'v116-marina-walk.js?v=' site/preview/v116-marina/index.html
           test -s site/preview/v116-marina/assets/v116-marina/walk-officer.webp

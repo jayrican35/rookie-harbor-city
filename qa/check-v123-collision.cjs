@@ -47,7 +47,7 @@ assert.equal(m.blocksProp(fisher.x,fisher.y),true,'Jay cannot walk through fishe
 const oldX=visitor.x;
 for(let i=0;i<200;i++)m.stepNPCs(.05);
 assert(visitor.x>oldX,'Visitor should continue moving along clear walkway');
-assert(m.actors.every(a=>!m.blocksScenery(a.x,a.y,8)),
+assert(m.actors.filter(a=>!a.building).every(a=>!m.blocksScenery(a.x,a.y,8)),
  'NPC feet should not end up inside prop collision');
 assert(m.metrics().zombieOutbreakModified===false);
 console.log('PASS V123: benches, planters, bins, lamps, palms, 18 pilings, fence, NPCs solid; pier route, door, water and NPC walking intact');

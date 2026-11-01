@@ -7,7 +7,9 @@ root=Path(sys.argv[1]).resolve();tools=Path(__file__).resolve().parent
 subprocess.run([sys.executable,str(tools/'build_v126_preview.py'),str(root)],check=True)
 art=root/'v127-citywide-art.js';assert art.stat().st_size>7000
 p=root/'index.html';html=p.read_text()
-key='<script src="./v115-world.js"></script>'
+# The existing V115 build compiles world.js + campus.js into ONE engine bundle.
+# Attach the V127 visual adapter after that canonical bundle has initialized.
+key='<script src="./game-v115.bundle.js"></script>'
 assert html.count(key)==1 and html.count('./v127-citywide-art.js')==0
 stamp=hashlib.sha256(art.read_bytes()).hexdigest()[:12]
 html=html.replace(key,key+'\n<script src="./v127-citywide-art.js?v='+stamp+'"></script>')

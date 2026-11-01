@@ -18,7 +18,7 @@ for(const file of imageFiles){const im=new Image();im.decoding='async';images[fi
 for(const file of sourceFiles){const im=new Image();im.decoding='async';images[file+'.webp']=im;im.src='./assets/exterior/'+file+'.webp';}
 const img=(key)=>{const im=images[key];return im&&im.complete&&im.naturalWidth>0?im:null;};
 let enabled=true,ready=false,cacheDraws=0,waterFrames=0,objectsDrawn=0,prepass=0;
-const cached=new Map(),CAP=18; // 18 * 256² * 4 = 4.5 MB maximum terrain cache
+const cached=new Map(),CAP=40; // 40 * 256² * 4 = 10 MiB max; avoids portrait viewport LRU rebuild thrashing
 const objects=Object.freeze([
  // Original Waterfront MAPS: OFFICE x180,y140,w300,h200; SHED B x620,y180,w220,h150.
  {id:'marina:office',type:'building',image:'marina-office.png',x:4580,y:3360,w:300,h:200,solid:false},

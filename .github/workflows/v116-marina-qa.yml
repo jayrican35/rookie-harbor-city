@@ -25,6 +25,8 @@ jobs:
           node qa/check-v116-marina.cjs
           node qa/check-v116-hud.cjs
           node qa/check-v116-walk.cjs
+          node qa/check-v117-jay.cjs
+          node --check published-game-capture/v117-jay.js
           node --check published-game-capture/v116-marina-walk.js
           node --check published-game-capture/v116-marina-hud.js
           python3 -m py_compile tools/build_v116_preview.py
@@ -56,6 +58,8 @@ jobs:
           allowed|={'published-game-capture/v116-marina-hud.js','qa/check-v116-hud.cjs','qa/check-v115-campus.cjs','tools/generate_v116_detail_tiles.py','published-game-capture/assets/v116-marina/marina-detail-tiles.png','published-game-capture/assets/v116-marina/marina-reference-atlas.webp','published-game-capture/assets/v116-marina/marina-reference-atlas.json'}
           allowed|={'published-game-capture/v116-marina-walk.js','qa/check-v116-walk.cjs','tools/prepare_v116_walk_sheets.py','published-game-capture/assets/v116-marina/walk-sheets.json'}
           allowed|={'published-game-capture/assets/v116-marina/walk-'+key+'.webp' for key in ['officer','fisher','visitor']}
+          allowed|={'published-game-capture/v117-jay.js','published-game-capture/v117-jay-bridge.js','published-game-capture/v117-jay.css','tools/prepare_v117_jay.py','qa/check-v117-jay.cjs','docs/V117-JAY.md'}
+          allowed|={'published-game-capture/assets/jay-v117/'+name for name in ['jay-walk.webp','jay-run.webp','manifest.json']}
           assert files<=allowed, 'Unauthorized changes: '+str(sorted(files-allowed))
           assert not any('zombie' in f.lower() or 'outbreak' in f.lower() for f in files)
           print('PASS V116: source, navigation, campaign engine and Zombie Outbreak remain preserved')

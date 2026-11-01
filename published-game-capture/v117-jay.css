@@ -1,0 +1,6 @@
+[data-jay-run]{min-width:48px;min-height:44px;border:2px solid #bdbb93;border-radius:16px;background:#193b50;color:#ffe19b;font:800 17px 'Barlow Condensed',sans-serif;touch-action:manipulation}
+[data-jay-run][aria-pressed="true"]{background:#735622;border-color:#ffe19b}
+#v117CampaignRun{position:absolute;bottom:150px;left:12px;z-index:55}
+#v117CampaignRun[hidden],body.driving #v117CampaignRun,body.training-mode #v117CampaignRun,body.outbreak-mode #v117CampaignRun,body.v115-campus-open #v117CampaignRun{display:none}
+body.training-mode #v117ConnectedRun,body.outbreak-mode #v117ConnectedRun{display:none}
+@media(max-width:600px){.v115-campus-tools{flex-wrap:wrap;max-width:220px}}

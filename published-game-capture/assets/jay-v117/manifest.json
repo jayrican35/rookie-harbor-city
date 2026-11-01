@@ -1,0 +1,50 @@
+{
+  "walk": {
+    "file": "jay-walk.webp",
+    "source_sha256": "59f6992314e45695b882c21c345075c84186d28c5c8fe26b952b33beefedba99",
+    "sha256": "aff861dfeb6b9feee7f591dfeafb8174d0ab42ae52e4ef1017a837c12713fe38",
+    "cell": [
+      128,
+      128
+    ],
+    "baseline": 122,
+    "columns": 9,
+    "rows": [
+      "down",
+      "left",
+      "right",
+      "up"
+    ],
+    "idle_column": 0,
+    "unique_by_row": [
+      9,
+      9,
+      9,
+      9
+    ]
+  },
+  "run": {
+    "file": "jay-run.webp",
+    "source_sha256": "84a6e5f19aea943a543716ce56bd89417fea083572ae8436e43711c191022a6b",
+    "sha256": "f89674a59bc393bc178fe3daab40c0af4d0cbf93d6a608bc658b1e4533f060f6",
+    "cell": [
+      128,
+      128
+    ],
+    "baseline": 122,
+    "columns": 8,
+    "rows": [
+      "down",
+      "left",
+      "right",
+      "up"
+    ],
+    "idle_column": null,
+    "unique_by_row": [
+      8,
+      8,
+      8,
+      8
+    ]
+  }
+}

@@ -116,7 +116,7 @@
     }
     return null;
   }
-  const campus={open:false,x:FRONT.x,y:FRONT.y+86,dir:'up',stride:0,moved:false,
+  const campus={open:false,x:FRONT.x,y:FRONT.y+86,dir:'up',stride:0,moved:false,speed:0,
     camX:0,camY:0,zoom:1.15,autoZoom:true,follow:true,keys:new Set(),stick:null,frame:0,last:0,
     near:null,firstPaint:true,doorCrossings:0,previousRoom:null,visibleChunks:[]};
   const modal=document.createElement('section');modal.id='v115Campus';modal.hidden=true;
@@ -142,7 +142,7 @@
   let tw=960,th=640,dpr=1,oldCtx=null,cache=null,cacheValid=false,roofCanvas=null;
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
   function pickZoom(z){campus.autoZoom=false;campus.zoom=clamp(z,.024,2.5);campus.follow=campus.zoom>.09;}
-  function clearInput(){campus.keys.clear();campus.stick=null;modal.querySelector('#v115CampusKnob').style.transform='translate(0,0)';}
+  function clearInput(){window.ROOKIE_JAY?.reset();campus.speed=0;campus.keys.clear();campus.stick=null;modal.querySelector('#v115CampusKnob').style.transform='translate(0,0)';}
   function resize(){
     if(!campus.open)return;
     const r=cv.getBoundingClientRect();dpr=Math.min(1.5,window.devicePixelRatio||1);
@@ -203,14 +203,19 @@
     attachMarinaActors();
     const marina=window.ROOKIE_V116_MARINA;
     if(marina)marina.stepNPCs(dt);
-    const {dx,dy}=direction(),step=clamp(dt,0,.05)*210;
+    let {dx,dy}=direction();
+    const shared=window.ROOKIE_JAY,run=!!shared?.requestRun();
+    if(Math.hypot(dx,dy)<.08){dx=0;dy=0;}
+    const motion=shared?shared.advanceSpeed(campus.speed||0,(dx||dy)?(run?325:210):0,dt):{speed:210,distance:clamp(dt,0,.05)*210};
+    campus.speed=motion.speed;const step=motion.distance;
     const ox=campus.x,oy=campus.y,r=12;
-    if(dx<0)campus.dir='left';else if(dx>0)campus.dir='right';
-    else if(dy<0)campus.dir='up';else if(dy>0)campus.dir='down';
+    const ax=Math.abs(dx),ay=Math.abs(dy),vertical=campus.dir==='up'||campus.dir==='down';
+    if(dx||dy){if(ay>ax*1.15||(ay>=ax/1.15&&vertical))campus.dir=dy<0?'up':'down';else campus.dir=dx<0?'left':'right';}
     if(!blocked(campus.x+dx*step,campus.y,r))campus.x+=dx*step;
     if(!blocked(campus.x,campus.y+dy*step,r))campus.y+=dy*step;
     const dist=Math.hypot(campus.x-ox,campus.y-oy);
     campus.moved=dist>.04;if(campus.moved)campus.stride+=dist*.055;
+    if(shared?.eligible())shared.update('connected-jay',{x:campus.x,y:campus.y,dir:campus.dir,map:WORLD_ID,run},dt);
     const nowRoom=interiorRoom(campus.x,campus.y);
     if((campus.previousRoom===null)!==(nowRoom===null))campus.doorCrossings++;
     campus.previousRoom=nowRoom;
@@ -475,6 +480,12 @@
     g.restore();
   }
   function drawOfficer(p,isPlayer,t){
+    const shared=window.ROOKIE_JAY;
+    if(isPlayer)shared?.control?.('v117ConnectedRun',!!shared.eligible());
+    if(isPlayer&&shared?.eligible()){
+      shared.draw(g,'connected-jay',{x:p.x,y:p.y,dir:campus.dir,map:WORLD_ID});
+      g.strokeStyle='#f4cf70';g.lineWidth=2;g.beginPath();g.ellipse(p.x,p.y+3,18,7,0,0,Math.PI*2);g.stroke();return;
+    }
     const marina=window.ROOKIE_V116_MARINA;
     if(isPlayer&&marina&&marina.inMarina(p.x,p.y)){
       marina.drawNpc(g,{x:p.x,y:p.y,npcStyle:0,phase:0,moving:campus.moved,dir:campus.dir,distance:campus.stride/.055},t);

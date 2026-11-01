@@ -123,7 +123,7 @@ jobs:
       - name: Check out isolated V121 art-directed marina
         uses: actions/checkout@v4
         with:
-          ref: 22c8d8630e65f4218b63a388e54c2c4af9760f1c # V121 passing CI + generated atlas snapshot
+          ref: b9918ba7fdd0a4a1df79aaa1e2046278e52ca3e7 # V121 passing CI + generated atlas snapshot
           path: v121-marina
           persist-credentials: false
 

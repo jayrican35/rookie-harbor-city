@@ -1,8 +1,8 @@
-/* V116 only: distance-driven 4-direction sprite animation. No world/save writes. */
+/* V123: same distance-driven animations; cleaned sprite atlases remove detached colored bar artifacts. No world/save writes. */
 (function(){
 'use strict';
 const keys=['officer','fisher','visitor'],images={};
-for(const key of keys){const im=new Image();im.decoding='async';im.src='./assets/v116-marina/walk-'+key+'.webp?v=walk1';images[key]=im;}
+for(const key of keys){const im=new Image();im.decoding='async';im.src='./assets/v123-marina-npcs/walk-'+key+'.png?v=clean1';images[key]=im;}
 const rows=Object.freeze({down:0,left:1,right:2,up:3});
 function pose(a){
  const key=a.npcStyle===undefined||a.npcStyle===0?'officer':a.npcStyle===1||a.npcStyle===2?'fisher':'visitor';

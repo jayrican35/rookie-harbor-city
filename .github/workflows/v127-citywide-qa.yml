@@ -1,0 +1,73 @@
+name: V127 citywide visual continuity and uninterrupted HUD QA
+on:
+  push:
+    branches: [feature/v127-citywide-visual-continuity]
+    paths:
+      - 'published-game-capture/v127-citywide-art.js'
+      - 'published-game-capture/v115-campus.js'
+      - 'published-game-capture/v116-marina-hud.js'
+      - 'tools/build_v127_preview.py'
+      - 'qa/check-v127-citywide.cjs'
+      - 'qa/capture-v127-citywide.cjs'
+      - 'docs/V127-CITYWIDE-PLAN.md'
+      - '.github/workflows/v127-citywide-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - name: Native citywide material and persistent HUD unit tests
+        run: |
+          node --check published-game-capture/v127-citywide-art.js
+          node --check published-game-capture/v115-campus.js
+          node --check published-game-capture/v116-marina-hud.js
+          node qa/check-v127-citywide.cjs
+      - name: Entire original connected-world and approved mobile gameplay regression suite
+        run: |
+          node qa/check-v115-campus.cjs
+          node qa/check-v115-connected-city.cjs
+          node qa/check-v115-road-layout.cjs
+          node qa/check-v116-marina.cjs
+          node qa/check-v116-walk.cjs
+          node qa/check-v116-hud.cjs
+          node qa/check-v117-jay.cjs
+          node qa/check-v117-interiors.cjs
+          node qa/check-v119-water-motion.cjs
+          node qa/check-v121-marina.cjs
+          node qa/check-v122-pier.cjs
+          node qa/check-v123-collision.cjs
+          node qa/check-v124-depth.cjs
+          node qa/check-v125-mobile-hud.cjs
+          node qa/check-v126-polish.cjs
+      - name: Assemble real V127 game with all approved marina/animation/HUD code
+        run: |
+          python3 -m pip install --disable-pip-version-check -q pillow numpy
+          cp -a published-game-capture /tmp/v127-city
+          python3 tools/build_v127_preview.py /tmp/v127-city
+          grep -q 'v127-continuous-art-and-hud' /tmp/v127-city/index.html
+          grep -q 'v127-citywide-art.js?v=' /tmp/v127-city/index.html
+          node --check /tmp/v127-city/game-v115.bundle.js
+      - name: Protect original game and Zombie Outbreak byte-identically
+        run: |
+          python3 - <<'PY'
+          import subprocess
+          from pathlib import Path
+          base='971d63b83697f988a6a30c6524d0708c36fc5ea1'
+          changed=set(subprocess.check_output(['git','diff','--name-only',base,'HEAD'],text=True).splitlines())
+          allowed={'published-game-capture/v115-campus.js','published-game-capture/v116-marina-hud.js',
+              'published-game-capture/v127-citywide-art.js','tools/build_v127_preview.py',
+              'qa/check-v127-citywide.cjs','qa/capture-v127-citywide.cjs',
+              '.github/workflows/v127-citywide-qa.yml','docs/V127-CITYWIDE-PLAN.md'}
+          assert changed<=allowed,sorted(changed-allowed)
+          for path in ('published-game-capture/game.js','published-game-capture/outbreak.css',
+              'published-game-capture/controls.css','published-game-capture/v116-marina.js',
+              'published-game-capture/v117-jay.js','published-game-capture/v125-mobile-hud.css',
+              'published-game-capture/v120-marina-art.js','published-game-capture/v119-water-motion.js'):
+            assert Path(path).read_bytes()==subprocess.check_output(['git','show',base+':'+path]),path
+          assert not any('zombie' in p.lower() or 'outbreak' in p.lower() or '/assets/' in p for p in changed)
+          print('PASS V127 no Zombie, vehicle, gameplay, maps or asset edits. Only connected city art adaptation and persistent HUD')
+          PY

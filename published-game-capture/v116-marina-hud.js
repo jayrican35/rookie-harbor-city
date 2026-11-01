@@ -49,7 +49,10 @@ function ready(){
    menuToggle.setAttribute?.('aria-expanded','false');
  };
  menuToggle.onclick=()=>{
-   menuOpen=!menuOpen;root.classList.toggle('v125-menu-open',menuOpen);
+   // Derive from real DOM, so closing/reopening the preview never leaves
+   // stale menu-open state in an invisible JavaScript variable.
+   menuOpen=!root.classList?.contains?.('v125-menu-open');
+   root.classList.toggle('v125-menu-open',menuOpen);
    menuToggle.setAttribute?.('aria-expanded',String(menuOpen));
  };
  settings.onclick=()=>{

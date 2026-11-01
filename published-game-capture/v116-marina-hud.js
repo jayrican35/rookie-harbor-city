@@ -31,6 +31,29 @@ function ready(){
  <nav class="v116-actions" aria-label="Adventure controls"><button type="button" data-action="case">${icon('case')}Case File</button><button type="button" data-action="map">${icon('map')}Map</button><button type="button" data-action="gear">${icon('gear')}Gear</button><button type="button" data-action="team">${icon('team')}Team</button></nav>
  <section class="v116-panel" role="dialog" aria-modal="true" aria-labelledby="v116PanelTitle" hidden><button class="v116-panel-close" type="button" aria-label="Close marina panel">×</button><h2 id="v116PanelTitle"></h2><div class="v116-panel-body"></div></section>`;
  campus.appendChild(root);panel=root.querySelector('.v116-panel');map=root.querySelector('canvas');context=map.getContext('2d');
+ // Upgrade THIS existing HUD in place; no second UI renderer or interaction bus.
+ root.classList.add?.('v125-ready');
+ const menuToggle=document.createElement('button');menuToggle.type='button';menuToggle.id='v125HudMenu';
+ menuToggle.textContent='☰ Menu';menuToggle.setAttribute?.('aria-expanded','false');
+ menuToggle.setAttribute?.('aria-label','Open Case File, Map, Gear, Team and Settings');
+ menuToggle.setAttribute?.('aria-controls','v125HudActions');root.appendChild(menuToggle);
+ const nav=root.querySelector('.v116-actions');if(nav)nav.id='v125HudActions';
+ const settings=document.createElement('button');settings.type='button';settings.id='v125HudSettings';
+ settings.textContent='⚙ Settings';root.appendChild(settings);
+ let menuOpen=false;
+ const closeMenu=()=>{
+   menuOpen=false;root.classList.toggle('v125-menu-open',false);
+   menuToggle.setAttribute?.('aria-expanded','false');
+ };
+ menuToggle.onclick=()=>{
+   menuOpen=!menuOpen;root.classList.toggle('v125-menu-open',menuOpen);
+   menuToggle.setAttribute?.('aria-expanded',String(menuOpen));
+ };
+ settings.onclick=()=>{
+   closeMenu();
+   // Native settings in the original game—not a duplicate options screen.
+   window.HARBOR.seamlessCampusV115.close();document.getElementById('btnMenu')?.click();
+ };
  const profiles=()=>{window.HARBOR.seamlessCampusV115.close();window.HARBOR.profiles?.open();};
  root.querySelector('.v116-identity').onclick=profiles;
  for(const b of root.querySelectorAll('[data-profile]'))b.onclick=profiles;
@@ -38,6 +61,7 @@ function ready(){
  root.querySelector('.v116-panel-close').onclick=()=>{panel.hidden=true;root.querySelector('[data-action="case"]').focus();};
  panel.addEventListener('keydown',e=>{if(e.key==='Tab'){const f=Array.from(panel.querySelectorAll('button,[href],input,[tabindex]')).filter(e=>!e.disabled);const first=f[0],last=f[f.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}if(e.key==='Escape'){e.stopPropagation();panel.hidden=true;root.querySelector('[data-action="case"]').focus();}});
  for(const b of root.querySelectorAll('[data-action]'))b.onclick=()=>{
+  closeMenu();
   const action=b.dataset.action;
   if(action==='case'||action==='map')return openPanel(action);
   if(action==='team')return profiles();
@@ -63,6 +87,12 @@ function paint(state,t){
  if(mapArt)g.drawImage(mapArt,0,0);else {g.fillStyle='#12649b';g.fillRect(0,0,176,112);}
  const x=Math.max(6,Math.min(170,(state.x-4400)/1500*176)),y=Math.max(9,Math.min(103,(state.y-3220)/1000*112));star(g,x,y);
 }
-window.ROOKIE_V116_HUD=Object.freeze({paint,blocked:()=>!!panel&&!panel.hidden,close:()=>{if(panel){const opened=!panel.hidden;panel.hidden=true;if(opened)root.querySelector('[data-action="case"]').focus();}}});
+window.ROOKIE_V116_HUD=Object.freeze({paint,
+ blocked:()=>!!panel&&!panel.hidden||!!root?.classList?.contains?.('v125-menu-open'),
+ close:()=>{if(panel){const opened=!panel.hidden;panel.hidden=true;
+   if(root){root.classList.toggle('v125-menu-open',false);
+     root.querySelector('#v125HudMenu')?.setAttribute?.('aria-expanded','false');}
+   if(opened)root.querySelector('[data-action="case"]').focus();}}
+});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ready,{once:true});else ready();
 })();

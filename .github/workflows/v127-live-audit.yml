@@ -1,0 +1,46 @@
+name: V127 actual-game visual contact sheet (QA-only)
+on:
+  push:
+    branches: [qa/v127-citywide-visual-reference]
+    paths: ['.github/workflows/v127-live-audit.yml']
+  workflow_dispatch:
+permissions: {contents: write}
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch published actual HTML Canvas captures and make QA contact sheet
+        run: |
+          python3 -m pip install -q pillow requests
+          python3 - <<'PY'
+          import requests,io
+          from PIL import Image,ImageDraw,ImageFont
+          from pathlib import Path
+          names=['marina-east-boundary','southbay-west-connection','downtown','residential','industrial']
+          folder=Path('qa/v127-reference');folder.mkdir(parents=True,exist_ok=True)
+          sheet=Image.new('RGB',(1200,1840),'#0c253a')
+          d=ImageDraw.Draw(sheet)
+          for index,name in enumerate(names):
+           url='https://jayrican35.github.io/rookie-harbor-city/preview/v127-citywide/evidence/'+name+'-after.png'
+           res=requests.get(url,timeout=60);res.raise_for_status()
+           im=Image.open(io.BytesIO(res.content)).convert('RGB')
+           im.thumbnail((380,795))
+           col=index%3;row=index//3
+           x=10+col*395;y=40+row*900
+           sheet.paste(im,(x,y))
+           d.text((x+3,y-23),name.replace('-',' ').title(),fill='#ffe4b6')
+           im.save(folder/(name+'.jpg'),quality=85)
+           print('Real live game screenshot',name,im.size,flush=True)
+          sheet.save(folder/'citywide-contact.jpg',quality=86)
+          print('PASS V127 live screenshots inspected and saved to QA-only branch')
+          PY
+      - name: Commit only visual evidence
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add qa/v127-reference/*.jpg
+          if ! git diff --cached --quiet; then
+            git commit -m 'Preserve V127 live district visual contact sheet for human art review'
+            git push origin HEAD:qa/v127-citywide-visual-reference
+          fi

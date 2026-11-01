@@ -20,10 +20,12 @@ assert(marina.ownsSolid({id:'waterfront',x:4635.194805194806,y:3360,w:189.610389
 assert(!marina.ownsSolid({id:'waterfront',x:4730,y:3360,w:12,h:200}));
 assert(!marina.ownsSolid({id:'midtown',x:4580,y:3360,w:300,h:200}));
 const b=marina.interiors[0],door=b.door;
+// V123 spawn just clear of new planter/visitor collisions; keep the same continuous doorway test.
+const approachY=3726;
 const tick=(time,n)=>{for(let i=0;i<n;i++){const id=queue.keys().next().value;assert(id);const fn=queue.get(id);queue.delete(id);fn(time+i*1000/60);}};
 const key=(key,pressed)=>window.events[(pressed?'keydown':'keyup')+'_capture']({key,preventDefault(){},stopImmediatePropagation(){}});
 let offscreenStationPaints=0;sandbox.drawRoom=()=>offscreenStationPaints++;
-assert(api.openAt(door.x,3744,2));
+assert(api.openAt(door.x,approachY,2));
 const mapBefore=sandbox.state.map;key('w',true);
 const positions=[];for(let i=0;i<132;i++){tick(100+i*1000/60,1);positions.push(api.test.position());}
 key('w',false);tick(2400,20);
@@ -49,8 +51,8 @@ assert.equal(api.snapshot().worldId,'harbor-main');assert.equal(api.snapshot().c
 api.close();
 // Reuse exactly the same held-key doorway test for every existing footprint.
 for(const other of marina.interiors.slice(1)){
- const d=other.door;assert(api.openAt(d.x,3744,1.3));key('w',true);
- const steps=Math.ceil((3744-d.y+36)/(210/60));tick(6000,steps);key('w',false);tick(9000,30);
+ const d=other.door;assert(api.openAt(d.x,approachY,1.3));key('w',true);
+ const steps=Math.ceil((approachY-d.y+36)/(210/60));tick(6000,steps);key('w',false);tick(9000,30);
  assert(marina.interiorAt(api.test.position().x,api.test.position().y)?.id===other.id,'Seamless entry '+other.id);assert(other.roof<.01);
  for(const wall of other.walls)assert(api.test.blocked(wall.x+wall.w/2,wall.y+wall.h/2));
  for(const f of other.furniture.filter(f=>f.solid))assert(api.test.blocked(f.x+f.w/2,f.y+f.h/2));

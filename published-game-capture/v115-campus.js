@@ -530,8 +530,14 @@
     // One depth queue: existing actors and new furnishing geometry share it.
     const entries=npcActors.filter(npc=>visible(npc)&&(!marina?.interiorActorVisible||marina.interiorActorVisible(npc))).map(npc=>({y:npc.y,actor:npc}));
     if(marina?.interiorFurniture)for(const f of marina.interiorFurniture(view))entries.push({y:f.y+f.h,furniture:f});
+    // V122: native marina piling bases join the SAME y-sorted draw queue as
+    // Jay, ambient NPCs and interior furniture. This gives genuine occlusion:
+    // an actor behind a piling is covered; in front of it, the actor covers it.
+    if(marina?.active()&&marina.pierOccluders)
+      for(const post of marina.pierOccluders(view))entries.push({y:post.depthY,pierPost:post});
     entries.push({y:campus.y,player:true});entries.sort((a,b)=>a.y-b.y);
     for(const entry of entries){
+      if(entry.pierPost){marina.drawPierPost(g,entry.pierPost);continue;}
       if(entry.player){drawOfficer({x:campus.x,y:campus.y,color:'#2b467a'},true,t);continue;}
       if(entry.furniture){marina.drawInteriorFurniture(g,entry.furniture);continue;}
       const npc=entry.actor;

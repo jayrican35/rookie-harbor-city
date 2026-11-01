@@ -276,6 +276,9 @@
     g.restore();
   }
   function drawTree(x,y,r){
+    const premium=window.ROOKIE_V127_CITY?.spriteImage?.('tree');
+    if(premium){g.save();g.imageSmoothingEnabled=false;
+      g.drawImage(premium,x-r*1.7,y-r*2.4,r*3.4,r*3.15);g.restore();return;}
     g.fillStyle='#695141';g.fillRect(x-5,y+4,10,30);
     g.fillStyle='#214d39';g.beginPath();g.arc(x,y,r+3,0,7);g.fill();
     g.fillStyle='#5da754';g.beginPath();g.arc(x-4,y-5,r,0,7);g.fill();

@@ -95,7 +95,7 @@ jobs:
       - name: Check out V117 seamless marina interiors
         uses: actions/checkout@v4
         with:
-          ref: 67a262a37b867a46e42764dd5578e28bb2a2a91e # verified continuous café, office, bait shop and workshop
+          ref: 8e16bdce99cf0d4393bd8806e40fb35bf313fd51 # verified doors, furnishings and offscreen precinct culling
           path: v117-interiors
           persist-credentials: false
 

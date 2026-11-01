@@ -151,7 +151,7 @@ jobs:
       - name: Check out separate V125 campaign HUD upgrade
         uses: actions/checkout@v4
         with:
-          ref: 47c8d16de49effaac41c9b16a5600963974c132f # audited single input / HUD source
+          ref: 11bb1b46937549cb1bd88ddc25b8e53e620600a3 # verified V125 final menu-state correction
           path: v125-mobile
           persist-credentials: false
 

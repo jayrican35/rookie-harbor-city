@@ -1,0 +1,69 @@
+name: V122 pier structural occlusion and dry deck QA
+on:
+  push:
+    branches: [feature/v122-pier-depth-structural-fix]
+    paths:
+      - 'published-game-capture/v115-campus.js'
+      - 'published-game-capture/v116-marina.js'
+      - 'published-game-capture/v120-marina-art.js'
+      - 'qa/check-v122-pier.cjs'
+      - 'qa/capture-v122-pier.cjs'
+      - 'tools/build_v122_preview.py'
+      - '.github/workflows/v122-pier-qa.yml'
+      - 'docs/V122-PIER-DEPTH.md'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - name: Static syntax and structural-occlusion tests
+        run: |
+          node --check published-game-capture/v115-campus.js
+          node --check published-game-capture/v116-marina.js
+          node --check published-game-capture/v120-marina-art.js
+          node qa/check-v122-pier.cjs
+          node qa/check-v121-marina.cjs
+          node qa/check-v119-water-motion.cjs
+          node qa/check-v118-cinematic.cjs
+      - name: Existing connected city, HUD, sprite and interior regressions
+        run: |
+          node qa/check-v115-campus.cjs
+          node qa/check-v115-connected-city.cjs
+          node qa/check-v115-road-layout.cjs
+          node qa/check-v116-marina.cjs
+          node qa/check-v116-hud.cjs
+          node qa/check-v116-walk.cjs
+          node qa/check-v117-jay.cjs
+          node qa/check-v117-interiors.cjs
+      - name: Rebuild isolated V122 connected-world preview
+        run: |
+          python3 -m pip install --disable-pip-version-check pillow numpy
+          cp -a published-game-capture /tmp/v122-preview
+          python3 tools/build_v122_preview.py /tmp/v122-preview
+          node --check /tmp/v122-preview/game-v115.bundle.js
+          grep -q 'v122-world-sorted-pilings' /tmp/v122-preview/index.html
+          test -s /tmp/v122-preview/assets/v121-marina/dock-wood.png
+          test -s /tmp/v122-preview/assets/v121-marina/water-body.png
+          echo 'PASS: V122 player/actor post queue compiled into single running world'
+      - name: Protect original campaign and Zombie Outbreak
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess
+          base='b9918ba7fdd0a4a1df79aaa1e2046278e52ca3e7'
+          changed=set(subprocess.check_output(['git','diff','--name-only',base,'HEAD'],text=True).splitlines())
+          allowed={'published-game-capture/v115-campus.js','published-game-capture/v116-marina.js',
+           'published-game-capture/v120-marina-art.js','qa/check-v122-pier.cjs',
+           'qa/capture-v122-pier.cjs','tools/build_v122_preview.py',
+           '.github/workflows/v122-pier-qa.yml','docs/V122-PIER-DEPTH.md'}
+          assert changed<=allowed, sorted(changed-allowed)
+          for file in ('published-game-capture/game.js','published-game-capture/outbreak.css',
+             'published-game-capture/v119-water-motion.js'):
+            assert subprocess.check_output(['git','show',base+':'+file])==Path(file).read_bytes(),file
+          assert not any('/assets/' in p or 'outbreak' in p.lower() or 'zombie' in p.lower() for p in changed)
+          print('PASS: no source art, Zombie mode, mission, or original playable engine changes')
+          PY

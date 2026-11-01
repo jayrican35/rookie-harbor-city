@@ -7,6 +7,8 @@ let harness=fs.readFileSync(path.join(__dirname,'check-v115-campus.cjs'),'utf8')
 harness=harness.slice(0,harness.indexOf("assert(api,'No campus API');"));
 harness=harness.replace('const geoms=',`for(const id of ['waterfront','southbay']){const start=sourceEngine.indexOf('MAPS.'+id+' = {'),end=sourceEngine.indexOf('\\n};',start)+3;vm.runInNewContext(sourceEngine.slice(start,end),mapContext);}
 const finalStart=sourceEngine.indexOf('Object.keys(MAPS).forEach(function(id){'),finalEnd=sourceEngine.indexOf('/* ==================== PEDESTRIANS',finalStart);vm.runInNewContext(sourceEngine.slice(finalStart,finalEnd),mapContext);
+// Runtime regression: the full game's office body is centered and alpha-trimmed.
+for(const b of mapContext.MAPS.waterfront.pedSolids){if(b.x===180&&b.y===140&&b.w===300&&b.h===200){b.x=235.194805194806;b.w=189.6103896103896;}}
 const geoms=`);
 harness=harness.replace('vm.runInContext(src,sandbox',`sandbox.Image=function(){return {complete:true,naturalWidth:1254,naturalHeight:1254};};sandbox.performance={now:()=>0};sandbox.location={search:''};ctx.clip=()=>{};ctx.rotate=()=>{};
 vm.runInContext(fs.readFileSync(path.join(directory,'v116-marina.js'),'utf8'),sandbox);
@@ -14,6 +16,9 @@ vm.runInContext(src,sandbox`);
 const extra=`
 const marina=window.ROOKIE_V116_MARINA;
 assert.equal(marina.interiors.length,4);
+assert(marina.ownsSolid({id:'waterfront',x:4635.194805194806,y:3360,w:189.6103896103896,h:200}));
+assert(!marina.ownsSolid({id:'waterfront',x:4730,y:3360,w:12,h:200}));
+assert(!marina.ownsSolid({id:'midtown',x:4580,y:3360,w:300,h:200}));
 const b=marina.interiors[0],door=b.door;
 const tick=(time,n)=>{for(let i=0;i<n;i++){const id=queue.keys().next().value;assert(id);const fn=queue.get(id);queue.delete(id);fn(time+i*1000/60);}};
 const key=(key,pressed)=>window.events[(pressed?'keydown':'keyup')+'_capture']({key,preventDefault(){},stopImmediatePropagation(){}});

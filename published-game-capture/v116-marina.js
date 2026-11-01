@@ -102,7 +102,13 @@ defineInterior('marina:bait','Harbor Bait & Tackle','bait',.25);
 defineInterior('marina:shed-b','Boat Service Workshop','workshop');
 // The source district's old full-building solids are excluded only by exact
 // footprint match in the connected-world collision loop. All other solids stay.
-function ownsSolid(rect){return enabled&&interiors.some(b=>{const e=b.exterior;return Math.abs(rect.x-e.x)<.01&&Math.abs(rect.y-e.y)<.01&&Math.abs(rect.w-e.w)<.01&&Math.abs(rect.h-e.h)<.01;});}
+function ownsSolid(rect){return enabled&&(!rect.id||rect.id==='waterfront')&&interiors.some(b=>{
+ const e=b.exterior;
+ // The live classic renderer also supplies centered, alpha-trimmed building
+ // bodies. Match only the same full-height envelope and center; small props,
+ // walls, roads, water and unrelated buildings never meet this ownership rule.
+ return Math.abs(rect.x+rect.w/2-e.x-e.w/2)<.01&&Math.abs(rect.y-e.y)<.01&&Math.abs(rect.h-e.h)<.01&&rect.w>=e.w*.5&&rect.w<=e.w+.01;
+});}
 function interiorAt(x,y){return interiors.find(b=>x>b.floor.x+5&&x<b.floor.x+b.floor.w-5&&y>b.floor.y+5&&y<b.door.y-5)||null;}
 function updateInteriors(player,dt){
  const a=1-Math.exp(-12*Math.max(0,Math.min(.05,dt||0)));
@@ -383,6 +389,10 @@ function foreground(g,opt,t){
   const phase=o.x*.007+o.y*.009;
   const sway=Math.sin(t*.00065+phase)*(o.type==='palm'?2.0:1.15);
   g.save();
+  // Existing canopy art stays outside the revealed room, including overlapping grove edges.
+  for(const b of interiors){const f=b.floor;if(b.roof<.995&&o.x<f.x+f.w&&o.x+o.w>f.x&&o.y<f.y+f.h&&o.y+o.h>f.y){
+   g.beginPath();g.rect(o.x-20,o.y-20,o.w+40,o.h+40);g.rect(f.x,f.y,f.w,f.h);g.clip('evenodd');
+  }}
   if(opt.player&&opt.player.x>o.x-10&&opt.player.x<o.x+o.w+10&&opt.player.y>o.y&&opt.player.y<o.y+o.h+12)g.globalAlpha=.42;
   g.translate(o.x+o.w/2,o.y+o.h);g.rotate(sway*.0038);g.imageSmoothingEnabled=false;
   paintSprite(g,o.image,-o.w/2,-o.h,o.w,o.h);g.restore();objectsDrawn++;

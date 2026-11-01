@@ -21,7 +21,7 @@ const scenes=[
   await page.goto(url,{waitUntil:'domcontentloaded',timeout:65000});
   await page.waitForFunction(()=>window.HARBOR?.seamlessCampusV115&&window.ROOKIE_V116_MARINA&&window.ROOKIE_V116_HUD,{timeout:40000});
   await page.evaluate(()=>{
-   if(!window.HARBOR.seamlessCampusV115.openAt(5150,3755,.85))throw Error('Marina world could not open');
+   if(!window.HARBOR.seamlessCampusV115.openAt(5200,3758,.85))throw Error('Marina world could not open');
   });
   await page.waitForFunction(()=>document.body.classList.contains('v116-play-mode'),{timeout:12000});
   if(version==='after'){

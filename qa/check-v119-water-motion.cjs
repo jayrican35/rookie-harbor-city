@@ -1,0 +1,40 @@
+'use strict';
+const fs=require('node:fs'),vm=require('node:vm'),path=require('node:path'),assert=require('node:assert/strict');
+const root=path.resolve(__dirname,'..');
+const js=fs.readFileSync(path.join(root,'published-game-capture/v119-water-motion.js'),'utf8');
+const marina=fs.readFileSync(path.join(root,'published-game-capture/v116-marina.js'),'utf8');
+const campus=fs.readFileSync(path.join(root,'published-game-capture/v115-campus.js'),'utf8');
+assert(!/requestAnimationFrame|setInterval|localStorage|sessionStorage|fetch\s*\(|new\s+Image|MAPS\s*=|game\.js/.test(js),'V119 cannot own loops, state or assets');
+assert.equal((marina.match(/ROOKIE_V119_MOTION\?\.waterSurface/g)||[]).length,1);
+assert.equal((marina.match(/ROOKIE_V119_MOTION\?\.boatWake/g)||[]).length,1);
+assert(marina.includes('motion?.footsteps(g,a,t)'));
+assert(campus.includes('marinaMotion.footsteps(g,movement,t)'));
+let calls=0,waterCrests=0,gradients=0,depth=0;
+const g={
+ save(){calls++;},restore(){calls--;},beginPath(){},rect(){},clip(){},fillRect(x,y,w,h){
+  assert(Number.isFinite(x)&&Number.isFinite(y)&&Number.isFinite(w)&&Number.isFinite(h));
+  if(y>3850&&y<4600&&w>25)waterCrests++;
+ },ellipse(){},stroke(){},createLinearGradient(){gradients++;return{addColorStop(){depth++;}};},
+};
+const ctx={window:{matchMedia:()=>({matches:false})}};
+vm.runInNewContext(js,ctx,{filename:'v119-water-motion.js'});
+const fx=ctx.window.ROOKIE_V119_MOTION;
+assert(Object.isFrozen(fx));
+const view={x:4500,y:3790,w:350,h:550};
+fx.waterSurface(g,{x:0,y:0,w:10,h:10},100);assert.equal(fx.metrics().waterFrames,0,'Cull remote camera');
+fx.waterSurface(g,view,1000);
+assert.equal(fx.metrics().waterFrames,1);
+assert(gradients===1&&depth===3);
+assert(fx.metrics().waveCrests>10,'Major crests must be visible');
+assert(waterCrests>10);
+fx.boatWake(g,{x:4600,y:3900,w:60,h:120,p:1},1000);
+assert.equal(fx.metrics().boatWakes,3);
+fx.footsteps(g,{x:4600,y:3720,moving:true,dir:'down',distance:40,run:false},1000);
+assert.equal(fx.metrics().footstepFrames,1);
+fx.footsteps(g,{x:4600,y:3720,moving:false,dir:'down',distance:40},1000);
+assert.equal(fx.metrics().footstepFrames,1,'No footsteps if standing still');
+assert(fx.characterBob({moving:true,distance:10},1000)>0,'Moved character should bounce');
+assert.equal(calls,0,'Canvas state restored');
+assert.equal(fx.metrics().worldStateChanged,false);
+assert.equal(fx.metrics().zombieOutbreakChanged,false);
+console.log('PASS V119: camera-cropped vibrant water, waves/foam, animated boat wakes, step-driven motion, no new loop, no game-state writes');

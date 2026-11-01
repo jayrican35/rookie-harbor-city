@@ -172,7 +172,7 @@ jobs:
       - name: Check out V128 guarded world-quality candidate (isolated)
         uses: actions/checkout@v4
         with:
-          ref: 7ad854b0732098ddee0ee80400ea60c9e88b121f # V128 grounded RUN, all-district environmental dressing and QA
+          ref: 9d03ddc05009a90d6b421ab85b97127c0e8b64d0 # World Completion integrated district art, real grove collision and successful branch CI
           path: v128-world-quality
           persist-credentials: false
 
@@ -1049,6 +1049,7 @@ jobs:
           node --check site/preview/v128-world-quality/v127-citywide-art.js
           node --check site/preview/v128-world-quality/game-v115.bundle.js
           (cd v128-world-quality && node qa/check-v128-quality.cjs)
+          (cd v128-world-quality && node qa/check-world-completion.cjs)
           (cd v128-world-quality && node qa/check-v127-citywide.cjs)
           (cd v128-world-quality && node qa/check-v126-polish.cjs)
           (cd v128-world-quality && node qa/check-v117-jay.cjs)
@@ -1079,6 +1080,16 @@ jobs:
           assert len(result['results'])==2
           scenes=[s['scene'] for s in result['results'][1]['shots']]
           assert len(scenes)==10
+          from PIL import ImageChops
+          diffs={}
+          for scene in scenes:
+            with Image.open(p/f'{scene}-before.png') as pre, Image.open(p/f'{scene}-after.png') as post:
+              a=pre.convert('RGB');b=post.convert('RGB')
+              if a.size!=b.size: raise ValueError('Mismatched camera frames')
+              diff=ImageChops.difference(a,b).convert('L').histogram()
+              diffs[scene]=round(sum(diff[12:])/max(1,sum(diff)),4)
+          (p/'district-visual-diff.json').write_text(json.dumps(diffs,indent=2))
+          print('Measured real gameplay visual deltas by district',diffs)
           for scene in scenes:
             for suffix in ('before','after'):
               with Image.open(p/f'{scene}-{suffix}.png') as im: im.verify()

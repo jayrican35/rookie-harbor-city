@@ -1,0 +1,141 @@
+name: Precinct 9 Phase 5 — Real Terrain and Road QA
+on:
+  push:
+    branches:
+      - feature/v139-precinct9-phase5-grounds
+    paths:
+      - tools/build_precinct9_phase5_ground.py
+      - tools/build_v139_precinct_grounds_preview.py
+      - published-game-capture/v133-precinct-campus.js
+      - published-game-capture/v134-precinct-reference.js
+      - published-game-capture/v135-precinct-wallkit-test.js
+      - qa/capture-v139-precinct-grounds.cjs
+      - docs/PRECINCT9-PHASE5-GROUNDS.md
+      - .github/workflows/v139-precinct-grounds.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  terrain-art-and-existing-world:
+    runs-on: ubuntu-latest
+    timeout-minutes: 32
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install offline PNG and real mobile Chromium QA dependencies
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet pillow numpy
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Build Phase 5 modular pixel art and validate all PNG atlas frames
+        run: |
+          set -euo pipefail
+          python3 tools/build_precinct9_phase5_ground.py published-game-capture/assets/precinct9-ground-phase5
+          python3 - <<'PY'
+          from PIL import Image,ImageChops
+          from pathlib import Path
+          import json
+          p=Path('published-game-capture/assets/precinct9-ground-phase5')
+          m=json.loads((p/'manifest.json').read_text())
+          assert m['version']=='precinct9-phase5-ground'
+          assert m['tileSize']==32 and m['worldPixelsPerAssetPixel']==1
+          assert len(m['frames'])>=34
+          atlas=Image.open(p/m['atlas']).convert('RGBA')
+          assert atlas.size==(1024,1024)
+          for name,frame in m['frames'].items():
+            im=Image.open(p/frame['file']).convert('RGBA')
+            a=frame['atlas'];bb=(a['x'],a['y'],a['x']+a['w'],a['y']+a['h'])
+            assert im.size==(a['w'],a['h']),name
+            assert ImageChops.difference(im,atlas.crop(bb)).getbbox() is None,name
+            assert a['x']>0 and a['y']>0 and a['x']+a['w']<1024 and a['y']+a['h']<1024
+            assert im.width%32==0 or name in ['lamp','bollard','drain_grate','flower_planter']
+          for name in ('paver_stone','asphalt','grass'):
+            im=Image.open(p/(name+'.png'))
+            assert im.getpixel((10,10))[3]==255,name
+          for name in ('crosswalk_vertical','road_double_yellow','curb_top','hedge'):
+            im=Image.open(p/(name+'.png'))
+            assert im.getpixel((0,0))[3]==0 or name=='hedge'
+          print('PASS',len(m['frames']),'reference-colored PNG frames with exact atlas crops and transparent details')
+          PY
+      - name: Verify no changes to original gameplay or Zombie Outbreak
+        run: |
+          set -euo pipefail
+          node --check published-game-capture/v133-precinct-campus.js
+          node --check published-game-capture/v134-precinct-reference.js
+          node --check published-game-capture/v135-precinct-wallkit-test.js
+          node --check qa/capture-v139-precinct-grounds.cjs
+          node qa/check-world-roads.cjs
+          node qa/check-world-traffic.cjs
+          git fetch --no-tags --depth=1 origin d564d9693445fdc77c9ba7a5c42bf052d8582f7b
+          while IFS= read -r f; do
+            case "$f" in
+              published-game-capture/v133-precinct-campus.js|published-game-capture/v134-precinct-reference.js|published-game-capture/v135-precinct-wallkit-test.js|published-game-capture/assets/precinct9-ground-phase5/*|tools/build_precinct9_phase5_ground.py|tools/build_v139_precinct_grounds_preview.py|qa/capture-v139-precinct-grounds.cjs|docs/PRECINCT9-PHASE5-GROUNDS.md|.github/workflows/v139-precinct-grounds.yml) ;;
+              *) echo "STOP: off-scope file changed: $f"; exit 1 ;;
+            esac
+          done < <(git diff --name-only d564d9693445fdc77c9ba7a5c42bf052d8582f7b HEAD)
+          echo 'PASS no Zombie Outbreak, no citywide geometry, no legacy campaign, no original art changes'
+      - name: Build actual V138 baseline and V139 Phase 5 playable worlds
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/precinct9-v138-depth-lab site/preview/precinct9-v139-grounds-lab
+          cp -a published-game-capture/. site/preview/precinct9-v138-depth-lab/
+          cp -a published-game-capture/. site/preview/precinct9-v139-grounds-lab/
+          python3 tools/build_v138_precinct_depth_preview.py site/preview/precinct9-v138-depth-lab
+          python3 tools/build_v139_precinct_grounds_preview.py site/preview/precinct9-v139-grounds-lab
+          node --check site/preview/precinct9-v139-grounds-lab/game-v115.bundle.js
+          for f in game.js outbreak.css v116-marina.js v127-citywide-art.js v115-world.js v117-jay.js; do
+            cmp -s site/preview/precinct9-v138-depth-lab/$f site/preview/precinct9-v139-grounds-lab/$f
+          done
+          echo 'PASS same real game, Zombie, Marina, player and roads across both builds'
+      - name: Test real mobile and desktop ground, road and collision QA
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8765 --directory site >/tmp/v139-http.log 2>&1 &
+          sleep 2
+          node qa/capture-v139-precinct-grounds.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageChops
+          import html,json
+          p=Path('site/preview/precinct9-v139-grounds-lab/evidence')
+          report=json.loads((p/'qa-metrics.json').read_text())
+          names=[q['name'] for q in report['views']]
+          cards=[]
+          changed=0
+          for name in names:
+            bef=p/(name+'-before.png');aft=p/(name+'-after.png')
+            assert bef.is_file() and aft.is_file(),name
+            with Image.open(bef) as x,Image.open(aft) as y:
+              if ImageChops.difference(x.convert('RGB'),y.convert('RGB')).getbbox():changed+=1
+            cards.append('<section><h2>'+html.escape(name.replace('-',' ').title())+'</h2><div class="beforeAfter"><img src="'+name+'-before.png" alt="V138"/><img src="'+name+'-after.png" alt="V139"/></div></section>')
+          assert changed>=4,'Terrain art not visible in original world'
+          assert (p/'community-walk-main-path-desktop-after.png').is_file()
+          (p/'index.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROOKIE Phase 5 Grounds</title><style>body{background:#102339;color:#f6e0b8;font:16px system-ui;margin:16px}.beforeAfter{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:980px}.beforeAfter img{width:100%;min-width:0}section{margin:22px 0}h2{font-size:18px}</style><h1>Phase 5: modular precinct ground upgrade</h1><p>Real 390x844 native Canvas playable game, same camera locations. V138 on left, V139 on right. 32-grid source-inspired material PNGs inside ORIGINAL V133/V134 ground caches. Original road, doors, Marina, modes, Zombie Outbreak unchanged. Visual approval pending.</p>'+''.join(cards)+'</html>')
+          print('PASS',changed,'actual game comparisons show source art upgrades')
+          PY
+      - name: Export original PNG modules and actual world capture
+        uses: actions/upload-artifact@v4
+        with:
+          name: precinct9-phase5-ground-assets-and-gameplay
+          path: |
+            published-game-capture/assets/precinct9-ground-phase5/
+            site/preview/precinct9-v139-grounds-lab/evidence/
+          if-no-files-found: error
+      - name: Commit generated source PNGs only to feature branch
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add published-game-capture/assets/precinct9-ground-phase5/
+          if git diff --cached --quiet; then
+            echo 'Ground atlas already committed'
+          else
+            git commit -m 'Phase 5: commit native 32-grid precinct ground PNG tiles and atlas manifest'
+            git push origin HEAD:feature/v139-precinct9-phase5-grounds
+          fi

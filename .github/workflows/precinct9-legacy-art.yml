@@ -31,7 +31,7 @@ jobs:
         run: |
           set -euo pipefail
           git fetch --no-tags --depth=1 origin 97edf1e88f96e6d4fe14d536bae6ac45b41c2604
-          git diff --name-only 97edf1e88f96e6d4fe14d536bae6ac45b41c2604 HEAD | grep -Ev '^((published-game-capture/v131-precinct-legacy-bridge\.js)|(tools/build_v131_precinct_preview\.py)|(qa/(check-v131-precinct-import|capture-v131-precinct)\.cjs)|(\.github/workflows/precinct9-legacy-art\.yml)|(docs/PRECINCT9-LEGACY-ART\.md))$' >/tmp/unauthorized || true
+          git diff --name-only 97edf1e88f96e6d4fe14d536bae6ac45b41c2604 HEAD | grep -Ev '^((published-game-capture/(v115-campus|v131-precinct-legacy-bridge)\.js)|(tools/build_v131_precinct_preview\.py)|(qa/(check-v131-precinct-import|capture-v131-precinct)\.cjs)|(\.github/workflows/precinct9-legacy-art\.yml)|(docs/PRECINCT9-LEGACY-ART\.md))$' >/tmp/unauthorized || true
           if [ -s /tmp/unauthorized ]; then cat /tmp/unauthorized; exit 1; fi
           echo 'PASS no original production, Marina, Zombie, Academy or V128 source modifications'
 

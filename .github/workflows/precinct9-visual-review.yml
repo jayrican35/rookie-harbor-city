@@ -1,0 +1,131 @@
+name: Precinct 9 Visual Foundation — review gate
+on:
+  push:
+    branches:
+      - feature/precinct9-visual-foundation
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-safety:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify native precinct source and all original protections
+        run: |
+          set -euo pipefail
+          node --check published-game-capture/v115-campus.js
+          node --check published-game-capture/v130-precinct-art.js
+          node qa/check-v130-precinct.cjs
+          node qa/check-v128-quality.cjs
+          node qa/check-world-completion.cjs
+          node qa/check-world-pedestrians.cjs
+          node qa/check-world-roads.cjs
+          node qa/check-world-traffic.cjs
+          node qa/check-v127-citywide.cjs
+          node qa/check-v126-polish.cjs
+          node qa/check-v117-jay.cjs
+          node qa/check-v115-campus.cjs
+      - name: 'Absolute scoped diff: no original game, Zombie or Marina changes'
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin 7339eaba5a3756b4fc9dbcbc72ba54c5e7822a8c
+          git diff --name-only 7339eaba5a3756b4fc9dbcbc72ba54c5e7822a8c HEAD | grep -Ev '^(published-game-capture/(v115-campus\.js|v130-precinct-art\.js)|qa/(check-v130-precinct\.cjs|capture-v130-precinct\.cjs)|tools/build_v130_precinct_preview\.py|\.github/workflows/precinct9-visual-review\.yml|docs/PRECINCT9-FOUNDATION\.md)$' >/tmp/outside || true
+          if [ -s /tmp/outside ]; then cat /tmp/outside; exit 1; fi
+          echo 'PASS No production, Zombie, Marina, city road, save, campaign or upstream source changed'
+
+  visual-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Retrieve exact last successful V128 game for real comparison
+        uses: actions/checkout@v4
+        with:
+          ref: 7339eaba5a3756b4fc9dbcbc72ba54c5e7822a8c
+          path: approved-v128
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install original build dependencies and real Chromium
+        run: |
+          python3 -m pip install -q pillow numpy
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Build two independent copies of the actual playable game
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v128-world-quality site/preview/precinct9-lab
+          cp -a approved-v128/published-game-capture/. site/preview/v128-world-quality/
+          cp -a published-game-capture/. site/preview/precinct9-lab/
+          python3 approved-v128/tools/build_v128_preview.py site/preview/v128-world-quality
+          python3 tools/build_v130_precinct_preview.py site/preview/precinct9-lab
+          node --check site/preview/precinct9-lab/game-v115.bundle.js
+          node --check site/preview/precinct9-lab/v130-precinct-art.js
+          for f in game.js outbreak.css v116-marina.js v127-citywide-art.js v115-world.js; do
+            cmp -s "site/preview/v128-world-quality/$f" "site/preview/precinct9-lab/$f"
+          done
+          echo 'PASS byte-for-byte unchanged original game, Zombie, Marina and world roads'
+      - name: Capture and inspect real precinct visuals and door collision in mobile Chrome
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8765 --directory site >/tmp/precinct9-http.log 2>&1 &
+          sleep 2
+          node qa/capture-v130-precinct.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageChops,ImageOps,ImageDraw
+          import json
+          p=Path('site/preview/precinct9-lab/evidence')
+          d=json.loads((p/'review-data.json').read_text())
+          scenes=[s['id'] for s in d['scenePositions']]
+          scenes.append('station-interior-roof-revealed')
+          assert len(scenes)==9
+          metrics={}
+          for name in scenes:
+            with Image.open(p/(name+'-before.png')) as a,Image.open(p/(name+'-after.png')) as b:
+              aa=a.convert('RGB');bb=b.convert('RGB')
+              assert aa.size==bb.size
+              image=Image.new('RGB',(aa.width*2,aa.height+40),'#102938')
+              image.paste(aa,(0,40));image.paste(bb,(aa.width,40))
+              drawing=ImageDraw.Draw(image)
+              drawing.text((8,12),'V128  •  BEFORE',fill='#f0ddb3')
+              drawing.text((aa.width+8,12),'PRECINCT LAB  •  AFTER',fill='#f0ddb3')
+              image.save(p/(name+'-compare.png'))
+              dif=ImageChops.difference(aa,bb).convert('L').histogram()
+              metrics[name]=round(sum(dif[12:])/max(1,sum(dif)),4)
+          (p/'screen-diff-facts.json').write_text(json.dumps(metrics,indent=2))
+          # No percentage-based 'art success' gate. A meaningful change
+          # can still be an ugly regression; human approval is mandatory.
+          # Marina NPCs and water are animated. A low nonzero pixel delta
+          # between different capture times is not proof of a code change.
+          # Protect original Marina with byte-comparison and manual review.
+          print('Marina animated image difference, review only:',
+                metrics['protected-marina-reference'])
+          cards=''.join('<section><h2>'+s.replace('-',' ').title()+'</h2><img src="'+s+'-compare.png"></section>' for s in scenes)
+          (p/'index.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Precinct 9 Visual Review</title><style>body{background:#102938;color:#f4e2bd;font:16px system-ui;margin:20px}img{width:100%;max-width:800px;height:auto;border-radius:8px}section{margin:26px 0}</style><h1>Precinct 9 — Before / After</h1><p>Actual original Canvas gameplay at 390×844, identical cameras. THIS IS NOT AUTOMATIC ART APPROVAL. Review each scene and protect the earlier precinct art.</p>'+cards+'</html>')
+          print('PRECINCT SCREEN DELTAS FOR HUMAN REVIEW ONLY',metrics)
+          PY
+      - name: Save comparison gallery — visual approval required before publishing
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: precinct9-eight-scene-visual-review
+          path: site/preview/precinct9-lab/evidence/
+          if-no-files-found: warn
+      - name: Save standalone playable lab for internal review only
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: precinct9-isolated-playable-lab
+          path: site/preview/precinct9-lab/
+          if-no-files-found: error

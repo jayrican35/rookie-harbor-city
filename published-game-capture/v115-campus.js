@@ -340,7 +340,7 @@
   const btn=document.createElement('button');btn.id='v115CampusLaunch';btn.type='button';
   btn.textContent='EXPLORE CONNECTED HARBOR CITY';btn.title='Walk inside and outside one continuous precinct world (experimental preview)';
   document.querySelector('#mapOverlay .maptools').appendChild(btn);
-  let tw=960,th=640,dpr=1,oldCtx=null,cache=null,cacheValid=false,roofCanvas=null;
+  let tw=960,th=640,dpr=1,oldCtx=null,cache=null,cacheValid=false,roofCanvas=null,legacyAssetEpoch=-1;
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
   function pickZoom(z){campus.autoZoom=false;campus.zoom=clamp(z,.024,2.5);campus.follow=campus.zoom>.09;}
   function clearInput(){window.ROOKIE_JAY?.reset();campus.speed=0;campus.keys.clear();campus.stick=null;campus.runHeld=false;modal.querySelector('#v115CampusKnob').style.transform='translate(-50%,-50%)';modal.querySelector('#v125CampusBase').classList.remove('active');modal.querySelector('#v125CampusSprint').classList.remove('held');}
@@ -361,23 +361,43 @@
   // Cache the original precinct room geometry at native resolution. Drawing
   // may use original game floor/furniture painters, but never alters them.
   function stationTexture(){
-    if(cacheValid&&cache)return cache;
+    const previous=window.ROOKIE_V131_PRECINCT_BRIDGE;
+    const epoch=previous?.assetEpoch()??0;
+    // The classic campaign loads authored room images asynchronously.
+    // Rebuild the STATIC station plate when their readiness changes, or
+    // the first attempted render traps generic floors for the whole game.
+    if(cacheValid&&cache&&legacyAssetEpoch===epoch)return cache;
     const off=document.createElement('canvas');off.width=ST.w;off.height=ST.h;
     const c=off.getContext('2d');c.imageSmoothingEnabled=false;
     c.fillStyle='#253953';c.fillRect(0,0,ST.w,ST.h);
     try{
       withOriginalContext(c,()=>{
+        // Original station rooms/furniture keep their physical rectangles.
+        // Only their DRAWING is upgraded with cached classic art sources.
+        ST.rooms.forEach(r=>{
+          if(!previous?.room(c,r))drawRoom(r);
+        });
+        ST.furn.forEach(f=>{
+          if(!previous?.furniture(c,f))drawFurn(f);
+        });
+      });
+    }catch(e){
+      // All-or-nothing recover to the original reliable room painter.
+      // Never leave the precinct visually empty on a failed legacy sprite.
+      c.clearRect(0,0,ST.w,ST.h);
+      c.fillStyle='#253953';c.fillRect(0,0,ST.w,ST.h);
+      withOriginalContext(c,()=>{
         ST.rooms.forEach(r=>drawRoom(r));
         ST.furn.forEach(f=>drawFurn(f));
       });
-    }catch(e){
-      // Fail visible rather than aborting the preview if a late painter is
-      // incompatible with an offscreen canvas.
-      c.fillStyle='#b7c3d1';ST.rooms.forEach(r=>{c.fillRect(r.x,r.y,r.w,r.h);});
     }
     c.fillStyle='rgba(10,25,44,.36)';ST.walls.forEach(r=>c.fillRect(r.x+2,r.y+7,r.w,r.h));
     c.fillStyle='#13263d';ST.walls.forEach(r=>c.fillRect(r.x,r.y,r.w,r.h));
-    cache=off;cacheValid=true;return off;
+    // Reapply the ORIGINAL 96px precinct-craft wall artwork only where
+    // the existing real collision wall rectangles are actually solid.
+    previous?.wallSkins(c,ST.walls);
+    // Replaced after any original bitmap finishes decoding.
+    cache=off;cacheValid=true;legacyAssetEpoch=epoch;return off;
   }
   function cameraFollow(dt){
     const zw=tw/campus.zoom,zh=th/campus.zoom;
@@ -687,6 +707,13 @@
     // Foyer, double-wide front entrance and garage threshold share exact world coordinates.
     g.fillStyle='#efcc82';g.fillRect(FRONT.x-34,FRONT.y-5,68,10);
     g.fillStyle='#e4c27e';g.fillRect(GARAGE.x-172,GARAGE.y-3,344,9);
+  }
+  // Station roof is a separate upper render layer. Original rooms/furniture
+  // and all indoor NPCs are first drawn in the same world depth ordering,
+  // THEN the roof covers them when Jay is outdoors. While Jay crosses the
+  // real doorway its alpha naturally fades, revealing the identical inside.
+  function drawStationRoof(){
+    if(!nearViewport(STX-20,STY-20,ST.w+40,ST.h+60))return;
     const alpha=roofAlpha();
     if(alpha>.10){
       g.save();g.globalAlpha=alpha;
@@ -701,7 +728,8 @@
       // Roof rectangle ends at the exterior threshold; keep the canvas opaque.
       g.restore();
     }
-    g.save();g.strokeStyle='rgba(255,225,142,.7)';g.lineWidth=3;
+    g.save();g.globalAlpha=Math.min(.95,alpha);
+    g.strokeStyle='rgba(255,225,142,.7)';g.lineWidth=3;
     g.strokeRect(STX+4,STY+4,1146,1020);
     g.strokeRect(STX+1159,STY+652,759,505);
     g.restore();
@@ -813,6 +841,10 @@
     const premium=window.ROOKIE_V115_PREMIUM;
     if(premium)premium.terrain(g,{zoom:campus.zoom,view},t);
     drawLinkedDistricts(t);
+    // Precinct 9 art sits over existing station/parking pavement only.
+    // The adapter cannot move roads or change original district rendering.
+    const precinctVisual=window.ROOKIE_V130_PRECINCT;
+    if(precinctVisual)precinctVisual.ground(g,{zoom:campus.zoom,view},t);
     if(reference)reference.gameOverlay(g,{zoom:campus.zoom,view,districts:districtEntries},t);
     if(premium)premium.overlay(g,{zoom:campus.zoom,view,districts:districtEntries},t);
     if(art)art.streets(g,{zoom:campus.zoom,view},t);
@@ -823,9 +855,12 @@
     const cinematic=window.ROOKIE_V118_CINEMATIC;
     if(cinematic)cinematic.ground(g,{zoom:campus.zoom,view},t);
     if(pilot)pilot.props(g,{zoom:campus.zoom,view},t);
-    drawStation();
+    drawStation(); // Original lobby, furnished rooms, walls and thresholds.
+    drawEntityHighlights(t); // Jay, Rosa and station NPCs under the roof.
+    drawStationRoof(); // Opaque outside, fades to reveal interiors at real doors.
     if(art)art.precinct(g,{zoom:campus.zoom,view,STX,STY,alpha:roofAlpha()},t);
-    drawEntityHighlights(t);
+    // Precinct art respects the SAME roof alpha and existing native geometry.
+    if(precinctVisual)precinctVisual.frontage(g,{zoom:campus.zoom,view,roofAlpha:roofAlpha()},t);
     if(marina)marina.foreground(g,{zoom:campus.zoom,view,player:{x:campus.x,y:campus.y}},t);
     if(cinematic)cinematic.atmosphere(g,{zoom:campus.zoom,view},t);
     if(pilot)pilot.animated(g,{zoom:campus.zoom,view},t);

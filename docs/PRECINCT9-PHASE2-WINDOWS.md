@@ -10,7 +10,7 @@ Scope: Phase 2 windows only. Do not advance to entrances, doors, signs, awnings 
 
 ## New window production assets
 Run tools/build_precinct9_windows_phase2.py PHASE1_DIR PHASE2_DIR.
-Output: published-game-capture/assets/precinct9-windows-phase2/ — 14 named transparent PNGs, 1024x1024 combined original Phase-1 + Phase-2 atlas, manifest.json with 40 source frames.
+Output: published-game-capture/assets/precinct9-windows-phase2/ — 16 named transparent PNGs, 1024x1024 combined original Phase-1 + Phase-2 atlas, manifest.json with 40 source frames.
 
 Assets: single warm/dark/blind/shuttered, double warm/dark/mixed, triple warm/mixed, stone frame, blind overlay, lintel, sill and connector.
 

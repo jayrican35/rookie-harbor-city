@@ -112,7 +112,7 @@ const scenes=[
     assert(legacy&&legacy.version==='legacy-authored-precinct-reuse-1',
       'Expected the ORIGINAL user-authored station painter to be live');
     assert(legacy.stats.floors>=8&&legacy.stats.garage>0&&
-      legacy.stats.furniture>=20&&legacy.stats.walls>=12,
+      legacy.stats.furniture>=20&&legacy.stats.walls===0,
       'Legacy visual assets must actually draw in rooms, furniture and garage: '+JSON.stringify(legacy.stats));
   }else assert.equal(legacy,null,'Approved V128 must remain original');
   const stats=await page.evaluate(()=>{

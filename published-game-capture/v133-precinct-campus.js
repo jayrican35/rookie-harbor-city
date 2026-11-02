@@ -185,8 +185,11 @@ function approvedParkingSpace(g,x,y,w=70,h=92,accessible=false){
    ink(g,x+5,y+13,w-10,h-20,'rgba(49,107,149,.22)');
    g.strokeStyle='#8cc9df';g.lineWidth=3;
    g.strokeRect(x+13,y+22,w-26,44);
-   g.fillStyle='#b1dbeb';g.textAlign='center';
-   g.font='bold 31px sans-serif';g.fillText('♿',x+w/2,y+60);
+   // Use the approved Phase-5 accessible parking sprite, not font glyphs.
+   if(!drawT(g,'parking_access_symbol',x+4,y+19,64,64)){
+    g.fillStyle='#b1dbeb';g.textAlign='center';
+    g.font='bold 31px sans-serif';g.fillText('P',x+w/2,y+60);
+   }
  }
 }
 function approvedNorthGround(g){
@@ -449,7 +452,7 @@ window.ROOKIE_V133_PRECINCT=Object.freeze({
  version:'v133-precinct-campus-art-1',worldId:'harbor-main',
  ground,facade,actors,
  geometry:Object.freeze({roof,front,garage,lot,road,south,approvedParking,approvedApron,approvedDrive}),
- metrics:()=>({...m,stoneReady:ready(texture()),groundAtlas:terrainReady()}),
+ metrics:()=>({...m,stoneReady:ready(texture()),groundAtlas:terrainReady(),approvedCampus:approvedLayout()}),
  scope:'Original 1:1 precinct exterior and existing civic grounds only. Nonblocking visual landscape and 3 bounded station-role ambience actors; no new roads, solids, modes or loops.'
 });
 })();

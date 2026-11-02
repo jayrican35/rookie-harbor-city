@@ -45,8 +45,20 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
     await page.waitForTimeout(170);
     await page.screenshot({path:path.join(folder,'road-'+road.id+'.png')});
   }
+  // These are not just drawn rectangles. The actual movement collider must
+  // allow Jay to traverse the two new links and the original Bayview lane.
+  const passability=await page.evaluate(()=>{
+    const test=window.HARBOR.seamlessCampusV115.test;
+    return [
+      {id:'westfield-ring',x:-1850,y:3000},
+      {id:'midtown-bayview-feeder',x:4050,y:2950},
+      {id:'southbay-native-street',x:4050,y:3744}
+    ].map(r=>({...r,blocked:test.blocked(r.x,r.y,12)}));
+  });
+  assert(passability.every(r=>!r.blocked),
+    'Road drawn across physical wall/tree: '+JSON.stringify(passability));
   assert.equal(errors.length,0,'No JS console errors: '+errors.join(', '));
-  fs.writeFileSync(path.join(folder,'v128-run-metrics.json'),JSON.stringify({running:{mode:running.mode,phase:running.phase},stopped:{mode:stopped.mode,phase:stopped.phase},ambientPedestrians:cityMetrics.ambientPedestrians,ambientDistrictsInitialized:cityMetrics.ambientDistrictsInitialized,streetCars:cityMetrics.streetCars,roadShots:roadShots.map(r=>r.id),viewport:'390x844 Chromium emulated mobile',errors},null,2));
+  fs.writeFileSync(path.join(folder,'v128-run-metrics.json'),JSON.stringify({running:{mode:running.mode,phase:running.phase},stopped:{mode:stopped.mode,phase:stopped.phase},ambientPedestrians:cityMetrics.ambientPedestrians,ambientDistrictsInitialized:cityMetrics.ambientDistrictsInitialized,streetCars:cityMetrics.streetCars,roadShots:roadShots.map(r=>r.id),roadPassability:passability,viewport:'390x844 Chromium emulated mobile',errors},null,2));
   console.log('PASS V128 live mobile-size gameplay RUN / idle transition in the original single player/camera world');
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exit(1)});

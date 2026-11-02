@@ -814,7 +814,15 @@
       for(const prop of window.ROOKIE_V127_CITY.depthProps(view,districtEntries))
         entries.push({y:prop.depthY,cityProp:prop});
     }
-    entries.push({y:campus.y,player:true});entries.sort((a,b)=>a.y-b.y);
+    // Precinct exterior actors south of the facade must render IN FRONT of
+    // the building, not behind the cached roof/facade image. Keep indoor
+    // actors in the original depth queue under the roof.
+    const playerFrontOfPrecinct=!!window.ROOKIE_V134_PRECINCT &&
+      campus.x>=STX && campus.x<=STX+ST.w &&
+      campus.y>=FRONT.y+12 && campus.y<STY+ST.h+280 &&
+      !interiorRoom(campus.x,campus.y);
+    if(!playerFrontOfPrecinct)entries.push({y:campus.y,player:true});
+    entries.sort((a,b)=>a.y-b.y);
     for(const entry of entries){
       if(entry.trafficCar){drawStreetTraffic(g,entry.trafficCar);continue;}
       if(entry.cityProp){window.ROOKIE_V127_CITY.drawDepthProp(g,entry.cityProp);continue;}
@@ -901,6 +909,14 @@
     // fade with the SAME original station roof, never into the interior.
     if(!window.ROOKIE_V134_PRECINCT)
       window.ROOKIE_V133_PRECINCT?.facade(g,{zoom:campus.zoom,view,alpha:roofAlpha()},t);
+    // Draw the exterior player ONCE after the roof/facade, so Jay remains
+    // visible in front of the station when walking along its front walkway.
+    // Indoor Jay stays in the original pre-roof actor queue for cutaway.
+    if(window.ROOKIE_V134_PRECINCT &&
+       campus.x>=STX && campus.x<=STX+ST.w &&
+       campus.y>=FRONT.y+12 && campus.y<STY+ST.h+280 &&
+       !interiorRoom(campus.x,campus.y))
+      drawOfficer({x:campus.x,y:campus.y,color:'#2b467a'},true,t);
     if(marina)marina.foreground(g,{zoom:campus.zoom,view,player:{x:campus.x,y:campus.y}},t);
     if(cinematic)cinematic.atmosphere(g,{zoom:campus.zoom,view},t);
     if(pilot)pilot.animated(g,{zoom:campus.zoom,view},t);

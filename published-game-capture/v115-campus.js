@@ -875,6 +875,9 @@
     if(cinematic)cinematic.ground(g,{zoom:campus.zoom,view},t);
     if(pilot)pilot.props(g,{zoom:campus.zoom,view},t);
     drawStation(); // Original lobby, furnished rooms, walls and thresholds.
+    // Draw walkable stone forecourt AFTER legacy station apron paint, BEFORE
+    // the original depth-sorted player/NPC draw; don't paint over character art.
+    window.ROOKIE_V134_PRECINCT?.forecourt(g,{zoom:campus.zoom,view},t);
     drawEntityHighlights(t); // Jay, Rosa and station NPCs under the roof.
     drawStationRoof(); // Opaque outside, fades to reveal interiors at real doors.
     // Architecturally detailed south-facing 2-story elevation is co-faded

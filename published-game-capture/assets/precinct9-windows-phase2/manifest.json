@@ -476,10 +476,46 @@
       "collision": "inherit-existing-world",
       "windowOpeningOnly": false
     },
+    "window_wide_warm": {
+      "file": "window_wide_warm.png",
+      "atlas": {
+        "x": 8,
+        "y": 448,
+        "w": 96,
+        "h": 96
+      },
+      "width": 96,
+      "height": 96,
+      "anchor": {
+        "x": 48,
+        "y": 96
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "lightMode": "warm"
+    },
+    "window_wide_dark": {
+      "file": "window_wide_dark.png",
+      "atlas": {
+        "x": 112,
+        "y": 448,
+        "w": 96,
+        "h": 96
+      },
+      "width": 96,
+      "height": 96,
+      "anchor": {
+        "x": 48,
+        "y": 96
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "lightMode": "unlit"
+    },
     "window_single_warm": {
       "file": "window_single_warm.png",
       "atlas": {
-        "x": 8,
+        "x": 216,
         "y": 448,
         "w": 64,
         "h": 96
@@ -497,7 +533,7 @@
     "window_single_dark": {
       "file": "window_single_dark.png",
       "atlas": {
-        "x": 80,
+        "x": 288,
         "y": 448,
         "w": 64,
         "h": 96
@@ -515,7 +551,7 @@
     "window_single_blinds": {
       "file": "window_single_blinds.png",
       "atlas": {
-        "x": 152,
+        "x": 360,
         "y": 448,
         "w": 64,
         "h": 96
@@ -533,7 +569,7 @@
     "window_single_closed": {
       "file": "window_single_closed.png",
       "atlas": {
-        "x": 224,
+        "x": 432,
         "y": 448,
         "w": 64,
         "h": 96
@@ -551,7 +587,7 @@
     "window_double_warm": {
       "file": "window_double_warm.png",
       "atlas": {
-        "x": 296,
+        "x": 504,
         "y": 448,
         "w": 128,
         "h": 96
@@ -569,7 +605,7 @@
     "window_double_dark": {
       "file": "window_double_dark.png",
       "atlas": {
-        "x": 432,
+        "x": 640,
         "y": 448,
         "w": 128,
         "h": 96
@@ -587,7 +623,7 @@
     "window_double_mixed": {
       "file": "window_double_mixed.png",
       "atlas": {
-        "x": 568,
+        "x": 776,
         "y": 448,
         "w": 128,
         "h": 96
@@ -605,8 +641,8 @@
     "window_triple_warm": {
       "file": "window_triple_warm.png",
       "atlas": {
-        "x": 704,
-        "y": 448,
+        "x": 8,
+        "y": 552,
         "w": 192,
         "h": 96
       },
@@ -623,7 +659,7 @@
     "window_triple_mixed": {
       "file": "window_triple_mixed.png",
       "atlas": {
-        "x": 8,
+        "x": 208,
         "y": 552,
         "w": 192,
         "h": 96
@@ -641,7 +677,7 @@
     "window_stone_frame": {
       "file": "window_stone_frame.png",
       "atlas": {
-        "x": 208,
+        "x": 408,
         "y": 552,
         "w": 64,
         "h": 96
@@ -659,7 +695,7 @@
     "window_blinds_overlay": {
       "file": "window_blinds_overlay.png",
       "atlas": {
-        "x": 280,
+        "x": 480,
         "y": 552,
         "w": 64,
         "h": 96
@@ -677,7 +713,7 @@
     "window_stone_lintel": {
       "file": "window_stone_lintel.png",
       "atlas": {
-        "x": 352,
+        "x": 552,
         "y": 552,
         "w": 64,
         "h": 32
@@ -695,7 +731,7 @@
     "window_stone_sill": {
       "file": "window_stone_sill.png",
       "atlas": {
-        "x": 424,
+        "x": 624,
         "y": 552,
         "w": 64,
         "h": 32
@@ -713,7 +749,7 @@
     "window_connector": {
       "file": "window_connector.png",
       "atlas": {
-        "x": 496,
+        "x": 696,
         "y": 552,
         "w": 32,
         "h": 96
@@ -733,6 +769,8 @@
   "scope": "Phase 2 reusable windows and trim; one existing atlas loader; original gameplay unchanged",
   "phase1Unchanged": true,
   "newFrames": [
+    "window_wide_warm",
+    "window_wide_dark",
     "window_single_warm",
     "window_single_dark",
     "window_single_blinds",

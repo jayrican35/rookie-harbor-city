@@ -35,7 +35,9 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
   // Canvas. Capture distinct intersections for mobile-size visual review.
   const roadShots=[
     {id:'precinct-arterial',x:1000,y:1784},
-    {id:'southbay-loop-junction',x:3545,y:3744},
+    {id:'westfield-southern-ring',x:-1850,y:3744},
+    {id:'midtown-bayview-feeder',x:4050,y:2950},
+    {id:'southbay-loop-junction',x:4050,y:3744},
     {id:'northgate-arterial',x:5855,y:1784}
   ];
   for(const road of roadShots){

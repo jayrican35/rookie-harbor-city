@@ -25,6 +25,28 @@
     id,x:pos.x,y:pos.y,w:MAPS[id].w,h:MAPS[id].h,map:MAPS[id],
     instanceId:'harbor-main:district:'+id
   }));
+  // Road completion: the legacy Midtown landscaping pass placed a 80px
+  // bench at (1210,1690). Its real 65.6px collider crossed the newly
+  // connected Bayview feeder at world (4050,2950). In the CONNECTED
+  // prototype only, move that bench and its matching collider to the open
+  // plaza at x=900. Never mutate MAPS.midtown, campaign art, quests or saves.
+  const connectedMidtown=districtEntries.find(d=>d.id==='midtown');
+  if(connectedMidtown){
+    const original=connectedMidtown.map,benchWidth=80*.82;
+    const originalColliderX=1210-benchWidth/2,relocatedX=900;
+    const oldBench=(original.decors||[]).filter(o=>
+      o.t==='landscapeV1'&&o.role==='bench'&&o.x===1210&&o.y===1690);
+    const oldSolid=(original.pedSolids||[]).filter(b=>
+      Math.abs(b.x-originalColliderX)<.1&&b.y===1680&&
+      Math.abs(b.w-benchWidth)<.1&&b.h===12);
+    if(oldBench.length!==1||oldSolid.length!==1)
+      throw new Error('Midtown bench/road alignment changed: verify connected feeder before release');
+    connectedMidtown.map={
+      ...original,
+      decors:original.decors.map(o=>o===oldBench[0]?{...o,x:relocatedX}:o),
+      pedSolids:original.pedSolids.map(b=>b===oldSolid[0]?{...b,x:relocatedX-benchWidth/2}:b)
+    };
+  }
   function inDistrict(d,x,y){return x>=d.x&&x<d.x+d.w&&y>=d.y&&y<d.y+d.h;}
   function districtAt(x,y){
     for(const d of districtEntries)if(inDistrict(d,x,y))return d;

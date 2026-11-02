@@ -16,7 +16,7 @@ for name in new['newFrames']:
     assert (root/'assets/precinct9-windows-phase2'/(name+'.png')).is_file(),name
 assert (root/'assets/precinct9-windows-phase2'/new['atlas']).is_file()
 old_game=(root/'game-v115.bundle.js').read_text()
-assert 'drawStationRoof()' in old_game and 'drawEntityHighlights(t)' in old_game
+assert "drawStationRoof(section='main')" in old_game and 'drawEntityHighlights(t)' in old_game
 js=(root/'v134-precinct-reference.js').read_text()
 assert 'drawFacadeWindow(g,x,y,w,h)' in js and 'invalidateFacade:' in js
 base=(root/'v135-precinct-wallkit-test.js').read_text()

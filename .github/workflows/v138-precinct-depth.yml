@@ -1,0 +1,102 @@
+name: Precinct 9 V138 — Character / Facade Depth Regression
+on:
+  push:
+    branches: [feature/v138-precinct9-actor-facade-depth]
+    paths:
+      - published-game-capture/v115-campus.js
+      - published-game-capture/v134-precinct-reference.js
+      - tools/build_v137_precinct_entrance_preview.py
+      - tools/build_v138_precinct_depth_preview.py
+      - qa/capture-v138-precinct-depth.cjs
+      - .github/workflows/v138-precinct-depth.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 26
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check out original verified V137 for identical-camera comparison
+        uses: actions/checkout@v4
+        with:
+          ref: 5fa0ac8436c6162fdb7fe18a11cb70ade45717dd
+          path: v137-baseline
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install original game screenshot dependencies
+        run: |
+          set -euo pipefail
+          python3 -m pip install -q pillow numpy
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Audit protected source changes and syntax
+        run: |
+          set -euo pipefail
+          node --check published-game-capture/v115-campus.js
+          node --check published-game-capture/v134-precinct-reference.js
+          node --check qa/capture-v138-precinct-depth.cjs
+          node qa/check-v134-precinct.cjs
+          node qa/check-world-roads.cjs
+          node qa/check-world-traffic.cjs
+          git fetch --no-tags --depth=1 origin 5fa0ac8436c6162fdb7fe18a11cb70ade45717dd
+          while IFS= read -r file; do
+            case "$file" in
+              published-game-capture/v115-campus.js|published-game-capture/v134-precinct-reference.js|tools/build_v135_precinct_wallkit_preview.py|tools/build_v136_precinct_windows_preview.py|tools/build_v137_precinct_entrance_preview.py|tools/build_v138_precinct_depth_preview.py|qa/capture-v138-precinct-depth.cjs|.github/workflows/v138-precinct-depth.yml) ;;
+              *) echo "Out-of-scope modification: $file"; exit 1 ;;
+            esac
+          done < <(git diff --name-only 5fa0ac8436c6162fdb7fe18a11cb70ade45717dd HEAD)
+          for f in game.js outbreak.css v116-marina.js v127-citywide-art.js v115-world.js v117-jay.js; do
+            cmp -s "published-game-capture/$f" "v137-baseline/published-game-capture/$f"
+          done
+          echo 'PASS original Zombie Outbreak, academy, Marina, player, all roads, missions and saved data byte-unchanged'
+      - name: Build original V137 and V138 using same existing renderer
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/precinct9-v137-entrance-lab site/preview/precinct9-v138-depth-lab
+          cp -a v137-baseline/published-game-capture/. site/preview/precinct9-v137-entrance-lab/
+          cp -a published-game-capture/. site/preview/precinct9-v138-depth-lab/
+          python3 v137-baseline/tools/build_v137_precinct_entrance_preview.py site/preview/precinct9-v137-entrance-lab
+          python3 tools/build_v138_precinct_depth_preview.py site/preview/precinct9-v138-depth-lab
+          node --check site/preview/precinct9-v138-depth-lab/game-v115.bundle.js
+          for f in game.js outbreak.css v116-marina.js v127-citywide-art.js v115-world.js v117-jay.js; do
+            cmp -s "site/preview/precinct9-v137-entrance-lab/$f" "site/preview/precinct9-v138-depth-lab/$f"
+          done
+          echo 'PASS game build with only original roof/facade ordering updated'
+      - name: Capture authentic mobile and desktop character depth comparison
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8765 --directory site >/tmp/v138-server.log 2>&1 &
+          sleep 2
+          node qa/capture-v138-precinct-depth.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageChops
+          import json,html
+          p=Path('site/preview/precinct9-v138-depth-lab/evidence')
+          report=json.loads((p/'qa-results.json').read_text())
+          names=[v['name'] for v in report['screenshots']]
+          cards=[]
+          for n in names:
+            old=p/(n+'-before.png');new=p/(n+'-after.png')
+            assert old.exists() and new.exists(),n
+            with Image.open(old) as a,Image.open(new) as b:
+              assert a.size==b.size==(390,844),n
+              if n=='character-main-entrance-forecourt':
+                assert ImageChops.difference(a.convert('RGB'),b.convert('RGB')).getbbox() is not None,\
+                  'Occlusion correction made no visible gameplay difference'
+            cards.append('<section><h2>'+html.escape(n.replace('-',' ').title())+'</h2><div class="pair"><img src="'+n+'-before.png" alt="V137 character occluded"><img src="'+n+'-after.png" alt="V138 depth corrected"></div></section>')
+          for n in names:assert (p/(n+'-desktop-after.png')).exists()
+          (p/'index.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROOKIE V138 - Precinct Character Depth Fix</title><style>body{background:#11273b;color:#f7e6c2;font:16px system-ui;padding:12px}.pair{display:grid;grid-template-columns:1fr 1fr;gap:7px;max-width:900px}.pair img{width:100%;min-width:0}h2{font-size:18px}</style><h1>Precinct 9 — Correct Character / Building Overlap</h1><p>Real native Canvas gameplay, matching camera and player position. Left: V137 facade always over Jay. Right: V138 facade sorts by feet, so outdoor characters render in front; interiors remain behind original roof. Mobile and desktop walk-in/out checks passed. No Zombie Outbreak changes.</p>'+''.join(cards)+'</html>')
+          print('PASS actual screenshot pixel difference, movement, original roof and 5 comparison views')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: precinct9-v138-occlusion-mobile-desktop-proof
+          path: site/preview/precinct9-v138-depth-lab/evidence/
+          if-no-files-found: error

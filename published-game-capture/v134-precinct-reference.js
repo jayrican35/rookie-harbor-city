@@ -335,7 +335,8 @@ function architecture(g,o){
  if(!o)return;
  const mainBox={x:STX,y:STY+TOP,w:WIDTH,h:HEIGHT};
  const garageBox={x:GX,y:GY,w:GW,h:GH};
- const mainVisible=visible(o.view,mainBox),garageVisible=visible(o.view,garageBox);
+ const mainVisible=o.section!=='garage'&&visible(o.view,mainBox);
+ const garageVisible=o.section!=='main'&&visible(o.view,garageBox);
  if(!mainVisible&&!garageVisible)return;
  const alpha=Math.max(0,Math.min(.95,Number(o.alpha)||0));
  if(alpha<.025)return;

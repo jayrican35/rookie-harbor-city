@@ -721,12 +721,21 @@
   // and all indoor NPCs are first drawn in the same world depth ordering,
   // THEN the roof covers them when Jay is outdoors. While Jay crosses the
   // real doorway its alpha naturally fades, revealing the identical inside.
-  function drawStationRoof(){
+  function drawStationRoof(section='main'){
     if(!nearViewport(STX-20,STY-20,ST.w+40,ST.h+60))return;
     const alpha=roofAlpha();
+    // Roof artwork remains the existing V132 texture, but the two original
+    // footprints have different street-facing foot-depths. A world-space
+    // clip lets the ONE existing painter sort each portion with characters.
+    g.save();g.beginPath();
+    if(section==='garage')g.rect(STX+1156,STY-40,ST.w-1116,ST.h+120);
+    else g.rect(STX-40,STY-40,1196,ST.h+120);
+    g.clip();
     // V132 swaps the FLAT V115 roof paint with original roof-material art,
     // while retaining the exact geometry, fade and NPC depth ordering.
-    if(window.ROOKIE_V132_PRECINCT?.roof(g,{x:STX,y:STY,alpha,zoom:campus.zoom}))return;
+    if(window.ROOKIE_V132_PRECINCT?.roof(g,{x:STX,y:STY,alpha,zoom:campus.zoom})){
+      g.restore();return;
+    }
     if(alpha>.10){
       g.save();g.globalAlpha=alpha;
       g.fillStyle='#253c57';g.fillRect(STX+8,STY+8,1140,1023);
@@ -745,6 +754,7 @@
     g.strokeRect(STX+4,STY+4,1146,1020);
     g.strokeRect(STX+1159,STY+652,759,505);
     g.restore();
+    g.restore(); // balanced station/garage world-space section clip
   }
   function drawOfficer(p,isPlayer,t){
     const shared=window.ROOKIE_JAY;
@@ -814,8 +824,23 @@
       for(const prop of window.ROOKIE_V127_CITY.depthProps(view,districtEntries))
         entries.push({y:prop.depthY,cityProp:prop});
     }
+    // Precinct 9 belongs to the SAME feet-Y queue as Jay, officers and
+    // scene props. It previously rendered AFTER every actor, covering Jay
+    // even when he stood on the public sidewalk south of the main wall.
+    // Sort the existing roof/facade at their TRUE southern baselines:
+    // inside actors draw behind each shell; outside actors draw in front.
+    entries.push({y:FRONT.y-1,precinctShell:'main'});
+    entries.push({y:GARAGE.y-1,precinctShell:'garage'});
     entries.push({y:campus.y,player:true});entries.sort((a,b)=>a.y-b.y);
     for(const entry of entries){
+      if(entry.precinctShell){
+        // Use the EXISTING roof texture, façade cache and camera transform.
+        // No new sprite renderer, wall copy, NPC pass or animation loop.
+        drawStationRoof(entry.precinctShell);
+        window.ROOKIE_V134_PRECINCT?.architecture(g,{
+          zoom:campus.zoom,view,alpha:roofAlpha(),section:entry.precinctShell},t);
+        continue;
+      }
       if(entry.trafficCar){drawStreetTraffic(g,entry.trafficCar);continue;}
       if(entry.cityProp){window.ROOKIE_V127_CITY.drawDepthProp(g,entry.cityProp);continue;}
       if(entry.depthProp){
@@ -881,13 +906,11 @@
     // Draw walkable stone forecourt AFTER legacy station apron paint, BEFORE
     // the original depth-sorted player/NPC draw; don't paint over character art.
     window.ROOKIE_V134_PRECINCT?.forecourt(g,{zoom:campus.zoom,view},t);
-    drawEntityHighlights(t); // Jay, Rosa and station NPCs under the roof.
-    drawStationRoof(); // Opaque outside, fades to reveal interiors at real doors.
-    // Architecturally detailed south-facing 2-story elevation is co-faded
-    // with the exact real roof and original doors. The main (x948,y1124)
-    // door remains physically open; this is a strictly visual overlay.
-    window.ROOKIE_V134_PRECINCT?.architecture(g,{
-      zoom:campus.zoom,view,alpha:roofAlpha()},t);
+    // V138: the ORIGINAL roof and architecturally cached facade now join
+    // the one feet-depth queue above. Jay in front of Precinct 9 no longer
+    // disappears behind the wall. Interior actors remain behind the facade
+    // until the SAME original roof cutaway reveals the rooms.
+    drawEntityHighlights(t);
     // The V115 showcase also drew roof vents; V132 owns that layer now.
     // Avoid double glazing/vents over the ported legacy material and signs.
     if(art&&!window.ROOKIE_V132_PRECINCT)art.precinct(g,{zoom:campus.zoom,view,STX,STY,alpha:roofAlpha()},t);

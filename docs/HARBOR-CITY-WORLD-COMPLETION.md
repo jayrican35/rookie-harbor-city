@@ -16,13 +16,13 @@
 6. **Protected Marina:** latest authored Marina assets, interiors, water, piers, NPCs and roof transitions still own the entire original waterfront section. New district dressing and generated groves explicitly skip it.
 7. **Living-city pedestrians in the existing engine:** up to two wandering pedestrians in each non-Marina district, using the original V123 animated NPC atlases, safe 95-unit routes, native movement collision and the existing Talk prompt. No separate animation loop, vehicle AI, save writes or mission progress.
 8. **Mobile collision and draw optimization:** a 192-unit district-local spatial index is shared by generated-tree trunk checks and viewport prop culling. Tree positions stay identical; only the cost of finding them changes.
-9. **No disconnected road stubs:** six new canonical connector segments bridge the missing precinct Harbor Avenue gap, carry the main artery across the eastern boroughs, finish the Southbay loop at the existing Marina edge, and connect Midtown and Northgate north-south avenues. Three new crossing markers sit on that actual asphalt. A graph test proves all 14 canonical street segments connect, with **no new street overlapping Southbay Marina**. The original local district road tiles are still authoritative.
+9. **Connected roads follow real source geometry:** audit of the original `game.js` road rectangles corrected an earlier Midtown stub. The canonical 18-segment network now forms **one connected graph**. Its major links include the new Westfield southern ring through previously unused land, a new Midtown–Bayview feeder that skirts the newest shops, and the missing Precinct Harbor Avenue span. Existing native Midtown, Northgate, Downtown and Southbay asphalt is registered as logical roads **without repainting it**. New geometry avoids the approved Marina. Five intersection camera captures plus three real collider-walkability checks form the next browser acceptance gate.
 10. **Living street traffic pilot:** eighteen bounded marked/unmarked civilian, delivery and police patrol vehicles move along two real Harbor Avenue lanes, yield when Jay approaches, block the player's normal movement at their physical body, and share the single native depth queue and clock. This is not yet a complete traffic-signal, pursuit, AI-driver or driveable-player-car system.
 11. **Release verification:** new `qa/check-world-completion.cjs` plus existing RUN, world, Marina depth, HUD and source-asset regressions. Browser CI produces ten geographic comparisons plus idle/running screenshots in a separate preview.
 
 ## Release gate (do not claim complete until all pass)
 
-- Real browser: walkthrough screens at each of the ten reference positions, including west/east Southbay seams and native Marina baseline, **plus three new roadway-junction captures**.
+- Real browser: walkthrough screens at each of the ten reference positions, including west/east Southbay seams and native Marina baseline, **plus five roadway-junction captures**.
 - Same zoom/position comparisons show a **material positive visual change** in each outlying district; Marina stays visually consistent.
 - Player RUN/idle should preserve visible size, foot position, sprite identity and contact shadows for all facings; no small character when running.
 - Pass native Android portrait and landscape joystick+RUN multitouch, menu/map switching, save/profile separation and collision testing.
@@ -36,7 +36,7 @@
 - True comprehensive, hand-authored premium pixel art for *every* block and building has not been created. The generic fallback renderer is still used in places lacking source artwork.
 - Most extra connected-city building interiors are not yet seamlessly reconstructed. The classic main-campaign missions, driving AI and all traffic systems remain partially separate from the continuous-world exploration view.
 - The first bounded pedestrian routines are live in eight districts; full schedules, varied authentic city NPC art, traffic coordination and quest-aware behavior are still unfinished.
-- The 14 canonical connector rectangles now form one verified road graph; **individual local side streets** still need a complete dead-end audit against the actual browser map and physical collision, including roads that end at authored buildings.
+- The 18 audited canonical road segments now form one verified graph; **individual local side streets** still need a complete dead-end audit against the actual browser map and physical collision, including roads that end at authored buildings.
 - Physical Android FPS, long-session soak tests, complete save upgrade/migration and true multiplayer transport are unverified/not implemented.
 
 **Approach:** One cohesive World Completion objective and one review, not a promise that each interim code commit constitutes a finished game. Keep adding/validating within this milestone until the acceptance gate is honestly met; preserve the original preferred playable version.

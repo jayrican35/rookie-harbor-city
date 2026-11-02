@@ -31,6 +31,22 @@ const server=require('node:http').createServer((req,res)=>{
    await page.waitForFunction(()=>window.ROOKIE_V135_WALL_KIT?.stats()?.groundAtlas);
    if(variant==='after'){
     await page.waitForFunction(()=>window.ROOKIE_V135_WALL_KIT?.stats()?.communityAtlas);
+    await page.waitForFunction(()=>window.ROOKIE_V135_WALL_KIT?.stats()?.roadAtlas&&window.ROOKIE_V135_WALL_KIT.roadwayPlan());
+    const road=await page.evaluate(()=>({source:window.HARBOR.worldV115.roadNetwork(),plan:window.ROOKIE_V135_WALL_KIT.roadwayPlan()}));
+    fs.writeFileSync(`${shots}/${width}-road-plan.json`,JSON.stringify(road,null,2));
+    assert.equal(road.source.segments.length,18);
+    for(const s of road.source.segments){
+     for(let t=0;t<=1;t+=.05){
+      const x=s.w>s.h?s.x+s.w*t:s.x+s.w/2,y=s.w>s.h?s.y+s.h/2:s.y+s.h*t;
+      assert(road.plan.roads.some(r=>x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h),'Road finish must cover original centerline: '+s.id);
+     }
+    }
+    assert(road.plan.roads.some(r=>r.axis==='v'&&r.x<4932&&r.x+r.w>4932&&r.y<1721&&r.y+r.h>=1721),'Native north leg of Midtown junction must remain open');
+    for(const c of road.plan.crossings){
+     const w=(c.axis==='h'?31:40)*c.scale,h=(c.axis==='h'?40:31)*c.scale;
+     for(const x of [c.x-w/2,c.x+w/2])for(const y of [c.y-h/2,c.y+h/2])
+      assert(road.plan.roads.some(r=>x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h),'Crosswalk extends beyond its road: '+c.id);
+    }
     const props=await page.evaluate(()=>window.ROOKIE_V134_PRECINCT.communityLayout);
     assert(props.length>25,'Use the supplied landscaping and furniture categories');
     const lawn=await page.evaluate(()=>window.ROOKIE_V133_PRECINCT.geometry.communityLawn);
@@ -43,6 +59,12 @@ const server=require('node:http').createServer((req,res)=>{
      const left=p.x-p.w/2,right=p.x+p.w/2;
      assert(right<=860||left>=1035,'Furniture must leave the central walk clear');
      assert(right<1640,'Furniture must stay west of garage/parking');
+    }
+   }
+   if(variant==='after'){
+    for(const [name,x,y,z] of [['precinct-road',948,1784,.8],['precinct-road-east-seam',2068,1784,.8],['maple-junction',-578,1784,.65],['midtown-four-way',4932,1784,.65],['northgate-junction',5855,1784,.65],['midtown-lower-junction',4050,2540,.65],['westfield-south-junction',-1850,3744,.65],['southbay-junction',4050,3744,.65]]){
+     await page.evaluate(q=>window.HARBOR.seamlessCampusV115.qaCamera(...q),[x,y,z]);await page.waitForTimeout(220);
+     await page.screenshot({path:`${shots}/${width}-${name}.png`});
     }
    }
    for(const [name,x,y,z] of [['overview',1450,1460,.52],['cleared-plaza',900,1430,1],['parking',1980,1550,.75],['entrance',948,1195,1]]){
@@ -111,11 +133,13 @@ const server=require('node:http').createServer((req,res)=>{
      const status=H.outbreak.status();
      const map=H.outbreakMap.build();
      const refused=H.seamlessCampusV115.openAt(948,1195,1)===false;
-     const communityAtlasLoaded=!!HARBOR&&!!window.ROOKIE_V135_WALL_KIT?.stats()?.communityAtlas;
-     return {started,refused,communityAtlasLoaded,status:status&&{seed:status.seed,map:status.map,stage:status.stage,cap:status.cap},map};
+     const communityAtlasLoaded=!!window.ROOKIE_V135_WALL_KIT?.stats()?.communityAtlas;
+     const roadAtlasLoaded=!!window.ROOKIE_V135_WALL_KIT?.stats()?.roadAtlas;
+     return {started,refused,communityAtlasLoaded,roadAtlasLoaded,status:status&&{seed:status.seed,map:status.map,stage:status.stage,cap:status.cap},map};
     });
     assert(run.started&&run.refused&&run.status,'Zombie must start and exclude campus');
     assert.equal(run.communityAtlasLoaded,false,'Community art must not load in protected mode');
+    assert.equal(run.roadAtlasLoaded,false,'Road art must not load in protected mode');
     assert(await page.evaluate(()=>window.HARBOR.armory.inspect('rifle')),'Native armory inspection');
     await page.locator('#armoryPanel .armory-equip').click();
     await page.waitForTimeout(900);

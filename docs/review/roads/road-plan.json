@@ -1,0 +1,756 @@
+{
+  "source": {
+    "version": "115-phase3b-roads-1",
+    "worldId": "harbor-main",
+    "primary": {
+      "id": "harbor-avenue",
+      "name": "Harbor Avenue",
+      "centerY": 1784,
+      "laneWidth": 127
+    },
+    "segments": [
+      {
+        "id": "harbor-ave-west",
+        "x": -3100,
+        "y": 1721,
+        "w": 3250,
+        "h": 127,
+        "kind": "arterial"
+      },
+      {
+        "id": "harbor-ave-east",
+        "x": 2068,
+        "y": 1721,
+        "w": 733,
+        "h": 127,
+        "kind": "arterial"
+      },
+      {
+        "id": "maple-to-southbay",
+        "x": -650,
+        "y": 1800,
+        "w": 144,
+        "h": 1958,
+        "kind": "collector"
+      },
+      {
+        "id": "south-connector",
+        "x": -650,
+        "y": 3680,
+        "w": 3450,
+        "h": 128,
+        "kind": "collector"
+      },
+      {
+        "id": "northgate-downtown",
+        "x": 5800,
+        "y": 945,
+        "w": 110,
+        "h": 352,
+        "kind": "collector"
+      },
+      {
+        "id": "downtown-waterfront",
+        "x": 5720,
+        "y": 2230,
+        "w": 150,
+        "h": 1640,
+        "kind": "collector"
+      },
+      {
+        "id": "bayview-link",
+        "x": 4388,
+        "y": 3680,
+        "w": 55,
+        "h": 128,
+        "kind": "collector"
+      },
+      {
+        "id": "harbor-precinct-link",
+        "x": 149,
+        "y": 1721,
+        "w": 1920,
+        "h": 127,
+        "kind": "arterial",
+        "newRoad": true
+      },
+      {
+        "id": "harbor-east-through",
+        "x": 2800,
+        "y": 1721,
+        "w": 6856,
+        "h": 127,
+        "kind": "arterial",
+        "newRoad": true,
+        "underNative": true
+      },
+      {
+        "id": "westfield-native-spine",
+        "x": -1927,
+        "y": 1847,
+        "w": 156,
+        "h": 513,
+        "kind": "collector",
+        "newRoad": true,
+        "underNative": true
+      },
+      {
+        "id": "westfield-south-extension",
+        "x": -1927,
+        "y": 2359,
+        "w": 156,
+        "h": 1385,
+        "kind": "collector",
+        "newRoad": true
+      },
+      {
+        "id": "westfield-south-connector",
+        "x": -1927,
+        "y": 3680,
+        "w": 1278,
+        "h": 128,
+        "kind": "collector",
+        "newRoad": true
+      },
+      {
+        "id": "southbay-loop",
+        "x": 2800,
+        "y": 3680,
+        "w": 1589,
+        "h": 128,
+        "kind": "collector",
+        "newRoad": true,
+        "underNative": true
+      },
+      {
+        "id": "midtown-east-spine",
+        "x": 4848,
+        "y": 1847,
+        "w": 168,
+        "h": 758,
+        "kind": "collector",
+        "newRoad": true,
+        "underNative": true
+      },
+      {
+        "id": "midtown-lower-avenue",
+        "x": 2800,
+        "y": 2476,
+        "w": 2256,
+        "h": 128,
+        "kind": "collector",
+        "newRoad": true,
+        "underNative": true
+      },
+      {
+        "id": "midtown-south",
+        "x": 3973,
+        "y": 2603,
+        "w": 156,
+        "h": 618,
+        "kind": "collector",
+        "newRoad": true,
+        "corrected": true
+      },
+      {
+        "id": "bayview-native-east-spine",
+        "x": 3973,
+        "y": 3220,
+        "w": 156,
+        "h": 462,
+        "kind": "collector",
+        "newRoad": true,
+        "underNative": true
+      },
+      {
+        "id": "northgate-through-link",
+        "x": 5800,
+        "y": 1296,
+        "w": 110,
+        "h": 935,
+        "kind": "collector",
+        "newRoad": true,
+        "underNative": true
+      }
+    ],
+    "crossings": [
+      {
+        "id": "westfield-residential",
+        "x": -1500,
+        "y": 1784,
+        "axis": "h",
+        "type": "district-seam"
+      },
+      {
+        "id": "residential-precinct",
+        "x": 0,
+        "y": 1784,
+        "axis": "h",
+        "type": "district-seam"
+      },
+      {
+        "id": "precinct-midtown",
+        "x": 2800,
+        "y": 1784,
+        "axis": "h",
+        "type": "district-seam"
+      },
+      {
+        "id": "midtown-downtown",
+        "x": 5056,
+        "y": 1784,
+        "axis": "h",
+        "type": "district-seam"
+      },
+      {
+        "id": "downtown-eastside",
+        "x": 6556,
+        "y": 1784,
+        "axis": "h",
+        "type": "district-seam"
+      },
+      {
+        "id": "eastside-industrial",
+        "x": 8156,
+        "y": 1784,
+        "axis": "h",
+        "type": "district-seam"
+      },
+      {
+        "id": "maple-arterial",
+        "x": -578,
+        "y": 1784,
+        "axis": "h",
+        "type": "intersection"
+      },
+      {
+        "id": "maple-south-road",
+        "x": -578,
+        "y": 3744,
+        "axis": "h",
+        "type": "intersection"
+      },
+      {
+        "id": "northgate-downtown",
+        "x": 5855,
+        "y": 1283,
+        "axis": "v",
+        "type": "intersection"
+      },
+      {
+        "id": "downtown-waterfront",
+        "x": 5795,
+        "y": 2283,
+        "axis": "v",
+        "type": "intersection"
+      },
+      {
+        "id": "southbay-waterfront",
+        "x": 4400,
+        "y": 3744,
+        "axis": "v",
+        "type": "district-seam"
+      },
+      {
+        "id": "midtown-harbor-junction",
+        "x": 4932,
+        "y": 1784,
+        "axis": "h",
+        "type": "intersection"
+      },
+      {
+        "id": "midtown-lower-junction",
+        "x": 4050,
+        "y": 2540,
+        "axis": "h",
+        "type": "intersection"
+      },
+      {
+        "id": "midtown-southbay-junction",
+        "x": 4050,
+        "y": 3744,
+        "axis": "h",
+        "type": "intersection"
+      },
+      {
+        "id": "westfield-south-junction",
+        "x": -1850,
+        "y": 3744,
+        "axis": "h",
+        "type": "intersection"
+      },
+      {
+        "id": "northgate-harbor-junction",
+        "x": 5855,
+        "y": 1784,
+        "axis": "h",
+        "type": "intersection"
+      }
+    ],
+    "landmarks": [
+      {
+        "id": "precinct",
+        "label": "PRECINCT 9",
+        "x": 948,
+        "y": 1160
+      },
+      {
+        "id": "midtown",
+        "label": "MIDTOWN",
+        "x": 3940,
+        "y": 1760
+      },
+      {
+        "id": "downtown",
+        "label": "DOWNTOWN",
+        "x": 5830,
+        "y": 1780
+      },
+      {
+        "id": "waterfront",
+        "label": "WATERFRONT",
+        "x": 5080,
+        "y": 3810
+      }
+    ]
+  },
+  "plan": {
+    "roads": [
+      {
+        "id": "harbor-ave-west",
+        "x": -3100,
+        "y": 1721,
+        "w": 12756,
+        "h": 127,
+        "kind": "arterial",
+        "axis": "h",
+        "ids": [
+          "harbor-ave-west",
+          "harbor-precinct-link",
+          "harbor-ave-east",
+          "harbor-east-through"
+        ]
+      },
+      {
+        "id": "maple-to-southbay",
+        "x": -650,
+        "y": 1800,
+        "w": 144,
+        "h": 1958,
+        "kind": "collector",
+        "axis": "v",
+        "ids": [
+          "maple-to-southbay"
+        ]
+      },
+      {
+        "id": "south-connector",
+        "x": -1927,
+        "y": 3680,
+        "w": 6316,
+        "h": 128,
+        "kind": "collector",
+        "axis": "h",
+        "ids": [
+          "south-connector",
+          "westfield-south-connector",
+          "southbay-loop"
+        ]
+      },
+      {
+        "id": "northgate-downtown",
+        "x": 5800,
+        "y": 945,
+        "w": 110,
+        "h": 1286,
+        "kind": "collector",
+        "axis": "v",
+        "ids": [
+          "northgate-downtown",
+          "northgate-through-link"
+        ]
+      },
+      {
+        "id": "downtown-waterfront",
+        "x": 5720,
+        "y": 2230,
+        "w": 150,
+        "h": 1640,
+        "kind": "collector",
+        "axis": "v",
+        "ids": [
+          "downtown-waterfront"
+        ]
+      },
+      {
+        "id": "bayview-link",
+        "x": 4388,
+        "y": 3680,
+        "w": 55,
+        "h": 128,
+        "kind": "collector",
+        "axis": "v",
+        "ids": [
+          "bayview-link"
+        ]
+      },
+      {
+        "id": "westfield-native-spine",
+        "x": -1927,
+        "y": 1834,
+        "w": 156,
+        "h": 1910,
+        "kind": "collector",
+        "newRoad": true,
+        "underNative": true,
+        "axis": "v",
+        "ids": [
+          "westfield-native-spine",
+          "westfield-south-extension",
+          "native:westfield:1"
+        ]
+      },
+      {
+        "id": "midtown-east-spine",
+        "x": 4848,
+        "y": 1260,
+        "w": 168,
+        "h": 1900,
+        "kind": "collector",
+        "newRoad": true,
+        "underNative": true,
+        "axis": "v",
+        "ids": [
+          "midtown-east-spine",
+          "native:midtown:0",
+          "native:midtown:3"
+        ]
+      },
+      {
+        "id": "midtown-lower-avenue",
+        "x": 2800,
+        "y": 2476,
+        "w": 2256,
+        "h": 128,
+        "kind": "collector",
+        "newRoad": true,
+        "underNative": true,
+        "axis": "h",
+        "ids": [
+          "midtown-lower-avenue",
+          "native:midtown:2"
+        ]
+      },
+      {
+        "id": "midtown-south",
+        "x": 3973,
+        "y": 2603,
+        "w": 156,
+        "h": 1079,
+        "kind": "collector",
+        "newRoad": true,
+        "corrected": true,
+        "axis": "v",
+        "ids": [
+          "midtown-south",
+          "bayview-native-east-spine",
+          "native:southbay:1"
+        ]
+      },
+      {
+        "id": "native:westfield:0",
+        "x": -3100,
+        "y": 1721,
+        "w": 3100,
+        "h": 126,
+        "native": true,
+        "axis": "h",
+        "ids": [
+          "native:westfield:0",
+          "native:residential:0"
+        ]
+      },
+      {
+        "id": "native:midtown:1",
+        "x": 4440,
+        "y": 1644,
+        "w": 352,
+        "h": 110,
+        "native": true,
+        "axis": "h",
+        "ids": [
+          "native:midtown:1"
+        ]
+      },
+      {
+        "id": "native:midtown:4",
+        "x": 4192,
+        "y": 1260,
+        "w": 168,
+        "h": 494,
+        "native": true,
+        "axis": "v",
+        "ids": [
+          "native:midtown:4"
+        ]
+      },
+      {
+        "id": "native:midtown:5",
+        "x": 4192,
+        "y": 1946,
+        "w": 168,
+        "h": 394,
+        "native": true,
+        "axis": "v",
+        "ids": [
+          "native:midtown:5"
+        ]
+      },
+      {
+        "id": "native:downtown:0",
+        "x": 5056,
+        "y": 1706,
+        "w": 1500,
+        "h": 156,
+        "native": true,
+        "axis": "h",
+        "ids": [
+          "native:downtown:0"
+        ]
+      },
+      {
+        "id": "native:downtown:1",
+        "x": 5751,
+        "y": 1283,
+        "w": 156,
+        "h": 1000,
+        "native": true,
+        "axis": "v",
+        "ids": [
+          "native:downtown:1"
+        ]
+      },
+      {
+        "id": "native:eastside:0",
+        "x": 6556,
+        "y": 1721,
+        "w": 1600,
+        "h": 126,
+        "native": true,
+        "axis": "h",
+        "ids": [
+          "native:eastside:0"
+        ]
+      },
+      {
+        "id": "native:industrial:0",
+        "x": 8156,
+        "y": 1706,
+        "w": 1500,
+        "h": 156,
+        "native": true,
+        "axis": "h",
+        "ids": [
+          "native:industrial:0"
+        ]
+      },
+      {
+        "id": "native:northgate:0",
+        "x": 5253,
+        "y": 370,
+        "w": 156,
+        "h": 656,
+        "native": true,
+        "axis": "v",
+        "ids": [
+          "native:northgate:0"
+        ]
+      },
+      {
+        "id": "native:northgate:1",
+        "x": 6363,
+        "y": 370,
+        "w": 156,
+        "h": 656,
+        "native": true,
+        "axis": "v",
+        "ids": [
+          "native:northgate:1"
+        ]
+      },
+      {
+        "id": "native:northgate:2",
+        "x": 5086,
+        "y": 370,
+        "w": 1600,
+        "h": 156,
+        "native": true,
+        "axis": "h",
+        "ids": [
+          "native:northgate:2"
+        ]
+      },
+      {
+        "id": "native:northgate:3",
+        "x": 5086,
+        "y": 870,
+        "w": 1600,
+        "h": 156,
+        "native": true,
+        "axis": "h",
+        "ids": [
+          "native:northgate:3"
+        ]
+      },
+      {
+        "id": "native:northgate:4",
+        "x": 5781,
+        "y": 1026,
+        "w": 156,
+        "h": 257,
+        "native": true,
+        "axis": "v",
+        "ids": [
+          "native:northgate:4"
+        ]
+      },
+      {
+        "id": "native:southbay:0",
+        "x": 3423,
+        "y": 3220,
+        "w": 154,
+        "h": 461,
+        "native": true,
+        "axis": "v",
+        "ids": [
+          "native:southbay:0"
+        ]
+      },
+      {
+        "id": "native:southbay:2",
+        "x": 2800,
+        "y": 3681,
+        "w": 1600,
+        "h": 126,
+        "native": true,
+        "axis": "h",
+        "ids": [
+          "native:southbay:2"
+        ]
+      }
+    ],
+    "crossings": [
+      {
+        "id": "community-walk",
+        "x": 948,
+        "y": 1784,
+        "axis": "h",
+        "scale": 3
+      },
+      {
+        "id": "maple-arterial",
+        "x": -434,
+        "y": 1784,
+        "axis": "h",
+        "type": "intersection",
+        "scale": 3
+      },
+      {
+        "id": "maple-south-road",
+        "x": -434,
+        "y": 3744,
+        "axis": "h",
+        "type": "intersection",
+        "scale": 3
+      },
+      {
+        "id": "downtown-waterfront",
+        "x": 5795,
+        "y": 2283,
+        "axis": "v",
+        "type": "intersection",
+        "scale": 3
+      },
+      {
+        "id": "midtown-harbor-junction",
+        "x": 5088,
+        "y": 1784,
+        "axis": "h",
+        "type": "intersection",
+        "scale": 3
+      },
+      {
+        "id": "midtown-lower-junction",
+        "x": 4201,
+        "y": 2540,
+        "axis": "h",
+        "type": "intersection",
+        "scale": 3
+      },
+      {
+        "id": "midtown-southbay-junction",
+        "x": 4201,
+        "y": 3744,
+        "axis": "h",
+        "type": "intersection",
+        "scale": 3
+      },
+      {
+        "id": "westfield-south-junction",
+        "x": -1699,
+        "y": 3744,
+        "axis": "h",
+        "type": "intersection",
+        "scale": 3
+      },
+      {
+        "id": "northgate-harbor-junction",
+        "x": 5982,
+        "y": 1784,
+        "axis": "h",
+        "type": "intersection",
+        "scale": 3
+      },
+      {
+        "id": "westfield-residential",
+        "x": -1500,
+        "y": 1784,
+        "axis": "h",
+        "type": "district-seam",
+        "scale": 3
+      },
+      {
+        "id": "residential-precinct",
+        "x": 0,
+        "y": 1784,
+        "axis": "h",
+        "type": "district-seam",
+        "scale": 3
+      },
+      {
+        "id": "precinct-midtown",
+        "x": 2800,
+        "y": 1784,
+        "axis": "h",
+        "type": "district-seam",
+        "scale": 3
+      },
+      {
+        "id": "downtown-eastside",
+        "x": 6556,
+        "y": 1784,
+        "axis": "h",
+        "type": "district-seam",
+        "scale": 3
+      },
+      {
+        "id": "eastside-industrial",
+        "x": 8156,
+        "y": 1784,
+        "axis": "h",
+        "type": "district-seam",
+        "scale": 3
+      }
+    ]
+  }
+}

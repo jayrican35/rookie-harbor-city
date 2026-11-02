@@ -174,6 +174,7 @@ const communityBeds=Object.freeze([
  Object.freeze({x:1072,y:1380,w:88,h:264})
 ]);
 function approvedAsphalt(g,x,y,w,h){
+ if(groundKit()?.fillRoadMaterial?.(g,x,y,w,h))return;
  if(!fillT(g,'asphalt',x,y,w,h))ink(g,x,y,w,h,'#3d4756');
  for(let xx=x+19;xx<x+w-15;xx+=74)
    for(let yy=y+14;yy<y+h-15;yy+=69)
@@ -192,7 +193,7 @@ function approvedParkingSpace(g,x,y,w=70,h=92,accessible=false){
    g.strokeStyle='#8cc9df';g.lineWidth=3;
    g.strokeRect(x+13,y+22,w-26,44);
    // Use the approved Phase-5 accessible parking sprite, not font glyphs.
-   if(!drawT(g,'parking_access_symbol',x+4,y+19,64,64)){
+   if(!groundKit()?.drawRoadDecal?.(g,'accessible',x+w/2,y+61,2)&&!drawT(g,'parking_access_symbol',x+4,y+19,64,64)){
     g.fillStyle='#b1dbeb';g.textAlign='center';
     g.font='bold 31px sans-serif';g.fillText('P',x+w/2,y+60);
    }
@@ -237,6 +238,7 @@ function approvedNorthGround(g){
    ink(g,xx,1279,17,3,'rgba(230,191,94,.60)');
  // Two painted arrows, no planted island in the garage traffic lane.
  for(const yy of [1360,1483]){
+   if(groundKit()?.drawRoadDecal?.(g,'arrow',1918,yy,2))continue;
    g.fillStyle='rgba(238,231,207,.82)';
    g.beginPath();g.moveTo(1929,yy-20);g.lineTo(1907,yy+2);
    g.lineTo(1919,yy+2);g.lineTo(1919,yy+24);
@@ -343,6 +345,7 @@ function southGround(g){
   g.fillText('COMMUNITY GREEN',954,1983,185);
 }
 function roadPhase5(g){
+ if(approvedLayout()&&groundKit()?.stats?.().roadAtlas)return;
  if(!terrainReady())return;
  // Real connected Harbor Avenue (V115 topology): x149..2069, y1721..1848.
  // Use existing road rectangle only; NO new road geometry or side streets.
@@ -368,7 +371,7 @@ function roadPhase5(g){
 }
 function makeGround(){
  const imageReady=ready(texture());
-const targetVersion=(imageReady?'heritage':'fallback')+'|'+(terrainReady()?'phase5':'original')+'|'+approvedLayout()+'|'+!!groundKit()?.stats?.().communityAtlas;
+const targetVersion=(imageReady?'heritage':'fallback')+'|'+(terrainReady()?'phase5':'original')+'|'+approvedLayout()+'|'+!!groundKit()?.stats?.().communityAtlas+'|'+!!groundKit()?.stats?.().roadAtlas;
  if(cachedGround&&cacheReady===targetVersion)return cachedGround;
  const cv=document.createElement('canvas');
  cv.width=2410;cv.height=1720;

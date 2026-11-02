@@ -24,3 +24,6 @@ touch observations, and a bounded protected-mode parity check.
 
 See [the takeover audit](docs/TAKEOVER-AUDIT-2026-11-02.md) and
 [the Option A implementation review](docs/PRECINCT9-OPTION-A-REVIEW.md).
+
+The [roadway asset pass](docs/ROADWAY-IMPLEMENTATION.md) starts at the precinct
+and follows the original connected street geometry into the surrounding districts.

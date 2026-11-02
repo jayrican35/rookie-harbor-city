@@ -57,6 +57,12 @@
   if(roadNetwork.worldId!==WORLD_ID || roadNetwork.primary.centerY!==1784)
     throw new Error('Connected-road coordinate contract mismatch');
   const links=roadNetwork.segments;
+  // Recover native district streets omitted by the inter-district graph.
+  // These are read-only authored asphalt rectangles, not new roads. Broad
+  // parking pads and the protected waterfront are deliberately excluded.
+  const nativeRoadSurfaces=districtEntries.filter(d=>d.id!=='waterfront').flatMap(d=>(d.map.ground||[])
+    .filter(r=>['#3d4148','#45484f'].includes(String(r.c).toLowerCase())||String(r.c).toLowerCase()==='#43474e'&&Math.min(r.w,r.h)<=168&&Math.max(r.w,r.h)>=300&&Math.max(r.w,r.h)>=Math.min(r.w,r.h)*2)
+    .map((r,i)=>({id:'native:'+d.id+':'+i,x:d.x+r.x,y:d.y+r.y,w:r.w,h:r.h,native:true})));
   const crossings=roadNetwork.crossings;
   const linkCollision = []; // Roads are traversable, never scene exits.
   const districtSolids=[];
@@ -539,6 +545,7 @@
     }
   }
   function drawCrossing(c){
+    if(window.ROOKIE_V135_WALL_KIT?.stats?.().roadAtlas)return;
     // Readable curb-to-curb zebra crossings at real street intersections,
     // hidden at distant zoom to avoid an aliased citywide overview.
     if(campus.zoom<.18 || !nearViewport(c.x-85,c.y-85,170,170))return;
@@ -686,6 +693,7 @@
 
   function drawOutdoorDecor(){
     for(const d of PL.decors){
+      if(window.ROOKIE_V135_WALL_KIT?.stats?.().roadAtlas&&['crosswalk','gate','extgate'].includes(d.t))continue;
       // The former visitor lot is now the pedestrian plaza. Its campaign
       // sign remains in MAPS; omit only its obsolete connected-preview copy.
       if(window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE&&d.t==='sign'&&d.text==='VISITOR PARKING')continue;
@@ -922,6 +930,9 @@
     // V133 original connected geometry remains under a cached civic-ground
     // visual layer; do not paint into active roads or create scene transitions.
     window.ROOKIE_V133_PRECINCT?.ground(g,{zoom:campus.zoom,view},t);
+    // One connected-road finish after historical ground layers, before props
+    // and actors. It reads the same immutable road graph used by traffic.
+    window.ROOKIE_V135_WALL_KIT?.drawRoadNetwork?.(g,links,crossings,view,nativeRoadSurfaces);
     // Actual reference-guided plaza details, after existing civic pavement.
     window.ROOKIE_V134_PRECINCT?.ground(g,{zoom:campus.zoom,view},t);
     drawOutdoorDecor();

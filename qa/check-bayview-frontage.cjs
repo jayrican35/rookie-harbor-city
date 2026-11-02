@@ -47,8 +47,8 @@ assert(!city.waterBlocked(5100,3950),'Native Marina water and piers remain autho
 assert(camera.includes('city.walkways(g,'),'Draw expanded promenade inside existing native world renderer');
 assert(camera.includes('window.ROOKIE_V127_CITY.depthProps(view,districtEntries)'),
  'Render fixtures within original scene character/prop depth ordering');
-assert(!/requestAnimationFrame|localStorage|sessionStorage|fetch\\s*\\(/.test(source),
+assert(!/requestAnimationFrame|localStorage|sessionStorage|fetch\s*\(/.test(source),
  'Promenade cannot add a simulation, saved data or network calls');
-assert(!/outbreak\\.|zombie|Academy.*renderer/.test(source),
+assert(!/outbreak\.|zombie|Academy.*renderer/.test(source),
  'Zombie Outbreak and Academy source remain untouched');
 console.log('PASS Bayview recording fix: full 127px horizontal street, coast-clipped premium stone, 20 tangible depth-sorted furnishings, protected Marina', {tileDraws,detailRects});

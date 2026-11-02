@@ -68,7 +68,7 @@ const cases=[{tag:'before',dir:'precinct9-v138-depth-lab',width:390,height:844},
    return q?.room===null&&q.playerY>1155;},{timeout:7500});
   await page.keyboard.up('s');
   const outside=await page.evaluate(()=>window.HARBOR.seamlessCampusV115.entranceQA());
-  assert.equal(inside.world.playerId,outside.world.playerId);
+  assert.equal(await page.evaluate(()=>window.HARBOR.seamlessCampusV115.snapshot().playerId),original.playerId);
   assert(outside.roofAlpha>inside.roofAlpha);
   const stats=await page.evaluate(()=>({
     atlas:window.ROOKIE_V135_WALL_KIT.stats(),

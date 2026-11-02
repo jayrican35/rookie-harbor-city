@@ -1,0 +1,112 @@
+name: Precinct 9 V134 — reference-quality building visual QA
+on:
+  push:
+    branches: [feature/v134-precinct-reference-facade]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Audit only native reference art, original doors and protected game source
+        run: |
+          set -euo pipefail
+          node --check published-game-capture/v134-precinct-reference.js
+          node --check published-game-capture/v115-campus.js
+          node --check qa/capture-v134-precinct.cjs
+          node qa/check-v134-precinct.cjs
+          node qa/check-v133-precinct.cjs
+          node qa/check-v132-precinct.cjs
+          node qa/check-v131-precinct-import.cjs
+          node qa/check-v130-precinct.cjs
+          node qa/check-v128-quality.cjs
+          node qa/check-v127-citywide.cjs
+          node qa/check-world-roads.cjs
+          node qa/check-world-traffic.cjs
+          node qa/check-v115-campus.cjs
+      - name: Fail on any modified Zombie, Academy, main campaign, Marina, roads or assets
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin 798c7f61a5ba9508ea1c89d71b8011c760849e33
+          git diff --name-only 798c7f61a5ba9508ea1c89d71b8011c760849e33 HEAD | grep -Ev '^((published-game-capture/(v115-campus|v134-precinct-reference)\.js)|(tools/build_v134_precinct_preview\.py)|(qa/(check-v134-precinct|capture-v134-precinct)\.cjs)|(\.github/workflows/v134-precinct-review\.yml)|(docs/PRECINCT9-V134-REVIEW\.md))$' >/tmp/v134-external || true
+          if [ -s /tmp/v134-external ]; then cat /tmp/v134-external; exit 1; fi
+          echo 'PASS no Zombie, Campaign, Academy, main world, Marina, district, source asset or saved file changed'
+  mobile-native:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build original connected world with existing image tools and Chromium
+        run: |
+          python3 -m pip install -q pillow numpy
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Build two actual independently playable before/after games
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/precinct9-v133-lab site/preview/precinct9-v134-lab
+          cp -a published-game-capture/. site/preview/precinct9-v133-lab/
+          cp -a published-game-capture/. site/preview/precinct9-v134-lab/
+          python3 tools/build_v133_precinct_preview.py site/preview/precinct9-v133-lab
+          python3 tools/build_v134_precinct_preview.py site/preview/precinct9-v134-lab
+          node --check site/preview/precinct9-v134-lab/game-v115.bundle.js
+          grep -q v134-precinct-reference.js site/preview/precinct9-v134-lab/index.html
+          for f in game.js outbreak.css v116-marina.js v127-citywide-art.js v115-world.js v117-jay.js; do
+            cmp -s site/preview/precinct9-v133-lab/$f site/preview/precinct9-v134-lab/$f
+          done
+          echo 'PASS original Campaign, Zombie, Academy, Marina, roads and saved game bytes identical'
+      - name: Run real 390 by 844 phone gameplay, true doors, Marina, matched HQ facades
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8765 --directory site >/tmp/v134-http.log 2>&1 &
+          sleep 2
+          node qa/capture-v134-precinct.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageChops
+          import json,html
+          p=Path('site/preview/precinct9-v134-lab/evidence')
+          d=json.loads((p/'review-data.json').read_text())
+          scenes=[s['id'] for s in d['scenes']]+['real-interior-roof-reveal']
+          cards=[]
+          changed={}
+          for name in scenes:
+              before=p/(name+'-before.png')
+              after=p/(name+'-after.png')
+              assert before.is_file() and after.is_file(),name
+              with Image.open(before) as b,Image.open(after) as a:
+                  assert b.size==a.size
+                  bbox=ImageChops.difference(b.convert('RGB'),a.convert('RGB')).getbbox()
+                  changed[name]=bool(bbox)
+              cards.append('<section><h2>'+html.escape(name.replace('-',' ').title())+'</h2><div class="comparison"><img loading="lazy" src="'+name+'-before.png" alt="V133 previous"><img loading="lazy" src="'+name+'-after.png" alt="V134 reference-quality"></div></section>')
+          assert changed['two-story-main-sign-and-badge']
+          assert changed['garage-reference-style-matching']
+          assert changed['community-plaza-palm-flags']
+          (p/'index.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROOKIE V134 Reference-Quality Police HQ</title><style>body{margin:12px;background:#11263c;color:#f3dfb2;font:16px system-ui}.comparison{display:grid;grid-template-columns:1fr 1fr;gap:7px;max-width:940px}.comparison img{width:100%;min-width:0}section{margin:24px 0}h2{font-size:18px}</style><h1>Precinct 9 — User Reference Architectural Reconstruction</h1><p>Actual Android-size playable game. Left V133, right V134. Two-story blue/cream police facade, badge, warm-lit windows, entrance canopy, flags, matching fleet garage and civic plaza. Old doors, roof reveal, Marina, roads and Zombie preserved. Human artistic approval still required.</p>'+''.join(cards)+'</html>')
+          print('PASS',len(scenes),'real Android-size V134 matched game comparisons, visual changes witnessed')
+          PY
+      - name: Upload real gameplay proof and playable reference version
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: precinct-v134-reference-screenshots
+          path: site/preview/precinct9-v134-lab/evidence/
+          if-no-files-found: warn
+      - name: Upload separately playable precinct build
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: precinct-v134-playable
+          path: site/preview/precinct9-v134-lab/
+          if-no-files-found: error

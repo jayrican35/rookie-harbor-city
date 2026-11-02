@@ -239,6 +239,13 @@ jobs:
           path: precinct9-v139
           persist-credentials: false
 
+      - name: Check out V140 owner-approved cohesive precinct campus (isolated)
+        uses: actions/checkout@v4
+        with:
+          ref: e762267d979e24375f485bb3929ff9f4460ca2cd # green real Android/desktop, vehicle-lane/roof/door QA
+          path: precinct9-v140
+          persist-credentials: false
+
       - name: Recover missing main-campaign environment art
         shell: bash
         working-directory: visual-preview
@@ -1594,6 +1601,53 @@ jobs:
           cmp -s game-backup/published-game-capture/game.js site/game.js
           cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
           echo 'PASS V139 actual Android and desktop terrain screenshots, continuous lobby crossing and original protected modes'
+
+      - name: Build separate V140 approved precinct campus playable preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/precinct9-v140-approved-layout
+          cp -a precinct9-v140/published-game-capture/. site/preview/precinct9-v140-approved-layout/
+          python3 precinct9-v140/tools/build_v140_precinct_approved_layout_preview.py site/preview/precinct9-v140-approved-layout
+          node --check site/preview/precinct9-v140-approved-layout/game-v115.bundle.js
+          node --check site/preview/precinct9-v140-approved-layout/v115-campus.js
+          node --check site/preview/precinct9-v140-approved-layout/v133-precinct-campus.js
+          node --check site/preview/precinct9-v140-approved-layout/v134-precinct-reference.js
+          for f in game.js outbreak.css v116-marina.js v127-citywide-art.js v115-world.js v117-jay.js v132-precinct-heritage.js; do
+            cmp -s "site/preview/precinct9-v139-grounds-lab/$f" "site/preview/precinct9-v140-approved-layout/$f"
+            cmp -s "site/preview/v128-world-quality/$f" "site/preview/precinct9-v140-approved-layout/$f"
+          done
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          echo 'PASS original story, Zombie, NPC/vehicle engine and approved building files all unchanged'
+
+      - name: Publish V140 real-game mobile, desktop and approved site plan gallery
+        shell: bash
+        run: |
+          set -euo pipefail
+          node precinct9-v140/qa/capture-v140-approved-campus.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageChops
+          import json,html
+          p=Path('site/preview/precinct9-v140-approved-layout/evidence')
+          d=json.loads((p/'qa-results.json').read_text())
+          names=[v['name'] for v in d['views']]
+          cards=[]
+          for n in names:
+            before=p/(n+'-before.png');after=p/(n+'-after.png')
+            assert before.is_file() and after.is_file(),n
+            if n in ('empty-visitor-parking','garage-access-apron','front-entry-community-plaza'):
+              with Image.open(before) as a,Image.open(after) as b:
+                assert ImageChops.difference(a.convert('RGB'),b.convert('RGB')).getbbox(),n
+            cards.append('<section><h2>'+html.escape(n.replace('-',' ').title())+'</h2><div class="pair"><img loading="lazy" src="'+n+'-before.png" alt="Original V139"><img loading="lazy" src="'+n+'-after.png" alt="Approved V140"></div></section>')
+          cards.append('<section><h2>Full Precinct Campus — Desktop Gameplay</h2><img style="max-width:100%" src="full-campus-approved-desktop.png" alt="Full precinct approved campus built in real game"></section>')
+          css='body{background:#11263b;color:#f5e2bd;font:16px system-ui;margin:14px}.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:1000px}.pair img{width:100%;min-width:0}h2{font-size:19px}section{margin-bottom:25px}'
+          (p/'index.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROOKIE V140 — Approved Precinct 9 Campus</title><style>'+css+'</style><h1>Precinct 9 — Approved Campus Design</h1><p>Actual playable Harbor City Canvas, same camera before and after. Parking clear of bushes, vehicle-access aisle aligned with garage, main civic pedestrian plaza, restrained flags and existing roads. Original game, interior, collisions and Zombie Outbreak remain untouched. This is a review build awaiting player visual approval.</p>'+''.join(cards)+'</html>')
+          PY
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          echo 'PASS V140 actual Android and desktop approval screenshots and native entrance/roads without collision changes'
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

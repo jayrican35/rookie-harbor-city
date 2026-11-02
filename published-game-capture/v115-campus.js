@@ -865,6 +865,8 @@
     // V133 original connected geometry remains under a cached civic-ground
     // visual layer; do not paint into active roads or create scene transitions.
     window.ROOKIE_V133_PRECINCT?.ground(g,{zoom:campus.zoom,view},t);
+    // Actual reference-guided plaza details, after existing civic pavement.
+    window.ROOKIE_V134_PRECINCT?.ground(g,{zoom:campus.zoom,view},t);
     drawOutdoorDecor();
     const marina=window.ROOKIE_V116_MARINA;
     if(marina)marina.background(g,{zoom:campus.zoom,view},t);
@@ -875,6 +877,11 @@
     drawStation(); // Original lobby, furnished rooms, walls and thresholds.
     drawEntityHighlights(t); // Jay, Rosa and station NPCs under the roof.
     drawStationRoof(); // Opaque outside, fades to reveal interiors at real doors.
+    // Architecturally detailed south-facing 2-story elevation is co-faded
+    // with the exact real roof and original doors. The main (x948,y1124)
+    // door remains physically open; this is a strictly visual overlay.
+    window.ROOKIE_V134_PRECINCT?.architecture(g,{
+      zoom:campus.zoom,view,alpha:roofAlpha()},t);
     // The V115 showcase also drew roof vents; V132 owns that layer now.
     // Avoid double glazing/vents over the ported legacy material and signs.
     if(art&&!window.ROOKIE_V132_PRECINCT)art.precinct(g,{zoom:campus.zoom,view,STX,STY,alpha:roofAlpha()},t);
@@ -882,7 +889,8 @@
     if(precinctVisual)precinctVisual.frontage(g,{zoom:campus.zoom,view,roofAlpha:roofAlpha()},t);
     // Architectural wall band, public overhang and garage threshold details
     // fade with the SAME original station roof, never into the interior.
-    window.ROOKIE_V133_PRECINCT?.facade(g,{zoom:campus.zoom,view,alpha:roofAlpha()},t);
+    if(!window.ROOKIE_V134_PRECINCT)
+      window.ROOKIE_V133_PRECINCT?.facade(g,{zoom:campus.zoom,view,alpha:roofAlpha()},t);
     if(marina)marina.foreground(g,{zoom:campus.zoom,view,player:{x:campus.x,y:campus.y}},t);
     if(cinematic)cinematic.atmosphere(g,{zoom:campus.zoom,view},t);
     if(pilot)pilot.animated(g,{zoom:campus.zoom,view},t);

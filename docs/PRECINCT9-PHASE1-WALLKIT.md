@@ -23,12 +23,12 @@ bleed around the illustrations is intentionally NOT included.
 
 ## In-game assembly
 The normal V134 facade renderer calls a tiny modular-atlas test method
-at native world x=404,y=965. It draws a single 320x128 wall strip:
+at native world x=412,y=985. It draws a single 320x128 wall strip:
 pilasters, repeatable blue bricks, stone cornice and base. The SAME
 existing roof fade and depth order apply. It does NOT change colliders,
 buildings, door transitions, or camera.
 
-39x? No: actual browser capture size is 390x844 Android portrait.
+The browser capture size is 390x844 Android portrait.
 The browser verifies the 26-module manifest and actual atlas painting,
 compares real doors/walls/roads/walkability and retains Marina shots.
 Aesthetic approval remains with the user.

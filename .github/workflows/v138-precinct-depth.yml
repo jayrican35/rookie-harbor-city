@@ -47,7 +47,7 @@ jobs:
           git fetch --no-tags --depth=1 origin 5fa0ac8436c6162fdb7fe18a11cb70ade45717dd
           while IFS= read -r file; do
             case "$file" in
-              published-game-capture/v115-campus.js|published-game-capture/v134-precinct-reference.js|tools/build_v137_precinct_entrance_preview.py|tools/build_v138_precinct_depth_preview.py|qa/capture-v138-precinct-depth.cjs|.github/workflows/v138-precinct-depth.yml) ;;
+              published-game-capture/v115-campus.js|published-game-capture/v134-precinct-reference.js|tools/build_v135_precinct_wallkit_preview.py|tools/build_v137_precinct_entrance_preview.py|tools/build_v138_precinct_depth_preview.py|qa/capture-v138-precinct-depth.cjs|.github/workflows/v138-precinct-depth.yml) ;;
               *) echo "Out-of-scope modification: $file"; exit 1 ;;
             esac
           done < <(git diff --name-only 5fa0ac8436c6162fdb7fe18a11cb70ade45717dd HEAD)

@@ -1,0 +1,134 @@
+name: Precinct 9 Phase 1 — Modular Wall Kit and Real Game QA
+on:
+  push:
+    branches: [feature/v135-precinct9-phase1-wallkit]
+    paths:
+      - tools/build_precinct9_wallkit_phase1.py
+      - tools/build_v135_precinct_wallkit_preview.py
+      - published-game-capture/v134-precinct-reference.js
+      - published-game-capture/v135-precinct-wallkit-test.js
+      - qa/capture-v135-wallkit.cjs
+      - docs/PRECINCT9-PHASE1-WALLKIT.md
+      - .github/workflows/v135-wallkit-phase1.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build-real-wall-kit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install original game image and browser testing libraries
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet pillow numpy
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Generate actual 26 RGBA modular PNGs, atlas and per-frame manifest
+        run: |
+          set -euo pipefail
+          python3 tools/build_precinct9_wallkit_phase1.py published-game-capture/assets/precinct9-wall-kit-phase1
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageChops
+          import json
+          p=Path('published-game-capture/assets/precinct9-wall-kit-phase1')
+          m=json.loads((p/'manifest.json').read_text())
+          assert m['tileSize']==32 and m['worldPixelsPerAssetPixel']==1
+          assert len(m['frames'])==26
+          a=Image.open(p/m['atlas']).convert('RGBA')
+          assert a.size==(1024,1024)
+          for name,f in m['frames'].items():
+            q=Image.open(p/f['file']).convert('RGBA')
+            assert (q.width,q.height)==(f['atlas']['w'],f['atlas']['h'])
+            assert q.width%32==0 and q.height%32==0
+            x,y,w,h=(f['atlas'][k] for k in ('x','y','w','h'))
+            assert ImageChops.difference(q,a.crop((x,y,x+w,y+h))).getbbox() is None,name
+          assert Image.open(p/'wall_window_cut_single.png').getpixel((60,60))[3]==0
+          assert Image.open(p/'wall_window_cut_double.png').getpixel((70,63))[3]==0
+          assert (p/'wall_brick_narrow.png').stat().st_size>300
+          print('PASS 26 correctly cropped unrotated alpha PNGs, exact atlas rectangles, apertures and grid')
+          PY
+      - name: Source audit: do not change core game, Zombie, roads or NPC system
+        run: |
+          set -euo pipefail
+          node --check published-game-capture/v135-precinct-wallkit-test.js
+          node --check published-game-capture/v134-precinct-reference.js
+          node --check qa/capture-v135-wallkit.cjs
+          node qa/check-v134-precinct.cjs
+          node qa/check-v133-precinct.cjs
+          node qa/check-v132-precinct.cjs
+          node qa/check-v131-precinct-import.cjs
+          node qa/check-world-roads.cjs
+          node qa/check-world-traffic.cjs
+          git fetch --no-tags --depth=1 origin 9a8843692cf27a19cc805b3f15c2fc417378072c
+          git diff --name-only 9a8843692cf27a19cc805b3f15c2fc417378072c HEAD | grep -Ev '^((published-game-capture/(v134-precinct-reference|v135-precinct-wallkit-test)\.js)|(tools/build_(precinct9_wallkit_phase1|v135_precinct_wallkit_preview)\.py)|(qa/capture-v135-wallkit\.cjs)|(docs/PRECINCT9-PHASE1-WALLKIT\.md)|(\.github/workflows/v135-wallkit-phase1\.yml))$' >/tmp/offscope || true
+          if [ -s /tmp/offscope ]; then cat /tmp/offscope; exit 1; fi
+          echo 'PASS no Zombie Outbreak, game.js, Marina, road or unrelated files changed'
+      - name: Build real V134 BEFORE and V135 AFTER without another renderer
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/precinct9-v134-lab site/preview/precinct9-v135-wallkit-lab
+          cp -a published-game-capture/. site/preview/precinct9-v134-lab/
+          cp -a published-game-capture/. site/preview/precinct9-v135-wallkit-lab/
+          python3 tools/build_v134_precinct_preview.py site/preview/precinct9-v134-lab
+          python3 tools/build_v135_precinct_wallkit_preview.py site/preview/precinct9-v135-wallkit-lab
+          node --check site/preview/precinct9-v135-wallkit-lab/game-v115.bundle.js
+          for f in game.js outbreak.css v116-marina.js v127-citywide-art.js v115-world.js v117-jay.js; do
+            cmp -s site/preview/precinct9-v134-lab/$f site/preview/precinct9-v135-wallkit-lab/$f
+          done
+          echo 'PASS identical original game, Zombie, Marina, city and player sources'
+      - name: Capture actual 390x844 Android gameplay and original collision checks
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8765 --directory site >/tmp/v135-http.log 2>&1 &
+          sleep 2
+          node qa/capture-v135-wallkit.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageChops
+          import html,json
+          p=Path('site/preview/precinct9-v135-wallkit-lab/evidence')
+          m=json.loads((p/'qa-metrics.json').read_text())
+          names=[x['name'] for x in m['views']]
+          cards=[]
+          for n in names:
+            b=p/(n+'-before.png');a=p/(n+'-after.png')
+            assert b.is_file() and a.is_file(),n
+            if n=='phase1-wall-kit-southwest-wall':
+              with Image.open(b) as q,Image.open(a) as w:
+                assert ImageChops.difference(q.convert('RGB'),w.convert('RGB')).getbbox(), \
+                  'Test masonry did not visibly render in real game'
+            cards.append('<section><h2>'+html.escape(n.replace('-',' ').title())+'</h2><div class="compare"><img src="'+n+'-before.png" alt="Original V134"/><img src="'+n+'-after.png" alt="V135 wall kit smoke test"/></div></section>')
+          (p/'index.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROOKIE V135 Wall Kit</title><style>body{background:#10243b;color:#f7e6bd;font:16px system-ui;margin:16px}.compare{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:900px}.compare img{width:100%;min-width:0}h2{font-size:19px}</style><h1>Precinct 9 Phase-1 Modular Wall Kit Test</h1><p>Real 390x844 native Canvas gameplay. Left: original V134. Right: one 320x128 atlas-backed blue-brick/stone wall section on the southwest façade. Other building systems, NPCs, entrances, Marina, roads and Zombie Outbreak unchanged. Not yet visually approved.</p>'+''.join(cards)+'</html>')
+          PY
+      - name: Export real reusable PNG assets and in-game proof
+        uses: actions/upload-artifact@v4
+        with:
+          name: precinct9-phase1-wallkit-assets
+          path: |
+            published-game-capture/assets/precinct9-wall-kit-phase1
+            site/preview/precinct9-v135-wallkit-lab/evidence
+          if-no-files-found: error
+      - name: Commit production PNG files to this protected feature branch
+        if: success()
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add published-game-capture/assets/precinct9-wall-kit-phase1/
+          if git diff --cached --quiet; then
+            echo 'Wall-kit PNG assets already committed'
+          else
+            git commit -m 'V135 Phase 1: store 26 transparent PNG wall modules and verified atlas/manifest'
+            git push origin HEAD:feature/v135-precinct9-phase1-wallkit
+          fi

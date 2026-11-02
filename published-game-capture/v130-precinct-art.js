@@ -23,7 +23,8 @@ function seam(g,x,y,w){
  ink(g,x,y,w,2,'rgba(245,226,177,.37)');
  ink(g,x,y+3,w,1,'rgba(41,64,72,.28)');
 }
-function route(g,view,zoom){
+function route(g,opt){
+ const view=opt.view,zoom=opt.zoom;
  // Preserve the original V115 pavement and the authentic V115 precinct
  // 32px authored tile pilot. Draw details ONLY on existing surfaces.
  if(zoom<.19||!visible({x:817,y:1110,w:1910,h:750},view))return;

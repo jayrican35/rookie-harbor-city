@@ -340,7 +340,7 @@
   const btn=document.createElement('button');btn.id='v115CampusLaunch';btn.type='button';
   btn.textContent='EXPLORE CONNECTED HARBOR CITY';btn.title='Walk inside and outside one continuous precinct world (experimental preview)';
   document.querySelector('#mapOverlay .maptools').appendChild(btn);
-  let tw=960,th=640,dpr=1,oldCtx=null,cache=null,cacheValid=false,roofCanvas=null;
+  let tw=960,th=640,dpr=1,oldCtx=null,cache=null,cacheValid=false,roofCanvas=null,legacyAssetEpoch=-1;
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
   function pickZoom(z){campus.autoZoom=false;campus.zoom=clamp(z,.024,2.5);campus.follow=campus.zoom>.09;}
   function clearInput(){window.ROOKIE_JAY?.reset();campus.speed=0;campus.keys.clear();campus.stick=null;campus.runHeld=false;modal.querySelector('#v115CampusKnob').style.transform='translate(-50%,-50%)';modal.querySelector('#v125CampusBase').classList.remove('active');modal.querySelector('#v125CampusSprint').classList.remove('held');}
@@ -361,23 +361,43 @@
   // Cache the original precinct room geometry at native resolution. Drawing
   // may use original game floor/furniture painters, but never alters them.
   function stationTexture(){
-    if(cacheValid&&cache)return cache;
+    const previous=window.ROOKIE_V131_PRECINCT_BRIDGE;
+    const epoch=previous?.assetEpoch()??0;
+    // The classic campaign loads authored room images asynchronously.
+    // Rebuild the STATIC station plate when their readiness changes, or
+    // the first attempted render traps generic floors for the whole game.
+    if(cacheValid&&cache&&legacyAssetEpoch===epoch)return cache;
     const off=document.createElement('canvas');off.width=ST.w;off.height=ST.h;
     const c=off.getContext('2d');c.imageSmoothingEnabled=false;
     c.fillStyle='#253953';c.fillRect(0,0,ST.w,ST.h);
     try{
       withOriginalContext(c,()=>{
+        // Original station rooms/furniture keep their physical rectangles.
+        // Only their DRAWING is upgraded with cached classic art sources.
+        ST.rooms.forEach(r=>{
+          if(!previous?.room(c,r))drawRoom(r);
+        });
+        ST.furn.forEach(f=>{
+          if(!previous?.furniture(c,f))drawFurn(f);
+        });
+      });
+    }catch(e){
+      // All-or-nothing recover to the original reliable room painter.
+      // Never leave the precinct visually empty on a failed legacy sprite.
+      c.clearRect(0,0,ST.w,ST.h);
+      c.fillStyle='#253953';c.fillRect(0,0,ST.w,ST.h);
+      withOriginalContext(c,()=>{
         ST.rooms.forEach(r=>drawRoom(r));
         ST.furn.forEach(f=>drawFurn(f));
       });
-    }catch(e){
-      // Fail visible rather than aborting the preview if a late painter is
-      // incompatible with an offscreen canvas.
-      c.fillStyle='#b7c3d1';ST.rooms.forEach(r=>{c.fillRect(r.x,r.y,r.w,r.h);});
     }
     c.fillStyle='rgba(10,25,44,.36)';ST.walls.forEach(r=>c.fillRect(r.x+2,r.y+7,r.w,r.h));
     c.fillStyle='#13263d';ST.walls.forEach(r=>c.fillRect(r.x,r.y,r.w,r.h));
-    cache=off;cacheValid=true;return off;
+    // Reapply the ORIGINAL 96px precinct-craft wall artwork only where
+    // the existing real collision wall rectangles are actually solid.
+    previous?.wallSkins(c,ST.walls);
+    // Replaced after any original bitmap finishes decoding.
+    cache=off;cacheValid=true;legacyAssetEpoch=epoch;return off;
   }
   function cameraFollow(dt){
     const zw=tw/campus.zoom,zh=th/campus.zoom;

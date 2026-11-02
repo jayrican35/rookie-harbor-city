@@ -318,7 +318,7 @@ function architecture(g,o){
    // Phase-1 wall-kit smoke assembly: rendered in THIS existing V134 facade
    // layer and the SAME roofAlpha(), not a second precinct or render pass.
    // A single southwest 320×128 sample, outside the real lobby/garage door.
-   window.ROOKIE_V135_WALL_KIT?.drawTest(g,{x:STX+24,y:STY+TOP+492});
+   window.ROOKIE_V135_WALL_KIT?.drawTest(g,{x:STX+32,y:STY+TOP+512});
  }
  if(garageVisible){
    if(!garageFace)garageFace=renderGarage();

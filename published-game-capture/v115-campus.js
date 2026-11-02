@@ -687,6 +687,13 @@
     // Foyer, double-wide front entrance and garage threshold share exact world coordinates.
     g.fillStyle='#efcc82';g.fillRect(FRONT.x-34,FRONT.y-5,68,10);
     g.fillStyle='#e4c27e';g.fillRect(GARAGE.x-172,GARAGE.y-3,344,9);
+  }
+  // Station roof is a separate upper render layer. Original rooms/furniture
+  // and all indoor NPCs are first drawn in the same world depth ordering,
+  // THEN the roof covers them when Jay is outdoors. While Jay crosses the
+  // real doorway its alpha naturally fades, revealing the identical inside.
+  function drawStationRoof(){
+    if(!nearViewport(STX-20,STY-20,ST.w+40,ST.h+60))return;
     const alpha=roofAlpha();
     if(alpha>.10){
       g.save();g.globalAlpha=alpha;
@@ -701,7 +708,8 @@
       // Roof rectangle ends at the exterior threshold; keep the canvas opaque.
       g.restore();
     }
-    g.save();g.strokeStyle='rgba(255,225,142,.7)';g.lineWidth=3;
+    g.save();g.globalAlpha=Math.min(.95,alpha);
+    g.strokeStyle='rgba(255,225,142,.7)';g.lineWidth=3;
     g.strokeRect(STX+4,STY+4,1146,1020);
     g.strokeRect(STX+1159,STY+652,759,505);
     g.restore();
@@ -827,12 +835,12 @@
     const cinematic=window.ROOKIE_V118_CINEMATIC;
     if(cinematic)cinematic.ground(g,{zoom:campus.zoom,view},t);
     if(pilot)pilot.props(g,{zoom:campus.zoom,view},t);
-    drawStation();
+    drawStation(); // Original lobby, furnished rooms, walls and thresholds.
+    drawEntityHighlights(t); // Jay, Rosa and station NPCs under the roof.
+    drawStationRoof(); // Opaque outside, fades to reveal interiors at real doors.
     if(art)art.precinct(g,{zoom:campus.zoom,view,STX,STY,alpha:roofAlpha()},t);
-    // Same real station roof fades near both existing doors; no second
-    // station footprint, scene, collision system or player renderer.
+    // Precinct art respects the SAME roof alpha and existing native geometry.
     if(precinctVisual)precinctVisual.frontage(g,{zoom:campus.zoom,view,roofAlpha:roofAlpha()},t);
-    drawEntityHighlights(t);
     if(marina)marina.foreground(g,{zoom:campus.zoom,view,player:{x:campus.x,y:campus.y}},t);
     if(cinematic)cinematic.atmosphere(g,{zoom:campus.zoom,view},t);
     if(pilot)pilot.animated(g,{zoom:campus.zoom,view},t);

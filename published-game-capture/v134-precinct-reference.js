@@ -315,6 +315,10 @@ function architecture(g,o){
  if(mainVisible){
    if(!face)face=renderArchitecture();
    if(face){g.drawImage(face,STX,STY+TOP);M.facadeFrames++;}
+   // Phase-1 wall-kit smoke assembly: rendered in THIS existing V134 facade
+   // layer and the SAME roofAlpha(), not a second precinct or render pass.
+   // A single southwest 320×128 sample, outside the real lobby/garage door.
+   window.ROOKIE_V135_WALL_KIT?.drawTest(g,{x:STX+24,y:STY+TOP+492});
  }
  if(garageVisible){
    if(!garageFace)garageFace=renderGarage();

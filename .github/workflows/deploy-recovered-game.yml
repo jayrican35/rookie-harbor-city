@@ -183,6 +183,13 @@ jobs:
           path: precinct9-review
           persist-credentials: false
 
+      - name: Check out original-art Precinct 9 review candidate (isolated)
+        uses: actions/checkout@v4
+        with:
+          ref: 166803ca2741d17e05b30453e646875399c5c074 # real mobile 14-scene and source QA successful
+          path: precinct9-legacy
+          persist-credentials: false
+
       - name: Recover missing main-campaign environment art
         shell: bash
         working-directory: visual-preview
@@ -1164,6 +1171,64 @@ jobs:
           cards=''.join('<section><h2>'+name.replace('-',' ').title()+'</h2><img src="'+name+'-compare.png"></section>' for name in scenes)
           (p/'index.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Precinct 9 — Human Visual Review</title><style>body{background:#102938;color:#f5e3b9;font:16px system-ui;padding:18px}h1{font-size:23px}h2{font-size:18px}section{margin:28px 0}img{width:100%;max-width:780px;border-radius:9px}</style><h1>ROOKIE: Harbor City — Precinct 9</h1><p>Actual browser gameplay, same native camera. Left: approved V128; right: isolated Precinct lab. This is an unapproved review build, not a release. Original and Zombie remain unchanged.</p>'+cards+'</html>')
           print('PASS nine true precinct comparison scenes; art acceptance requires user review')
+          PY
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+
+      - name: Build isolated Precinct 9 classic-art restoration — do not overwrite V128
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/precinct9-legacy-lab
+          cp -a precinct9-legacy/published-game-capture/. site/preview/precinct9-legacy-lab/
+          python3 precinct9-legacy/tools/build_v131_precinct_preview.py site/preview/precinct9-legacy-lab
+          node --check site/preview/precinct9-legacy-lab/v131-precinct-legacy-bridge.js
+          node --check site/preview/precinct9-legacy-lab/game-v115.bundle.js
+          (cd precinct9-legacy && node qa/check-v131-precinct-import.cjs)
+          # Only the copied connected precinct adapter may differ. These six
+          # source files are byte-for-byte identical to the playable V128.
+          for f in game.js outbreak.css v116-marina.js v127-citywide-art.js v115-world.js v117-jay.js; do
+            cmp -s "site/preview/v128-world-quality/$f" "site/preview/precinct9-legacy-lab/$f"
+          done
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          echo 'PASS original user game, Zombie, Marina, V128, roads, Jay unchanged'
+
+      - name: Real Android-size gameplay review of fourteen precinct scenes, no art auto-approval
+        shell: bash
+        run: |
+          set -euo pipefail
+          PRECINCT_BEFORE_URL='http://127.0.0.1:8765/preview/v128-world-quality/?v116QA=0&pilotQA=1' \
+          PRECINCT_AFTER_URL='http://127.0.0.1:8765/preview/precinct9-legacy-lab/?v116QA=0&pilotQA=1' \
+          PRECINCT_EVIDENCE="$PWD/site/preview/precinct9-legacy-lab/evidence" \
+            node precinct9-legacy/qa/capture-v131-precinct.cjs
+          python3 - <<'PY'
+          from PIL import Image,ImageDraw
+          from pathlib import Path
+          import json
+          p=Path('site/preview/precinct9-legacy-lab/evidence')
+          d=json.loads((p/'review-data.json').read_text())
+          scenes=[x['id'] for x in d['scenePositions']]+[
+            'station-interior-roof-revealed','interior-briefing-real-art',
+            'interior-locker-room-real-art','interior-garage-real-art']
+          assert len(scenes)==14
+          assert d['results'][1]['legacy']['stats']['floors']>=8
+          assert d['results'][1]['legacy']['stats']['furniture']>=20
+          assert d['results'][1]['legacy']['stats']['garage']>0
+          cards=[]
+          for n in scenes:
+            with Image.open(p/(n+'-before.png')) as a,Image.open(p/(n+'-after.png')) as b:
+              aa=a.convert('RGB');bb=b.convert('RGB')
+              assert aa.size==bb.size
+              combined=Image.new('RGB',(aa.width*2,aa.height+40),'#112d3e')
+              combined.paste(aa,(0,40));combined.paste(bb,(aa.width,40))
+              draw=ImageDraw.Draw(combined)
+              draw.text((7,12),'OLDER CONNECTED WORLD',fill='#f3e2ba')
+              draw.text((aa.width+7,12),'CLASSIC ART IMPORT',fill='#f3e2ba')
+              combined.save(p/(n+'-compare.png'))
+              cards.append('<section><h2>'+n.replace('-',' ').title()+'</h2><img src="'+n+'-compare.png"></section>')
+          (p/'index.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Precinct 9 — Original Art Import</title><style>body{margin:16px;background:#112d3e;color:#f1e2bd;font:16px system-ui}h1{font-size:24px}h2{font-size:18px}section{margin:24px 0}img{width:100%;max-width:900px;border-radius:8px}</style><h1>ROOKIE: Harbor City — Original Precinct Art</h1><p>Real browser gameplay. Left: stable V128; right: new isolated V131 classic asset recovery. Reuses original desks, floors, cabinets, garage art, and preserves numbered lockers, doors and existing good scenery. This is a visual-review candidate, NOT production approval.</p>'+''.join(cards)+'</html>')
+          print('PASS original authored assets and 14 real-game comparisons — human visual approval required')
           PY
           cmp -s game-backup/published-game-capture/game.js site/game.js
           cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css

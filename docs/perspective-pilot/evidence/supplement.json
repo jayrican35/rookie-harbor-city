@@ -1,0 +1,79 @@
+{
+  "depth": [
+    {
+      "name": "outside-facade",
+      "jay": 143,
+      "facade": 142,
+      "roof": 0.22777777777777777
+    },
+    {
+      "name": "inside-facade",
+      "jay": 384,
+      "facade": 385,
+      "roof": 0.04
+    }
+  ],
+  "directions": [
+    {
+      "kind": "patrol",
+      "dir": "up",
+      "drawn": true
+    },
+    {
+      "kind": "patrol",
+      "dir": "down",
+      "drawn": true
+    },
+    {
+      "kind": "patrol",
+      "dir": "left",
+      "drawn": true
+    },
+    {
+      "kind": "patrol",
+      "dir": "right",
+      "drawn": true
+    },
+    {
+      "kind": "civilian",
+      "dir": "up",
+      "drawn": true
+    },
+    {
+      "kind": "civilian",
+      "dir": "down",
+      "drawn": true
+    },
+    {
+      "kind": "civilian",
+      "dir": "left",
+      "drawn": true
+    },
+    {
+      "kind": "civilian",
+      "dir": "right",
+      "drawn": true
+    },
+    {
+      "kind": "delivery",
+      "dir": "up",
+      "drawn": true
+    },
+    {
+      "kind": "delivery",
+      "dir": "down",
+      "drawn": true
+    },
+    {
+      "kind": "delivery",
+      "dir": "left",
+      "drawn": true
+    },
+    {
+      "kind": "delivery",
+      "dir": "right",
+      "drawn": true
+    }
+  ],
+  "scope": "Directional calls are diagnostic Canvas draws; screenshots are actual gameplay."
+}

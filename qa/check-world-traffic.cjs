@@ -13,8 +13,9 @@ const code=src.slice(begin,end);
 assert(!/requestAnimationFrame|setInterval|setTimeout|localStorage|fetch\s*\(|Audio|Image\(/.test(code),
  'Traffic may not create a parallel driving engine, assets, network calls or new timers');
 const player={x:0,y:4000,zoom:1};
-const simulator=new Function('links','campus','Math',code+'\nreturn {streetTraffic,initializeStreetTraffic,stepStreetTraffic,streetPose,trafficBlocked,drawStreetTraffic};');
-const {streetTraffic,initializeStreetTraffic,stepStreetTraffic,streetPose,trafficBlocked,drawStreetTraffic}=simulator(links,player,Math);
+const browser={};
+const simulator=new Function('links','campus','Math','window',code+'\nreturn {streetTraffic,initializeStreetTraffic,stepStreetTraffic,streetPose,trafficBlocked,drawStreetTraffic};');
+const {streetTraffic,initializeStreetTraffic,stepStreetTraffic,streetPose,trafficBlocked,drawStreetTraffic}=simulator(links,player,Math,browser);
 initializeStreetTraffic();initializeStreetTraffic();
 assert.equal(streetTraffic.length,18,'Exactly one bounded fleet, never duplicate spawns');
 assert(streetTraffic.some(x=>x.kind==='patrol'));
@@ -35,6 +36,11 @@ const g={save(){},restore(){},translate(){},rotate(){},fillRect(){draws++},
  beginPath(){},ellipse(){},fill(){},set fillStyle(v){this.color=v;}};
 for(const c of streetTraffic)drawStreetTraffic(g,c);
 assert(draws>100,'18 real styled vehicles draw through the existing Canvas');
+let delegated=0;const beforeDraws=draws;
+browser.ROOKIE_V135_WALL_KIT={drawPilotVehicle(context,vehicle){assert.equal(context,g);assert(vehicle.id);delegated++;return true;}};
+for(const c of streetTraffic)drawStreetTraffic(g,c);
+assert.equal(delegated,18,'Existing traffic painter delegates artwork to the guarded pilot hook');
+assert.equal(draws,beforeDraws,'Do not draw old and new vehicle bodies twice');
 assert(src.includes('stepStreetTraffic(dt);'),'Single native simulation owns movement');
 assert(src.includes('trafficBlocked(x,y,r)'),'Same player collider sees vehicle bodies');
 assert(src.includes('entries.push({y:car.y,trafficCar:car})'),'Traffic sorted with all characters and props');

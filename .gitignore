@@ -5,4 +5,7 @@
 /build-audit.log
 /review-server.log
 /review-server-error.log
+/perspective-evidence/
+/perspective-build.log
+/perspective-qa.log
 __pycache__/

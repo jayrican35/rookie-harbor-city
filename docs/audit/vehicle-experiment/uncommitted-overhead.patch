@@ -1,0 +1,158 @@
+diff --git a/published-game-capture/v115-campus.js b/published-game-capture/v115-campus.js
+index 1b44d67..fd04556 100644
+--- a/published-game-capture/v115-campus.js
++++ b/published-game-capture/v115-campus.js
+@@ -291,6 +291,7 @@
+   }
+   function drawStreetTraffic(g,car){
+     if(campus.zoom<.19)return;
++    if(window.ROOKIE_V135_WALL_KIT?.drawVehicle?.(g,{...car,len:car.kind==='delivery'?104:86,wid:38,context:'connected-traffic'}))return;
+     const dir=car.dir||'right';
+     g.save();g.translate(car.x,car.y);
+     g.rotate(dir==='left'?Math.PI:dir==='down'?Math.PI/2:dir==='up'?-Math.PI/2:0);
+@@ -368,7 +369,7 @@
+   // may use original game floor/furniture painters, but never alters them.
+   function stationTexture(){
+     const previous=window.ROOKIE_V131_PRECINCT_BRIDGE;
+-    const epoch=previous?.assetEpoch()??0;
++    const epoch=String(previous?.assetEpoch()??0)+'|'+!!window.ROOKIE_V135_WALL_KIT?.stats?.().vehicleAtlas;
+     // The classic campaign loads authored room images asynchronously.
+     // Rebuild the STATIC station plate when their readiness changes, or
+     // the first attempted render traps generic floors for the whole game.
+@@ -660,7 +661,11 @@
+       if(o.t==='lamp'){g.fillStyle='#1b3b50';g.fillRect(x-3,y-35,6,36);g.fillStyle='#f4df97';g.fillRect(x-8,y-40,16,10);continue;}
+       if(o.t==='sign'||o.t==='gate'){g.fillStyle='#2a4458';g.fillRect(x-36,y-22,110,28);g.fillStyle='#fff0c3';g.font='700 15px Barlow Condensed,sans-serif';g.textAlign='left';g.fillText(String(o.text||d.id).slice(0,20),x-32,y-4);continue;}
+       if(o.t==='bench'){g.fillStyle='#886443';g.fillRect(x,y,o.w||88,10);g.fillRect(x+5,y+10,5,10);continue;}
+-      if(o.t==='car'){g.fillStyle=o.c||'#587aa1';g.fillRect(x,y,o.w||70,o.h||36);g.fillStyle='#b8d2e3';g.fillRect(x+8,y+8,Math.min(24,(o.w||60)-12),10);continue;}
++      if(o.t==='car'){
++        const w=o.w||70,h=o.h||36;
++        if(window.ROOKIE_V135_WALL_KIT?.drawVehicle?.(g,{id:d.id+':'+x+':'+y,x:x+w/2,y:y+h/2,len:Math.max(w,h),wid:Math.min(w,h),dir:w>=h?'right':'up',context:'connected-parked'}))continue;
++        g.fillStyle=o.c||'#587aa1';g.fillRect(x,y,w,h);g.fillStyle='#b8d2e3';g.fillRect(x+8,y+8,Math.min(24,w-12),10);continue;
++      }
+       if(o.t==='mtprop'||o.t==='rpgProp'){if(o.img==='shade'||o.img==='palm'||o.role==='shade')districtTree(x,y,27);continue;}
+       if(o.t==='mailbox'){g.fillStyle='#28476b';g.fillRect(x-8,y-14,16,16);continue;}
+       if(o.t==='fountain'){g.fillStyle='#70b9cc';g.beginPath();g.arc(x,y,35,0,Math.PI*2);g.fill();}
+@@ -1172,4 +1177,22 @@
+       position:()=>({x:campus.x,y:campus.y}),doorCrossings:()=>campus.doorCrossings},
+     scope:'Connected district geography and precinct foot exploration share one camera. Missions, street NPC routines, interiors beyond Precinct 9, live multiplayer and cars still require migration.'};
+   H.seamlessCampusV115=Object.freeze(api);
++  // Existing campaign painters retain all simulation and driving overlays.
++  // Only their body artwork is substituted; training/protected modes delegate
++  // to the exact previous painters, including outbreak vehicle fixtures.
++  const vehicleAllowed=()=>window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE&&state.map!=='training'&&!H.academy?.active?.()&&!H.outbreak?.active?.();
++  const ownerVehicle=(tc,key,t,police)=>vehicleAllowed()&&window.ROOKIE_V135_WALL_KIT?.drawVehicle?.(ctx,{
++    ...tc,family:police?'police':key==='van'?'suv':'sedan',color:key,
++    lights:police&&car.lights,time:t,context:'campaign-vehicle'});
++  if(H.rpg?.vehicle){const previous=H.rpg.vehicle;H.rpg.vehicle=function(tc,key,t,police){
++    return ownerVehicle(tc,key,t,police)||previous(tc,key,t,police);
++  };}
++  const previousTraffic=drawTrafficCar;
++  drawTrafficCar=function(tc,t){
++    if(vehicleAllowed()&&window.ROOKIE_V135_WALL_KIT?.drawVehicle?.(ctx,{...tc,id:tc.id||tc.type+':'+tc.x,type:tc.type,context:'campaign-traffic',time:t}))return;
++    return previousTraffic(tc,t);
++  };
++  if(H.worldStyle?.vehicle){const previous=H.worldStyle.vehicle;H.worldStyle.vehicle=function(tc,key,t,police){
++    return ownerVehicle(tc,key,t,police)||previous(tc,key,t,police);
++  };}
+ })();
+diff --git a/published-game-capture/v135-precinct-wallkit-test.js b/published-game-capture/v135-precinct-wallkit-test.js
+index a26e01f..840706d 100644
+--- a/published-game-capture/v135-precinct-wallkit-test.js
++++ b/published-game-capture/v135-precinct-wallkit-test.js
+@@ -340,10 +340,57 @@ function drawRoadNetwork(g,source,nodes,view,native=[]){
+  for(const c of crossings)if(visible({x:c.x-80,y:c.y-80,w:160,h:160}))drawRoadDecal(g,'crosswalk',c.x,c.y,c.scale,c.axis==='h'?Math.PI/2:0);
+  g.restore();roadMetrics.draws++;return true;
+ }
++let vehicleManifest=null,vehicleImage=null,vehicleLoading=false,vehicleError=null;
++const vehicleMetrics={draws:0,families:{},contexts:{},directions:{}};
++function vehicleArtAllowed(){
++ return !!window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE&&!window.HARBOR?.academy?.active?.()&&!window.HARBOR?.outbreak?.active?.();
++}
++function prepareVehicleAssets(){
++ if(vehicleLoading||!vehicleArtAllowed())return;
++ const chooser=document.getElementById('familySelect');
++ if(!window.HARBOR?.seamlessCampusV115?.isOpen()&&chooser&&chooser.style.display!=='none')return;
++ vehicleLoading=true;
++ fetch('./assets/vehicles-owner/manifest.json').then(r=>{if(!r.ok)throw Error('Vehicle manifest '+r.status);return r.json();})
++ .then(m=>new Promise((resolve,reject)=>{const im=new Image();im.decoding='async';
++  im.onload=()=>resolve({m,im});im.onerror=()=>reject(Error('Vehicle atlas unavailable'));im.src='./assets/vehicles-owner/'+m.atlas;
++ })).then(({m,im})=>{vehicleManifest=m;vehicleImage=im;}).catch(e=>{vehicleError=e.message;console.warn(e.message);});
++}
++function drawVehicle(g,o){
++ if(!vehicleArtAllowed())return false;
++ prepareVehicleAssets();if(!vehicleImage)return false;
++ const text=String(o.id??(Math.round(o.x)+':'+Math.round(o.y))),hash=Array.from(text).reduce((n,c)=>(n*31+c.charCodeAt(0))>>>0,0);
++ const kind=String(o.family||o.type||o.kind||'civilian').toLowerCase();
++ const family=/police|patrol/.test(kind)?'police':/pickup|delivery|truck/.test(kind)?'pickup':/suv|van|bus|box/.test(kind)?'suv':/compact|taxi/.test(kind)?'compact':kind==='sedan'?'sedan':['sedan','compact','pickup','suv'][hash%4];
++ const colors=vehicleManifest.families[family];
++ const requested=String(o.color||'');
++ const color=colors.includes(requested)?requested:colors[hash%colors.length];
++ const angles={right:0,down:Math.PI/2,left:Math.PI,up:-Math.PI/2};
++ const angle=Number.isFinite(o.angle)?o.angle:(angles[o.dir]??0);
++ const dir=['right','down','left','up'][((Math.round(angle/(Math.PI/2))%4)+4)%4];
++ const f=vehicleManifest.frames[family+'.'+color+'.'+dir];if(!f)return false;
++ const b=f.bounds,len=Math.max(16,o.len||86),wid=Math.max(12,o.wid||38),horizontal=dir==='right'||dir==='left';
++ const w=horizontal?len:wid,h=horizontal?wid:len;
++ g.save();g.imageSmoothingEnabled=false;g.translate(o.x,o.y);g.rotate(angle-angles[dir]);
++ g.fillStyle='rgba(8,18,28,.24)';g.fillRect(-w/2+2,-h/2+3,w,h);
++ g.drawImage(vehicleImage,f.x+b[0],f.y+b[1],b[2]-b[0],b[3]-b[1],-w/2,-h/2,w,h);
++ g.restore();
++ if(o.braking||family==='police'&&o.lights){
++  g.save();g.translate(o.x,o.y);g.rotate(angle);
++  if(o.braking){g.fillStyle='#ff6254';g.fillRect(-len/2,-wid*.35,3,5);g.fillRect(-len/2,wid*.35-5,3,5);}
++  if(family==='police'&&o.lights){const blink=Math.floor((o.time||0)/180)%2;g.fillStyle=blink?'#ff483c':'#8b2631';g.fillRect(-3,-wid*.27,6,wid*.24);g.fillStyle=blink?'#244eaa':'#5abfff';g.fillRect(-3,wid*.03,6,wid*.24);}
++  g.restore();
++ }
++ const context=o.context||'world';vehicleMetrics.draws++;
++ vehicleMetrics.families[family]=(vehicleMetrics.families[family]||0)+1;
++ vehicleMetrics.contexts[context]=(vehicleMetrics.contexts[context]||0)+1;
++ vehicleMetrics.directions[dir]=(vehicleMetrics.directions[dir]||0)+1;
++ return true;
++}
+ window.ROOKIE_V135_WALL_KIT=Object.freeze({
+  version:'v135-phase1-wall-kit',
+  drawTest,drawFacadeWindow,drawEntranceStatic,drawEntranceDoors,drawGroundSprite,fillGround,drawCommunitySprite,prepareCommunityAssets,fillCommunityGround,drawCommunityBorder,
+  drawRoadNetwork,fillRoadMaterial,drawRoadDecal,
++ drawVehicle,prepareVehicleAssets,
+  roadwayPlan:()=>roadPlan?JSON.parse(JSON.stringify(roadPlan)):null,
+  stats:()=>({loaded,error,frameDraws,testPaints,windowDraws,entranceFrames,entranceDoorDraws,moduleCount:Object.keys(manifest?.frames||{}).length,
+   atlasSize:atlas?[atlas.naturalWidth,atlas.naturalHeight]:null,
+@@ -352,6 +399,7 @@ window.ROOKIE_V135_WALL_KIT=Object.freeze({
+   groundAtlas:groundLoaded,groundError,groundDraws,
+   communityAtlas:!!communityAtlas,communityError,
+   roadAtlas:!!roadImage,roadError,roads:{...roadMetrics},
++  vehicleAtlas:!!vehicleImage,vehicleError,vehicleFrames:Object.keys(vehicleManifest?.frames||{}).length,vehicles:JSON.parse(JSON.stringify(vehicleMetrics)),
+   groundModuleCount:Object.keys(groundManifest?.frames||{}).length}),
+  scope:'Only 32-grid modular wall kit test on existing V134 precinct facade; no other gameplay change'
+ });
+diff --git a/qa/check-world-traffic.cjs b/qa/check-world-traffic.cjs
+index 14a0ca0..a2c86a5 100644
+--- a/qa/check-world-traffic.cjs
++++ b/qa/check-world-traffic.cjs
+@@ -13,8 +13,9 @@ const code=src.slice(begin,end);
+ assert(!/requestAnimationFrame|setInterval|setTimeout|localStorage|fetch\s*\(|Audio|Image\(/.test(code),
+  'Traffic may not create a parallel driving engine, assets, network calls or new timers');
+ const player={x:0,y:4000,zoom:1};
+-const simulator=new Function('links','campus','Math',code+'\nreturn {streetTraffic,initializeStreetTraffic,stepStreetTraffic,streetPose,trafficBlocked,drawStreetTraffic};');
+-const {streetTraffic,initializeStreetTraffic,stepStreetTraffic,streetPose,trafficBlocked,drawStreetTraffic}=simulator(links,player,Math);
++const browser={};
++const simulator=new Function('links','campus','Math','window',code+'\nreturn {streetTraffic,initializeStreetTraffic,stepStreetTraffic,streetPose,trafficBlocked,drawStreetTraffic};');
++const {streetTraffic,initializeStreetTraffic,stepStreetTraffic,streetPose,trafficBlocked,drawStreetTraffic}=simulator(links,player,Math,browser);
+ initializeStreetTraffic();initializeStreetTraffic();
+ assert.equal(streetTraffic.length,18,'Exactly one bounded fleet, never duplicate spawns');
+ assert(streetTraffic.some(x=>x.kind==='patrol'));
+@@ -35,6 +36,14 @@ const g={save(){},restore(){},translate(){},rotate(){},fillRect(){draws++},
+  beginPath(){},ellipse(){},fill(){},set fillStyle(v){this.color=v;}};
+ for(const c of streetTraffic)drawStreetTraffic(g,c);
+ assert(draws>100,'18 real styled vehicles draw through the existing Canvas');
++let atlasDraws=0;const fallbackDraws=draws;
++browser.ROOKIE_V135_WALL_KIT={drawVehicle(context,vehicle){
++ assert.equal(context,g);assert(['up','down','left','right'].includes(vehicle.dir));
++ assert.equal(vehicle.wid,38);atlasDraws++;return true;
++}};
++for(const c of streetTraffic)drawStreetTraffic(g,c);
++assert.equal(atlasDraws,18,'Every native traffic car must use the supplied atlas');
++assert.equal(draws,fallbackDraws,'Do not paint the old block car over the new sprite');
+ assert(src.includes('stepStreetTraffic(dt);'),'Single native simulation owns movement');
+ assert(src.includes('trafficBlocked(x,y,r)'),'Same player collider sees vehicle bodies');
+ assert(src.includes('entries.push({y:car.y,trafficCar:car})'),'Traffic sorted with all characters and props');

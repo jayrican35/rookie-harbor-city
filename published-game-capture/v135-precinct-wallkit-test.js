@@ -340,10 +340,47 @@ function drawRoadNetwork(g,source,nodes,view,native=[]){
  for(const c of crossings)if(visible({x:c.x-80,y:c.y-80,w:160,h:160}))drawRoadDecal(g,'crosswalk',c.x,c.y,c.scale,c.axis==='h'?Math.PI/2:0);
  g.restore();roadMetrics.draws++;return true;
 }
+// Local, explicitly bounded perspective pilot. Assets are never requested by
+// the classic campaign, Academy or Zombie, and distant city art is untouched.
+let pilotManifest=null,pilotImage=null,pilotLoading=false,pilotError=null;
+const pilotBounds=Object.freeze({x:387,y:1124,w:1923,h:724});
+const pilotMetrics={draws:0,byFamily:{},byDirection:{}};
+function pilotAllowed(){return !!window.ROOKIE_PERSPECTIVE_PILOT_ACTIVE&&!!window.HARBOR?.seamlessCampusV115?.isOpen()&&!window.HARBOR?.academy?.active?.()&&!window.HARBOR?.outbreak?.active?.();}
+function preparePerspectivePilot(view){
+ if(pilotLoading||!pilotAllowed()||view&&(view.x>2310||view.x+view.w<387||view.y>1848||view.y+view.h<1124))return;
+ pilotLoading=true;
+ fetch('./assets/perspective-pilot/manifest.json').then(r=>{if(!r.ok)throw Error('Perspective pilot manifest '+r.status);return r.json();})
+ .then(m=>new Promise((resolve,reject)=>{const im=new Image();im.decoding='async';
+  im.onload=()=>resolve({m,im});im.onerror=()=>reject(Error('Perspective pilot atlas unavailable'));im.src='./assets/perspective-pilot/'+m.atlas;
+ })).then(({m,im})=>{pilotManifest=m;pilotImage=im;}).catch(e=>{pilotError=e.message;console.warn(e.message);});
+}
+function drawPilotVehicle(g,car){
+ if(!pilotAllowed()||car.x<pilotBounds.x||car.x>pilotBounds.x+pilotBounds.w||car.y<pilotBounds.y||car.y>pilotBounds.y+pilotBounds.h)return false;
+ preparePerspectivePilot();if(!pilotImage)return false;
+ const family=car.kind==='patrol'?'police':car.kind==='delivery'?'van':'sedan';
+ const direction=['up','down','left','right'].includes(car.dir)?car.dir:'right';
+ const color=family==='sedan'?String(car.color||'').replace('#','')+'.':'';
+ const f=pilotManifest.frames[family+'.'+color+direction]||pilotManifest.frames[family+'.'+direction];
+ if(!f)return false;
+ const b=f.bounds,sw=b[2]-b[0],sh=b[3]-b[1],horizontal=direction==='right'||direction==='left';
+ const length=car.kind==='delivery'?104:86,width=38;
+ // Uniform sprite scaling preserves 3/4 proportions. The ground contact
+ // shadow is the original collision footprint; bodywork rises above it.
+ const scale=Math.min((horizontal?length:width)/sw,(horizontal?width+18:length+12)/sh);
+ const w=sw*scale,h=sh*scale,bottom=car.y+(horizontal?width/2:length*.35);
+ g.save();g.imageSmoothingEnabled=false;g.fillStyle='rgba(7,18,30,.22)';g.beginPath();
+ g.ellipse(car.x+2,car.y+2,horizontal?length/2:width/2,horizontal?width/2:length/2,0,0,Math.PI*2);g.fill();
+ g.drawImage(pilotImage,f.x+b[0],f.y+b[1],sw,sh,Math.round(car.x-w/2),Math.round(bottom-h),Math.round(w),Math.round(h));g.restore();
+ pilotMetrics.draws++;pilotMetrics.byFamily[family]=(pilotMetrics.byFamily[family]||0)+1;
+ pilotMetrics.byDirection[direction]=(pilotMetrics.byDirection[direction]||0)+1;
+ return true;
+}
 window.ROOKIE_V135_WALL_KIT=Object.freeze({
  version:'v135-phase1-wall-kit',
  drawTest,drawFacadeWindow,drawEntranceStatic,drawEntranceDoors,drawGroundSprite,fillGround,drawCommunitySprite,prepareCommunityAssets,fillCommunityGround,drawCommunityBorder,
  drawRoadNetwork,fillRoadMaterial,drawRoadDecal,
+ preparePerspectivePilot,drawPilotVehicle,
+ perspectivePilot:()=>({active:pilotAllowed(),loaded:!!pilotImage,error:pilotError,bounds:{...pilotBounds},frames:Object.keys(pilotManifest?.frames||{}).length,...JSON.parse(JSON.stringify(pilotMetrics))}),
  roadwayPlan:()=>roadPlan?JSON.parse(JSON.stringify(roadPlan)):null,
  stats:()=>({loaded,error,frameDraws,testPaints,windowDraws,entranceFrames,entranceDoorDraws,moduleCount:Object.keys(manifest?.frames||{}).length,
   atlasSize:atlas?[atlas.naturalWidth,atlas.naturalHeight]:null,

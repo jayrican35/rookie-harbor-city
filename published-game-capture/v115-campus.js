@@ -291,6 +291,7 @@
   }
   function drawStreetTraffic(g,car){
     if(campus.zoom<.19)return;
+    if(window.ROOKIE_V135_WALL_KIT?.drawPilotVehicle?.(g,car))return;
     const dir=car.dir||'right';
     g.save();g.translate(car.x,car.y);
     g.rotate(dir==='left'?Math.PI:dir==='down'?Math.PI/2:dir==='up'?-Math.PI/2:0);
@@ -902,6 +903,7 @@
     // They receive a read-only view rectangle and the drawing context only.
     const art=window.ROOKIE_V115_SHOWCASE;
     const view={x:campus.camX,y:campus.camY,w:viewW,h:viewH};
+    window.ROOKIE_V135_WALL_KIT?.preparePerspectivePilot?.(view);
     drawCampusGround();
     // V133 owns the approved north-campus surface. Clip the historical
     // terrain painters at its boundary instead of repainting their old lots

@@ -512,6 +512,14 @@ function makeGround(){
 }
 function ground(g,o){
  if(window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE){
+   if(window.ROOKIE_PERSPECTIVE_PILOT_ACTIVE&&visible(o?.view,{x:387,y:1124,w:1923,h:724})){
+    // Reuse existing prop feet for restrained contact shadows; no height
+    // transform, collider change or second actor/animation system.
+    g.save();g.fillStyle='rgba(7,22,30,.18)';
+    for(const p of communityLayout)if(/^(tree|lamp|monument)/.test(p.sprite)){
+     g.beginPath();g.ellipse(p.x+5,p.y+2,p.w*.34,Math.max(3,p.w*.07),0,0,Math.PI*2);g.fill();
+    }g.restore();
+   }
    // Reference wayfinding panel is inset in the central paving, underfoot.
    window.ROOKIE_V135_WALL_KIT?.drawCommunitySprite?.(g,'sign',948,1575);
    return;

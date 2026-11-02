@@ -1,0 +1,11 @@
+{
+  "baseline": "be45a62",
+  "protectedSHA256": {
+    "game.js": "302d93ed8fbe6001e2690ead38fde87a7067ddefdd92c130410e1af8f8715282",
+    "outbreak.css": "074485d91cc7255d7d171a041a7a46280eeed1f9e9e23a735194403ca3178973",
+    "v115-world.js": "9ea7c82e48888fd4ce9091e46e21a5a2d3fd112cdf902fdc2014765617927429",
+    "v117-jay.js": "b7bd77d82fd8d15931a613dd7009e9ed2a47b41b133b8ce6110846447a36ef6d",
+    "v116-marina.js": "205ab2757094a9297a78030659aa4d2c5923da9ecfa089788050d0bdf9c06634",
+    "v127-citywide-art.js": "23da2c154cdab64c9f275e51af3d828e4b2b71f488e0e0a611b8efc748dae1b4"
+  }
+}

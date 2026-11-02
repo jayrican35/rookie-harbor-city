@@ -433,8 +433,10 @@ function plazaPavers(g,x,y,w,h){
   // forecourt. Terrain remains underfoot, never over Jay or the entrances.
   if(window.ROOKIE_V139_GROUND_ACTIVE &&
       window.ROOKIE_V135_WALL_KIT?.fillGround?.(g,'paver_stone',x,y,w,h)){
-    px(g,x,y,w,4,'rgba(252,233,204,.83)');
-    px(g,x,y+h-5,w,5,'rgba(99,107,116,.74)');
+    if(!window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE){
+      px(g,x,y,w,4,'rgba(252,233,204,.83)');
+      px(g,x,y+h-5,w,5,'rgba(99,107,116,.74)');
+    }
     return;
   }
  // Native-world pixel-crafted civic forecourt; the formerly huge dark-blue
@@ -462,6 +464,15 @@ function makeGround(){
  const cv=document.createElement('canvas');cv.width=1710;cv.height=647;
  const g=cv.getContext('2d');if(!g)return null;
  g.imageSmoothingEnabled=false;g.translate(-310,-1108);
+ if(window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE){
+   // The owner requested an entirely clear paved plaza. Keep the civic
+   // marker and lights, but no inherited flower boxes, palms or shrubs.
+   // V133 owns the continuous floor; this cache contributes no paving.
+   plaque(g,488,1554,287);
+   for(const [x,y]of [[853,1288],[1036,1288],[853,1633],[1036,1633]])bollard(g,x,y);
+   for(const [x,y]of [[820,1455],[1075,1455],[580,1619],[1250,1619]])lamp(g,x,y,1);
+   M.groundsBuilds++;return cv;
+ }
  // Replace the under-designed dark asphalt band south of the main public
  // entrance. The original lobby remains at x=948,y=1124 and its passage is
  // exactly the same. Do not paint on the public parking/road to the east.
@@ -528,8 +539,10 @@ function forecourt(g,o){
   art.imageSmoothingEnabled=false;
   art.translate(-387,-1127);
   plazaPavers(art,387,1127,931,169);
-  basket(art,426,1256,210);
-  basket(art,1108,1256,173);
+  if(!window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE){
+    basket(art,426,1256,210);
+    basket(art,1108,1256,173);
+  }
   forecourtArt=cv;
  }
  g.save();g.imageSmoothingEnabled=false;

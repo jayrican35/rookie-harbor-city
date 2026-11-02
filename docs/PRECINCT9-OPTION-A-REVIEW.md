@@ -1,5 +1,26 @@
 # Precinct 9 — Option A implementation review
 
+## Owner revision: clear the plaza
+
+The owner subsequently requested removal of all trees, shrubs, partial palms
+and park benches from the pedestrian plaza, with matching continuous paving.
+That revision supersedes the planted civic islands described in the first pass
+below. V133 now fills one stone surface from `(387,1127)` to `(1629,1721)`;
+the existing atlas repeats on its global pixel grid. V134's late forecourt
+uses that same grid without internal border bands. The old pilot furniture
+and glow passes are disabled in this layout, V115's two plaza trees are omitted,
+and V134 no longer contributes flower boxes or palms to the cleared area.
+The monument, lights, building entrances and collision remain intact.
+
+![Cleared plaza, actual desktop game](review/plaza-cleared-desktop.png)
+
+[Actual mobile capture](review/plaza-cleared-mobile.png) and
+[revision runtime results](review/plaza-cleared-runtime.json).
+Both requested viewports passed lobby entry/exit and sampled parking collision
+checks with no uncaught JavaScript exceptions. The same five inherited missing
+asset requests remain. Existing source checks for V133/V134 and syntax checks
+passed. Earlier images and walkthrough below record the first layout pass.
+
 The owner supplied the approved image on November 2, 2026. It is retained at
 `references/precinct9-approved-option-a.png` as a design reference, never loaded
 as a gameplay overlay. This focused change applies its layout principles to

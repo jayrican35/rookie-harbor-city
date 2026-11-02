@@ -197,26 +197,14 @@ function approvedNorthGround(g){
  // optional terrain passes are clipped here by the existing world painter.
  if(!fillT(g,'grass',310,1110,2400,611))ink(g,310,1110,2400,611,'#628d56');
  // First paint over the visually detached old lot, into a continuous
- // pedestrian plaza. V134's existing civic planter and entrance paint
- // remains authoritative above this base surface.
- pavers(g,419,1280,1210,416,32);
- pavers(g,876,1133,143,546,32);
- // Continuous street-side pedestrian pavement reaches Harbor Avenue;
- // the driveway is cut through this strip by the asphalt authoring below.
- pavers(g,310,1696,2000,25,32);
- ink(g,884,1134,125,4,'#e9d9bc');
- // Reference Option A: planted civic islands flank the continuous main
- // walk. Keep their edges west of parking and outside x876..1019.
- for(const b of [{x:450,y:1480,w:360,h:174},{x:1080,y:1480,w:470,h:174}]){
-   if(!fillT(g,'grass',b.x,b.y,b.w,b.h))ink(g,b.x,b.y,b.w,b.h,'#628d56');
-   curb(g,b.x-5,b.y-5,b.w+10,7);
-   curb(g,b.x-5,b.y+b.h,b.w+10,7);
- }
- // Landscaped borders OUTSIDE the new vehicle rectangle.
- hedge(g,1575,1316,21,293);
- hedge(g,425,1342,188,16);
- hedge(g,1154,1364,247,17);
- hedge(g,1336,1638,180,17);
+ // pedestrian plaza. V134 retains the entrance and civic marker above
+ // this base surface, without its retired planted decorations.
+ // Owner revision: clear the civic plaza completely. One globally aligned
+ // stone fill runs from the entrance apron to the street; no lawn islands,
+ // hedges or internal rectangle borders interrupt its brick courses.
+ pavers(g,387,1127,1242,594,32);
+ if(!fillT(g,'paver_stone',310,1696,2000,25))
+   ink(g,310,1696,2000,25,'#b7ad94');
  // Vehicle frontage and driveway are ONE connected shape, not separate
  // parking stamps to the left of the fleet garage.
  approvedAsphalt(g,approvedParking.x,approvedParking.y,
@@ -243,7 +231,6 @@ function approvedNorthGround(g){
  // Clear central aisle x1856..2002 reconnects to the unchanged Avenue.
  curb(g,1641,1692,213,11);
  curb(g,2006,1692,303,11);
- hedge(g,1587,1508,18,167);
  hedge(g,2312,1508,20,164);
  // Decommission an older disconnected east-side parking decoration;
  // preserve the world terrain/road collision as-is.

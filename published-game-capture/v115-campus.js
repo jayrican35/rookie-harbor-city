@@ -702,7 +702,7 @@
     // physically cover the new parking stalls and garage drive. Do not
     // spawn them in the owner-approved layout; trees stay on perimeter.
     const trees=window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE?
-      [[440,1310,31],[530,1530,28],[2470,1140,29]]:
+      [[2470,1140,29]]:
       [[440,1310,31],[530,1530,28],[1450,1480,35],
        [1730,1510,36],[2140,1538,38],[2470,1140,29]];
     for(const [x,y,r] of trees)drawTree(x,y,r);
@@ -925,7 +925,7 @@
     // V118 optional camera-culled light/shadow pass; no gameplay state changes.
     const cinematic=window.ROOKIE_V118_CINEMATIC;
     if(cinematic)cinematic.ground(g,{zoom:campus.zoom,view},t);
-    if(pilot)pilot.props(g,{zoom:campus.zoom,view},t);
+    if(pilot&&!window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE)pilot.props(g,{zoom:campus.zoom,view},t);
     drawStation(); // Original lobby, furnished rooms, walls and thresholds.
     // Draw walkable stone forecourt AFTER legacy station apron paint, BEFORE
     // the original depth-sorted player/NPC draw; don't paint over character art.
@@ -950,7 +950,7 @@
       window.ROOKIE_V133_PRECINCT?.facade(g,{zoom:campus.zoom,view,alpha:roofAlpha()},t);
     if(marina)marina.foreground(g,{zoom:campus.zoom,view,player:{x:campus.x,y:campus.y}},t);
     if(cinematic)cinematic.atmosphere(g,{zoom:campus.zoom,view},t);
-    if(pilot)pilot.animated(g,{zoom:campus.zoom,view},t);
+    if(pilot&&!window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE)pilot.animated(g,{zoom:campus.zoom,view},t);
     if(art)art.atmosphere(g,{zoom:campus.zoom,view},t);
     g.restore();
     const region=interiorRoom(campus.x,campus.y);

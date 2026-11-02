@@ -29,7 +29,7 @@ const server=require('node:http').createServer((req,res)=>{
    await page.waitForFunction(()=>window.HARBOR?.seamlessCampusV115&&window.ROOKIE_JAY);
    await page.evaluate(()=>window.HARBOR.seamlessCampusV115.openAt(1980,1550,.9));
    await page.waitForFunction(()=>window.ROOKIE_V135_WALL_KIT?.stats()?.groundAtlas);
-   for(const [name,x,y,z] of [['overview',1450,1460,.52],['parking',1980,1550,.75],['entrance',948,1195,1]]){
+   for(const [name,x,y,z] of [['overview',1450,1460,.52],['cleared-plaza',900,1430,1],['parking',1980,1550,.75],['entrance',948,1195,1]]){
     await page.evaluate(q=>window.HARBOR.seamlessCampusV115.qaCamera(...q),[x,y,z]);
     await page.waitForTimeout(500);
     await page.screenshot({path:`${shots}/${width}-${name}.png`});

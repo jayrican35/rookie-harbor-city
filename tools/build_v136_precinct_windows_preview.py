@@ -8,7 +8,7 @@ tools=Path(__file__).resolve().parent
 subprocess.run([sys.executable,str(tools/'build_v135_precinct_wallkit_preview.py'),str(root)],check=True)
 old=json.loads((root/'assets/precinct9-wall-kit-phase1/manifest.json').read_text())
 new=json.loads((root/'assets/precinct9-windows-phase2/manifest.json').read_text())
-assert len(old['frames'])==26 and len(new['frames'])==40
+assert len(old['frames'])==26 and len(new['frames'])==42
 assert set(old['frames']).issubset(set(new['frames']))
 for name in old['frames']:
     assert new['frames'][name]==old['frames'][name],name

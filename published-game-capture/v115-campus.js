@@ -707,7 +707,7 @@
        [1730,1510,36],[2140,1538,38],[2470,1140,29]];
     for(const [x,y,r] of trees)drawTree(x,y,r);
     const lamps=window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE?
-      [[690,1325],[1260,1315],[2301,1455]]:
+      [[2301,1455]]:
       [[690,1325],[1260,1315],[1950,1310]];
     for(const [x,y] of lamps){
       g.fillStyle='#203e49';g.fillRect(x-4,y-34,8,38);g.fillStyle='#fbe0a0';g.fillRect(x-9,y-37,18,10);

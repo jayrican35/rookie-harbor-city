@@ -466,11 +466,9 @@ function makeGround(){
  g.imageSmoothingEnabled=false;g.translate(-310,-1108);
  if(window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE){
    // The owner requested an entirely clear paved plaza. Keep the civic
-   // marker and lights, but no inherited flower boxes, palms or shrubs.
+   // marker, but no inherited lamps, posts, flower boxes, palms or shrubs.
    // V133 owns the continuous floor; this cache contributes no paving.
    plaque(g,488,1554,287);
-   for(const [x,y]of [[853,1288],[1036,1288],[853,1633],[1036,1633]])bollard(g,x,y);
-   for(const [x,y]of [[820,1455],[1075,1455],[580,1619],[1250,1619]])lamp(g,x,y,1);
    M.groundsBuilds++;return cv;
  }
  // Replace the under-designed dark asphalt band south of the main public

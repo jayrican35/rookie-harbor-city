@@ -5,24 +5,24 @@
     "height": 844,
     "inside": {
       "cameraX": 753,
-      "cameraY": 719.3251321499424,
+      "cameraY": 719.325118860083,
       "zoom": 1,
       "follows": true,
       "roofAlpha": 0.04,
       "playerX": 948,
-      "playerY": 1121.3082440279536,
+      "playerY": 1121.3082440279532,
       "dir": "up",
       "room": "LOBBY",
       "crossings": 2
     },
     "outside": {
       "cameraX": 753,
-      "cameraY": 716.9599972127592,
+      "cameraY": 714.9619993203894,
       "zoom": 1,
       "follows": true,
       "roofAlpha": 0.12,
       "playerX": 948,
-      "playerY": 1153.1381848802646,
+      "playerY": 1150.311342053782,
       "dir": "down",
       "room": null,
       "crossings": 3
@@ -95,11 +95,11 @@
       "atlas": {
         "loaded": true,
         "error": null,
-        "frameDraws": 183,
+        "frameDraws": 179,
         "testPaints": 0,
         "windowDraws": 18,
         "entranceFrames": 1,
-        "entranceDoorDraws": 143,
+        "entranceDoorDraws": 139,
         "moduleCount": 49,
         "atlasSize": [
           1024,
@@ -162,24 +162,24 @@
     "height": 720,
     "inside": {
       "cameraX": 308,
-      "cameraY": 781.3250307504635,
+      "cameraY": 781.3259577843737,
       "zoom": 1,
       "follows": true,
       "roofAlpha": 0.04,
       "playerX": 948,
-      "playerY": 1121.3082440279534,
+      "playerY": 1121.308244027953,
       "dir": "up",
       "room": "LOBBY",
       "crossings": 2
     },
     "outside": {
       "cameraX": 308,
-      "cameraY": 777.9486069413931,
+      "cameraY": 777.3901737780703,
       "zoom": 1,
       "follows": true,
       "roofAlpha": 0.12,
       "playerX": 948,
-      "playerY": 1152.0088496092098,
+      "playerY": 1151.3909561264093,
       "dir": "down",
       "room": null,
       "crossings": 3
@@ -240,9 +240,9 @@
         "doorTransitions": "world-space-continuous"
       },
       "metrics": {
-        "ground": 260,
+        "ground": 273,
         "facade": 0,
-        "actors": 780,
+        "actors": 819,
         "groundBuilds": 1,
         "styleVersion": "v133-precinct-campus-art-1",
         "stoneReady": true,
@@ -252,11 +252,11 @@
       "atlas": {
         "loaded": true,
         "error": null,
-        "frameDraws": 314,
+        "frameDraws": 327,
         "testPaints": 0,
         "windowDraws": 18,
         "entranceFrames": 1,
-        "entranceDoorDraws": 260,
+        "entranceDoorDraws": 273,
         "moduleCount": 49,
         "atlasSize": [
           1024,

@@ -10,7 +10,10 @@ the existing atlas repeats on its global pixel grid. V134's late forecourt
 uses that same grid without internal border bands. The old pilot furniture
 and glow passes are disabled in this layout, V115's two plaza trees are omitted,
 and V134 no longer contributes flower boxes or palms to the cleared area.
-The monument, lights, building entrances and collision remain intact.
+The monument, building entrances and collision remain intact. A further owner
+revision removes all four large freestanding plaza lamps, four small lighted
+bollards and two narrow legacy light posts from this same paved area. Building
+lighting, the parking-perimeter lamp and other districts retain their lighting.
 
 ![Cleared plaza, actual desktop game](review/plaza-cleared-desktop.png)
 

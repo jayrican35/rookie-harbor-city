@@ -218,6 +218,13 @@ jobs:
           path: precinct9-v136
           persist-credentials: false
 
+      - name: Check out V137 Phase-3 real seamless Precinct 9 entrance (isolated)
+        uses: actions/checkout@v4
+        with:
+          ref: 5fa0ac8436c6162fdb7fe18a11cb70ade45717dd # real one-world W/S walk both ways and video QA passed
+          path: precinct9-v137
+          persist-credentials: false
+
       - name: Recover missing main-campaign environment art
         shell: bash
         working-directory: visual-preview
@@ -1432,6 +1439,52 @@ jobs:
             cards.append('<section><h2>'+html.escape(name.replace('-',' ').title())+'</h2><div class="compare"><img loading="lazy" src="'+name+'-before.png" alt="V135 before"><img loading="lazy" src="'+name+'-after.png" alt="V136 after"></div></section>')
           (p/'index.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROOKIE V136 — Phase 2 Windows</title><style>body{background:#11273b;color:#f4e4bd;margin:14px;font:16px system-ui}.compare{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:950px}.compare img{width:100%;min-width:0}h2{font-size:18px}section{margin:24px 0}</style><h1>Phase 2 — Precinct 9 Windows</h1><p>Actual 390x844 playable game at matching camera positions. Left V135 original; right V136 Phase 2 native 64px and 96px window PNGs, lit/dark on original blue-brick V134 facade. Existing wall atlas, roof reveal, lobby and garage doors, NPCs, Marina and Zombie protected; awaiting human artistic approval.</p>'+''.join(cards)+'</html>')
           print('PASS',len(names),'real game comparison screenshots, no fake showcase')
+          PY
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+
+      - name: Build protected V137 modular entrance preview and original roof cutaway
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/precinct9-v137-entrance-lab
+          cp -a precinct9-v137/published-game-capture/. site/preview/precinct9-v137-entrance-lab/
+          python3 precinct9-v137/tools/build_v137_precinct_entrance_preview.py site/preview/precinct9-v137-entrance-lab
+          node --check site/preview/precinct9-v137-entrance-lab/game-v115.bundle.js
+          node --check site/preview/precinct9-v137-entrance-lab/v134-precinct-reference.js
+          node --check site/preview/precinct9-v137-entrance-lab/v135-precinct-wallkit-test.js
+          for f in game.js outbreak.css v116-marina.js v127-citywide-art.js v115-world.js v117-jay.js; do
+            cmp -s "site/preview/v128-world-quality/$f" "site/preview/precinct9-v137-entrance-lab/$f"
+            cmp -s "site/preview/precinct9-v136-windows-lab/$f" "site/preview/precinct9-v137-entrance-lab/$f"
+          done
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          echo 'PASS all original campaign, Zombie Outbreak, Marina, NPC and player source files byte-equal'
+
+      - name: Publish authentic V137 entry-exit video and mobile exterior/interior gallery
+        shell: bash
+        run: |
+          set -euo pipefail
+          node precinct9-v137/qa/capture-v137-entrance.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageChops
+          import json,html
+          d=Path('site/preview/precinct9-v137-entrance-lab/evidence')
+          result=json.loads((d/'qa-results.json').read_text())
+          assert result['movement']['outside']['camera']['crossings']>=result['movement']['start']['camera']['crossings']+2
+          assert (d/'continuous-entry-exit.webm').stat().st_size>2048
+          names=['precinct-entrance-approach','stone-frame-and-blue-awning','civic-walk-facing-entrance','left-window-facade-retained','garage-fleet-door-retained','protected-marina','actual-existing-lobby']
+          cards=[]
+          for name in names:
+            before=d/(name+'-before.png');after=d/(name+'-after.png')
+            assert before.is_file() and after.is_file(),name
+            if name=='stone-frame-and-blue-awning':
+              with Image.open(before) as a,Image.open(after) as b:
+                assert ImageChops.difference(a.convert('RGB'),b.convert('RGB')).getbbox(),'New entrance artwork failed to render'
+            cards.append('<section><h2>'+html.escape(name.replace('-',' ').title())+'</h2><div class="pair"><img loading="lazy" src="'+name+'-before.png" alt="V136 before"><img loading="lazy" src="'+name+'-after.png" alt="V137 entrance"></div></section>')
+          (d/'index.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROOKIE V137 — Precinct 9 Seamless Front Doors</title><style>body{margin:14px;background:#142a40;color:#f7e4ba;font:16px system-ui}.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:940px}.pair img{width:100%;min-width:0}section{margin:26px 0}h2{font-size:18px}video{max-width:390px;width:100%}</style><h1>V137: Precinct 9 Modular Main Entrance</h1><p>REAL mobile gameplay: Jay walks from the old civic entrance through the original furnished lobby and back, on one continuous world and camera with automatic doors. Existing Phase 1/2 art retained. The original campaign missions and vehicles have NOT yet been migrated to this V115 connected-world prototype. Draft, awaiting your approval.</p><video controls playsinline src="continuous-entry-exit.webm"></video>'+''.join(cards)+'</html>')
+          print('PASS real V137 mobile gameplay, original door/camera/roof and authentic video, no mockups')
           PY
           cmp -s game-backup/published-game-capture/game.js site/game.js
           cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css

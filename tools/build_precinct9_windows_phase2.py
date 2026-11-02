@@ -96,7 +96,42 @@ def overlay(w,h,kind):
             rect(d,(0,yy,w,yy+2),darkstone)
         rect(d,(5,3,w-5,h-3),(226,207,174,255))
     return im
+def wide_window(lit):
+    # 96x96 native world pixels: larger V134 civic lobby/garage bay,
+    # not an image-scaled small window. Maintains 1px/1world unit.
+    w=96;im=Image.new('RGBA',(w,96));d=ImageDraw.Draw(im)
+    rect(d,(1,2,95,93),(52,66,83,255))
+    rect(d,(3,0,93,9),cream);rect(d,(5,8,91,14),stone)
+    rect(d,(1,14,9,87),darkstone);rect(d,(4,17,11,84),stone)
+    rect(d,(87,14,95,87),darkstone);rect(d,(85,17,92,84),stone)
+    rect(d,(9,13,87,84),navy)
+    rect(d,(13,17,83,80),glass if lit=='warm' else darkglass)
+    if lit=='warm':
+        rect(d,(16,23,80,75),(195,132,62,255))
+        rect(d,(18,27,78,75),(235,170,80,255))
+        rect(d,(22,29,74,72),(251,204,111,255))
+        for x in (29,59):
+            rect(d,(x-7,21,x+8,27),(255,238,165,255))
+            rect(d,(x-3,18,x+4,22),(250,219,137,255))
+    else:
+        rect(d,(16,24,80,76),(26,64,91,255))
+        rect(d,(18,26,40,73),(51,94,117,255))
+        rect(d,(61,24,79,73),(15,40,67,255))
+    for yy in range(37,76,7):
+        rect(d,(14,yy,82,yy+2),(27,51,71,255))
+        rect(d,(15,yy+2,81,yy+4),(239,180,87,255) if lit=='warm' else (82,111,130,255))
+        rect(d,(17,yy+4,79,yy+5),(74,68,69,255) if lit=='warm' else navy)
+    rect(d,(45,16,51,81),(17,40,60,255))
+    rect(d,(12,49,84,53),(17,40,60,255))
+    rect(d,(12,17,16,82),(112,147,159,255))
+    rect(d,(80,17,84,82),(13,35,53,255))
+    rect(d,(0,83,96,89),stone);rect(d,(0,83,96,85),cream)
+    rect(d,(4,89,92,93),(113,117,111,255))
+    rect(d,(8,93,88,96),(34,52,68,255))
+    return im
 windows={
+  'window_wide_warm':wide_window('warm'),
+  'window_wide_dark':wide_window('dark'),
   'window_single_warm':raw_window('warm'),
   'window_single_dark':raw_window('dark'),
   'window_single_blinds':raw_window('dark',True),
@@ -137,10 +172,10 @@ m=dict(old);m.update({
   'sourceReference':'user-approved Precinct 9 blue brick and warm-window parts sheet; cleaned/re-authored pixels'
 })
 (dst/'manifest.json').write_text(json.dumps(m,indent=2)+'\n')
-assert len(frames)==40
+assert len(frames)==42
 # All preexisting source regions must remain precisely unchanged in new atlas.
 from PIL import ImageChops
 for name,f in old['frames'].items():
     a=f['atlas'];xy=(a['x'],a['y'],a['x']+a['w'],a['y']+a['h'])
     assert ImageChops.difference(original.crop(xy),atlas.crop(xy)).getbbox() is None,name
-print('PASS 14 new transparent window modules; 40 combined frames; original 26 Phase-1 atlas rectangles byte-equivalent')
+print('PASS 16 new transparent window modules; 42 combined frames; original 26 Phase-1 atlas rectangles byte-equivalent')

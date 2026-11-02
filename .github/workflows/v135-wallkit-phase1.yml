@@ -58,7 +58,7 @@ jobs:
           assert (p/'wall_brick_narrow.png').stat().st_size>300
           print('PASS 26 correctly cropped unrotated alpha PNGs, exact atlas rectangles, apertures and grid')
           PY
-      - name: Source audit: do not change core game, Zombie, roads or NPC system
+      - name: "Source audit — do not change core game, Zombie, roads or NPC system"
         run: |
           set -euo pipefail
           node --check published-game-capture/v135-precinct-wallkit-test.js

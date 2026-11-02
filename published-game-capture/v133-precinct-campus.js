@@ -167,7 +167,12 @@ const approvedLayout=()=>window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE===true;
 const approvedParking=Object.freeze({x:1640,y:1464,w:670,h:237});
 const approvedApron=Object.freeze({x:1742,y:1264,w:354,h:224});
 const approvedDrive=Object.freeze({x:1856,y:1450,w:146,h:271});
-const communityLawn=Object.freeze({x:448,y:1328,w:352,h:352});
+const communityLawn=Object.freeze({x:480,y:1368,w:288,h:288});
+const communityBeds=Object.freeze([
+ Object.freeze({x:408,y:1380,w:48,h:264}),
+ Object.freeze({x:800,y:1380,w:36,h:264}),
+ Object.freeze({x:1072,y:1380,w:88,h:264})
+]);
 function approvedAsphalt(g,x,y,w,h){
  if(!fillT(g,'asphalt',x,y,w,h))ink(g,x,y,w,h,'#3d4756');
  for(let xx=x+19;xx<x+w-15;xx+=74)
@@ -208,11 +213,17 @@ function approvedNorthGround(g){
  // Owner's square lawn within the pedestrian plaza. Bench feet sit on the
  // paved north/south edges; the central entrance walk stays clear to its east.
  const lawn=communityLawn;
- ink(g,lawn.x-4,lawn.y-4,lawn.w+8,lawn.h+8,'#b6b1a1');
+ g.save();g.beginPath();g.roundRect(lawn.x,lawn.y,lawn.w,lawn.h,14);g.clip();
  if(!groundKit()?.fillCommunityGround?.(g,'grass',lawn.x,lawn.y,lawn.w,lawn.h))
    fillT(g,'grass',lawn.x,lawn.y,lawn.w,lawn.h);
- ink(g,lawn.x-4,lawn.y-4,lawn.w+8,2,'#e5dcc4');
- ink(g,lawn.x-4,lawn.y+lawn.h+2,lawn.w+8,2,'#727f78');
+ g.restore();
+ groundKit()?.drawCommunityBorder?.(g,lawn);
+ for(const bed of communityBeds){
+   g.save();g.beginPath();g.roundRect(bed.x,bed.y,bed.w,bed.h,12);g.clip();
+   if(!groundKit()?.fillCommunityGround?.(g,'grass',bed.x,bed.y,bed.w,bed.h))
+     fillT(g,'grass',bed.x,bed.y,bed.w,bed.h);
+   g.restore();groundKit()?.drawCommunityBorder?.(g,bed);
+ }
  // Vehicle frontage and driveway are ONE connected shape, not separate
  // parking stamps to the left of the fleet garage.
  approvedAsphalt(g,approvedParking.x,approvedParking.y,
@@ -459,7 +470,7 @@ function actors(t){
 window.ROOKIE_V133_PRECINCT=Object.freeze({
  version:'v133-precinct-campus-art-1',worldId:'harbor-main',
  ground,facade,actors,
- geometry:Object.freeze({roof,front,garage,lot,road,south,approvedParking,approvedApron,approvedDrive,communityLawn}),
+ geometry:Object.freeze({roof,front,garage,lot,road,south,approvedParking,approvedApron,approvedDrive,communityLawn,communityBeds}),
  metrics:()=>({...m,stoneReady:ready(texture()),groundAtlas:terrainReady(),approvedCampus:approvedLayout()}),
  scope:'Original 1:1 precinct exterior and existing civic grounds only. Nonblocking visual landscape and 3 bounded station-role ambience actors; no new roads, solids, modes or loops.'
 });

@@ -32,12 +32,14 @@ const server=require('node:http').createServer((req,res)=>{
    if(variant==='after'){
     await page.waitForFunction(()=>window.ROOKIE_V135_WALL_KIT?.stats()?.communityAtlas);
     const props=await page.evaluate(()=>window.ROOKIE_V134_PRECINCT.communityLayout);
-    assert.equal(props.length,14);
+    assert(props.length>25,'Use the supplied landscaping and furniture categories');
     const lawn=await page.evaluate(()=>window.ROOKIE_V133_PRECINCT.geometry.communityLawn);
     assert.equal(lawn.w,lawn.h,'Community lawn must be square');
-    const benches=props.filter(p=>p.sprite==='bench'&&p.x>=lawn.x&&p.x<=lawn.x+lawn.w);
-    assert(benches.some(p=>p.y<=lawn.y)&&benches.some(p=>p.y>=lawn.y+lawn.h),'Benches must flank the square lawn');
+    const benches=props.filter(p=>p.sprite.startsWith('bench'));
+    assert(benches.length===2&&benches.every(p=>p.y===1340),'Both benches belong on the horizontal front paved band');
+    assert(1721-(lawn.y+lawn.h+12)>=48,'Leave a continuous street-side sidewalk below the lawn');
     for(const p of props){
+     if(p.underfoot)continue;
      const left=p.x-p.w/2,right=p.x+p.w/2;
      assert(right<=860||left>=1035,'Furniture must leave the central walk clear');
      assert(right<1640,'Furniture must stay west of garage/parking');

@@ -511,7 +511,11 @@ function makeGround(){
  return cv;
 }
 function ground(g,o){
- if(window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE)return;
+ if(window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE){
+   // Reference wayfinding panel is inset in the central paving, underfoot.
+   window.ROOKIE_V135_WALL_KIT?.drawCommunitySprite?.(g,'sign',948,1575);
+   return;
+ }
  if(!o||o.zoom<.23||!visible(o.view,{x:310,y:1108,w:1710,h:647}))return;
  const phase5Ready=!!(window.ROOKIE_V139_GROUND_ACTIVE &&
     window.ROOKIE_V135_WALL_KIT?.stats?.().groundAtlas);
@@ -550,25 +554,56 @@ function forecourt(g,o){
 // Owner-supplied furniture lives beside, never across, the x860..1035 walk.
 // Coordinates are sprite feet in the same world/depth queue as Jay.
 const communityLayout=Object.freeze([
- {sprite:'tree',x:520,y:1360,w:89,h:121},
- {sprite:'tree',x:1440,y:1360,w:89,h:121},
- {sprite:'bench',x:640,y:1320,w:78,h:53},
- {sprite:'bench',x:640,y:1710,w:78,h:53},
- {sprite:'bench',x:1200,y:1430,w:78,h:53},
- {sprite:'lamp',x:800,y:1430,w:30,h:117},
- {sprite:'lamp',x:1100,y:1430,w:30,h:117},
- {sprite:'planter',x:650,y:1475,w:188,h:52},
- {sprite:'planter',x:1260,y:1507,w:188,h:52},
- {sprite:'monument',x:620,y:1605,w:230,h:110},
- {sprite:'tree',x:1450,y:1655,w:89,h:121},
- {sprite:'sign',x:710,y:1400,w:138,h:37},
+ // Benches sit on the horizontal paved frontage, as in the reference;
+ // there is no bench in the street-side sidewalk below the lawn.
+ {sprite:'bench',x:650,y:1340,w:78,h:53},
+ {sprite:'bench_small',x:1240,y:1340,w:75,h:38},
+ {sprite:'lamp',x:800,y:1340,w:30,h:117},
+ {sprite:'lamp',x:1090,y:1340,w:30,h:117},
  {sprite:'pot',x:830,y:1225,w:46,h:49},
- {sprite:'pot',x:1068,y:1225,w:46,h:49}
+ {sprite:'pot_square',x:1068,y:1225,w:45,h:52},
+ {sprite:'tree',x:520,y:1275,w:89,h:121},
+ {sprite:'planter',x:700,y:1275,w:188,h:52},
+ {sprite:'tree_round',x:1180,y:1275,w:72,h:123},
+ {sprite:'planter',x:1355,y:1275,w:188,h:52},
+ // Planted west edge of the lawn: canopy, flowering shrub and inset bed.
+ {sprite:'tree',x:432,y:1435,w:89,h:121},
+ {sprite:'planter_small',x:432,y:1530,w:63,h:48},
+ {sprite:'shrub_flowering',x:432,y:1580,w:50,h:39},
+ {sprite:'shrub',x:432,y:1635,w:34,h:32},
+ // The narrow planted divider immediately west of the main entrance walk.
+ {sprite:'tree_round',x:818,y:1435,w:72,h:123},
+ {sprite:'pot_square',x:818,y:1510,w:45,h:52},
+ {sprite:'shrub',x:818,y:1560,w:34,h:32},
+ {sprite:'planter_small',x:818,y:1635,w:63,h:48},
+ {sprite:'lamp_short',x:820,y:1600,w:28,h:73},
+ // Matching garden on the other side of the walk, outside the garage route.
+ {sprite:'tree_flowering',x:1116,y:1435,w:68,h:118},
+ {sprite:'hedge_corner',x:1120,y:1520,w:62,h:69},
+ {sprite:'shrub',x:1094,y:1560,w:34,h:32},
+ {sprite:'planter_corner',x:1116,y:1640,w:66,h:70},
+ {sprite:'lamp',x:1178,y:1590,w:30,h:117},
+ // Monument and low planting belong within the central grass square.
+ {sprite:'monument',x:624,y:1570,w:230,h:110},
+ {sprite:'hedge',x:556,y:1644,w:95,h:32},
+ {sprite:'flower_patch',x:700,y:1644,w:62,h:34},
+ {sprite:'flower_patch',x:700,y:1420,w:62,h:34},
+ {sprite:'sign',x:948,y:1575,w:138,h:37,underfoot:true},
+ {sprite:'tree_round',x:524,y:1440,w:72,h:123},
+ // Small boundary posts echo the reference without crossing the main walk.
+ {sprite:'bollard',x:460,y:1345,w:21,h:46},
+ {sprite:'bollard',x:740,y:1345,w:21,h:46},
+ {sprite:'bollard',x:830,y:1360,w:21,h:46},
+ {sprite:'bollard',x:1130,y:1345,w:21,h:46},
+ {sprite:'bollard',x:1320,y:1345,w:21,h:46},
+ {sprite:'bollard',x:432,y:1705,w:21,h:46},
+ {sprite:'bollard',x:818,y:1705,w:21,h:46},
+ {sprite:'bollard',x:1085,y:1705,w:21,h:46}
 ].map(Object.freeze));
 function communityProps(view){
  window.ROOKIE_V135_WALL_KIT?.prepareCommunityAssets?.();
  if(!window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE||!window.ROOKIE_V135_WALL_KIT?.stats?.().communityAtlas)return [];
- return communityLayout.filter(p=>visible(view,{x:p.x-p.w/2,y:p.y-p.h,w:p.w,h:p.h}));
+ return communityLayout.filter(p=>!p.underfoot&&visible(view,{x:p.x-p.w/2,y:p.y-p.h,w:p.w,h:p.h}));
 }
 function drawCommunityProp(g,p){return window.ROOKIE_V135_WALL_KIT?.drawCommunitySprite(g,p.sprite,p.x,p.y);}
 window.ROOKIE_V134_PRECINCT=Object.freeze({

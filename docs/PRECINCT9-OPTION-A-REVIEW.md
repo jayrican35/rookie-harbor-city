@@ -6,22 +6,33 @@ The owner supplied a Community Walk asset sheet, then explicitly selected a new
 arrangement using trees, planters, benches and lights from that pack. This
 supersedes the cleared-plaza revisions below.
 
-Eight sprite types are extracted by `tools/prepare_community_walk_assets.py`:
-grass, tree, bench, lamp, flower planter, flower pot, precinct monument and Community
-Walk sign. Source crops and cleanup settings are recorded in
+Twenty-five sprite frames are extracted by `tools/prepare_community_walk_assets.py`:
+grass, three tree varieties, both benches, tall/short lamps, long/corner hedges,
+shrubs, flowering shrubs, loose flowers, long/small/corner planters, both flower
+pots, bollards, precinct monument, Community Walk sign, straight/vertical curbs
+and two curved corner modules.
+Source crops and cleanup settings are recorded in
 `assets/community-walk/manifest.json`; the supplied original remains in
 `docs/references/community-walk-asset-sheet.png`. The extraction uses one-half
 source scale with nearest-neighbor sampling, removes matte noise and detached
 pixels, and packs the source artwork into one transparent 512×512 atlas.
 
-Fourteen objects form the new arrangement: three trees, three benches, two lamps,
-two long planters, two entrance pots, one sign and one monument. All sprite
-rectangles stay outside the x860..1035 central walking corridor and west of
-parking. A 352×352 square lawn occupies world `(448,1328)` inside the plaza,
-with benches on its paved north and south sides and the central walk clear to
-its east, as requested in the owner's follow-up reference. The grass texture
-comes from the supplied sheet. The monument is offset from Rivera's existing
-position so he draws in front of it rather than disappearing behind it. Original
+The placement follows the reference's relationships: the two benches sit on
+the same horizontal paved frontage, with lamps/posts beside them, and matching
+trees/flower boxes above. There is no bench in the sidewalk below the lawn.
+The main lawn is now 288×288 at world `(480,1368)`, leaving 53 world pixels of
+continuous paving between its outer curb and Harbor Avenue. Narrow curbed
+gardens occupy `(408,1380,48,264)`, `(800,1380,36,264)` and
+`(1072,1380,88,264)`: these provide the west planted boundary and the tree,
+shrub and flower areas on both sides of the central walk. All supplied
+landscaping categories are used in their appropriate zones rather than spread
+through the circulation space. The floor-inset Community Walk panel is centered
+at `(948,1575)` and renders under actors; other objects stay outside the
+x860..1035 walking corridor and west of the parking/garage route.
+
+The grass texture, stone curb modules and rounded corners come from the supplied
+sheet. The monument remains inside the lawn with its flowers at the base.
+It is offset from Rivera's existing position so he draws in front of it. Original
 furnished rooms, entrances, road and collision remain intact; these decorations
 do not add new colliders.
 

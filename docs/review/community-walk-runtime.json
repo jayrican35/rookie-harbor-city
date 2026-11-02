@@ -5,24 +5,24 @@
     "height": 844,
     "inside": {
       "cameraX": 753,
-      "cameraY": 719.3050752079649,
+      "cameraY": 719.3263867005808,
       "zoom": 1,
       "follows": true,
       "roofAlpha": 0.04,
       "playerX": 948,
-      "playerY": 1121.2874776670858,
+      "playerY": 1121.3082440279532,
       "dir": "up",
       "room": "LOBBY",
       "crossings": 2
     },
     "outside": {
       "cameraX": 753,
-      "cameraY": 716.9400860257318,
+      "cameraY": 717.3751513363295,
       "zoom": 1,
       "follows": true,
       "roofAlpha": 0.12,
       "playerX": 948,
-      "playerY": 1153.119258725376,
+      "playerY": 1153.0736902668746,
       "dir": "down",
       "room": null,
       "crossings": 3
@@ -83,9 +83,9 @@
         "doorTransitions": "world-space-continuous"
       },
       "metrics": {
-        "ground": 270,
+        "ground": 268,
         "facade": 0,
-        "actors": 810,
+        "actors": 804,
         "groundBuilds": 2,
         "styleVersion": "v133-precinct-campus-art-1",
         "stoneReady": true,
@@ -95,11 +95,11 @@
       "atlas": {
         "loaded": true,
         "error": null,
-        "frameDraws": 191,
+        "frameDraws": 189,
         "testPaints": 0,
         "windowDraws": 18,
         "entranceFrames": 1,
-        "entranceDoorDraws": 151,
+        "entranceDoorDraws": 149,
         "moduleCount": 49,
         "atlasSize": [
           1024,
@@ -109,7 +109,7 @@
         "entranceAtlas": true,
         "groundAtlas": true,
         "groundError": null,
-        "groundDraws": 3506,
+        "groundDraws": 3524,
         "communityAtlas": true,
         "communityError": null,
         "groundModuleCount": 34
@@ -164,24 +164,24 @@
     "height": 720,
     "inside": {
       "cameraX": 308,
-      "cameraY": 781.32649308101,
+      "cameraY": 781.3447186412822,
       "zoom": 1,
       "follows": true,
       "roofAlpha": 0.04,
       "playerX": 948,
-      "playerY": 1121.308244027954,
+      "playerY": 1121.3290101550647,
       "dir": "up",
       "room": "LOBBY",
       "crossings": 2
     },
     "outside": {
       "cameraX": 308,
-      "cameraY": 778.3229745379656,
+      "cameraY": 777.9696321552457,
       "zoom": 1,
       "follows": true,
       "roofAlpha": 0.12,
       "playerX": 948,
-      "playerY": 1152.4225379253471,
+      "playerY": 1152.028938012221,
       "dir": "down",
       "room": null,
       "crossings": 3
@@ -199,11 +199,11 @@
       },
       {
         "status": 404,
-        "url": "http://127.0.0.1:8766/preview/precinct9-v140-approved-layout/assets/civilians/civilian_man_tan.webp"
+        "url": "http://127.0.0.1:8766/preview/precinct9-v140-approved-layout/assets/civilians/civilian_man_blue.webp"
       },
       {
         "status": 404,
-        "url": "http://127.0.0.1:8766/preview/precinct9-v140-approved-layout/assets/civilians/civilian_man_blue.webp"
+        "url": "http://127.0.0.1:8766/preview/precinct9-v140-approved-layout/assets/civilians/civilian_man_tan.webp"
       },
       {
         "status": 404,
@@ -242,9 +242,9 @@
         "doorTransitions": "world-space-continuous"
       },
       "metrics": {
-        "ground": 263,
+        "ground": 261,
         "facade": 0,
-        "actors": 789,
+        "actors": 783,
         "groundBuilds": 2,
         "styleVersion": "v133-precinct-campus-art-1",
         "stoneReady": true,
@@ -254,11 +254,11 @@
       "atlas": {
         "loaded": true,
         "error": null,
-        "frameDraws": 317,
+        "frameDraws": 315,
         "testPaints": 0,
         "windowDraws": 18,
         "entranceFrames": 1,
-        "entranceDoorDraws": 263,
+        "entranceDoorDraws": 261,
         "moduleCount": 49,
         "atlasSize": [
           1024,
@@ -268,7 +268,7 @@
         "entranceAtlas": true,
         "groundAtlas": true,
         "groundError": null,
-        "groundDraws": 3506,
+        "groundDraws": 3524,
         "communityAtlas": true,
         "communityError": null,
         "groundModuleCount": 34

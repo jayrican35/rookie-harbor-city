@@ -232,6 +232,13 @@ jobs:
           path: precinct9-v138
           persist-credentials: false
 
+      - name: Check out approved-scope V139 precinct grounds candidate (isolated)
+        uses: actions/checkout@v4
+        with:
+          ref: 1fb32a2a1bbdd352514a50ac7be46eb81598bd17 # passed Android+desktop real-game QA, 34 PNGs checked in
+          path: precinct9-v139
+          persist-credentials: false
+
       - name: Recover missing main-campaign environment art
         shell: bash
         working-directory: visual-preview
@@ -1541,6 +1548,52 @@ jobs:
           PY
           cmp -s game-backup/published-game-capture/game.js site/game.js
           cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+
+      - name: Build isolated V139 Precinct 9 Phase 5 actual connected-game grounds
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/precinct9-v139-grounds-lab
+          cp -a precinct9-v139/published-game-capture/. site/preview/precinct9-v139-grounds-lab/
+          python3 precinct9-v139/tools/build_v139_precinct_grounds_preview.py site/preview/precinct9-v139-grounds-lab
+          node --check site/preview/precinct9-v139-grounds-lab/game-v115.bundle.js
+          node --check site/preview/precinct9-v139-grounds-lab/v133-precinct-campus.js
+          node --check site/preview/precinct9-v139-grounds-lab/v134-precinct-reference.js
+          node --check site/preview/precinct9-v139-grounds-lab/v135-precinct-wallkit-test.js
+          for f in game.js outbreak.css v116-marina.js v127-citywide-art.js v115-world.js v117-jay.js; do
+            cmp -s "site/preview/precinct9-v138-depth-lab/$f" "site/preview/precinct9-v139-grounds-lab/$f"
+            cmp -s "site/preview/v128-world-quality/$f" "site/preview/precinct9-v139-grounds-lab/$f"
+          done
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          echo 'PASS isolated 34-file precinct material atlas, original roads/collisions/saves/Zombie byte unchanged'
+
+      - name: Publish V139 real mobile and desktop precinct terrain before-after review
+        shell: bash
+        run: |
+          set -euo pipefail
+          node precinct9-v139/qa/capture-v139-precinct-grounds.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageChops
+          import json,html
+          p=Path('site/preview/precinct9-v139-grounds-lab/evidence')
+          data=json.loads((p/'qa-metrics.json').read_text())
+          scenes=[v['name'] for v in data['views']]
+          changed=0;cards=[]
+          for n in scenes:
+            old=p/(n+'-before.png');new=p/(n+'-after.png')
+            assert old.is_file() and new.is_file(),n
+            with Image.open(old) as a,Image.open(new) as b:
+              if ImageChops.difference(a.convert('RGB'),b.convert('RGB')).getbbox():changed+=1
+            cards.append('<section><h2>'+html.escape(n.replace('-',' ').title())+'</h2><div class="pair"><img loading="lazy" src="'+n+'-before.png" alt="V138 baseline"><img loading="lazy" src="'+n+'-after.png" alt="V139 modular terrain"></div></section>')
+          assert changed>=4
+          for n in scenes:assert (p/(n+'-desktop-after.png')).is_file(),n
+          (p/'index.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROOKIE V139 Phase 5: Grounds</title><style>body{background:#11283d;color:#f5dfbd;margin:14px;font:16px system-ui}.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:950px}.pair img{width:100%;min-width:0}section{margin:22px 0}h2{font-size:19px}</style><h1>V139 Precinct 9 — Phase 5 Grounds</h1><p>Actual connected Harbor City gameplay at identical cameras. Left: V138 before. Right: V139 after. User-reference-colored modular sidewalk, road, crosswalk, parking and civic-green PNGs are in the SAME original cached terrain painter, not a second map. Original player, doors, roof, camera, Marina, game and Zombie Outbreak protected. Visual review before merge.</p>'+''.join(cards)+'</html>')
+          PY
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          echo 'PASS V139 actual Android and desktop terrain screenshots, continuous lobby crossing and original protected modes'
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

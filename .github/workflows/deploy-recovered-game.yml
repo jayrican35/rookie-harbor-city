@@ -172,7 +172,7 @@ jobs:
       - name: Check out V128 guarded world-quality candidate (isolated)
         uses: actions/checkout@v4
         with:
-          ref: f5a97eab0c2ff6690414222e90d23dc121582dfa # World Completion: street network repairs, true traffic, living districts, native QA
+          ref: 06bf90e4c701690a885a85b4a774da63ef7b0c87 # World Completion: source-aligned street graph, Westfield ring, Midtown feeder, living traffic
           path: v128-world-quality
           persist-credentials: false
 
@@ -1098,10 +1098,10 @@ jobs:
               with Image.open(p/f'{scene}-{suffix}.png') as im: im.verify()
           for state in ('idle','running'):
             with Image.open(p/f'v128-{state}.png') as im: im.verify()
-          for road in ('precinct-arterial','southbay-loop-junction','northgate-arterial'):
+          for road in ('precinct-arterial','westfield-southern-ring','midtown-bayview-feeder','southbay-loop-junction','northgate-arterial'):
             with Image.open(p/f'road-{road}.png') as im: im.verify()
           cards=''.join(f'<section><h2>{s.replace("-"," ").title()}</h2><div><img src="{s}-before.png"><img src="{s}-after.png"></div></section>' for s in scenes)
-          (p/'index.html').write_text('<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><title>V128 Real Gameplay Quality Review</title><style>body{background:#102b3b;color:#f6eac9;font:16px system-ui;padding:20px}section{margin:20px 0}section>div{display:flex;flex-wrap:wrap;gap:12px}img{width:47%;max-width:420px;border-radius:9px}h2{font-size:19px}</style><h1>V128 vs V127 — Actual Harbor City Browser Captures</h1><p>Left: V127. Right: V128. Ten existing district/edge positions, same original connected game and viewport. Emulated Chrome is not an Android FPS certification.</p>'+cards+'<h2>Road-network junctions</h2><p>Newly connected original world routes</p>'+''.join(f'<figure><img src="road-{r}.png"><figcaption>{r.replace("-"," ").title()}</figcaption></figure>' for r in ['precinct-arterial','southbay-loop-junction','northgate-arterial'])+'<h2>Jay standing and running</h2><img src="v128-idle.png"><img src="v128-running.png">')
+          (p/'index.html').write_text('<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><title>V128 Real Gameplay Quality Review</title><style>body{background:#102b3b;color:#f6eac9;font:16px system-ui;padding:20px}section{margin:20px 0}section>div{display:flex;flex-wrap:wrap;gap:12px}img{width:47%;max-width:420px;border-radius:9px}h2{font-size:19px}</style><h1>V128 vs V127 — Actual Harbor City Browser Captures</h1><p>Left: V127. Right: V128. Ten existing district/edge positions, same original connected game and viewport. Emulated Chrome is not an Android FPS certification.</p>'+cards+'<h2>Road-network junctions</h2><p>Newly connected original world routes</p>'+''.join(f'<figure><img src="road-{r}.png"><figcaption>{r.replace("-"," ").title()}</figcaption></figure>' for r in ['precinct-arterial','westfield-southern-ring','midtown-bayview-feeder','southbay-loop-junction','northgate-arterial'])+'<h2>Jay standing and running</h2><img src="v128-idle.png"><img src="v128-running.png">')
           print('PASS V128 real playable before/after gallery and sprint states')
           PY
 

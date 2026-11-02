@@ -813,6 +813,10 @@
     const premium=window.ROOKIE_V115_PREMIUM;
     if(premium)premium.terrain(g,{zoom:campus.zoom,view},t);
     drawLinkedDistricts(t);
+    // Precinct 9 art sits over existing station/parking pavement only.
+    // The adapter cannot move roads or change original district rendering.
+    const precinctVisual=window.ROOKIE_V130_PRECINCT;
+    if(precinctVisual)precinctVisual.ground(g,{zoom:campus.zoom,view},t);
     if(reference)reference.gameOverlay(g,{zoom:campus.zoom,view,districts:districtEntries},t);
     if(premium)premium.overlay(g,{zoom:campus.zoom,view,districts:districtEntries},t);
     if(art)art.streets(g,{zoom:campus.zoom,view},t);
@@ -825,6 +829,9 @@
     if(pilot)pilot.props(g,{zoom:campus.zoom,view},t);
     drawStation();
     if(art)art.precinct(g,{zoom:campus.zoom,view,STX,STY,alpha:roofAlpha()},t);
+    // Same real station roof fades near both existing doors; no second
+    // station footprint, scene, collision system or player renderer.
+    if(precinctVisual)precinctVisual.frontage(g,{zoom:campus.zoom,view,roofAlpha:roofAlpha()},t);
     drawEntityHighlights(t);
     if(marina)marina.foreground(g,{zoom:campus.zoom,view,player:{x:campus.x,y:campus.y}},t);
     if(cinematic)cinematic.atmosphere(g,{zoom:campus.zoom,view},t);

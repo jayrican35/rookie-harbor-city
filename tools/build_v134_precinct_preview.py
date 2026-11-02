@@ -11,7 +11,7 @@ world=root/'game-v115.bundle.js'
 assert src.is_file() and world.is_file()
 code=src.read_text('utf-8');game=world.read_text('utf-8')
 for txt in ('v134-reference-architectural-reconstruction','renderArchitecture()',
- 'renderGarage()','function doorway(g)','function crest(g)','function flag(g',
+ 'renderGarage()','function doorway(g)','function crest(g,','function flag(g',
  'function windowPane(g','function palm(g'):
     assert txt in code,txt
 for txt in ('ROOKIE_V134_PRECINCT?.ground','ROOKIE_V134_PRECINCT?.architecture',

@@ -17,7 +17,7 @@ for key in new['newFrames']:
 assert (root/'assets/precinct9-entrance-phase3'/new['atlas']).is_file()
 world=(root/'game-v115.bundle.js').read_text()
 assert 'ROOKIE_V134_PRECINCT?.stepEntrance' in world
-assert 'drawStationRoof()' in world and 'drawEntityHighlights(t)' in world
+assert "drawStationRoof(section='main')" in world and 'drawEntityHighlights(t)' in world
 face=(root/'v134-precinct-reference.js').read_text()
 assert 'drawEntranceStatic' in face and 'drawEntranceDoors' in face
 loader=(root/'v135-precinct-wallkit-test.js').read_text()

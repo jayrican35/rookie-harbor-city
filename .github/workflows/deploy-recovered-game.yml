@@ -204,6 +204,13 @@ jobs:
           path: precinct9-v133
           persist-credentials: false
 
+      - name: Check out V134 reference-quality Precinct 9 exterior (isolated)
+        uses: actions/checkout@v4
+        with:
+          ref: 9e94c91633994f27ce8add32316d9edaefe42d98 # green source and real Android 390x844 gameplay tests
+          path: precinct9-v134
+          persist-credentials: false
+
       - name: Recover missing main-campaign environment art
         shell: bash
         working-directory: visual-preview
@@ -1325,6 +1332,54 @@ jobs:
               cards.append('<section><h2>'+html.escape(name.replace('-',' ').title())+'</h2><div class="comparison"><img loading="lazy" src="'+name+'-before.png" alt="V132 previous"><img loading="lazy" src="'+name+'-after.png" alt="V133 improved"></div></section>')
           (p/'index.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROOKIE V133 — Precinct Campus Reconstruction</title><style>body{margin:14px;background:#10273b;color:#f3e5bf;font:16px system-ui}h1{font-size:24px}h2{font-size:18px}.comparison{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:940px}.comparison img{width:100%}section{margin:24px 0}</style><h1>V133 Precinct 9: Civic Campus Reconstruction</h1><p>Real mobile gameplay screenshots at matching camera positions. LEFT: V132 legacy roof. RIGHT: V133 full civic building approach, parking, plaza, south green and legacy NPCs. All actual entrances and Harbor Avenue still open. Visual approval pending.</p>'+''.join(cards)+'</html>')
           print('PASS',len(scenes),'real phone comparison scenes; independent V133 visual candidate ready')
+          PY
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+
+      - name: Build V134 two-story Precinct 9 reference HQ and matching fleet garage
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/precinct9-v134-lab
+          cp -a precinct9-v134/published-game-capture/. site/preview/precinct9-v134-lab/
+          python3 precinct9-v134/tools/build_v134_precinct_preview.py site/preview/precinct9-v134-lab
+          node --check site/preview/precinct9-v134-lab/v134-precinct-reference.js
+          node --check site/preview/precinct9-v134-lab/game-v115.bundle.js
+          (cd precinct9-v134 && node qa/check-v134-precinct.cjs)
+          for f in game.js outbreak.css v116-marina.js v127-citywide-art.js v115-world.js v117-jay.js; do
+            cmp -s "site/preview/v128-world-quality/$f" "site/preview/precinct9-v134-lab/$f"
+            cmp -s "site/preview/precinct9-v133-lab/$f" "site/preview/precinct9-v134-lab/$f"
+          done
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          echo 'PASS V134 native detailed 2-story precinct HQ, legacy officers, original main/Zombie/Marina byte-identical'
+
+      - name: Publish V134 exact-reference direction as actual phone gameplay comparisons
+        shell: bash
+        run: |
+          set -euo pipefail
+          node precinct9-v134/qa/capture-v134-precinct.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image, ImageChops
+          import json,html
+          p=Path('site/preview/precinct9-v134-lab/evidence')
+          d=json.loads((p/'review-data.json').read_text())
+          scenes=[x['id'] for x in d['scenes']]+['real-interior-roof-reveal']
+          cards=[]
+          difference={}
+          for n in scenes:
+            before=p/(n+'-before.png')
+            after=p/(n+'-after.png')
+            assert before.is_file() and after.is_file(),n
+            with Image.open(before) as b,Image.open(after) as a:
+              assert b.size==a.size
+              difference[n]=bool(ImageChops.difference(b.convert('RGB'),a.convert('RGB')).getbbox())
+            cards.append('<section><h2>'+html.escape(n.replace('-',' ').title())+'</h2><div class="comparison"><img loading="lazy" src="'+n+'-before.png" alt="Previous V133"><img loading="lazy" src="'+n+'-after.png" alt="New V134"></div></section>')
+          for n in ['two-story-main-sign-and-badge','garage-reference-style-matching','community-plaza-palm-flags']:
+            assert difference[n],n+' unchanged — never publish a missing visual upgrade'
+          (p/'index.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROOKIE V134 — True Reference-Based Police HQ</title><style>body{margin:14px;background:#12273a;color:#f2e0ba;font:16px system-ui}.comparison{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:940px}.comparison img{width:100%}h1{font-size:24px}h2{font-size:18px}section{margin:24px 0}</style><h1>Precinct 9 — User Reference Architectural Reconstruction</h1><p>Real mobile game screenshots at same camera: LEFT V133 previous; RIGHT V134 with layered two-story navy-brick / cream-stone police headquarters, gold badge, lit windows, flags, matching service garage, civic plaza and landscaping. The original lobby doors, roof reveal, Harbor Avenue, Marina and Zombie Outbreak remain intact. Your artistic approval remains the final gate.</p>'+''.join(cards)+'</html>')
+          print('PASS',len(scenes),'matched Android screenshots show actual HQ/garage/plaza visual changes; user approval pending')
           PY
           cmp -s game-backup/published-game-capture/game.js site/game.js
           cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css

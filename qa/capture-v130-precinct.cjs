@@ -62,6 +62,20 @@ const scenes=[
    await canvas.screenshot({path:path.join(folder,sc.id+'-'+version+'.png')});
    captures.push(sc.id);
   }
+  // Verify the opposite roof state too: Jay walks INSIDE the authentic
+  // lobby at exactly the source-map front door. The fading roof then exposes
+  // the original station NPCs, instead of displaying them over the exterior.
+  const foyer=await page.evaluate(()=>{
+    const a=window.HARBOR.seamlessCampusV115;
+    return {moved:a.test.moveTo(948,1060),room:a.test.interiorRoom(948,1060),
+      world:a.snapshot().worldId};
+  });
+  assert(foyer.moved&&foyer.room==='LOBBY'&&foyer.world==='harbor-main',
+    'Real precinct lobby must remain traversable without scene transitions');
+  assert(await page.evaluate(()=>window.HARBOR.seamlessCampusV115.qaCamera(948,920,.96)));
+  await page.waitForTimeout(440);
+  await canvas.screenshot({path:path.join(folder,'station-interior-roof-revealed-'+version+'.png')});
+  captures.push('station-interior-roof-revealed');
   const stats=await page.evaluate(()=>{
    const p=window.ROOKIE_V130_PRECINCT;
    return {exists:!!p,version:p?.version||null,metrics:p?.metrics()||null};

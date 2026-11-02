@@ -16,7 +16,7 @@ for f in m['frames'].values():
     assert (assets/f['file']).is_file()
 world=(root/'game-v115.bundle.js').read_text()
 assert 'ROOKIE_V135_WALL_KIT?.drawTest' in (root/'v134-precinct-reference.js').read_text()
-assert 'drawStationRoof()' in world and 'drawEntityHighlights(t)' in world
+assert "drawStationRoof(section='main')" in world and 'drawEntityHighlights(t)' in world
 for n in ('game.js','outbreak.css','v116-marina.js','v127-citywide-art.js','v115-world.js'):
     assert (root/n).is_file(),n
 html_path=root/'index.html';html=html_path.read_text()

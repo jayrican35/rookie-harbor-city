@@ -160,14 +160,42 @@ function drawEntranceDoors(g,centerX,topY,openRatio){
  }
  g.restore();entranceDoorDraws++;return true;
 }
+let communityManifest=null,communityAtlas=null,communityError=null,communityLoading=false;
+function prepareCommunityAssets(){
+ if(!window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE||communityLoading||!window.HARBOR?.seamlessCampusV115?.isOpen())return;
+ communityLoading=true;
+ fetch('./assets/community-walk/manifest.json').then(r=>{
+  if(!r.ok)throw Error('Community Walk manifest '+r.status);return r.json();
+ }).then(m=>new Promise((resolve,reject)=>{
+  const im=new Image();im.decoding='async';im.onload=()=>resolve({m,im});
+  im.onerror=()=>reject(Error('Community Walk atlas unavailable'));
+  im.src='./assets/community-walk/'+m.atlas;
+ })).then(({m,im})=>{communityManifest=m;communityAtlas=im;})
+ .catch(e=>{communityError=e.message;console.warn(e.message);});
+}
+function drawCommunitySprite(g,id,x,y){
+ const f=communityManifest?.frames?.[id];if(!f||!communityAtlas)return false;
+ g.imageSmoothingEnabled=false;
+ g.drawImage(communityAtlas,f.x,f.y,f.w,f.h,Math.round(x-f.w/2),Math.round(y-f.h),f.w,f.h);
+ return true;
+}
+function fillCommunityGround(g,id,x,y,w,h){
+ const f=communityManifest?.frames?.[id];if(!f||!communityAtlas)return false;
+ g.save();g.imageSmoothingEnabled=false;g.beginPath();g.rect(x,y,w,h);g.clip();
+ for(let yy=Math.floor(y/f.h)*f.h;yy<y+h;yy+=f.h)
+  for(let xx=Math.floor(x/f.w)*f.w;xx<x+w;xx+=f.w)
+   g.drawImage(communityAtlas,f.x,f.y,f.w,f.h,xx,yy,f.w,f.h);
+ g.restore();return true;
+}
 window.ROOKIE_V135_WALL_KIT=Object.freeze({
  version:'v135-phase1-wall-kit',
- drawTest,drawFacadeWindow,drawEntranceStatic,drawEntranceDoors,drawGroundSprite,fillGround,
+ drawTest,drawFacadeWindow,drawEntranceStatic,drawEntranceDoors,drawGroundSprite,fillGround,drawCommunitySprite,prepareCommunityAssets,fillCommunityGround,
  stats:()=>({loaded,error,frameDraws,testPaints,windowDraws,entranceFrames,entranceDoorDraws,moduleCount:Object.keys(manifest?.frames||{}).length,
   atlasSize:atlas?[atlas.naturalWidth,atlas.naturalHeight]:null,
   windowAtlas:['precinct9-windows-phase2','precinct9-entrance-phase3'].includes(manifest?.version),
   entranceAtlas:manifest?.version==='precinct9-entrance-phase3',
   groundAtlas:groundLoaded,groundError,groundDraws,
+  communityAtlas:!!communityAtlas,communityError,
   groundModuleCount:Object.keys(groundManifest?.frames||{}).length}),
  scope:'Only 32-grid modular wall kit test on existing V134 precinct facade; no other gameplay change'
 });

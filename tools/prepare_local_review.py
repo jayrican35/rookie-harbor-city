@@ -18,7 +18,7 @@ os.environ['PYTHONUTF8'] = '1'
 shutil.copytree(source, after, dirs_exist_ok=True)
 subprocess.run([sys.executable, str(repo / 'tools/build_v140_precinct_approved_layout_preview.py'), str(after)], check=True)
 shutil.copytree(after, before, dirs_exist_ok=True)
-for name in ('v115-campus.js', 'v133-precinct-campus.js', 'v134-precinct-reference.js'):
+for name in ('v115-campus.js', 'v133-precinct-campus.js', 'v134-precinct-reference.js', 'v135-precinct-wallkit-test.js'):
     original = subprocess.check_output(['git', 'show', f'{baseline}:published-game-capture/{name}'], cwd=repo).decode('utf-8')
     if name == 'v115-campus.js':
         bundle = before / 'game-v115.bundle.js'

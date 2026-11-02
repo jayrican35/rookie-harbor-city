@@ -511,6 +511,7 @@ function makeGround(){
  return cv;
 }
 function ground(g,o){
+ if(window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE)return;
  if(!o||o.zoom<.23||!visible(o.view,{x:310,y:1108,w:1710,h:647}))return;
  const phase5Ready=!!(window.ROOKIE_V139_GROUND_ACTIVE &&
     window.ROOKIE_V135_WALL_KIT?.stats?.().groundAtlas);
@@ -546,7 +547,32 @@ function forecourt(g,o){
  g.save();g.imageSmoothingEnabled=false;
  g.drawImage(forecourtArt,387,1127);g.restore();
 }
+// Owner-supplied furniture lives beside, never across, the x860..1035 walk.
+// Coordinates are sprite feet in the same world/depth queue as Jay.
+const communityLayout=Object.freeze([
+ {sprite:'tree',x:520,y:1360,w:89,h:121},
+ {sprite:'tree',x:1440,y:1360,w:89,h:121},
+ {sprite:'bench',x:640,y:1320,w:78,h:53},
+ {sprite:'bench',x:640,y:1710,w:78,h:53},
+ {sprite:'bench',x:1200,y:1430,w:78,h:53},
+ {sprite:'lamp',x:800,y:1430,w:30,h:117},
+ {sprite:'lamp',x:1100,y:1430,w:30,h:117},
+ {sprite:'planter',x:650,y:1475,w:188,h:52},
+ {sprite:'planter',x:1260,y:1507,w:188,h:52},
+ {sprite:'monument',x:620,y:1605,w:230,h:110},
+ {sprite:'tree',x:1450,y:1655,w:89,h:121},
+ {sprite:'sign',x:710,y:1400,w:138,h:37},
+ {sprite:'pot',x:830,y:1225,w:46,h:49},
+ {sprite:'pot',x:1068,y:1225,w:46,h:49}
+].map(Object.freeze));
+function communityProps(view){
+ window.ROOKIE_V135_WALL_KIT?.prepareCommunityAssets?.();
+ if(!window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE||!window.ROOKIE_V135_WALL_KIT?.stats?.().communityAtlas)return [];
+ return communityLayout.filter(p=>visible(view,{x:p.x-p.w/2,y:p.y-p.h,w:p.w,h:p.h}));
+}
+function drawCommunityProp(g,p){return window.ROOKIE_V135_WALL_KIT?.drawCommunitySprite(g,p.sprite,p.x,p.y);}
 window.ROOKIE_V134_PRECINCT=Object.freeze({
+ communityLayout,communityProps,drawCommunityProp,
  stepEntrance,entranceState,
  invalidateFacade:()=>{
    // Recreate approved V134 canvases once after the EXISTING atlas loader

@@ -167,6 +167,7 @@ const approvedLayout=()=>window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE===true;
 const approvedParking=Object.freeze({x:1640,y:1464,w:670,h:237});
 const approvedApron=Object.freeze({x:1742,y:1264,w:354,h:224});
 const approvedDrive=Object.freeze({x:1856,y:1450,w:146,h:271});
+const communityLawn=Object.freeze({x:448,y:1328,w:352,h:352});
 function approvedAsphalt(g,x,y,w,h){
  if(!fillT(g,'asphalt',x,y,w,h))ink(g,x,y,w,h,'#3d4756');
  for(let xx=x+19;xx<x+w-15;xx+=74)
@@ -199,12 +200,19 @@ function approvedNorthGround(g){
  // First paint over the visually detached old lot, into a continuous
  // pedestrian plaza. V134 retains the entrance and civic marker above
  // this base surface, without its retired planted decorations.
- // Owner revision: clear the civic plaza completely. One globally aligned
- // stone fill runs from the entrance apron to the street; no lawn islands,
- // hedges or internal rectangle borders interrupt its brick courses.
+ // One globally aligned stone surface connects the entrance and street.
+ // The owner-approved square lawn is authored into this same surface below.
  pavers(g,387,1127,1242,594,32);
  if(!fillT(g,'paver_stone',310,1696,2000,25))
    ink(g,310,1696,2000,25,'#b7ad94');
+ // Owner's square lawn within the pedestrian plaza. Bench feet sit on the
+ // paved north/south edges; the central entrance walk stays clear to its east.
+ const lawn=communityLawn;
+ ink(g,lawn.x-4,lawn.y-4,lawn.w+8,lawn.h+8,'#b6b1a1');
+ if(!groundKit()?.fillCommunityGround?.(g,'grass',lawn.x,lawn.y,lawn.w,lawn.h))
+   fillT(g,'grass',lawn.x,lawn.y,lawn.w,lawn.h);
+ ink(g,lawn.x-4,lawn.y-4,lawn.w+8,2,'#e5dcc4');
+ ink(g,lawn.x-4,lawn.y+lawn.h+2,lawn.w+8,2,'#727f78');
  // Vehicle frontage and driveway are ONE connected shape, not separate
  // parking stamps to the left of the fleet garage.
  approvedAsphalt(g,approvedParking.x,approvedParking.y,
@@ -349,7 +357,7 @@ function roadPhase5(g){
 }
 function makeGround(){
  const imageReady=ready(texture());
-const targetVersion=(imageReady?'heritage':'fallback')+'|'+(terrainReady()?'phase5':'original')+'|'+approvedLayout();
+const targetVersion=(imageReady?'heritage':'fallback')+'|'+(terrainReady()?'phase5':'original')+'|'+approvedLayout()+'|'+!!groundKit()?.stats?.().communityAtlas;
  if(cachedGround&&cacheReady===targetVersion)return cachedGround;
  const cv=document.createElement('canvas');
  cv.width=2410;cv.height=1720;
@@ -451,7 +459,7 @@ function actors(t){
 window.ROOKIE_V133_PRECINCT=Object.freeze({
  version:'v133-precinct-campus-art-1',worldId:'harbor-main',
  ground,facade,actors,
- geometry:Object.freeze({roof,front,garage,lot,road,south,approvedParking,approvedApron,approvedDrive}),
+ geometry:Object.freeze({roof,front,garage,lot,road,south,approvedParking,approvedApron,approvedDrive,communityLawn}),
  metrics:()=>({...m,stoneReady:ready(texture()),groundAtlas:terrainReady(),approvedCampus:approvedLayout()}),
  scope:'Original 1:1 precinct exterior and existing civic grounds only. Nonblocking visual landscape and 3 bounded station-role ambience actors; no new roads, solids, modes or loops.'
 });

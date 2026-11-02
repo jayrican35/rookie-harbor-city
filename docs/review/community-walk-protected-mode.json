@@ -1,0 +1,5710 @@
+[
+  {
+    "variant": "before",
+    "started": true,
+    "refused": true,
+    "communityAtlasLoaded": false,
+    "status": {
+      "seed": 9012026,
+      "map": {
+        "w": 4480,
+        "h": 3600
+      },
+      "stage": 0,
+      "cap": 22
+    },
+    "map": {
+      "w": 4480,
+      "h": 3600,
+      "zones": [
+        {
+          "x": 100,
+          "y": 140,
+          "w": 1210,
+          "h": 1420,
+          "zone": 0,
+          "label": "A · LOADING YARD"
+        },
+        {
+          "x": 1450,
+          "y": 180,
+          "w": 1640,
+          "h": 1400,
+          "zone": 1,
+          "label": "B · MAIN WAREHOUSE"
+        },
+        {
+          "x": 3230,
+          "y": 220,
+          "w": 1050,
+          "h": 1320,
+          "zone": 2,
+          "label": "C · ADMINISTRATION"
+        },
+        {
+          "x": 2810,
+          "y": 1760,
+          "w": 1390,
+          "h": 760,
+          "zone": 3,
+          "label": "D · POWER & GENERATORS"
+        },
+        {
+          "x": 240,
+          "y": 1840,
+          "w": 2310,
+          "h": 1390,
+          "zone": 4,
+          "label": "E · MAINTENANCE TUNNELS"
+        },
+        {
+          "x": 2720,
+          "y": 2740,
+          "w": 1510,
+          "h": 680,
+          "zone": 5,
+          "label": "F · EXTRACTION YARD"
+        }
+      ],
+      "rooms": [
+        {
+          "x": 40,
+          "y": 40,
+          "w": 4400,
+          "h": 3520,
+          "zone": 6,
+          "label": "HARBOR INDUSTRIAL COMPLEX"
+        },
+        {
+          "x": 100,
+          "y": 140,
+          "w": 1210,
+          "h": 1420,
+          "zone": 0,
+          "label": "A · LOADING YARD"
+        },
+        {
+          "x": 1450,
+          "y": 180,
+          "w": 1640,
+          "h": 1400,
+          "zone": 1,
+          "label": "B · MAIN WAREHOUSE"
+        },
+        {
+          "x": 3230,
+          "y": 220,
+          "w": 1050,
+          "h": 1320,
+          "zone": 2,
+          "label": "C · ADMINISTRATION"
+        },
+        {
+          "x": 2810,
+          "y": 1760,
+          "w": 1390,
+          "h": 760,
+          "zone": 3,
+          "label": "D · POWER & GENERATORS"
+        },
+        {
+          "x": 240,
+          "y": 1840,
+          "w": 2310,
+          "h": 1390,
+          "zone": 4,
+          "label": "E · MAINTENANCE TUNNELS"
+        },
+        {
+          "x": 2720,
+          "y": 2740,
+          "w": 1510,
+          "h": 680,
+          "zone": 5,
+          "label": "F · EXTRACTION YARD"
+        }
+      ],
+      "walls": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 4480,
+          "h": 40
+        },
+        {
+          "x": 0,
+          "y": 3560,
+          "w": 4480,
+          "h": 40
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "w": 40,
+          "h": 3600
+        },
+        {
+          "x": 4440,
+          "y": 0,
+          "w": 40,
+          "h": 3600
+        },
+        {
+          "x": 100,
+          "y": 140,
+          "w": 24,
+          "h": 850
+        },
+        {
+          "x": 100,
+          "y": 1250,
+          "w": 24,
+          "h": 310
+        },
+        {
+          "x": 1286,
+          "y": 140,
+          "w": 24,
+          "h": 510
+        },
+        {
+          "x": 1286,
+          "y": 850,
+          "w": 24,
+          "h": 710
+        },
+        {
+          "x": 100,
+          "y": 140,
+          "w": 1210,
+          "h": 24
+        },
+        {
+          "x": 100,
+          "y": 1536,
+          "w": 650,
+          "h": 24
+        },
+        {
+          "x": 970,
+          "y": 1536,
+          "w": 340,
+          "h": 24
+        },
+        {
+          "x": 1450,
+          "y": 180,
+          "w": 24,
+          "h": 470
+        },
+        {
+          "x": 1450,
+          "y": 850,
+          "w": 24,
+          "h": 730
+        },
+        {
+          "x": 3066,
+          "y": 180,
+          "w": 24,
+          "h": 470
+        },
+        {
+          "x": 3066,
+          "y": 850,
+          "w": 24,
+          "h": 450
+        },
+        {
+          "x": 3066,
+          "y": 1460,
+          "w": 24,
+          "h": 120
+        },
+        {
+          "x": 1450,
+          "y": 180,
+          "w": 1640,
+          "h": 24
+        },
+        {
+          "x": 1450,
+          "y": 1556,
+          "w": 500,
+          "h": 24
+        },
+        {
+          "x": 2190,
+          "y": 1556,
+          "w": 900,
+          "h": 24
+        },
+        {
+          "x": 3230,
+          "y": 220,
+          "w": 24,
+          "h": 430
+        },
+        {
+          "x": 3230,
+          "y": 850,
+          "w": 24,
+          "h": 690
+        },
+        {
+          "x": 4256,
+          "y": 220,
+          "w": 24,
+          "h": 880
+        },
+        {
+          "x": 4256,
+          "y": 1260,
+          "w": 24,
+          "h": 280
+        },
+        {
+          "x": 3230,
+          "y": 220,
+          "w": 1050,
+          "h": 24
+        },
+        {
+          "x": 3230,
+          "y": 1516,
+          "w": 320,
+          "h": 24
+        },
+        {
+          "x": 3750,
+          "y": 1516,
+          "w": 530,
+          "h": 24
+        },
+        {
+          "x": 2810,
+          "y": 1760,
+          "w": 24,
+          "h": 290
+        },
+        {
+          "x": 2810,
+          "y": 2270,
+          "w": 24,
+          "h": 250
+        },
+        {
+          "x": 4176,
+          "y": 1760,
+          "w": 24,
+          "h": 760
+        },
+        {
+          "x": 2810,
+          "y": 1760,
+          "w": 640,
+          "h": 24
+        },
+        {
+          "x": 3670,
+          "y": 1760,
+          "w": 530,
+          "h": 24
+        },
+        {
+          "x": 2810,
+          "y": 2496,
+          "w": 700,
+          "h": 24
+        },
+        {
+          "x": 3730,
+          "y": 2496,
+          "w": 470,
+          "h": 24
+        },
+        {
+          "x": 240,
+          "y": 1840,
+          "w": 24,
+          "h": 1390
+        },
+        {
+          "x": 2526,
+          "y": 1840,
+          "w": 24,
+          "h": 210
+        },
+        {
+          "x": 2526,
+          "y": 2270,
+          "w": 24,
+          "h": 660
+        },
+        {
+          "x": 2526,
+          "y": 3150,
+          "w": 24,
+          "h": 80
+        },
+        {
+          "x": 240,
+          "y": 1840,
+          "w": 1710,
+          "h": 24
+        },
+        {
+          "x": 2190,
+          "y": 1840,
+          "w": 360,
+          "h": 24
+        },
+        {
+          "x": 240,
+          "y": 3206,
+          "w": 170,
+          "h": 24
+        },
+        {
+          "x": 630,
+          "y": 3206,
+          "w": 1920,
+          "h": 24
+        },
+        {
+          "x": 2720,
+          "y": 2740,
+          "w": 24,
+          "h": 190
+        },
+        {
+          "x": 2720,
+          "y": 3150,
+          "w": 24,
+          "h": 270
+        },
+        {
+          "x": 2720,
+          "y": 2740,
+          "w": 790,
+          "h": 24
+        },
+        {
+          "x": 3730,
+          "y": 2740,
+          "w": 500,
+          "h": 24
+        },
+        {
+          "x": 2720,
+          "y": 3396,
+          "w": 1510,
+          "h": 24
+        },
+        {
+          "x": 1310,
+          "y": 626,
+          "w": 140,
+          "h": 24
+        },
+        {
+          "x": 1310,
+          "y": 850,
+          "w": 140,
+          "h": 24
+        },
+        {
+          "x": 3090,
+          "y": 626,
+          "w": 140,
+          "h": 24
+        },
+        {
+          "x": 3090,
+          "y": 850,
+          "w": 140,
+          "h": 24
+        },
+        {
+          "x": 1926,
+          "y": 1580,
+          "w": 24,
+          "h": 260
+        },
+        {
+          "x": 2190,
+          "y": 1580,
+          "w": 24,
+          "h": 260
+        },
+        {
+          "x": 3526,
+          "y": 1540,
+          "w": 24,
+          "h": 220
+        },
+        {
+          "x": 3750,
+          "y": 1540,
+          "w": 24,
+          "h": 220
+        },
+        {
+          "x": 2550,
+          "y": 2026,
+          "w": 260,
+          "h": 24
+        },
+        {
+          "x": 2550,
+          "y": 2270,
+          "w": 260,
+          "h": 24
+        },
+        {
+          "x": 3486,
+          "y": 2520,
+          "w": 24,
+          "h": 220
+        },
+        {
+          "x": 3730,
+          "y": 2520,
+          "w": 24,
+          "h": 220
+        },
+        {
+          "x": 2550,
+          "y": 2906,
+          "w": 170,
+          "h": 24
+        },
+        {
+          "x": 2550,
+          "y": 3150,
+          "w": 170,
+          "h": 24
+        },
+        {
+          "x": 3254,
+          "y": 650,
+          "w": 256,
+          "h": 24
+        },
+        {
+          "x": 3680,
+          "y": 650,
+          "w": 576,
+          "h": 24
+        },
+        {
+          "x": 3670,
+          "y": 244,
+          "w": 24,
+          "h": 156
+        },
+        {
+          "x": 3670,
+          "y": 530,
+          "w": 24,
+          "h": 120
+        },
+        {
+          "x": 3254,
+          "y": 1100,
+          "w": 256,
+          "h": 24
+        },
+        {
+          "x": 3680,
+          "y": 1100,
+          "w": 340,
+          "h": 24
+        },
+        {
+          "x": 4190,
+          "y": 1100,
+          "w": 66,
+          "h": 24
+        },
+        {
+          "x": 3860,
+          "y": 1124,
+          "w": 24,
+          "h": 126
+        },
+        {
+          "x": 3860,
+          "y": 1410,
+          "w": 24,
+          "h": 106
+        },
+        {
+          "x": 750,
+          "y": 1864,
+          "w": 24,
+          "h": 486
+        },
+        {
+          "x": 750,
+          "y": 2570,
+          "w": 24,
+          "h": 240
+        },
+        {
+          "x": 750,
+          "y": 3030,
+          "w": 24,
+          "h": 176
+        },
+        {
+          "x": 1600,
+          "y": 1864,
+          "w": 24,
+          "h": 486
+        },
+        {
+          "x": 1600,
+          "y": 2570,
+          "w": 24,
+          "h": 240
+        },
+        {
+          "x": 1600,
+          "y": 3030,
+          "w": 24,
+          "h": 176
+        },
+        {
+          "x": 1020,
+          "y": 2350,
+          "w": 730,
+          "h": 24
+        },
+        {
+          "x": 1970,
+          "y": 2350,
+          "w": 556,
+          "h": 24
+        },
+        {
+          "x": 264,
+          "y": 2810,
+          "w": 156,
+          "h": 24
+        },
+        {
+          "x": 640,
+          "y": 2810,
+          "w": 670,
+          "h": 24
+        },
+        {
+          "x": 1510,
+          "y": 2810,
+          "w": 680,
+          "h": 24
+        },
+        {
+          "x": 2390,
+          "y": 2810,
+          "w": 136,
+          "h": 24
+        },
+        {
+          "x": 470,
+          "y": 800,
+          "w": 24,
+          "h": 230,
+          "architecture": true
+        },
+        {
+          "x": 666,
+          "y": 800,
+          "w": 24,
+          "h": 56,
+          "architecture": true
+        },
+        {
+          "x": 666,
+          "y": 990,
+          "w": 24,
+          "h": 40,
+          "architecture": true
+        },
+        {
+          "x": 470,
+          "y": 800,
+          "w": 220,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 470,
+          "y": 1006,
+          "w": 40,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 650,
+          "y": 1006,
+          "w": 40,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 1474,
+          "y": 528,
+          "w": 346,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 1980,
+          "y": 528,
+          "w": 200,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 2340,
+          "y": 528,
+          "w": 200,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 2700,
+          "y": 528,
+          "w": 366,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 1474,
+          "y": 1250,
+          "w": 346,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 1980,
+          "y": 1250,
+          "w": 200,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 2340,
+          "y": 1250,
+          "w": 200,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 2700,
+          "y": 1250,
+          "w": 366,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 3460,
+          "y": 674,
+          "w": 24,
+          "h": 110,
+          "architecture": true
+        },
+        {
+          "x": 3460,
+          "y": 944,
+          "w": 24,
+          "h": 156,
+          "architecture": true
+        },
+        {
+          "x": 3820,
+          "y": 674,
+          "w": 24,
+          "h": 110,
+          "architecture": true
+        },
+        {
+          "x": 3820,
+          "y": 944,
+          "w": 24,
+          "h": 156,
+          "architecture": true
+        },
+        {
+          "x": 3280,
+          "y": 1784,
+          "w": 24,
+          "h": 190,
+          "architecture": true
+        },
+        {
+          "x": 3676,
+          "y": 1784,
+          "w": 24,
+          "h": 190,
+          "architecture": true
+        },
+        {
+          "x": 3280,
+          "y": 1784,
+          "w": 240,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 3676,
+          "y": 1784,
+          "w": 24,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 3280,
+          "y": 1950,
+          "w": 120,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 3620,
+          "y": 1950,
+          "w": 80,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 264,
+          "y": 2350,
+          "w": 180,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 594,
+          "y": 2350,
+          "w": 206,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 264,
+          "y": 2200,
+          "w": 180,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 594,
+          "y": 2200,
+          "w": 156,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 774,
+          "y": 2200,
+          "w": 300,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 1224,
+          "y": 2200,
+          "w": 180,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 1564,
+          "y": 2200,
+          "w": 36,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 1624,
+          "y": 2200,
+          "w": 300,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 2084,
+          "y": 2200,
+          "w": 200,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 2444,
+          "y": 2200,
+          "w": 82,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 2940,
+          "y": 2940,
+          "w": 24,
+          "h": 55,
+          "architecture": true
+        },
+        {
+          "x": 2940,
+          "y": 3165,
+          "w": 24,
+          "h": 27,
+          "architecture": true
+        },
+        {
+          "x": 3296,
+          "y": 2940,
+          "w": 24,
+          "h": 55,
+          "architecture": true
+        },
+        {
+          "x": 3296,
+          "y": 3165,
+          "w": 24,
+          "h": 27,
+          "architecture": true
+        },
+        {
+          "x": 2940,
+          "y": 2940,
+          "w": 380,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 2940,
+          "y": 3168,
+          "w": 380,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 4206,
+          "y": 2740,
+          "w": 24,
+          "h": 260,
+          "coastWall": true
+        },
+        {
+          "x": 4206,
+          "y": 3160,
+          "w": 24,
+          "h": 80,
+          "coastWall": true
+        },
+        {
+          "x": 4206,
+          "y": 3380,
+          "w": 24,
+          "h": 40,
+          "coastWall": true
+        },
+        {
+          "x": 1960,
+          "y": 1290,
+          "w": 24,
+          "h": 100,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 1960,
+          "y": 1510,
+          "w": 24,
+          "h": 46,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2440,
+          "y": 1274,
+          "w": 24,
+          "h": 100,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2440,
+          "y": 1504,
+          "w": 24,
+          "h": 52,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 3920,
+          "y": 244,
+          "w": 24,
+          "h": 176,
+          "architecture": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3920,
+          "y": 580,
+          "w": 24,
+          "h": 70,
+          "architecture": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3520,
+          "y": 1124,
+          "w": 24,
+          "h": 136,
+          "architecture": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3520,
+          "y": 1420,
+          "w": 24,
+          "h": 96,
+          "architecture": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3884,
+          "y": 1310,
+          "w": 116,
+          "h": 24,
+          "architecture": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 4160,
+          "y": 1310,
+          "w": 96,
+          "h": 24,
+          "architecture": true,
+          "officeReconstruction": true
+        }
+      ],
+      "furn": [
+        {
+          "x": 3070,
+          "y": 2010,
+          "w": 280,
+          "h": 180,
+          "look": "generator",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 3690,
+          "y": 2010,
+          "w": 280,
+          "h": 180,
+          "look": "generator",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 2890,
+          "y": 1860,
+          "w": 64,
+          "h": 220,
+          "look": "shelf",
+          "type": "shelf",
+          "solid": true
+        },
+        {
+          "x": 4070,
+          "y": 1860,
+          "w": 64,
+          "h": 220,
+          "look": "shelf",
+          "type": "shelf",
+          "solid": true
+        },
+        {
+          "x": 3370,
+          "y": 1810,
+          "w": 150,
+          "h": 80,
+          "look": "desk",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 3190,
+          "y": 2370,
+          "w": 200,
+          "h": 58,
+          "look": "rack",
+          "type": "shelf",
+          "solid": true
+        },
+        {
+          "x": 350,
+          "y": 1980,
+          "w": 180,
+          "h": 110,
+          "look": "generator",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 950,
+          "y": 1980,
+          "w": 180,
+          "h": 110,
+          "look": "generator",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 1850,
+          "y": 1990,
+          "w": 180,
+          "h": 110,
+          "look": "generator",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 400,
+          "y": 2600,
+          "w": 180,
+          "h": 110,
+          "look": "generator",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 1100,
+          "y": 2600,
+          "w": 180,
+          "h": 110,
+          "look": "generator",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 1960,
+          "y": 2600,
+          "w": 180,
+          "h": 110,
+          "look": "generator",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 500,
+          "y": 3000,
+          "w": 180,
+          "h": 110,
+          "look": "generator",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 1300,
+          "y": 3000,
+          "w": 180,
+          "h": 110,
+          "look": "generator",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 2150,
+          "y": 3000,
+          "w": 180,
+          "h": 110,
+          "look": "generator",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 580,
+          "y": 2110,
+          "w": 80,
+          "h": 56,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 1380,
+          "y": 2140,
+          "w": 80,
+          "h": 56,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 2290,
+          "y": 2110,
+          "w": 80,
+          "h": 56,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 330,
+          "y": 2670,
+          "w": 80,
+          "h": 56,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 1750,
+          "y": 2670,
+          "w": 80,
+          "h": 56,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 2320,
+          "y": 3010,
+          "w": 80,
+          "h": 56,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 1990,
+          "y": 1900,
+          "w": 95,
+          "h": 130,
+          "look": "forklift",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 340,
+          "y": 1910,
+          "w": 140,
+          "h": 60,
+          "look": "workbench",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 2850,
+          "y": 2810,
+          "w": 160,
+          "h": 84,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 3120,
+          "y": 2810,
+          "w": 160,
+          "h": 84,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 2930,
+          "y": 3250,
+          "w": 160,
+          "h": 84,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 3310,
+          "y": 3250,
+          "w": 160,
+          "h": 84,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 4070,
+          "y": 2860,
+          "w": 160,
+          "h": 84,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 3890,
+          "y": 3180,
+          "w": 210,
+          "h": 94,
+          "look": "van",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 2800,
+          "y": 3170,
+          "w": 90,
+          "h": 126,
+          "look": "forklift",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 2860,
+          "y": 2220,
+          "w": 150,
+          "h": 90,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true,
+          "architecture": true
+        },
+        {
+          "x": 2860,
+          "y": 2370,
+          "w": 72,
+          "h": 48,
+          "look": "drums",
+          "type": "crate",
+          "solid": true,
+          "architecture": true
+        },
+        {
+          "x": 2970,
+          "y": 2370,
+          "w": 72,
+          "h": 48,
+          "look": "drums",
+          "type": "crate",
+          "solid": true,
+          "architecture": true
+        },
+        {
+          "x": 800,
+          "y": 3120,
+          "w": 200,
+          "h": 58,
+          "look": "rack",
+          "type": "shelf",
+          "solid": true,
+          "architecture": true
+        },
+        {
+          "x": 1720,
+          "y": 3120,
+          "w": 200,
+          "h": 58,
+          "look": "rack",
+          "type": "shelf",
+          "solid": true,
+          "architecture": true
+        },
+        {
+          "x": 2220,
+          "y": 2850,
+          "w": 150,
+          "h": 90,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true,
+          "architecture": true
+        },
+        {
+          "x": 3070,
+          "y": 2965,
+          "w": 180,
+          "h": 106,
+          "look": "desk",
+          "type": "crate",
+          "solid": true,
+          "architecture": true
+        },
+        {
+          "x": 3500,
+          "y": 3212,
+          "w": 280,
+          "h": 108,
+          "look": "van",
+          "type": "crate",
+          "solid": true,
+          "extractionArt": "support"
+        },
+        {
+          "x": 3840,
+          "y": 2770,
+          "w": 200,
+          "h": 160,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true,
+          "extractionArt": "tent"
+        },
+        {
+          "x": 4342,
+          "y": 2728,
+          "w": 98,
+          "h": 12,
+          "type": "crate",
+          "look": "coastal",
+          "solid": true,
+          "coastalRole": "cap"
+        },
+        {
+          "x": 4342,
+          "y": 3420,
+          "w": 98,
+          "h": 12,
+          "type": "crate",
+          "look": "coastal",
+          "solid": true,
+          "coastalRole": "cap"
+        },
+        {
+          "x": 4342,
+          "y": 2740,
+          "w": 10,
+          "h": 680,
+          "type": "crate",
+          "look": "coastal",
+          "solid": true,
+          "coastalRole": "rail"
+        },
+        {
+          "x": 4352,
+          "y": 2740,
+          "w": 88,
+          "h": 680,
+          "type": "crate",
+          "look": "coastal",
+          "solid": true,
+          "coastalRole": "water"
+        },
+        {
+          "x": 500,
+          "y": 840,
+          "w": 150,
+          "h": 80,
+          "look": "desk",
+          "type": "crate",
+          "solid": true,
+          "architecture": true
+        },
+        {
+          "x": 530,
+          "y": 182,
+          "w": 96,
+          "h": 140,
+          "look": "watchtower",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 170,
+          "y": 184,
+          "w": 148,
+          "h": 144,
+          "look": "guardhouse",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 730,
+          "y": 182,
+          "w": 440,
+          "h": 152,
+          "look": "loadingDock",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 340,
+          "y": 210,
+          "w": 100,
+          "h": 340,
+          "look": "containerBlueV",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 480,
+          "y": 380,
+          "w": 100,
+          "h": 340,
+          "look": "containerRedV",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 190,
+          "y": 600,
+          "w": 100,
+          "h": 340,
+          "look": "containerBlueV",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 900,
+          "y": 890,
+          "w": 100,
+          "h": 340,
+          "look": "containerBlueV",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 1040,
+          "y": 970,
+          "w": 100,
+          "h": 340,
+          "look": "containerRedV",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 770,
+          "y": 1350,
+          "w": 340,
+          "h": 100,
+          "look": "containerBlue",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 180,
+          "y": 1380,
+          "w": 340,
+          "h": 100,
+          "look": "containerRed",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 650,
+          "y": 460,
+          "w": 100,
+          "h": 254,
+          "look": "freightTruck",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 1100,
+          "y": 385,
+          "w": 100,
+          "h": 254,
+          "look": "freightTruck",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 840,
+          "y": 440,
+          "w": 90,
+          "h": 126,
+          "look": "forklift",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 740,
+          "y": 1180,
+          "w": 150,
+          "h": 90,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 720,
+          "y": 780,
+          "w": 150,
+          "h": 90,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 1090,
+          "y": 750,
+          "w": 150,
+          "h": 90,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 360,
+          "y": 920,
+          "w": 72,
+          "h": 48,
+          "look": "drums",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 1130,
+          "y": 1380,
+          "w": 72,
+          "h": 48,
+          "look": "drums",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 175,
+          "y": 380,
+          "w": 104,
+          "h": 80,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 1530,
+          "y": 280,
+          "w": 250,
+          "h": 76,
+          "look": "rack",
+          "type": "shelf",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 1880,
+          "y": 270,
+          "w": 250,
+          "h": 76,
+          "look": "rack",
+          "type": "shelf",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2180,
+          "y": 240,
+          "w": 76,
+          "h": 250,
+          "look": "loadedRackV",
+          "type": "shelf",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2360,
+          "y": 285,
+          "w": 250,
+          "h": 76,
+          "look": "rack",
+          "type": "shelf",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2720,
+          "y": 310,
+          "w": 250,
+          "h": 76,
+          "look": "rack",
+          "type": "shelf",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 1510,
+          "y": 420,
+          "w": 104,
+          "h": 80,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 1550,
+          "y": 600,
+          "w": 76,
+          "h": 250,
+          "look": "rackV",
+          "type": "shelf",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 1730,
+          "y": 600,
+          "w": 76,
+          "h": 250,
+          "look": "loadedRackV",
+          "type": "shelf",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 1550,
+          "y": 970,
+          "w": 76,
+          "h": 250,
+          "look": "loadedRackV",
+          "type": "shelf",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 1720,
+          "y": 1080,
+          "w": 250,
+          "h": 76,
+          "look": "rack",
+          "type": "shelf",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 1900,
+          "y": 620,
+          "w": 104,
+          "h": 80,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 1630,
+          "y": 1160,
+          "w": 72,
+          "h": 48,
+          "look": "drums",
+          "type": "crate",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2110,
+          "y": 760,
+          "w": 96,
+          "h": 350,
+          "look": "sortingConveyor",
+          "type": "crate",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2310,
+          "y": 610,
+          "w": 250,
+          "h": 76,
+          "look": "rack",
+          "type": "shelf",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2310,
+          "y": 1135,
+          "w": 104,
+          "h": 80,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2510,
+          "y": 1000,
+          "w": 76,
+          "h": 250,
+          "look": "rackV",
+          "type": "shelf",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2720,
+          "y": 620,
+          "w": 90,
+          "h": 126,
+          "look": "forklift",
+          "type": "crate",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2910,
+          "y": 860,
+          "w": 90,
+          "h": 126,
+          "look": "forklift",
+          "type": "crate",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2690,
+          "y": 1080,
+          "w": 200,
+          "h": 58,
+          "look": "rack",
+          "type": "shelf",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2960,
+          "y": 1060,
+          "w": 76,
+          "h": 170,
+          "look": "serviceCabinet",
+          "type": "crate",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2980,
+          "y": 430,
+          "w": 72,
+          "h": 48,
+          "look": "drums",
+          "type": "crate",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2610,
+          "y": 440,
+          "w": 104,
+          "h": 80,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 1510,
+          "y": 1400,
+          "w": 340,
+          "h": 100,
+          "look": "containerBlue",
+          "type": "crate",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 1510,
+          "y": 1300,
+          "w": 104,
+          "h": 80,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2030,
+          "y": 1330,
+          "w": 150,
+          "h": 60,
+          "look": "workbench",
+          "type": "crate",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2310,
+          "y": 1450,
+          "w": 104,
+          "h": 80,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2580,
+          "y": 1340,
+          "w": 250,
+          "h": 76,
+          "look": "rack",
+          "type": "shelf",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2920,
+          "y": 1340,
+          "w": 72,
+          "h": 48,
+          "look": "drums",
+          "type": "crate",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 3380,
+          "y": 310,
+          "w": 170,
+          "h": 240,
+          "look": "conferenceTable",
+          "type": "crate",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3280,
+          "y": 280,
+          "w": 52,
+          "h": 160,
+          "look": "shelf",
+          "type": "shelf",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3710,
+          "y": 275,
+          "w": 180,
+          "h": 106,
+          "look": "desk",
+          "type": "crate",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3715,
+          "y": 395,
+          "w": 150,
+          "h": 60,
+          "look": "workbench",
+          "type": "crate",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3990,
+          "y": 300,
+          "w": 180,
+          "h": 106,
+          "look": "desk",
+          "type": "crate",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 4180,
+          "y": 260,
+          "w": 52,
+          "h": 160,
+          "look": "shelf",
+          "type": "shelf",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3280,
+          "y": 700,
+          "w": 52,
+          "h": 160,
+          "look": "shelf",
+          "type": "shelf",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3280,
+          "y": 920,
+          "w": 52,
+          "h": 160,
+          "look": "shelf",
+          "type": "shelf",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3380,
+          "y": 920,
+          "w": 52,
+          "h": 160,
+          "look": "shelf",
+          "type": "shelf",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3610,
+          "y": 970,
+          "w": 180,
+          "h": 106,
+          "look": "receptionDesk",
+          "type": "crate",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3690,
+          "y": 700,
+          "w": 104,
+          "h": 60,
+          "look": "waitingBench",
+          "type": "crate",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3970,
+          "y": 710,
+          "w": 180,
+          "h": 106,
+          "look": "desk",
+          "type": "crate",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3960,
+          "y": 980,
+          "w": 150,
+          "h": 60,
+          "look": "workbench",
+          "type": "crate",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 4180,
+          "y": 900,
+          "w": 52,
+          "h": 160,
+          "look": "serverCabinet",
+          "type": "shelf",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3290,
+          "y": 1180,
+          "w": 150,
+          "h": 220,
+          "look": "interviewTable",
+          "type": "crate",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3780,
+          "y": 1160,
+          "w": 52,
+          "h": 160,
+          "look": "shelf",
+          "type": "shelf",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3780,
+          "y": 1340,
+          "w": 52,
+          "h": 160,
+          "look": "shelf",
+          "type": "shelf",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3570,
+          "y": 1380,
+          "w": 104,
+          "h": 80,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3900,
+          "y": 1150,
+          "w": 180,
+          "h": 106,
+          "look": "breakTable",
+          "type": "crate",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 4180,
+          "y": 1340,
+          "w": 52,
+          "h": 160,
+          "look": "supplyCabinet",
+          "type": "shelf",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3900,
+          "y": 1410,
+          "w": 150,
+          "h": 60,
+          "look": "workbench",
+          "type": "crate",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3265,
+          "y": 600,
+          "w": 28,
+          "h": 28,
+          "look": "planter",
+          "type": "crate",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3630,
+          "y": 590,
+          "w": 28,
+          "h": 28,
+          "look": "planter",
+          "type": "crate",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3950,
+          "y": 600,
+          "w": 28,
+          "h": 28,
+          "look": "planter",
+          "type": "crate",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 4200,
+          "y": 1065,
+          "w": 28,
+          "h": 28,
+          "look": "planter",
+          "type": "crate",
+          "solid": true,
+          "officeReconstruction": true
+        }
+      ],
+      "gates": [
+        {
+          "id": "security",
+          "x": 3170,
+          "y": 650,
+          "w": 24,
+          "h": 200,
+          "label": "OPEN SECURITY"
+        },
+        {
+          "id": "shortcut",
+          "x": 2630,
+          "y": 2930,
+          "w": 24,
+          "h": 220,
+          "label": "OPEN SHORTCUT"
+        }
+      ],
+      "packs": [
+        [
+          "ammo",
+          520,
+          1225
+        ],
+        [
+          "health",
+          1180,
+          1325
+        ],
+        [
+          "armor",
+          150,
+          1190
+        ],
+        [
+          "ammo",
+          1200,
+          900
+        ],
+        [
+          "ammo",
+          1870,
+          850
+        ],
+        [
+          "ammo",
+          2520,
+          850
+        ],
+        [
+          "health",
+          2850,
+          1480
+        ],
+        [
+          "armor",
+          2180,
+          1470
+        ],
+        [
+          "ammo",
+          3030,
+          940
+        ],
+        [
+          "ammo",
+          3500,
+          850
+        ],
+        [
+          "health",
+          3750,
+          950
+        ],
+        [
+          "armor",
+          4080,
+          1420
+        ],
+        [
+          "ammo",
+          3780,
+          590
+        ],
+        [
+          "ammo",
+          3460,
+          2340
+        ],
+        [
+          "ammo",
+          4000,
+          2290
+        ],
+        [
+          "health",
+          2960,
+          2400
+        ],
+        [
+          "armor",
+          3600,
+          1920
+        ],
+        [
+          "health",
+          1200,
+          2500
+        ],
+        [
+          "ammo",
+          1020,
+          2910
+        ],
+        [
+          "ammo",
+          2310,
+          2460
+        ],
+        [
+          "health",
+          430,
+          3170
+        ],
+        [
+          "armor",
+          1680,
+          3100
+        ],
+        [
+          "ammo",
+          3030,
+          3090
+        ],
+        [
+          "health",
+          3630,
+          3190
+        ],
+        [
+          "ammo",
+          4110,
+          3050
+        ],
+        [
+          "ammo",
+          3480,
+          2870
+        ]
+      ],
+      "paths": [
+        {
+          "x": 1310,
+          "y": 650,
+          "w": 140,
+          "h": 200
+        },
+        {
+          "x": 3090,
+          "y": 650,
+          "w": 140,
+          "h": 200
+        },
+        {
+          "x": 1950,
+          "y": 1580,
+          "w": 240,
+          "h": 260
+        },
+        {
+          "x": 3550,
+          "y": 1540,
+          "w": 200,
+          "h": 220
+        },
+        {
+          "x": 2550,
+          "y": 2050,
+          "w": 260,
+          "h": 220
+        },
+        {
+          "x": 3510,
+          "y": 2520,
+          "w": 220,
+          "h": 220
+        },
+        {
+          "x": 2550,
+          "y": 2930,
+          "w": 170,
+          "h": 220
+        }
+      ],
+      "lights": [
+        {
+          "x": 180,
+          "y": 172,
+          "emergency": false
+        },
+        {
+          "x": 1230,
+          "y": 1528,
+          "emergency": true
+        },
+        {
+          "x": 1530,
+          "y": 212,
+          "emergency": false
+        },
+        {
+          "x": 3010,
+          "y": 1548,
+          "emergency": true
+        },
+        {
+          "x": 3370,
+          "y": 280,
+          "emergency": false
+        },
+        {
+          "x": 3740,
+          "y": 270,
+          "emergency": true
+        },
+        {
+          "x": 2890,
+          "y": 1792,
+          "emergency": false
+        },
+        {
+          "x": 4120,
+          "y": 2488,
+          "emergency": true
+        },
+        {
+          "x": 320,
+          "y": 1872,
+          "emergency": false
+        },
+        {
+          "x": 2470,
+          "y": 3198,
+          "emergency": true
+        },
+        {
+          "x": 2800,
+          "y": 2772,
+          "emergency": false
+        },
+        {
+          "x": 4150,
+          "y": 3388,
+          "emergency": true
+        },
+        {
+          "x": 1350,
+          "y": 650,
+          "emergency": false
+        },
+        {
+          "x": 3170,
+          "y": 650,
+          "emergency": false
+        },
+        {
+          "x": 2070,
+          "y": 1600,
+          "emergency": false
+        },
+        {
+          "x": 3650,
+          "y": 1560,
+          "emergency": false
+        },
+        {
+          "x": 2660,
+          "y": 2050,
+          "emergency": false
+        },
+        {
+          "x": 3620,
+          "y": 2540,
+          "emergency": false
+        },
+        {
+          "x": 2640,
+          "y": 2930,
+          "emergency": false
+        },
+        {
+          "x": 1780,
+          "y": 900,
+          "emergency": false
+        },
+        {
+          "x": 2500,
+          "y": 900,
+          "emergency": false
+        },
+        {
+          "x": 4200,
+          "y": 460,
+          "emergency": false
+        },
+        {
+          "x": 3500,
+          "y": 2240,
+          "emergency": false
+        },
+        {
+          "x": 1050,
+          "y": 2470,
+          "emergency": false
+        },
+        {
+          "x": 1950,
+          "y": 2470,
+          "emergency": false
+        },
+        {
+          "x": 3750,
+          "y": 3000,
+          "emergency": false
+        },
+        {
+          "x": 1640,
+          "y": 530,
+          "emergency": false
+        },
+        {
+          "x": 2190,
+          "y": 560,
+          "emergency": false
+        },
+        {
+          "x": 1780,
+          "y": 1490,
+          "emergency": false
+        },
+        {
+          "x": 2800,
+          "y": 560,
+          "emergency": true
+        },
+        {
+          "x": 2040,
+          "y": 720,
+          "emergency": false
+        },
+        {
+          "x": 2140,
+          "y": 1490,
+          "emergency": false
+        },
+        {
+          "x": 2245,
+          "y": 1110,
+          "emergency": false
+        },
+        {
+          "x": 1840,
+          "y": 1225,
+          "emergency": false
+        },
+        {
+          "x": 2500,
+          "y": 1490,
+          "emergency": false
+        },
+        {
+          "x": 2070,
+          "y": 1430,
+          "emergency": false
+        },
+        {
+          "x": 2800,
+          "y": 1440,
+          "emergency": false
+        },
+        {
+          "x": 2860,
+          "y": 1490,
+          "emergency": false
+        },
+        {
+          "x": 480,
+          "y": 1020,
+          "emergency": false
+        },
+        {
+          "x": 1030,
+          "y": 1040,
+          "emergency": false
+        },
+        {
+          "x": 600,
+          "y": 340,
+          "emergency": false
+        },
+        {
+          "x": 1100,
+          "y": 690,
+          "emergency": false
+        },
+        {
+          "x": 3400,
+          "y": 900,
+          "emergency": false
+        },
+        {
+          "x": 3510,
+          "y": 780,
+          "emergency": false
+        },
+        {
+          "x": 3910,
+          "y": 850,
+          "emergency": false
+        },
+        {
+          "x": 3350,
+          "y": 1440,
+          "emergency": false
+        },
+        {
+          "x": 3100,
+          "y": 2280,
+          "emergency": false
+        },
+        {
+          "x": 3910,
+          "y": 2280,
+          "emergency": false
+        },
+        {
+          "x": 550,
+          "y": 2440,
+          "emergency": false
+        },
+        {
+          "x": 1200,
+          "y": 2480,
+          "emergency": false
+        },
+        {
+          "x": 1920,
+          "y": 2480,
+          "emergency": false
+        },
+        {
+          "x": 1200,
+          "y": 3090,
+          "emergency": false
+        },
+        {
+          "x": 2200,
+          "y": 3120,
+          "emergency": false
+        },
+        {
+          "x": 3020,
+          "y": 2990,
+          "emergency": false
+        },
+        {
+          "x": 4020,
+          "y": 3040,
+          "emergency": false
+        },
+        {
+          "x": 580,
+          "y": 990,
+          "emergency": false
+        },
+        {
+          "x": 3660,
+          "y": 1470,
+          "emergency": false
+        },
+        {
+          "x": 4110,
+          "y": 1280,
+          "emergency": false
+        },
+        {
+          "x": 3620,
+          "y": 1920,
+          "emergency": false
+        },
+        {
+          "x": 1140,
+          "y": 2240,
+          "emergency": false
+        },
+        {
+          "x": 3020,
+          "y": 3100,
+          "emergency": false
+        },
+        {
+          "x": 3435,
+          "y": 2778,
+          "emergency": false
+        },
+        {
+          "x": 3705,
+          "y": 2778,
+          "emergency": false
+        },
+        {
+          "x": 3435,
+          "y": 3012,
+          "emergency": true
+        },
+        {
+          "x": 3705,
+          "y": 3012,
+          "emergency": true
+        },
+        {
+          "x": 4280,
+          "y": 2820,
+          "emergency": false
+        },
+        {
+          "x": 4280,
+          "y": 3080,
+          "emergency": false
+        },
+        {
+          "x": 4280,
+          "y": 3340,
+          "emergency": false
+        },
+        {
+          "x": 310,
+          "y": 330,
+          "emergency": false
+        },
+        {
+          "x": 660,
+          "y": 380,
+          "emergency": false
+        },
+        {
+          "x": 790,
+          "y": 350,
+          "emergency": false
+        },
+        {
+          "x": 1090,
+          "y": 350,
+          "emergency": false
+        },
+        {
+          "x": 1190,
+          "y": 680,
+          "emergency": true
+        },
+        {
+          "x": 690,
+          "y": 1015,
+          "emergency": false
+        },
+        {
+          "x": 870,
+          "y": 1280,
+          "emergency": false
+        },
+        {
+          "x": 480,
+          "y": 1490,
+          "emergency": true
+        },
+        {
+          "x": 235,
+          "y": 1028,
+          "emergency": false
+        },
+        {
+          "x": 555,
+          "y": 1285,
+          "emergency": false
+        }
+      ],
+      "entry": {
+        "x": 340,
+        "y": 1130
+      },
+      "points": {
+        "warehouse": {
+          "x": 1660,
+          "y": 850
+        },
+        "card": {
+          "x": 4040,
+          "y": 520
+        },
+        "generator": {
+          "x": 3460,
+          "y": 2220
+        },
+        "exit": {
+          "x": 3800,
+          "y": 3030
+        }
+      },
+      "portals": [
+        [
+          220,
+          200
+        ],
+        [
+          1190,
+          200
+        ],
+        [
+          1180,
+          1430
+        ],
+        [
+          1550,
+          230
+        ],
+        [
+          2980,
+          230
+        ],
+        [
+          2970,
+          1480
+        ],
+        [
+          3350,
+          300
+        ],
+        [
+          4170,
+          1400
+        ],
+        [
+          2890,
+          1820
+        ],
+        [
+          4120,
+          1820
+        ],
+        [
+          4100,
+          2450
+        ],
+        [
+          2920,
+          2440
+        ],
+        [
+          340,
+          1910
+        ],
+        [
+          2420,
+          3150
+        ],
+        [
+          2800,
+          2810
+        ],
+        [
+          4140,
+          2810
+        ],
+        [
+          4150,
+          3340
+        ],
+        [
+          2800,
+          3340
+        ]
+      ]
+    },
+    "armory": {
+      "armory": {
+        "selected": "rifle",
+        "released": false,
+        "panel": null,
+        "bounds": {
+          "x": 128,
+          "y": 1040,
+          "w": 496,
+          "h": 280
+        },
+        "displays": [
+          {
+            "id": "pistol",
+            "x": 202,
+            "y": 1170,
+            "label": "INSPECT WEAPON"
+          },
+          {
+            "id": "shotgun",
+            "x": 310,
+            "y": 1170,
+            "label": "INSPECT WEAPON"
+          },
+          {
+            "id": "rifle",
+            "x": 418,
+            "y": 1170,
+            "label": "INSPECT WEAPON"
+          },
+          {
+            "id": "smg",
+            "x": 526,
+            "y": 1170,
+            "label": "INSPECT WEAPON"
+          }
+        ],
+        "exit": {
+          "id": "armory-exit",
+          "x": 572,
+          "y": 1210,
+          "label": "BEGIN MISSION"
+        },
+        "plateBytes": 555520
+      },
+      "weapon": "rifle"
+    },
+    "fullObjectiveRun": false
+  },
+  {
+    "variant": "after",
+    "started": true,
+    "refused": true,
+    "communityAtlasLoaded": false,
+    "status": {
+      "seed": 9012026,
+      "map": {
+        "w": 4480,
+        "h": 3600
+      },
+      "stage": 0,
+      "cap": 22
+    },
+    "map": {
+      "w": 4480,
+      "h": 3600,
+      "zones": [
+        {
+          "x": 100,
+          "y": 140,
+          "w": 1210,
+          "h": 1420,
+          "zone": 0,
+          "label": "A · LOADING YARD"
+        },
+        {
+          "x": 1450,
+          "y": 180,
+          "w": 1640,
+          "h": 1400,
+          "zone": 1,
+          "label": "B · MAIN WAREHOUSE"
+        },
+        {
+          "x": 3230,
+          "y": 220,
+          "w": 1050,
+          "h": 1320,
+          "zone": 2,
+          "label": "C · ADMINISTRATION"
+        },
+        {
+          "x": 2810,
+          "y": 1760,
+          "w": 1390,
+          "h": 760,
+          "zone": 3,
+          "label": "D · POWER & GENERATORS"
+        },
+        {
+          "x": 240,
+          "y": 1840,
+          "w": 2310,
+          "h": 1390,
+          "zone": 4,
+          "label": "E · MAINTENANCE TUNNELS"
+        },
+        {
+          "x": 2720,
+          "y": 2740,
+          "w": 1510,
+          "h": 680,
+          "zone": 5,
+          "label": "F · EXTRACTION YARD"
+        }
+      ],
+      "rooms": [
+        {
+          "x": 40,
+          "y": 40,
+          "w": 4400,
+          "h": 3520,
+          "zone": 6,
+          "label": "HARBOR INDUSTRIAL COMPLEX"
+        },
+        {
+          "x": 100,
+          "y": 140,
+          "w": 1210,
+          "h": 1420,
+          "zone": 0,
+          "label": "A · LOADING YARD"
+        },
+        {
+          "x": 1450,
+          "y": 180,
+          "w": 1640,
+          "h": 1400,
+          "zone": 1,
+          "label": "B · MAIN WAREHOUSE"
+        },
+        {
+          "x": 3230,
+          "y": 220,
+          "w": 1050,
+          "h": 1320,
+          "zone": 2,
+          "label": "C · ADMINISTRATION"
+        },
+        {
+          "x": 2810,
+          "y": 1760,
+          "w": 1390,
+          "h": 760,
+          "zone": 3,
+          "label": "D · POWER & GENERATORS"
+        },
+        {
+          "x": 240,
+          "y": 1840,
+          "w": 2310,
+          "h": 1390,
+          "zone": 4,
+          "label": "E · MAINTENANCE TUNNELS"
+        },
+        {
+          "x": 2720,
+          "y": 2740,
+          "w": 1510,
+          "h": 680,
+          "zone": 5,
+          "label": "F · EXTRACTION YARD"
+        }
+      ],
+      "walls": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 4480,
+          "h": 40
+        },
+        {
+          "x": 0,
+          "y": 3560,
+          "w": 4480,
+          "h": 40
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "w": 40,
+          "h": 3600
+        },
+        {
+          "x": 4440,
+          "y": 0,
+          "w": 40,
+          "h": 3600
+        },
+        {
+          "x": 100,
+          "y": 140,
+          "w": 24,
+          "h": 850
+        },
+        {
+          "x": 100,
+          "y": 1250,
+          "w": 24,
+          "h": 310
+        },
+        {
+          "x": 1286,
+          "y": 140,
+          "w": 24,
+          "h": 510
+        },
+        {
+          "x": 1286,
+          "y": 850,
+          "w": 24,
+          "h": 710
+        },
+        {
+          "x": 100,
+          "y": 140,
+          "w": 1210,
+          "h": 24
+        },
+        {
+          "x": 100,
+          "y": 1536,
+          "w": 650,
+          "h": 24
+        },
+        {
+          "x": 970,
+          "y": 1536,
+          "w": 340,
+          "h": 24
+        },
+        {
+          "x": 1450,
+          "y": 180,
+          "w": 24,
+          "h": 470
+        },
+        {
+          "x": 1450,
+          "y": 850,
+          "w": 24,
+          "h": 730
+        },
+        {
+          "x": 3066,
+          "y": 180,
+          "w": 24,
+          "h": 470
+        },
+        {
+          "x": 3066,
+          "y": 850,
+          "w": 24,
+          "h": 450
+        },
+        {
+          "x": 3066,
+          "y": 1460,
+          "w": 24,
+          "h": 120
+        },
+        {
+          "x": 1450,
+          "y": 180,
+          "w": 1640,
+          "h": 24
+        },
+        {
+          "x": 1450,
+          "y": 1556,
+          "w": 500,
+          "h": 24
+        },
+        {
+          "x": 2190,
+          "y": 1556,
+          "w": 900,
+          "h": 24
+        },
+        {
+          "x": 3230,
+          "y": 220,
+          "w": 24,
+          "h": 430
+        },
+        {
+          "x": 3230,
+          "y": 850,
+          "w": 24,
+          "h": 690
+        },
+        {
+          "x": 4256,
+          "y": 220,
+          "w": 24,
+          "h": 880
+        },
+        {
+          "x": 4256,
+          "y": 1260,
+          "w": 24,
+          "h": 280
+        },
+        {
+          "x": 3230,
+          "y": 220,
+          "w": 1050,
+          "h": 24
+        },
+        {
+          "x": 3230,
+          "y": 1516,
+          "w": 320,
+          "h": 24
+        },
+        {
+          "x": 3750,
+          "y": 1516,
+          "w": 530,
+          "h": 24
+        },
+        {
+          "x": 2810,
+          "y": 1760,
+          "w": 24,
+          "h": 290
+        },
+        {
+          "x": 2810,
+          "y": 2270,
+          "w": 24,
+          "h": 250
+        },
+        {
+          "x": 4176,
+          "y": 1760,
+          "w": 24,
+          "h": 760
+        },
+        {
+          "x": 2810,
+          "y": 1760,
+          "w": 640,
+          "h": 24
+        },
+        {
+          "x": 3670,
+          "y": 1760,
+          "w": 530,
+          "h": 24
+        },
+        {
+          "x": 2810,
+          "y": 2496,
+          "w": 700,
+          "h": 24
+        },
+        {
+          "x": 3730,
+          "y": 2496,
+          "w": 470,
+          "h": 24
+        },
+        {
+          "x": 240,
+          "y": 1840,
+          "w": 24,
+          "h": 1390
+        },
+        {
+          "x": 2526,
+          "y": 1840,
+          "w": 24,
+          "h": 210
+        },
+        {
+          "x": 2526,
+          "y": 2270,
+          "w": 24,
+          "h": 660
+        },
+        {
+          "x": 2526,
+          "y": 3150,
+          "w": 24,
+          "h": 80
+        },
+        {
+          "x": 240,
+          "y": 1840,
+          "w": 1710,
+          "h": 24
+        },
+        {
+          "x": 2190,
+          "y": 1840,
+          "w": 360,
+          "h": 24
+        },
+        {
+          "x": 240,
+          "y": 3206,
+          "w": 170,
+          "h": 24
+        },
+        {
+          "x": 630,
+          "y": 3206,
+          "w": 1920,
+          "h": 24
+        },
+        {
+          "x": 2720,
+          "y": 2740,
+          "w": 24,
+          "h": 190
+        },
+        {
+          "x": 2720,
+          "y": 3150,
+          "w": 24,
+          "h": 270
+        },
+        {
+          "x": 2720,
+          "y": 2740,
+          "w": 790,
+          "h": 24
+        },
+        {
+          "x": 3730,
+          "y": 2740,
+          "w": 500,
+          "h": 24
+        },
+        {
+          "x": 2720,
+          "y": 3396,
+          "w": 1510,
+          "h": 24
+        },
+        {
+          "x": 1310,
+          "y": 626,
+          "w": 140,
+          "h": 24
+        },
+        {
+          "x": 1310,
+          "y": 850,
+          "w": 140,
+          "h": 24
+        },
+        {
+          "x": 3090,
+          "y": 626,
+          "w": 140,
+          "h": 24
+        },
+        {
+          "x": 3090,
+          "y": 850,
+          "w": 140,
+          "h": 24
+        },
+        {
+          "x": 1926,
+          "y": 1580,
+          "w": 24,
+          "h": 260
+        },
+        {
+          "x": 2190,
+          "y": 1580,
+          "w": 24,
+          "h": 260
+        },
+        {
+          "x": 3526,
+          "y": 1540,
+          "w": 24,
+          "h": 220
+        },
+        {
+          "x": 3750,
+          "y": 1540,
+          "w": 24,
+          "h": 220
+        },
+        {
+          "x": 2550,
+          "y": 2026,
+          "w": 260,
+          "h": 24
+        },
+        {
+          "x": 2550,
+          "y": 2270,
+          "w": 260,
+          "h": 24
+        },
+        {
+          "x": 3486,
+          "y": 2520,
+          "w": 24,
+          "h": 220
+        },
+        {
+          "x": 3730,
+          "y": 2520,
+          "w": 24,
+          "h": 220
+        },
+        {
+          "x": 2550,
+          "y": 2906,
+          "w": 170,
+          "h": 24
+        },
+        {
+          "x": 2550,
+          "y": 3150,
+          "w": 170,
+          "h": 24
+        },
+        {
+          "x": 3254,
+          "y": 650,
+          "w": 256,
+          "h": 24
+        },
+        {
+          "x": 3680,
+          "y": 650,
+          "w": 576,
+          "h": 24
+        },
+        {
+          "x": 3670,
+          "y": 244,
+          "w": 24,
+          "h": 156
+        },
+        {
+          "x": 3670,
+          "y": 530,
+          "w": 24,
+          "h": 120
+        },
+        {
+          "x": 3254,
+          "y": 1100,
+          "w": 256,
+          "h": 24
+        },
+        {
+          "x": 3680,
+          "y": 1100,
+          "w": 340,
+          "h": 24
+        },
+        {
+          "x": 4190,
+          "y": 1100,
+          "w": 66,
+          "h": 24
+        },
+        {
+          "x": 3860,
+          "y": 1124,
+          "w": 24,
+          "h": 126
+        },
+        {
+          "x": 3860,
+          "y": 1410,
+          "w": 24,
+          "h": 106
+        },
+        {
+          "x": 750,
+          "y": 1864,
+          "w": 24,
+          "h": 486
+        },
+        {
+          "x": 750,
+          "y": 2570,
+          "w": 24,
+          "h": 240
+        },
+        {
+          "x": 750,
+          "y": 3030,
+          "w": 24,
+          "h": 176
+        },
+        {
+          "x": 1600,
+          "y": 1864,
+          "w": 24,
+          "h": 486
+        },
+        {
+          "x": 1600,
+          "y": 2570,
+          "w": 24,
+          "h": 240
+        },
+        {
+          "x": 1600,
+          "y": 3030,
+          "w": 24,
+          "h": 176
+        },
+        {
+          "x": 1020,
+          "y": 2350,
+          "w": 730,
+          "h": 24
+        },
+        {
+          "x": 1970,
+          "y": 2350,
+          "w": 556,
+          "h": 24
+        },
+        {
+          "x": 264,
+          "y": 2810,
+          "w": 156,
+          "h": 24
+        },
+        {
+          "x": 640,
+          "y": 2810,
+          "w": 670,
+          "h": 24
+        },
+        {
+          "x": 1510,
+          "y": 2810,
+          "w": 680,
+          "h": 24
+        },
+        {
+          "x": 2390,
+          "y": 2810,
+          "w": 136,
+          "h": 24
+        },
+        {
+          "x": 470,
+          "y": 800,
+          "w": 24,
+          "h": 230,
+          "architecture": true
+        },
+        {
+          "x": 666,
+          "y": 800,
+          "w": 24,
+          "h": 56,
+          "architecture": true
+        },
+        {
+          "x": 666,
+          "y": 990,
+          "w": 24,
+          "h": 40,
+          "architecture": true
+        },
+        {
+          "x": 470,
+          "y": 800,
+          "w": 220,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 470,
+          "y": 1006,
+          "w": 40,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 650,
+          "y": 1006,
+          "w": 40,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 1474,
+          "y": 528,
+          "w": 346,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 1980,
+          "y": 528,
+          "w": 200,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 2340,
+          "y": 528,
+          "w": 200,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 2700,
+          "y": 528,
+          "w": 366,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 1474,
+          "y": 1250,
+          "w": 346,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 1980,
+          "y": 1250,
+          "w": 200,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 2340,
+          "y": 1250,
+          "w": 200,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 2700,
+          "y": 1250,
+          "w": 366,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 3460,
+          "y": 674,
+          "w": 24,
+          "h": 110,
+          "architecture": true
+        },
+        {
+          "x": 3460,
+          "y": 944,
+          "w": 24,
+          "h": 156,
+          "architecture": true
+        },
+        {
+          "x": 3820,
+          "y": 674,
+          "w": 24,
+          "h": 110,
+          "architecture": true
+        },
+        {
+          "x": 3820,
+          "y": 944,
+          "w": 24,
+          "h": 156,
+          "architecture": true
+        },
+        {
+          "x": 3280,
+          "y": 1784,
+          "w": 24,
+          "h": 190,
+          "architecture": true
+        },
+        {
+          "x": 3676,
+          "y": 1784,
+          "w": 24,
+          "h": 190,
+          "architecture": true
+        },
+        {
+          "x": 3280,
+          "y": 1784,
+          "w": 240,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 3676,
+          "y": 1784,
+          "w": 24,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 3280,
+          "y": 1950,
+          "w": 120,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 3620,
+          "y": 1950,
+          "w": 80,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 264,
+          "y": 2350,
+          "w": 180,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 594,
+          "y": 2350,
+          "w": 206,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 264,
+          "y": 2200,
+          "w": 180,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 594,
+          "y": 2200,
+          "w": 156,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 774,
+          "y": 2200,
+          "w": 300,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 1224,
+          "y": 2200,
+          "w": 180,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 1564,
+          "y": 2200,
+          "w": 36,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 1624,
+          "y": 2200,
+          "w": 300,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 2084,
+          "y": 2200,
+          "w": 200,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 2444,
+          "y": 2200,
+          "w": 82,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 2940,
+          "y": 2940,
+          "w": 24,
+          "h": 55,
+          "architecture": true
+        },
+        {
+          "x": 2940,
+          "y": 3165,
+          "w": 24,
+          "h": 27,
+          "architecture": true
+        },
+        {
+          "x": 3296,
+          "y": 2940,
+          "w": 24,
+          "h": 55,
+          "architecture": true
+        },
+        {
+          "x": 3296,
+          "y": 3165,
+          "w": 24,
+          "h": 27,
+          "architecture": true
+        },
+        {
+          "x": 2940,
+          "y": 2940,
+          "w": 380,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 2940,
+          "y": 3168,
+          "w": 380,
+          "h": 24,
+          "architecture": true
+        },
+        {
+          "x": 4206,
+          "y": 2740,
+          "w": 24,
+          "h": 260,
+          "coastWall": true
+        },
+        {
+          "x": 4206,
+          "y": 3160,
+          "w": 24,
+          "h": 80,
+          "coastWall": true
+        },
+        {
+          "x": 4206,
+          "y": 3380,
+          "w": 24,
+          "h": 40,
+          "coastWall": true
+        },
+        {
+          "x": 1960,
+          "y": 1290,
+          "w": 24,
+          "h": 100,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 1960,
+          "y": 1510,
+          "w": 24,
+          "h": 46,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2440,
+          "y": 1274,
+          "w": 24,
+          "h": 100,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2440,
+          "y": 1504,
+          "w": 24,
+          "h": 52,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 3920,
+          "y": 244,
+          "w": 24,
+          "h": 176,
+          "architecture": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3920,
+          "y": 580,
+          "w": 24,
+          "h": 70,
+          "architecture": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3520,
+          "y": 1124,
+          "w": 24,
+          "h": 136,
+          "architecture": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3520,
+          "y": 1420,
+          "w": 24,
+          "h": 96,
+          "architecture": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3884,
+          "y": 1310,
+          "w": 116,
+          "h": 24,
+          "architecture": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 4160,
+          "y": 1310,
+          "w": 96,
+          "h": 24,
+          "architecture": true,
+          "officeReconstruction": true
+        }
+      ],
+      "furn": [
+        {
+          "x": 3070,
+          "y": 2010,
+          "w": 280,
+          "h": 180,
+          "look": "generator",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 3690,
+          "y": 2010,
+          "w": 280,
+          "h": 180,
+          "look": "generator",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 2890,
+          "y": 1860,
+          "w": 64,
+          "h": 220,
+          "look": "shelf",
+          "type": "shelf",
+          "solid": true
+        },
+        {
+          "x": 4070,
+          "y": 1860,
+          "w": 64,
+          "h": 220,
+          "look": "shelf",
+          "type": "shelf",
+          "solid": true
+        },
+        {
+          "x": 3370,
+          "y": 1810,
+          "w": 150,
+          "h": 80,
+          "look": "desk",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 3190,
+          "y": 2370,
+          "w": 200,
+          "h": 58,
+          "look": "rack",
+          "type": "shelf",
+          "solid": true
+        },
+        {
+          "x": 350,
+          "y": 1980,
+          "w": 180,
+          "h": 110,
+          "look": "generator",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 950,
+          "y": 1980,
+          "w": 180,
+          "h": 110,
+          "look": "generator",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 1850,
+          "y": 1990,
+          "w": 180,
+          "h": 110,
+          "look": "generator",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 400,
+          "y": 2600,
+          "w": 180,
+          "h": 110,
+          "look": "generator",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 1100,
+          "y": 2600,
+          "w": 180,
+          "h": 110,
+          "look": "generator",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 1960,
+          "y": 2600,
+          "w": 180,
+          "h": 110,
+          "look": "generator",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 500,
+          "y": 3000,
+          "w": 180,
+          "h": 110,
+          "look": "generator",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 1300,
+          "y": 3000,
+          "w": 180,
+          "h": 110,
+          "look": "generator",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 2150,
+          "y": 3000,
+          "w": 180,
+          "h": 110,
+          "look": "generator",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 580,
+          "y": 2110,
+          "w": 80,
+          "h": 56,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 1380,
+          "y": 2140,
+          "w": 80,
+          "h": 56,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 2290,
+          "y": 2110,
+          "w": 80,
+          "h": 56,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 330,
+          "y": 2670,
+          "w": 80,
+          "h": 56,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 1750,
+          "y": 2670,
+          "w": 80,
+          "h": 56,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 2320,
+          "y": 3010,
+          "w": 80,
+          "h": 56,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 1990,
+          "y": 1900,
+          "w": 95,
+          "h": 130,
+          "look": "forklift",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 340,
+          "y": 1910,
+          "w": 140,
+          "h": 60,
+          "look": "workbench",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 2850,
+          "y": 2810,
+          "w": 160,
+          "h": 84,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 3120,
+          "y": 2810,
+          "w": 160,
+          "h": 84,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 2930,
+          "y": 3250,
+          "w": 160,
+          "h": 84,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 3310,
+          "y": 3250,
+          "w": 160,
+          "h": 84,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 4070,
+          "y": 2860,
+          "w": 160,
+          "h": 84,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 3890,
+          "y": 3180,
+          "w": 210,
+          "h": 94,
+          "look": "van",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 2800,
+          "y": 3170,
+          "w": 90,
+          "h": 126,
+          "look": "forklift",
+          "type": "crate",
+          "solid": true
+        },
+        {
+          "x": 2860,
+          "y": 2220,
+          "w": 150,
+          "h": 90,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true,
+          "architecture": true
+        },
+        {
+          "x": 2860,
+          "y": 2370,
+          "w": 72,
+          "h": 48,
+          "look": "drums",
+          "type": "crate",
+          "solid": true,
+          "architecture": true
+        },
+        {
+          "x": 2970,
+          "y": 2370,
+          "w": 72,
+          "h": 48,
+          "look": "drums",
+          "type": "crate",
+          "solid": true,
+          "architecture": true
+        },
+        {
+          "x": 800,
+          "y": 3120,
+          "w": 200,
+          "h": 58,
+          "look": "rack",
+          "type": "shelf",
+          "solid": true,
+          "architecture": true
+        },
+        {
+          "x": 1720,
+          "y": 3120,
+          "w": 200,
+          "h": 58,
+          "look": "rack",
+          "type": "shelf",
+          "solid": true,
+          "architecture": true
+        },
+        {
+          "x": 2220,
+          "y": 2850,
+          "w": 150,
+          "h": 90,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true,
+          "architecture": true
+        },
+        {
+          "x": 3070,
+          "y": 2965,
+          "w": 180,
+          "h": 106,
+          "look": "desk",
+          "type": "crate",
+          "solid": true,
+          "architecture": true
+        },
+        {
+          "x": 3500,
+          "y": 3212,
+          "w": 280,
+          "h": 108,
+          "look": "van",
+          "type": "crate",
+          "solid": true,
+          "extractionArt": "support"
+        },
+        {
+          "x": 3840,
+          "y": 2770,
+          "w": 200,
+          "h": 160,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true,
+          "extractionArt": "tent"
+        },
+        {
+          "x": 4342,
+          "y": 2728,
+          "w": 98,
+          "h": 12,
+          "type": "crate",
+          "look": "coastal",
+          "solid": true,
+          "coastalRole": "cap"
+        },
+        {
+          "x": 4342,
+          "y": 3420,
+          "w": 98,
+          "h": 12,
+          "type": "crate",
+          "look": "coastal",
+          "solid": true,
+          "coastalRole": "cap"
+        },
+        {
+          "x": 4342,
+          "y": 2740,
+          "w": 10,
+          "h": 680,
+          "type": "crate",
+          "look": "coastal",
+          "solid": true,
+          "coastalRole": "rail"
+        },
+        {
+          "x": 4352,
+          "y": 2740,
+          "w": 88,
+          "h": 680,
+          "type": "crate",
+          "look": "coastal",
+          "solid": true,
+          "coastalRole": "water"
+        },
+        {
+          "x": 500,
+          "y": 840,
+          "w": 150,
+          "h": 80,
+          "look": "desk",
+          "type": "crate",
+          "solid": true,
+          "architecture": true
+        },
+        {
+          "x": 530,
+          "y": 182,
+          "w": 96,
+          "h": 140,
+          "look": "watchtower",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 170,
+          "y": 184,
+          "w": 148,
+          "h": 144,
+          "look": "guardhouse",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 730,
+          "y": 182,
+          "w": 440,
+          "h": 152,
+          "look": "loadingDock",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 340,
+          "y": 210,
+          "w": 100,
+          "h": 340,
+          "look": "containerBlueV",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 480,
+          "y": 380,
+          "w": 100,
+          "h": 340,
+          "look": "containerRedV",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 190,
+          "y": 600,
+          "w": 100,
+          "h": 340,
+          "look": "containerBlueV",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 900,
+          "y": 890,
+          "w": 100,
+          "h": 340,
+          "look": "containerBlueV",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 1040,
+          "y": 970,
+          "w": 100,
+          "h": 340,
+          "look": "containerRedV",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 770,
+          "y": 1350,
+          "w": 340,
+          "h": 100,
+          "look": "containerBlue",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 180,
+          "y": 1380,
+          "w": 340,
+          "h": 100,
+          "look": "containerRed",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 650,
+          "y": 460,
+          "w": 100,
+          "h": 254,
+          "look": "freightTruck",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 1100,
+          "y": 385,
+          "w": 100,
+          "h": 254,
+          "look": "freightTruck",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 840,
+          "y": 440,
+          "w": 90,
+          "h": 126,
+          "look": "forklift",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 740,
+          "y": 1180,
+          "w": 150,
+          "h": 90,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 720,
+          "y": 780,
+          "w": 150,
+          "h": 90,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 1090,
+          "y": 750,
+          "w": 150,
+          "h": 90,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 360,
+          "y": 920,
+          "w": 72,
+          "h": 48,
+          "look": "drums",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 1130,
+          "y": 1380,
+          "w": 72,
+          "h": 48,
+          "look": "drums",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 175,
+          "y": 380,
+          "w": 104,
+          "h": 80,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true,
+          "loadingYard": true
+        },
+        {
+          "x": 1530,
+          "y": 280,
+          "w": 250,
+          "h": 76,
+          "look": "rack",
+          "type": "shelf",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 1880,
+          "y": 270,
+          "w": 250,
+          "h": 76,
+          "look": "rack",
+          "type": "shelf",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2180,
+          "y": 240,
+          "w": 76,
+          "h": 250,
+          "look": "loadedRackV",
+          "type": "shelf",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2360,
+          "y": 285,
+          "w": 250,
+          "h": 76,
+          "look": "rack",
+          "type": "shelf",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2720,
+          "y": 310,
+          "w": 250,
+          "h": 76,
+          "look": "rack",
+          "type": "shelf",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 1510,
+          "y": 420,
+          "w": 104,
+          "h": 80,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 1550,
+          "y": 600,
+          "w": 76,
+          "h": 250,
+          "look": "rackV",
+          "type": "shelf",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 1730,
+          "y": 600,
+          "w": 76,
+          "h": 250,
+          "look": "loadedRackV",
+          "type": "shelf",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 1550,
+          "y": 970,
+          "w": 76,
+          "h": 250,
+          "look": "loadedRackV",
+          "type": "shelf",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 1720,
+          "y": 1080,
+          "w": 250,
+          "h": 76,
+          "look": "rack",
+          "type": "shelf",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 1900,
+          "y": 620,
+          "w": 104,
+          "h": 80,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 1630,
+          "y": 1160,
+          "w": 72,
+          "h": 48,
+          "look": "drums",
+          "type": "crate",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2110,
+          "y": 760,
+          "w": 96,
+          "h": 350,
+          "look": "sortingConveyor",
+          "type": "crate",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2310,
+          "y": 610,
+          "w": 250,
+          "h": 76,
+          "look": "rack",
+          "type": "shelf",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2310,
+          "y": 1135,
+          "w": 104,
+          "h": 80,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2510,
+          "y": 1000,
+          "w": 76,
+          "h": 250,
+          "look": "rackV",
+          "type": "shelf",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2720,
+          "y": 620,
+          "w": 90,
+          "h": 126,
+          "look": "forklift",
+          "type": "crate",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2910,
+          "y": 860,
+          "w": 90,
+          "h": 126,
+          "look": "forklift",
+          "type": "crate",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2690,
+          "y": 1080,
+          "w": 200,
+          "h": 58,
+          "look": "rack",
+          "type": "shelf",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2960,
+          "y": 1060,
+          "w": 76,
+          "h": 170,
+          "look": "serviceCabinet",
+          "type": "crate",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2980,
+          "y": 430,
+          "w": 72,
+          "h": 48,
+          "look": "drums",
+          "type": "crate",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2610,
+          "y": 440,
+          "w": 104,
+          "h": 80,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 1510,
+          "y": 1400,
+          "w": 340,
+          "h": 100,
+          "look": "containerBlue",
+          "type": "crate",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 1510,
+          "y": 1300,
+          "w": 104,
+          "h": 80,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2030,
+          "y": 1330,
+          "w": 150,
+          "h": 60,
+          "look": "workbench",
+          "type": "crate",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2310,
+          "y": 1450,
+          "w": 104,
+          "h": 80,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2580,
+          "y": 1340,
+          "w": 250,
+          "h": 76,
+          "look": "rack",
+          "type": "shelf",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 2920,
+          "y": 1340,
+          "w": 72,
+          "h": 48,
+          "look": "drums",
+          "type": "crate",
+          "solid": true,
+          "warehouseReconstruction": true
+        },
+        {
+          "x": 3380,
+          "y": 310,
+          "w": 170,
+          "h": 240,
+          "look": "conferenceTable",
+          "type": "crate",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3280,
+          "y": 280,
+          "w": 52,
+          "h": 160,
+          "look": "shelf",
+          "type": "shelf",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3710,
+          "y": 275,
+          "w": 180,
+          "h": 106,
+          "look": "desk",
+          "type": "crate",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3715,
+          "y": 395,
+          "w": 150,
+          "h": 60,
+          "look": "workbench",
+          "type": "crate",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3990,
+          "y": 300,
+          "w": 180,
+          "h": 106,
+          "look": "desk",
+          "type": "crate",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 4180,
+          "y": 260,
+          "w": 52,
+          "h": 160,
+          "look": "shelf",
+          "type": "shelf",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3280,
+          "y": 700,
+          "w": 52,
+          "h": 160,
+          "look": "shelf",
+          "type": "shelf",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3280,
+          "y": 920,
+          "w": 52,
+          "h": 160,
+          "look": "shelf",
+          "type": "shelf",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3380,
+          "y": 920,
+          "w": 52,
+          "h": 160,
+          "look": "shelf",
+          "type": "shelf",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3610,
+          "y": 970,
+          "w": 180,
+          "h": 106,
+          "look": "receptionDesk",
+          "type": "crate",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3690,
+          "y": 700,
+          "w": 104,
+          "h": 60,
+          "look": "waitingBench",
+          "type": "crate",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3970,
+          "y": 710,
+          "w": 180,
+          "h": 106,
+          "look": "desk",
+          "type": "crate",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3960,
+          "y": 980,
+          "w": 150,
+          "h": 60,
+          "look": "workbench",
+          "type": "crate",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 4180,
+          "y": 900,
+          "w": 52,
+          "h": 160,
+          "look": "serverCabinet",
+          "type": "shelf",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3290,
+          "y": 1180,
+          "w": 150,
+          "h": 220,
+          "look": "interviewTable",
+          "type": "crate",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3780,
+          "y": 1160,
+          "w": 52,
+          "h": 160,
+          "look": "shelf",
+          "type": "shelf",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3780,
+          "y": 1340,
+          "w": 52,
+          "h": 160,
+          "look": "shelf",
+          "type": "shelf",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3570,
+          "y": 1380,
+          "w": 104,
+          "h": 80,
+          "look": "pallet",
+          "type": "crate",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3900,
+          "y": 1150,
+          "w": 180,
+          "h": 106,
+          "look": "breakTable",
+          "type": "crate",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 4180,
+          "y": 1340,
+          "w": 52,
+          "h": 160,
+          "look": "supplyCabinet",
+          "type": "shelf",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3900,
+          "y": 1410,
+          "w": 150,
+          "h": 60,
+          "look": "workbench",
+          "type": "crate",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3265,
+          "y": 600,
+          "w": 28,
+          "h": 28,
+          "look": "planter",
+          "type": "crate",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3630,
+          "y": 590,
+          "w": 28,
+          "h": 28,
+          "look": "planter",
+          "type": "crate",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 3950,
+          "y": 600,
+          "w": 28,
+          "h": 28,
+          "look": "planter",
+          "type": "crate",
+          "solid": true,
+          "officeReconstruction": true
+        },
+        {
+          "x": 4200,
+          "y": 1065,
+          "w": 28,
+          "h": 28,
+          "look": "planter",
+          "type": "crate",
+          "solid": true,
+          "officeReconstruction": true
+        }
+      ],
+      "gates": [
+        {
+          "id": "security",
+          "x": 3170,
+          "y": 650,
+          "w": 24,
+          "h": 200,
+          "label": "OPEN SECURITY"
+        },
+        {
+          "id": "shortcut",
+          "x": 2630,
+          "y": 2930,
+          "w": 24,
+          "h": 220,
+          "label": "OPEN SHORTCUT"
+        }
+      ],
+      "packs": [
+        [
+          "ammo",
+          520,
+          1225
+        ],
+        [
+          "health",
+          1180,
+          1325
+        ],
+        [
+          "armor",
+          150,
+          1190
+        ],
+        [
+          "ammo",
+          1200,
+          900
+        ],
+        [
+          "ammo",
+          1870,
+          850
+        ],
+        [
+          "ammo",
+          2520,
+          850
+        ],
+        [
+          "health",
+          2850,
+          1480
+        ],
+        [
+          "armor",
+          2180,
+          1470
+        ],
+        [
+          "ammo",
+          3030,
+          940
+        ],
+        [
+          "ammo",
+          3500,
+          850
+        ],
+        [
+          "health",
+          3750,
+          950
+        ],
+        [
+          "armor",
+          4080,
+          1420
+        ],
+        [
+          "ammo",
+          3780,
+          590
+        ],
+        [
+          "ammo",
+          3460,
+          2340
+        ],
+        [
+          "ammo",
+          4000,
+          2290
+        ],
+        [
+          "health",
+          2960,
+          2400
+        ],
+        [
+          "armor",
+          3600,
+          1920
+        ],
+        [
+          "health",
+          1200,
+          2500
+        ],
+        [
+          "ammo",
+          1020,
+          2910
+        ],
+        [
+          "ammo",
+          2310,
+          2460
+        ],
+        [
+          "health",
+          430,
+          3170
+        ],
+        [
+          "armor",
+          1680,
+          3100
+        ],
+        [
+          "ammo",
+          3030,
+          3090
+        ],
+        [
+          "health",
+          3630,
+          3190
+        ],
+        [
+          "ammo",
+          4110,
+          3050
+        ],
+        [
+          "ammo",
+          3480,
+          2870
+        ]
+      ],
+      "paths": [
+        {
+          "x": 1310,
+          "y": 650,
+          "w": 140,
+          "h": 200
+        },
+        {
+          "x": 3090,
+          "y": 650,
+          "w": 140,
+          "h": 200
+        },
+        {
+          "x": 1950,
+          "y": 1580,
+          "w": 240,
+          "h": 260
+        },
+        {
+          "x": 3550,
+          "y": 1540,
+          "w": 200,
+          "h": 220
+        },
+        {
+          "x": 2550,
+          "y": 2050,
+          "w": 260,
+          "h": 220
+        },
+        {
+          "x": 3510,
+          "y": 2520,
+          "w": 220,
+          "h": 220
+        },
+        {
+          "x": 2550,
+          "y": 2930,
+          "w": 170,
+          "h": 220
+        }
+      ],
+      "lights": [
+        {
+          "x": 180,
+          "y": 172,
+          "emergency": false
+        },
+        {
+          "x": 1230,
+          "y": 1528,
+          "emergency": true
+        },
+        {
+          "x": 1530,
+          "y": 212,
+          "emergency": false
+        },
+        {
+          "x": 3010,
+          "y": 1548,
+          "emergency": true
+        },
+        {
+          "x": 3370,
+          "y": 280,
+          "emergency": false
+        },
+        {
+          "x": 3740,
+          "y": 270,
+          "emergency": true
+        },
+        {
+          "x": 2890,
+          "y": 1792,
+          "emergency": false
+        },
+        {
+          "x": 4120,
+          "y": 2488,
+          "emergency": true
+        },
+        {
+          "x": 320,
+          "y": 1872,
+          "emergency": false
+        },
+        {
+          "x": 2470,
+          "y": 3198,
+          "emergency": true
+        },
+        {
+          "x": 2800,
+          "y": 2772,
+          "emergency": false
+        },
+        {
+          "x": 4150,
+          "y": 3388,
+          "emergency": true
+        },
+        {
+          "x": 1350,
+          "y": 650,
+          "emergency": false
+        },
+        {
+          "x": 3170,
+          "y": 650,
+          "emergency": false
+        },
+        {
+          "x": 2070,
+          "y": 1600,
+          "emergency": false
+        },
+        {
+          "x": 3650,
+          "y": 1560,
+          "emergency": false
+        },
+        {
+          "x": 2660,
+          "y": 2050,
+          "emergency": false
+        },
+        {
+          "x": 3620,
+          "y": 2540,
+          "emergency": false
+        },
+        {
+          "x": 2640,
+          "y": 2930,
+          "emergency": false
+        },
+        {
+          "x": 1780,
+          "y": 900,
+          "emergency": false
+        },
+        {
+          "x": 2500,
+          "y": 900,
+          "emergency": false
+        },
+        {
+          "x": 4200,
+          "y": 460,
+          "emergency": false
+        },
+        {
+          "x": 3500,
+          "y": 2240,
+          "emergency": false
+        },
+        {
+          "x": 1050,
+          "y": 2470,
+          "emergency": false
+        },
+        {
+          "x": 1950,
+          "y": 2470,
+          "emergency": false
+        },
+        {
+          "x": 3750,
+          "y": 3000,
+          "emergency": false
+        },
+        {
+          "x": 1640,
+          "y": 530,
+          "emergency": false
+        },
+        {
+          "x": 2190,
+          "y": 560,
+          "emergency": false
+        },
+        {
+          "x": 1780,
+          "y": 1490,
+          "emergency": false
+        },
+        {
+          "x": 2800,
+          "y": 560,
+          "emergency": true
+        },
+        {
+          "x": 2040,
+          "y": 720,
+          "emergency": false
+        },
+        {
+          "x": 2140,
+          "y": 1490,
+          "emergency": false
+        },
+        {
+          "x": 2245,
+          "y": 1110,
+          "emergency": false
+        },
+        {
+          "x": 1840,
+          "y": 1225,
+          "emergency": false
+        },
+        {
+          "x": 2500,
+          "y": 1490,
+          "emergency": false
+        },
+        {
+          "x": 2070,
+          "y": 1430,
+          "emergency": false
+        },
+        {
+          "x": 2800,
+          "y": 1440,
+          "emergency": false
+        },
+        {
+          "x": 2860,
+          "y": 1490,
+          "emergency": false
+        },
+        {
+          "x": 480,
+          "y": 1020,
+          "emergency": false
+        },
+        {
+          "x": 1030,
+          "y": 1040,
+          "emergency": false
+        },
+        {
+          "x": 600,
+          "y": 340,
+          "emergency": false
+        },
+        {
+          "x": 1100,
+          "y": 690,
+          "emergency": false
+        },
+        {
+          "x": 3400,
+          "y": 900,
+          "emergency": false
+        },
+        {
+          "x": 3510,
+          "y": 780,
+          "emergency": false
+        },
+        {
+          "x": 3910,
+          "y": 850,
+          "emergency": false
+        },
+        {
+          "x": 3350,
+          "y": 1440,
+          "emergency": false
+        },
+        {
+          "x": 3100,
+          "y": 2280,
+          "emergency": false
+        },
+        {
+          "x": 3910,
+          "y": 2280,
+          "emergency": false
+        },
+        {
+          "x": 550,
+          "y": 2440,
+          "emergency": false
+        },
+        {
+          "x": 1200,
+          "y": 2480,
+          "emergency": false
+        },
+        {
+          "x": 1920,
+          "y": 2480,
+          "emergency": false
+        },
+        {
+          "x": 1200,
+          "y": 3090,
+          "emergency": false
+        },
+        {
+          "x": 2200,
+          "y": 3120,
+          "emergency": false
+        },
+        {
+          "x": 3020,
+          "y": 2990,
+          "emergency": false
+        },
+        {
+          "x": 4020,
+          "y": 3040,
+          "emergency": false
+        },
+        {
+          "x": 580,
+          "y": 990,
+          "emergency": false
+        },
+        {
+          "x": 3660,
+          "y": 1470,
+          "emergency": false
+        },
+        {
+          "x": 4110,
+          "y": 1280,
+          "emergency": false
+        },
+        {
+          "x": 3620,
+          "y": 1920,
+          "emergency": false
+        },
+        {
+          "x": 1140,
+          "y": 2240,
+          "emergency": false
+        },
+        {
+          "x": 3020,
+          "y": 3100,
+          "emergency": false
+        },
+        {
+          "x": 3435,
+          "y": 2778,
+          "emergency": false
+        },
+        {
+          "x": 3705,
+          "y": 2778,
+          "emergency": false
+        },
+        {
+          "x": 3435,
+          "y": 3012,
+          "emergency": true
+        },
+        {
+          "x": 3705,
+          "y": 3012,
+          "emergency": true
+        },
+        {
+          "x": 4280,
+          "y": 2820,
+          "emergency": false
+        },
+        {
+          "x": 4280,
+          "y": 3080,
+          "emergency": false
+        },
+        {
+          "x": 4280,
+          "y": 3340,
+          "emergency": false
+        },
+        {
+          "x": 310,
+          "y": 330,
+          "emergency": false
+        },
+        {
+          "x": 660,
+          "y": 380,
+          "emergency": false
+        },
+        {
+          "x": 790,
+          "y": 350,
+          "emergency": false
+        },
+        {
+          "x": 1090,
+          "y": 350,
+          "emergency": false
+        },
+        {
+          "x": 1190,
+          "y": 680,
+          "emergency": true
+        },
+        {
+          "x": 690,
+          "y": 1015,
+          "emergency": false
+        },
+        {
+          "x": 870,
+          "y": 1280,
+          "emergency": false
+        },
+        {
+          "x": 480,
+          "y": 1490,
+          "emergency": true
+        },
+        {
+          "x": 235,
+          "y": 1028,
+          "emergency": false
+        },
+        {
+          "x": 555,
+          "y": 1285,
+          "emergency": false
+        }
+      ],
+      "entry": {
+        "x": 340,
+        "y": 1130
+      },
+      "points": {
+        "warehouse": {
+          "x": 1660,
+          "y": 850
+        },
+        "card": {
+          "x": 4040,
+          "y": 520
+        },
+        "generator": {
+          "x": 3460,
+          "y": 2220
+        },
+        "exit": {
+          "x": 3800,
+          "y": 3030
+        }
+      },
+      "portals": [
+        [
+          220,
+          200
+        ],
+        [
+          1190,
+          200
+        ],
+        [
+          1180,
+          1430
+        ],
+        [
+          1550,
+          230
+        ],
+        [
+          2980,
+          230
+        ],
+        [
+          2970,
+          1480
+        ],
+        [
+          3350,
+          300
+        ],
+        [
+          4170,
+          1400
+        ],
+        [
+          2890,
+          1820
+        ],
+        [
+          4120,
+          1820
+        ],
+        [
+          4100,
+          2450
+        ],
+        [
+          2920,
+          2440
+        ],
+        [
+          340,
+          1910
+        ],
+        [
+          2420,
+          3150
+        ],
+        [
+          2800,
+          2810
+        ],
+        [
+          4140,
+          2810
+        ],
+        [
+          4150,
+          3340
+        ],
+        [
+          2800,
+          3340
+        ]
+      ]
+    },
+    "armory": {
+      "armory": {
+        "selected": "rifle",
+        "released": false,
+        "panel": null,
+        "bounds": {
+          "x": 128,
+          "y": 1040,
+          "w": 496,
+          "h": 280
+        },
+        "displays": [
+          {
+            "id": "pistol",
+            "x": 202,
+            "y": 1170,
+            "label": "INSPECT WEAPON"
+          },
+          {
+            "id": "shotgun",
+            "x": 310,
+            "y": 1170,
+            "label": "INSPECT WEAPON"
+          },
+          {
+            "id": "rifle",
+            "x": 418,
+            "y": 1170,
+            "label": "INSPECT WEAPON"
+          },
+          {
+            "id": "smg",
+            "x": 526,
+            "y": 1170,
+            "label": "INSPECT WEAPON"
+          }
+        ],
+        "exit": {
+          "id": "armory-exit",
+          "x": 572,
+          "y": 1210,
+          "label": "BEGIN MISSION"
+        },
+        "plateBytes": 555520
+      },
+      "weapon": "rifle"
+    },
+    "fullObjectiveRun": false
+  }
+]

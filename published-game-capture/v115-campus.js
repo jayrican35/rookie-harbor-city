@@ -712,8 +712,10 @@
     for(const [x,y] of lamps){
       g.fillStyle='#203e49';g.fillRect(x-4,y-34,8,38);g.fillStyle='#fbe0a0';g.fillRect(x-9,y-37,18,10);
     }
-    g.fillStyle='rgba(21,36,55,.58)';g.fillRect(580,1448,345,32);
-    g.fillStyle='#fff4c2';g.font='bold 21px Barlow Condensed,sans-serif';g.fillText('PRECINCT 9 · COMMUNITY WALK',591,1470);
+    if(!window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE){
+      g.fillStyle='rgba(21,36,55,.58)';g.fillRect(580,1448,345,32);
+      g.fillStyle='#fff4c2';g.font='bold 21px Barlow Condensed,sans-serif';g.fillText('PRECINCT 9 · COMMUNITY WALK',591,1470);
+    }
   }
   function roofAlpha(){
     const room=interiorRoom(campus.x,campus.y);
@@ -816,6 +818,8 @@
     const marina=window.ROOKIE_V116_MARINA;
     // One depth queue: existing actors and new furnishing geometry share it.
     const entries=npcActors.filter(npc=>visible(npc)&&(!marina?.interiorActorVisible||marina.interiorActorVisible(npc))).map(npc=>({y:npc.y,actor:npc}));
+    for(const prop of window.ROOKIE_V134_PRECINCT?.communityProps?.(view)||[])
+      entries.push({y:prop.y,communityProp:prop});
     // Bounded V133 precinct staff share the existing depth queue and classic
     // cast painter. No duplicated NPC engine or new citywide actor registry.
     if(window.ROOKIE_V133_PRECINCT?.actors)
@@ -848,6 +852,7 @@
     entries.push({y:GARAGE.y-1,precinctShell:'garage'});
     entries.push({y:campus.y,player:true});entries.sort((a,b)=>a.y-b.y);
     for(const entry of entries){
+      if(entry.communityProp){window.ROOKIE_V134_PRECINCT.drawCommunityProp(g,entry.communityProp);continue;}
       if(entry.precinctShell){
         // Use the EXISTING roof texture, façade cache and camera transform.
         // No new sprite renderer, wall copy, NPC pass or animation loop.

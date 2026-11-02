@@ -1,5 +1,40 @@
 # Precinct 9 — Option A implementation review
 
+## Current revision: owner asset arrangement
+
+The owner supplied a Community Walk asset sheet, then explicitly selected a new
+arrangement using trees, planters, benches and lights from that pack. This
+supersedes the cleared-plaza revisions below.
+
+Eight sprite types are extracted by `tools/prepare_community_walk_assets.py`:
+grass, tree, bench, lamp, flower planter, flower pot, precinct monument and Community
+Walk sign. Source crops and cleanup settings are recorded in
+`assets/community-walk/manifest.json`; the supplied original remains in
+`docs/references/community-walk-asset-sheet.png`. The extraction uses one-half
+source scale with nearest-neighbor sampling, removes matte noise and detached
+pixels, and packs the source artwork into one transparent 512×512 atlas.
+
+Fourteen objects form the new arrangement: three trees, three benches, two lamps,
+two long planters, two entrance pots, one sign and one monument. All sprite
+rectangles stay outside the x860..1035 central walking corridor and west of
+parking. A 352×352 square lawn occupies world `(448,1328)` inside the plaza,
+with benches on its paved north and south sides and the central walk clear to
+its east, as requested in the owner's follow-up reference. The grass texture
+comes from the supplied sheet. The monument is offset from Rivera's existing
+position so he draws in front of it rather than disappearing behind it. Original
+furnished rooms, entrances, road and collision remain intact; these decorations
+do not add new colliders.
+
+The existing V135 loader reads the new atlas only after the connected campus
+opens. V134 owns the placement data, and objects join the existing actor
+feet-depth queue in V115. There is no separate renderer, scene or game loop.
+Historical bench, plant, lamp and label painters stay disabled for this layout.
+
+![Current Community Walk](review/community-walk-desktop.png)
+
+[Mobile capture](review/community-walk-mobile.png) ·
+[Runtime results](review/community-walk-runtime.json).
+
 ## Owner revision: clear the plaza
 
 The owner subsequently requested removal of all trees, shrubs, partial palms

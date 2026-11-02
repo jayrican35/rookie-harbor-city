@@ -29,6 +29,20 @@ const server=require('node:http').createServer((req,res)=>{
    await page.waitForFunction(()=>window.HARBOR?.seamlessCampusV115&&window.ROOKIE_JAY);
    await page.evaluate(()=>window.HARBOR.seamlessCampusV115.openAt(1980,1550,.9));
    await page.waitForFunction(()=>window.ROOKIE_V135_WALL_KIT?.stats()?.groundAtlas);
+   if(variant==='after'){
+    await page.waitForFunction(()=>window.ROOKIE_V135_WALL_KIT?.stats()?.communityAtlas);
+    const props=await page.evaluate(()=>window.ROOKIE_V134_PRECINCT.communityLayout);
+    assert.equal(props.length,14);
+    const lawn=await page.evaluate(()=>window.ROOKIE_V133_PRECINCT.geometry.communityLawn);
+    assert.equal(lawn.w,lawn.h,'Community lawn must be square');
+    const benches=props.filter(p=>p.sprite==='bench'&&p.x>=lawn.x&&p.x<=lawn.x+lawn.w);
+    assert(benches.some(p=>p.y<=lawn.y)&&benches.some(p=>p.y>=lawn.y+lawn.h),'Benches must flank the square lawn');
+    for(const p of props){
+     const left=p.x-p.w/2,right=p.x+p.w/2;
+     assert(right<=860||left>=1035,'Furniture must leave the central walk clear');
+     assert(right<1640,'Furniture must stay west of garage/parking');
+    }
+   }
    for(const [name,x,y,z] of [['overview',1450,1460,.52],['cleared-plaza',900,1430,1],['parking',1980,1550,.75],['entrance',948,1195,1]]){
     await page.evaluate(q=>window.HARBOR.seamlessCampusV115.qaCamera(...q),[x,y,z]);
     await page.waitForTimeout(500);
@@ -95,9 +109,11 @@ const server=require('node:http').createServer((req,res)=>{
      const status=H.outbreak.status();
      const map=H.outbreakMap.build();
      const refused=H.seamlessCampusV115.openAt(948,1195,1)===false;
-     return {started,refused,status:status&&{seed:status.seed,map:status.map,stage:status.stage,cap:status.cap},map};
+     const communityAtlasLoaded=!!HARBOR&&!!window.ROOKIE_V135_WALL_KIT?.stats()?.communityAtlas;
+     return {started,refused,communityAtlasLoaded,status:status&&{seed:status.seed,map:status.map,stage:status.stage,cap:status.cap},map};
     });
     assert(run.started&&run.refused&&run.status,'Zombie must start and exclude campus');
+    assert.equal(run.communityAtlasLoaded,false,'Community art must not load in protected mode');
     assert(await page.evaluate(()=>window.HARBOR.armory.inspect('rifle')),'Native armory inspection');
     await page.locator('#armoryPanel .armory-equip').click();
     await page.waitForTimeout(900);

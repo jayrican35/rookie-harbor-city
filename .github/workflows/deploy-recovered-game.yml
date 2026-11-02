@@ -176,6 +176,13 @@ jobs:
           path: v128-world-quality
           persist-credentials: false
 
+      - name: Check out human-review Precinct 9 lab from verified V128 (isolated)
+        uses: actions/checkout@v4
+        with:
+          ref: 646820e68f6d993f76aaa156308e8907874bb37e # green 9-scene Chromium + source QA, independent of preferred V128
+          path: precinct9-review
+          persist-credentials: false
+
       - name: Recover missing main-campaign environment art
         shell: bash
         working-directory: visual-preview
@@ -1107,6 +1114,59 @@ jobs:
           (p/'index.html').write_text('<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><title>V128 Real Gameplay Quality Review</title><style>body{background:#102b3b;color:#f6eac9;font:16px system-ui;padding:20px}section{margin:20px 0}section>div{display:flex;flex-wrap:wrap;gap:12px}img{width:47%;max-width:420px;border-radius:9px}h2{font-size:19px}</style><h1>V128 vs V127 — Actual Harbor City Browser Captures</h1><p>Left: V127. Right: V128. Ten existing district/edge positions, same original connected game and viewport. Emulated Chrome is not an Android FPS certification.</p>'+cards+'<h2>Road-network junctions</h2><p>Newly connected original world routes</p>'+''.join(f'<figure><img src="road-{r}.png"><figcaption>{r.replace("-"," ").title()}</figcaption></figure>' for r in ['precinct-arterial','westfield-southern-ring','midtown-bayview-feeder','southbay-loop-junction','northgate-arterial'])+'<h2>Jay standing and running</h2><img src="v128-idle.png"><img src="v128-running.png">')
           print('PASS V128 real playable before/after gallery and sprint states')
           PY
+
+      - name: Assemble separate Precinct 9 visual review without altering approved game
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/precinct9-lab
+          cp -a precinct9-review/published-game-capture/. site/preview/precinct9-lab/
+          python3 precinct9-review/tools/build_v130_precinct_preview.py site/preview/precinct9-lab
+          node --check site/preview/precinct9-lab/game-v115.bundle.js
+          node --check site/preview/precinct9-lab/v130-precinct-art.js
+          (cd precinct9-review && node qa/check-v130-precinct.cjs)
+          # Byte-for-byte guarantee that the base campaign, Zombie Outbreak,
+          # Marina, world roads, Jay artwork and approved V128 stay unchanged.
+          for f in game.js outbreak.css v116-marina.js v127-citywide-art.js v115-world.js v117-jay.js; do
+            cmp -s "site/preview/v128-world-quality/$f" "site/preview/precinct9-lab/$f"
+          done
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          echo 'PASS precinct lab isolated; original, Zombie, Marina and V128 untouched'
+
+      - name: Create real-browser Precinct 9 visual-review gallery for phone approval
+        shell: bash
+        run: |
+          set -euo pipefail
+          PRECINCT_BEFORE_URL='http://127.0.0.1:8765/preview/v128-world-quality/?v116QA=0&pilotQA=1' \
+          PRECINCT_AFTER_URL='http://127.0.0.1:8765/preview/precinct9-lab/?v116QA=0&pilotQA=1' \
+          PRECINCT_EVIDENCE="$PWD/site/preview/precinct9-lab/evidence" \
+            node precinct9-review/qa/capture-v130-precinct.cjs
+          python3 - <<'PY'
+          from PIL import Image,ImageDraw
+          from pathlib import Path
+          import json
+          p=Path('site/preview/precinct9-lab/evidence')
+          data=json.loads((p/'review-data.json').read_text())
+          scenes=[s['id'] for s in data['scenePositions']]
+          scenes.append('station-interior-roof-revealed')
+          assert len(scenes)==9
+          for name in scenes:
+            with Image.open(p/(name+'-before.png')) as a,Image.open(p/(name+'-after.png')) as b:
+              aa=a.convert('RGB');bb=b.convert('RGB')
+              assert aa.size==bb.size,(name,aa.size,bb.size)
+              pic=Image.new('RGB',(aa.width*2,aa.height+36),'#102938')
+              pic.paste(aa,(0,36));pic.paste(bb,(aa.width,36))
+              draw=ImageDraw.Draw(pic)
+              draw.text((8,10),'V128: BEFORE',fill='#f2e2c2')
+              draw.text((aa.width+8,10),'PRECINCT: AFTER',fill='#f2e2c2')
+              pic.save(p/(name+'-compare.png'))
+          cards=''.join('<section><h2>'+name.replace('-',' ').title()+'</h2><img src="'+name+'-compare.png"></section>' for name in scenes)
+          (p/'index.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Precinct 9 — Human Visual Review</title><style>body{background:#102938;color:#f5e3b9;font:16px system-ui;padding:18px}h1{font-size:23px}h2{font-size:18px}section{margin:28px 0}img{width:100%;max-width:780px;border-radius:9px}</style><h1>ROOKIE: Harbor City — Precinct 9</h1><p>Actual browser gameplay, same native camera. Left: approved V128; right: isolated Precinct lab. This is an unapproved review build, not a release. Original and Zombie remain unchanged.</p>'+cards+'</html>')
+          print('PASS nine true precinct comparison scenes; art acceptance requires user review')
+          PY
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

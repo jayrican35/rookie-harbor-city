@@ -410,6 +410,14 @@ function plaque(g,x,y,w=257){
  g.fillText('HARBOR CITY POLICE',x+w*.60,y+45,w*.67);
 }
 function plazaPavers(g,x,y,w,h){
+  // Use the SAME existing PNG atlas loader and cached world-space V134
+  // forecourt. Terrain remains underfoot, never over Jay or the entrances.
+  if(window.ROOKIE_V139_GROUND_ACTIVE &&
+      window.ROOKIE_V135_WALL_KIT?.fillGround?.(g,'paver_stone',x,y,w,h)){
+    px(g,x,y,w,4,'rgba(252,233,204,.83)');
+    px(g,x,y+h-5,w,5,'rgba(99,107,116,.74)');
+    return;
+  }
  // Native-world pixel-crafted civic forecourt; the formerly huge dark-blue
  // strip outside the main doorway becomes warm stone public paving.
  // Still entirely passable: this is a draw layer, NOT a collision surface.
@@ -430,7 +438,7 @@ function plazaPavers(g,x,y,w,h){
  px(g,x+10,y+h-19,246,9,'#a99d86');
  px(g,x+w-211,y+h-19,192,9,'#a99d86');
 }
-let grounds=null;
+let grounds=null,groundAtlasWasReady=false;
 function makeGround(){
  const cv=document.createElement('canvas');cv.width=1710;cv.height=647;
  const g=cv.getContext('2d');if(!g)return null;
@@ -470,19 +478,26 @@ function makeGround(){
 }
 function ground(g,o){
  if(!o||o.zoom<.23||!visible(o.view,{x:310,y:1108,w:1710,h:647}))return;
- if(!grounds)grounds=makeGround();
+ const phase5Ready=!!(window.ROOKIE_V139_GROUND_ACTIVE &&
+    window.ROOKIE_V135_WALL_KIT?.stats?.().groundAtlas);
+ if(!grounds||phase5Ready!==groundAtlasWasReady){
+   grounds=makeGround();groundAtlasWasReady=phase5Ready;
+ }
  if(!grounds)return;
  g.save();g.imageSmoothingEnabled=false;g.drawImage(grounds,310,1108);g.restore();
  M.grounds++;
 }
-let forecourtArt=null;
+let forecourtArt=null,forecourtGroundReady=false;
 function forecourt(g,o){
  // Station grounds render a shaded street apron AFTER the global ground
  // pass. Draw ONLY this underfoot civic paving after drawStation(), before
  // the existing depth-sorted actors. This prevents the original blank navy
  // entrance apron from obscuring the new architecture's pedestrian plaza.
  if(!o||o.zoom<.23||!visible(o.view,{x:387,y:1127,w:931,h:169}))return;
- if(!forecourtArt){
+ const phase5Ready=!!(window.ROOKIE_V139_GROUND_ACTIVE &&
+    window.ROOKIE_V135_WALL_KIT?.stats?.().groundAtlas);
+ if(!forecourtArt||forecourtGroundReady!==phase5Ready){
+   forecourtGroundReady=phase5Ready;
   const cv=document.createElement('canvas');cv.width=931;cv.height=169;
   const art=cv.getContext('2d');if(!art)return;
   art.imageSmoothingEnabled=false;

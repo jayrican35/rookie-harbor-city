@@ -81,7 +81,7 @@
   worldSpots.push({id:'campus:front',areaId:'precinct-campus',x:FRONT.x,y:FRONT.y+54,label:'Precinct 9 front entrance'},
     {id:'campus:garage',areaId:'precinct-campus',x:GARAGE.x,y:GARAGE.y+60,label:'Precinct garage door'},
     {id:'campus:road',areaId:'precinct-campus',x:948,y:1738,label:'Harbor Avenue — connects through city districts'});
-  const npcActors=ST.npcs.map((n,i)=>({id:'station-npc:'+i,name:n.name,color:n.color,hat:n.hat,dir:n.dir||'down',x:n.x+STX,y:n.y+STY}));
+  const npcActors=ST.npcs.map((n,i)=>({id:'station-npc:'+i,name:n.name,color:n.color,hat:n.hat,hideName:!!n.hideName,dir:n.dir||'down',x:n.x+STX,y:n.y+STY}));
   npcActors.push({id:'campus-npc:diaz',name:'OFCR. DIAZ',color:'#44557a',hat:true,x:PLX+960,y:PLY+640});
   for(const d of districtEntries){
     for(const sp of d.map.spots||[]){
@@ -818,7 +818,7 @@
       if(entry.furniture){marina.drawInteriorFurniture(g,entry.furniture);continue;}
       const npc=entry.actor;
       if(marina&&(npc.npcStyle!==undefined||marina.inMarina(npc.x,npc.y))){if(marina.active())marina.drawNpc(g,npc.npcStyle!==undefined?npc:{...npc,npcStyle:1},t);}
-      else if(!window.ROOKIE_V132_PRECINCT?.npc(g,{...npc,showLabel:campus.zoom>.54}))drawOfficer(npc,false,t);
+      else if(!window.ROOKIE_V132_PRECINCT?.npc(g,{...npc,showLabel:campus.zoom>.54&&!npc.hideName}))drawOfficer(npc,false,t);
     }
     campus.near=null;let best=58;
     for(const sp of worldSpots){
@@ -867,7 +867,9 @@
     drawStation(); // Original lobby, furnished rooms, walls and thresholds.
     drawEntityHighlights(t); // Jay, Rosa and station NPCs under the roof.
     drawStationRoof(); // Opaque outside, fades to reveal interiors at real doors.
-    if(art)art.precinct(g,{zoom:campus.zoom,view,STX,STY,alpha:roofAlpha()},t);
+    // The V115 showcase also drew roof vents; V132 owns that layer now.
+    // Avoid double glazing/vents over the ported legacy material and signs.
+    if(art&&!window.ROOKIE_V132_PRECINCT)art.precinct(g,{zoom:campus.zoom,view,STX,STY,alpha:roofAlpha()},t);
     // Precinct art respects the SAME roof alpha and existing native geometry.
     if(precinctVisual)precinctVisual.frontage(g,{zoom:campus.zoom,view,roofAlpha:roofAlpha()},t);
     if(marina)marina.foreground(g,{zoom:campus.zoom,view,player:{x:campus.x,y:campus.y}},t);

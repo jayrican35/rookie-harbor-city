@@ -436,9 +436,29 @@ function ground(g,o){
  g.save();g.imageSmoothingEnabled=false;g.drawImage(grounds,310,1108);g.restore();
  M.grounds++;
 }
+let forecourtArt=null;
+function forecourt(g,o){
+ // Station grounds render a shaded street apron AFTER the global ground
+ // pass. Draw ONLY this underfoot civic paving after drawStation(), before
+ // the existing depth-sorted actors. This prevents the original blank navy
+ // entrance apron from obscuring the new architecture's pedestrian plaza.
+ if(!o||o.zoom<.23||!visible(o.view,{x:387,y:1127,w:931,h:169}))return;
+ if(!forecourtArt){
+  const cv=document.createElement('canvas');cv.width=931;cv.height=169;
+  const art=cv.getContext('2d');if(!art)return;
+  art.imageSmoothingEnabled=false;
+  art.translate(-387,-1127);
+  plazaPavers(art,387,1127,931,169);
+  basket(art,426,1256,210);
+  basket(art,1108,1256,173);
+  forecourtArt=cv;
+ }
+ g.save();g.imageSmoothingEnabled=false;
+ g.drawImage(forecourtArt,387,1127);g.restore();
+}
 window.ROOKIE_V134_PRECINCT=Object.freeze({
  version:'v134-reference-architectural-reconstruction',
- architecture,ground,
+ architecture,ground,forecourt,
  layout:Object.freeze({facade:{x:STX,y:STY+TOP,w:WIDTH,h:HEIGHT},
   garageFacade:{x:GX,y:GY,w:GW,h:GH},
   entrance:FRONT,garage:GARAGE,roadPreserved:true}),

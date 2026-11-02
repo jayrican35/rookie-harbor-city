@@ -19,6 +19,8 @@ assert(built.includes('v131-precinct-legacy-bridge.js?v='));
 assert(!src.includes('canvas.addEventListener')&&!src.includes('worldId='));
 assert(v115.includes('const previous=window.ROOKIE_V131_PRECINCT_BRIDGE;'));
 assert(v115.includes('if(cacheValid&&cache&&legacyAssetEpoch===epoch)return cache;'));
+assert(v115.includes('previous?.garageDetails?.(c,r);'),
+ 'True current garage floor must paint BEFORE optional old equipment details');
 const load=(tag)=>({tag,complete:true,naturalWidth:256,naturalHeight:128});
 const imgs={};for(const key of ['carpet','cream','cool','wood','wall','interview','crate','visitorTable','typing',
 'bench','board','terminal','counter','evidence','cabinet','lockers','desk','chair','wallH',
@@ -51,12 +53,10 @@ assert(bridge&&bridge.worldId==='harbor-main');
 const initial=bridge.assetEpoch();
 assert(Number.isSafeInteger(initial));
 const artCases=[
- {type:'locker',x:1180,y:400,w:132,h:24,im:'lockers'},
  {type:'desk',x:430,y:56,w:124,h:42,im:'terminal'},
  {type:'desk',x:880,y:380,w:170,h:48,im:'desk'},
  {type:'cabinet',x:660,y:52,w:80,h:22,im:'cabinet'},
  {type:'shelf',x:28,y:52,w:76,h:22,im:'evidence'},
- {type:'board',x:1240,y:26,w:220,h:16,im:'board'},
  {type:'counter',x:52,y:730,w:196,h:36,im:'counter'},
  {type:'hcReception',x:534,y:746,w:184,h:32,im:'reception'},
  {type:'hcLobbyPlant',x:418,y:694,w:24,h:24,im:'plant'},
@@ -76,12 +76,17 @@ for(const f of artCases){
 }
 assert.equal(bridge.furniture(g,{type:'hcChangingBench',x:1184,y:550,w:108,h:18}),false,
  'Preserve original better carved-wood changing benches');
+assert.equal(bridge.furniture(g,{type:'locker',x:1180,y:400,w:132,h:24}),false,
+ 'Retain Jay\'s original numbered Locker 7 sprite');
+assert.equal(bridge.furniture(g,{type:'board',x:1240,y:26,w:220,h:16}),false,
+ 'Keep original larger full-color wall briefing board');
 assert.equal(bridge.furniture(g,{type:'nonexistent',x:0,y:0,w:20,h:20}),false);
 const rooms=[{label:'BRIEFING',x:1156,y:12,w:392,h:288,lx:1170,ly:40},
 {label:'LOBBY',x:388,y:648,w:376,h:380,lx:706,ly:1016},
 {label:'LOCKER ROOM',x:1156,y:308,w:392,h:332,lx:1170,ly:336},
 {label:'GARAGE',x:1156,y:648,w:768,h:512,lx:1170,ly:676}];
-for(const room of rooms)assert.equal(bridge.room(g,room),true);
+for(const room of rooms)assert.equal(bridge.room(g,room),room.label!=='GARAGE');
+assert(bridge.garageDetails(g,rooms[3]),'Exact original tool cabinet must import OVER existing garage');
 assert.equal(cinematicCalls,3,'All original interior rooms use old cinematic painter when loaded');
 assert(calls.some(v=>v[0]==='draw'&&v[1]==='plate'&&v[2].length===8&&v[2][0]===696),
  'Original actual garage tool cabinet crop must render');

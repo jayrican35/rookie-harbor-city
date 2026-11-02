@@ -6,8 +6,10 @@
 (function(){
 'use strict';
 if(window.ROOKIE_V135_WALL_KIT)return;
-const dir=window.ROOKIE_V136_WINDOW_KIT_ACTIVE ? './assets/precinct9-windows-phase2/' : './assets/precinct9-wall-kit-phase1/';
-let manifest=null,atlas=null,loaded=false,error=null,frameDraws=0,testPaints=0,windowDraws=0;
+const dir=window.ROOKIE_V137_ENTRANCE_ACTIVE?'./assets/precinct9-entrance-phase3/':
+ window.ROOKIE_V136_WINDOW_KIT_ACTIVE?'./assets/precinct9-windows-phase2/':
+ './assets/precinct9-wall-kit-phase1/';
+let manifest=null,atlas=null,loaded=false,error=null,frameDraws=0,testPaints=0,windowDraws=0,entranceFrames=0,entranceDoorDraws=0;
 const im=new Image();im.decoding='async';
 fetch(dir+'manifest.json').then(r=>{
  if(!r.ok)throw Error('precinct atlas manifest '+r.status);return r.json();
@@ -18,8 +20,11 @@ fetch(dir+'manifest.json').then(r=>{
  if(m.tileSize!==32||m.worldPixelsPerAssetPixel!==1)throw Error('wall-kit scale mismatch');
  if(!m.frames?.wall_brick_medium||!m.frames?.pilaster_full)throw Error('missing Phase-1 walls');
  if(window.ROOKIE_V136_WINDOW_KIT_ACTIVE && (!m.frames?.window_single_warm||
-   !m.frames?.window_single_dark||Object.keys(m.frames).length!==42))
+   !m.frames?.window_single_dark||Object.keys(m.frames).length!==(window.ROOKIE_V137_ENTRANCE_ACTIVE?49:42)))
      throw Error('Phase-2 window atlas missing or incompatible');
+ if(window.ROOKIE_V137_ENTRANCE_ACTIVE && (m.version!=='precinct9-entrance-phase3'||
+    !m.frames?.entry_double_glass_open||!m.frames?.entry_stone_portal_frame))
+      throw Error('Phase-3 entrance atlas missing/incompatible');
  atlas=im;manifest=m;loaded=true;
  // V134 caches the original façade. Repaint its existing cache ONCE, so
  // windows replace the old authored panes rather than float over them.
@@ -54,7 +59,7 @@ function drawTest(g,opts){
  return true;
 }
 function drawFacadeWindow(g,x,y,w,h){
- if(!loaded||manifest.version!=='precinct9-windows-phase2')return false;
+ if(!loaded||!['precinct9-windows-phase2','precinct9-entrance-phase3'].includes(manifest.version))return false;
  // Existing V134 architectural bay coordinates are authoritative.
  // Phase-2 PNGs are 1:1 pixels, unscaled, centered inside the bay. No
  // facade overlay or new collision polygons. Only this old window changes.
@@ -72,12 +77,48 @@ function drawFacadeWindow(g,x,y,w,h){
  }
  return success;
 }
+function drawEntranceStatic(g,centerX=572){
+ if(!loaded||manifest.version!=='precinct9-entrance-phase3')return false;
+ const x=Math.round(centerX);
+ // Reuse original Phase-1 columns and caps, as well as original V134
+ // badge and nameplate. The only new static elements are entrance modules.
+ // Transparent central aperture matches the EXISTING 72px world opening.
+ g.clearRect(x-36,535,72,110);
+ const parts=[
+  ['entry_stone_portal_frame',x-96,517],
+  ['pilaster_divider',x-94,517],
+  ['pilaster_divider',x+62,517],
+  ['stone_column_cap',x-110,510],
+  ['stone_column_cap',x+46,510],
+  ['entry_blue_awning_roof',x-128,458],
+  ['entry_blue_awning_edge',x-128,510],
+  ['entry_main_entrance_sign',x-96,514]
+ ];
+ for(const [id,px,py]of parts)tile(g,id,px,py);
+ entranceFrames++;return true;
+}
+function drawEntranceDoors(g,centerX,topY,openRatio){
+ if(!loaded||manifest.version!=='precinct9-entrance-phase3')return false;
+ const v=Math.max(0,Math.min(1,Number(openRatio)||0));
+ // Three authentic glass-leaf frames cross-faded in existing Canvas RAF;
+ // no second animation loop, no scene transition.
+ const stages=v<.5?
+  [['entry_double_glass_closed',1-v*2],['entry_double_glass_half',v*2]]:
+  [['entry_double_glass_half',2-v*2],['entry_double_glass_open',v*2-1]];
+ g.save();
+ for(const [id,a]of stages){
+  if(a<=.005)continue;
+  g.globalAlpha=a;tile(g,id,Math.round(centerX-48),Math.round(topY));
+ }
+ g.restore();entranceDoorDraws++;return true;
+}
 window.ROOKIE_V135_WALL_KIT=Object.freeze({
  version:'v135-phase1-wall-kit',
- drawTest,drawFacadeWindow,
- stats:()=>({loaded,error,frameDraws,testPaints,windowDraws,moduleCount:Object.keys(manifest?.frames||{}).length,
+ drawTest,drawFacadeWindow,drawEntranceStatic,drawEntranceDoors,
+ stats:()=>({loaded,error,frameDraws,testPaints,windowDraws,entranceFrames,entranceDoorDraws,moduleCount:Object.keys(manifest?.frames||{}).length,
   atlasSize:atlas?[atlas.naturalWidth,atlas.naturalHeight]:null,
-  windowAtlas:manifest?.version==='precinct9-windows-phase2'}),
+  windowAtlas:['precinct9-windows-phase2','precinct9-entrance-phase3'].includes(manifest?.version),
+  entranceAtlas:manifest?.version==='precinct9-entrance-phase3'}),
  scope:'Only 32-grid modular wall kit test on existing V134 precinct facade; no other gameplay change'
 });
 })();

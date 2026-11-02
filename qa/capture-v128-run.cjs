@@ -55,6 +55,11 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
       {id:'southbay-native-street',x:4050,y:3744}
     ].map(r=>({...r,blocked:test.blocked(r.x,r.y,12)}));
   });
+  const roadDiagnosis=await page.evaluate(()=>{
+    const q=window.HARBOR.seamlessCampusV115.test.roadCollisionDiagnostic;
+    return [3000,2950,2850,2700,2600].flatMap(y=>[3985,4020,4050,4080,4115].map(x=>q(x,y,12)));
+  });
+  console.log('ROAD COLLISION DIAGNOSTIC',JSON.stringify(roadDiagnosis.filter(r=>r.result)));
   assert(passability.every(r=>!r.blocked),
     'Road drawn across physical wall/tree: '+JSON.stringify(passability));
   assert.equal(errors.length,0,'No JS console errors: '+errors.join(', '));

@@ -1,0 +1,121 @@
+name: Precinct 9 — Original Artwork Reuse QA
+on:
+  push:
+    branches:
+      - feature/precinct9-legacy-art-port
+  workflow_dispatch:
+permissions:
+  contents: read
+
+jobs:
+  source-safety:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check native art import and earlier regression protection
+        run: |
+          set -euo pipefail
+          node --check published-game-capture/v131-precinct-legacy-bridge.js
+          node --check published-game-capture/v115-campus.js
+          node qa/check-v131-precinct-import.cjs
+          node qa/check-v130-precinct.cjs
+          node qa/check-v128-quality.cjs
+          node qa/check-v127-citywide.cjs
+          node qa/check-world-roads.cjs
+          node qa/check-world-traffic.cjs
+          node qa/check-v115-campus.cjs
+      - name: Scope diff to original art transfer; prohibit production/modes
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin 97edf1e88f96e6d4fe14d536bae6ac45b41c2604
+          git diff --name-only 97edf1e88f96e6d4fe14d536bae6ac45b41c2604 HEAD | grep -Ev '^((published-game-capture/(v115-campus|v131-precinct-legacy-bridge)\.js)|(tools/build_v131_precinct_preview\.py)|(qa/(check-v131-precinct-import|capture-v131-precinct)\.cjs)|(\.github/workflows/precinct9-legacy-art\.yml)|(docs/PRECINCT9-LEGACY-ART\.md))$' >/tmp/unauthorized || true
+          if [ -s /tmp/unauthorized ]; then cat /tmp/unauthorized; exit 1; fi
+          echo 'PASS no original production, Marina, Zombie, Academy or V128 source modifications'
+
+  authentic-mobile-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Obtain exact previously verified V128 for same-camera screenshots
+        uses: actions/checkout@v4
+        with:
+          ref: 7339eaba5a3756b4fc9dbcbc72ba54c5e7822a8c
+          path: approved-v128
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install original browser and texture tools
+        run: |
+          python3 -m pip install -q pillow numpy
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Compile both real games and protect every prior system
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v128-world-quality site/preview/precinct9-legacy-lab
+          cp -a approved-v128/published-game-capture/. site/preview/v128-world-quality/
+          cp -a published-game-capture/. site/preview/precinct9-legacy-lab/
+          python3 approved-v128/tools/build_v128_preview.py site/preview/v128-world-quality
+          python3 tools/build_v131_precinct_preview.py site/preview/precinct9-legacy-lab
+          node --check site/preview/precinct9-legacy-lab/game-v115.bundle.js
+          for f in game.js outbreak.css v116-marina.js v127-citywide-art.js v115-world.js v117-jay.js; do
+            cmp -s "site/preview/v128-world-quality/$f" "site/preview/precinct9-legacy-lab/$f"
+          done
+          grep -q 'v131-precinct-legacy-bridge.js' site/preview/precinct9-legacy-lab/index.html
+          echo 'PASS production, Zombie, Academy, Marina, world roads and Jay assets unchanged'
+      - name: Inspect fourteen actual mobile game scenes and original source assets
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8765 --directory site >/tmp/precinct9-legacy-http.log 2>&1 &
+          sleep 2
+          node qa/capture-v131-precinct.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageDraw
+          import json
+          p=Path('site/preview/precinct9-legacy-lab/evidence')
+          d=json.loads((p/'review-data.json').read_text())
+          scenes=[s['id'] for s in d['scenePositions']]+[
+            'station-interior-roof-revealed',
+            'interior-briefing-real-art',
+            'interior-locker-room-real-art',
+            'interior-garage-real-art']
+          assert len(scenes)==14,len(scenes)
+          assert d['results'][1]['legacy']['stats']['furniture']>=20
+          cards=[]
+          for scene in scenes:
+            with Image.open(p/(scene+'-before.png')) as a,Image.open(p/(scene+'-after.png')) as b:
+              aa=a.convert('RGB');bb=b.convert('RGB')
+              assert aa.size==bb.size,(scene,aa.size,bb.size)
+              paired=Image.new('RGB',(aa.width*2,aa.height+38),'#102938')
+              paired.paste(aa,(0,38));paired.paste(bb,(aa.width,38))
+              dr=ImageDraw.Draw(paired)
+              dr.text((8,11),'V128 BEFORE',fill='#f5e0af')
+              dr.text((aa.width+8,11),'ORIGINAL ART RESTORED',fill='#f5e0af')
+              paired.save(p/(scene+'-compare.png'))
+              cards.append('<section><h2>'+scene.replace('-',' ').title()+'</h2><img src="'+scene+'-compare.png"></section>')
+          (p/'index.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Precinct 9 Original Art — Live Game Review</title><style>body{background:#102938;color:#f3e2bf;font:16px system-ui;padding:14px}section{margin:22px 0}h1{font-size:24px}h2{font-size:18px}img{width:100%;max-width:900px;border-radius:7px}</style><h1>Precinct 9 — Original Art Port</h1><p>Left: V128 legacy placeholder. Right: source-authored precinct floors/furniture/reception/garage restored inside SAME world. Real Chromium mobile screenshots; art quality still requires human approval.</p>'+''.join(cards)+'</html>')
+          print('PASS 14 original game real-browser comparisons; source sprites loaded and drawn')
+          PY
+      - name: Save real phone-scale screenshots and art validation
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: precinct9-original-art-11-scene-review
+          path: site/preview/precinct9-legacy-lab/evidence/
+          if-no-files-found: warn
+      - name: Save separate playable candidate, no public deployment
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: precinct9-original-art-playable-candidate
+          path: site/preview/precinct9-legacy-lab/
+          if-no-files-found: error

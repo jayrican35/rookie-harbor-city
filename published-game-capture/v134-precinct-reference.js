@@ -256,15 +256,71 @@ function renderArchitecture(){
  M.facadeBuilds++;
  return cv;
 }
-let face=null;
+const GX=STX+1158,GY=STY+630,GW=754,GH=524;
+function renderGarage(){
+ const cv=document.createElement('canvas');cv.width=GW;cv.height=GH;
+ const g=cv.getContext('2d');if(!g)return null;g.imageSmoothingEnabled=false;
+ bricks(g,8,51,GW-16,GH-63,true);
+ px(g,1,28,GW-2,15,'#d2c2a4');
+ px(g,1,43,GW-2,9,'#6d818a');
+ px(g,0,52,GW,8,'#f0dfbd');
+ // Industrial garage at matching architectural resolution.
+ for(const x of [7,239,507,706])column(g,x,84,37,393);
+ for(const x of [94,334,573])windowPane(g,x,112,110,105);
+ px(g,50,266,656,13,'#d8c6a7');
+ px(g,50,279,656,9,'#7e8990');
+ px(g,54,293,651,8,'#e8d4ad');
+ // Three deep fleet bay recesses, matching reference navy + stone palette.
+ for(const [x,w] of [[55,199],[283,192],[503,192]]){
+   bevel(g,x-6,317,w+12,166);
+   px(g,x,330,w,141,'#101f32');
+   px(g,x+5,333,w-10,137,'#304f66');
+   for(let i=0;i<7;i++){
+     const yy=338+i*18;
+     px(g,x+7,yy,w-14,5,i%2===0?'#476c7f':'#24445b');
+     px(g,x+7,yy+5,w-14,3,'#10283f');
+   }
+   px(g,x+3,330,6,140,'#b0b6ad');
+   px(g,x+w-9,330,6,140,'#9facaa');
+   px(g,x+18,447,w-36,4,'#e5c57d');
+ }
+ // The real native garage exit at world x1918 is in CENTER BAY:
+ // virtual artwork fades at exact existing garage approach and doorway.
+ crest(g,GW/2,90,38);
+ px(g,274,224,208,50,'#112b48');
+ px(g,280,229,196,4,'#e8bd79');
+ g.fillStyle='#f7dfaa';g.textAlign='center';
+ g.font='900 30px Barlow Condensed,sans-serif';
+ g.fillText('PRECINCT GARAGE',GW/2,255,194);
+ px(g,0,482,GW,13,'#e2d0b1');
+ px(g,0,495,GW,9,'#9a9890');
+ px(g,0,504,GW,17,'#1c384e');
+ // fleet curb safety stripes are visual and never block street traffic.
+ for(let x=18;x<GW-22;x+=53){
+   px(g,x,510,26,7,'#e1b35f');
+ }
+ for(const x of [35,GW-37])lamp(g,x,398,.8);
+ return cv;
+}
+let face=null,garageFace=null;
 function architecture(g,o){
- if(!o||!visible(o.view,{x:STX,y:STY+TOP,w:WIDTH,h:HEIGHT}))return;
+ if(!o)return;
+ const mainBox={x:STX,y:STY+TOP,w:WIDTH,h:HEIGHT};
+ const garageBox={x:GX,y:GY,w:GW,h:GH};
+ const mainVisible=visible(o.view,mainBox),garageVisible=visible(o.view,garageBox);
+ if(!mainVisible&&!garageVisible)return;
  const alpha=Math.max(0,Math.min(.95,Number(o.alpha)||0));
  if(alpha<.025)return;
- if(!face)face=renderArchitecture();
- if(!face)return;
  g.save();g.globalAlpha*=alpha;g.imageSmoothingEnabled=false;
- g.drawImage(face,STX,STY+TOP);g.restore();M.facadeFrames++;
+ if(mainVisible){
+   if(!face)face=renderArchitecture();
+   if(face){g.drawImage(face,STX,STY+TOP);M.facadeFrames++;}
+ }
+ if(garageVisible){
+   if(!garageFace)garageFace=renderGarage();
+   if(garageFace){g.drawImage(garageFace,GX,GY);M.facadeFrames++;}
+ }
+ g.restore();
 }
 function basket(g,x,y,w=120){
  px(g,x+5,y+9,w,19,'rgba(12,31,30,.26)');
@@ -356,8 +412,9 @@ window.ROOKIE_V134_PRECINCT=Object.freeze({
  version:'v134-reference-architectural-reconstruction',
  architecture,ground,
  layout:Object.freeze({facade:{x:STX,y:STY+TOP,w:WIDTH,h:HEIGHT},
+  garageFacade:{x:GX,y:GY,w:GW,h:GH},
   entrance:FRONT,garage:GARAGE,roadPreserved:true}),
- stats:()=>({...M,facadeReady:!!face,groundsReady:!!grounds}),
+ stats:()=>({...M,facadeReady:!!face,garageReady:!!garageFace,groundsReady:!!grounds}),
  scope:'Architectural and civic grounds art only; original 1:1 connected world, existing roof fade and no gameplay changes'
 });
 })();

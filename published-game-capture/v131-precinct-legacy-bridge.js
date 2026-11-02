@@ -88,39 +88,22 @@ function label(g,r){
   g.fillText(r.label,r.lx,r.ly);
   g.restore();
 }
-function garageFloor(g,r){
-  // This exact older source artwork built the classic garage's physical
-  // floor. Copy ONLY its clean 128x128 concrete crop; the complete garage
-  // plate has baked walls that would obstruct the real open door.
-  const im=source('garage');
-  if(!ready(im))return false;
-  g.save();
-  g.beginPath();g.rect(r.x,r.y,r.w,r.h);g.clip();
-  g.imageSmoothingEnabled=false;
-  for(let y=r.y;y<r.y+r.h;y+=64)for(let x=r.x;x<r.x+r.w;x+=64){
-    const w=Math.min(64,r.x+r.w-x),h=Math.min(64,r.y+r.h-y);
-    g.drawImage(im,510,510,128*w/64,128*h/64,x,y,w,h);
-  }
-  // Restore the classic two true parking bays. These are the exact marks
-  // from old drawRoom garage, not a new drivable vehicle or collider.
-  g.strokeStyle='#d6cdb7';g.lineWidth=4;
-  for(const x of [1331,1571]){
-    g.beginPath();g.moveTo(x,885);g.lineTo(x,755);
-    g.lineTo(x+180,755);g.lineTo(x+180,885);g.stroke();
-    g.fillStyle='#b7b3a7';g.fillRect(x+30,758,120,9);
-  }
-  // Original plate's tool-cabinet crop is already collision-backed by
-  // the real native source map (1690,670,124,38).
-  g.drawImage(im,696,76,146,108,1690,656,124,70);
-  g.font='600 12px sans-serif';g.textAlign='center';
-  g.fillStyle='#d6cdb7';
-  g.fillText('UNIT 9',1421,909);g.fillText('SERVICE BAY',1661,909);
-  g.restore();
-  label(g,r);stats.garage++;
-  return true;
+// The connected scene ALREADY has the correct user-authored concrete
+// plate, two bays, north-door arrow and original collision-backed garage
+// walls. Preserve it instead of overwriting it with repeated generic tiles.
+// Add only the source artwork missing from the simplified world view.
+function garageDetails(g,r){
+ const im=source('garage');if(!ready(im))return false;
+ g.save();g.imageSmoothingEnabled=false;
+ // Cropped from the exact pre-existing classic 2026-10-14 garage plate.
+ // This is positioned over the original already-solid service-tool
+ // cabinet at (1690,670,124,38), so it is NEVER a phantom collider.
+ g.drawImage(im,696,76,146,108,1690,656,124,70);
+ g.restore();stats.garage++;return true;
 }
+
 function room(g,r){
-  if(r.label==='GARAGE')return garageFloor(g,r);
+  if(r.label==='GARAGE')return false; // preserve current full old garage floor
   const key=material(r),im=source(key);
   if(!ready(im))return false;
   // The original cinematic renderer already owns the finished room
@@ -189,6 +172,12 @@ function furniture(g,f){
   if(type==='hcChangingBench'){
     // The connected world already renders the original dark-wood changing
     // benches better than the old generic blue seating sprite. Preserve it.
+    return false;
+  }
+  if(type==='locker'||type==='board'){
+    // Legacy map already paints the 16-bit original blue lockers with
+    // Jay's numbered yellow Locker 7 plate, and better full-size wall
+    // briefing boards. Don't replace these with weaker generic sprites.
     return false;
   }
   if(type==='hcLobbyTable'){
@@ -271,7 +260,7 @@ function wallSkins(g,walls){
 
 window.ROOKIE_V131_PRECINCT_BRIDGE=Object.freeze({
  version:'legacy-authored-precinct-reuse-1',worldId:'harbor-main',
- assetEpoch,material,room,furniture,wallSkins,
+ assetEpoch,material,room,garageDetails,furniture,wallSkins,
  assetStatus:()=>Object.fromEntries(keys.map(k=>[k,ready(source(k))])),
  stats:()=>({...stats}),
  source:'Original HARBOR.precinctCraft, precinctCinematic, receptionRoom, B2, EXT_IMG and __GARAGE. No new assets or world geometry.'

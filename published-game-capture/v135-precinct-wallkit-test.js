@@ -72,8 +72,14 @@ function fillGround(g,id,x,y,w,h){
  // Repeating the true native-size PNGs — NO resizing — clipped to the
  // EXISTING walk/road/parking rectangles in the original V133 ground cache.
  g.save();g.beginPath();g.rect(x,y,w,h);g.clip();
- for(let yy=Math.floor(y/a.h)*a.h;yy<y+h;yy+=a.h)
-  for(let xx=Math.floor(x/a.w)*a.w;xx<x+w;xx+=a.w){
+ // Full surfaces repeat on the global 32-grid; edge/road marking
+ // overlays anchor to their requested physical rectangle so a cropped
+ // curb cannot accidentally draw its transparent midpoint at the edge.
+ const edge=/^(?:curb_|road_|crosswalk_|parking_|stone_border|sidewalk_grass_edge)/.test(id);
+ const y0=edge?y:Math.floor(y/a.h)*a.h;
+ const x0=edge?x:Math.floor(x/a.w)*a.w;
+ for(let yy=y0;yy<y+h;yy+=a.h)
+  for(let xx=x0;xx<x+w;xx+=a.w){
    g.drawImage(groundSheet,a.x,a.y,a.w,a.h,xx,yy,a.w,a.h);
    groundDraws++;
   }

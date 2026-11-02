@@ -11,7 +11,7 @@ assert(src.includes('precinctExterior?.art?.roof')&&src.includes('H.cast?.spec')
  src.includes("'./assets/precinct-cast/'+spec.file"),
  'Both visual layers MUST use exact original legacy sources');
 assert(campus.includes("if(window.ROOKIE_V132_PRECINCT?.roof(g,{x:STX,y:STY,alpha,zoom:campus.zoom}))return;"));
-assert(campus.includes('window.ROOKIE_V132_PRECINCT?.npc(g,{...npc,showLabel:campus.zoom>.54})'));
+assert(campus.includes('window.ROOKIE_V132_PRECINCT?.npc(g,{...npc,showLabel:campus.zoom>.54&&!npc.hideName})'));
 assert(campus.includes("if(r.label==='GARAGE')")&&campus.includes("const previous=window.ROOKIE_V131_PRECINCT_BRIDGE"));
 assert(build.includes("build_v131_precinct_preview.py")&&build.includes('v132-precinct-heritage.js'));
 for(const n of ['game.js','outbreak.css','v116-marina.js','v127-citywide-art.js',
@@ -20,7 +20,7 @@ for(const n of ['game.js','outbreak.css','v116-marina.js','v127-citywide-art.js'
  'assets/precinct-cast/diaz.webp'])
  assert(fs.existsSync(path.join(root,n)),'Missing ORIGINAL art/protected file '+n);
 const called=[];
-const g={save(){},restore(){},beginPath(){},fill(){},ellipse(){},fillRect(...a){called.push(['fill',...a]);},
+const g={save(){},restore(){},beginPath(){},fill(){},ellipse(){},rect(){},clip(){},translate(){},scale(){},fillRect(...a){called.push(['fill',...a]);},
  drawImage(...a){called.push(['draw',...a]);},fillText(...a){called.push(['text',...a]);},
  createPattern(im){called.push(['pattern',im.asset]);return 'roofPattern';}};
 const source={complete:true,naturalWidth:128,asset:'roof.png'};
@@ -28,7 +28,10 @@ const specs={brooks:{file:'brooks.webp',heightInWorld:66,frames:
  Array.from({length:12},(_,i)=>({rect:[i*100,0,100,300]}))},
  diaz:{file:'diaz.webp',heightInWorld:66,frames:
  Array.from({length:12},(_,i)=>({rect:[i*100,0,100,300]}))}};
+const visitor={sheet:'station',heightInWorld:60,sourceHeight:300,frames:
+ Array.from({length:12},(_,i)=>({rect:[i*110,0,110,300]}))};
 const window={HARBOR:{precinctExterior:{art:{roof:source}},
+ precinctVisual:{spec:{actors:{maya:visitor}}},
  cast:{spec:specs,identity(name){return /BROOKS/.test(name)?'brooks':/DIAZ/.test(name)?'diaz':null;}}}};
 const Image=function(){this.complete=true;this.naturalWidth=1254;};
 const document={createElement(tag){assert.equal(tag,'canvas');return {width:0,height:0,getContext(){return g;}}}};
@@ -44,6 +47,9 @@ assert.equal(v.roof(g,{x:380,y:96,alpha:.04}),true);
 assert.equal(v.stats().roofBuilds,1,'Static roof must be cached, not reallocated per frame');
 assert.equal(v.npc(g,{id:'station-npc:0',name:'SGT. BROOKS',x:620,y:755,dir:'up'}),true);
 assert.equal(v.npc(g,{id:'campus-npc:diaz',name:'OFCR. DIAZ',x:1040,y:1230,dir:'down'}),true);
+assert.equal(v.npc(g,{id:'station-npc:1',name:'MAYA',x:1330,y:184}),true);
+assert(called.some(x=>x[0]==='draw'&&x[1]?.src?.endsWith('/station-cast.png')),
+ 'Maya must use original measured seated station-cast atlas, not a placeholder');
 assert.equal(v.npc(g,{id:'midtown:npc:0',name:'OFCR. DIAZ',x:620,y:755}),false,
  'Officers in other districts must preserve the original renderer');
 assert.equal(v.npc(g,{id:'station-npc:1',name:'UNMAPPED VISITOR',x:620,y:755}),false,
@@ -51,5 +57,5 @@ assert.equal(v.npc(g,{id:'station-npc:1',name:'UNMAPPED VISITOR',x:620,y:755}),f
 assert(called.some(x=>x[0]==='draw'&&x[1]?.src?.endsWith('/brooks.webp')),
  'Must draw actual legacy officer art instead of an invented block NPC');
 assert(v.stats().castFrames>=2);
-assert(v.stats().castNames.brooks>=1&&v.stats().castNames.diaz>=1);
+assert(v.stats().castNames.brooks>=1&&v.stats().castNames.diaz>=1&&v.stats().castNames.maya>=1);
 console.log('PASS V132 authentic roof source material, original named cast sprites, native world coords, static cache, fallback, isolated scope and existing original/Zombie files');

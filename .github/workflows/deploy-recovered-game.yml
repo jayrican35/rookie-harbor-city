@@ -176,6 +176,13 @@ jobs:
           path: v128-world-quality
           persist-credentials: false
 
+      - name: Check out verified Bayview premium waterfront candidate (isolated)
+        uses: actions/checkout@v4
+        with:
+          ref: e7c8afe04c4155dfa69ca6e80723669c2991932f # green source, live road, and six matched Bayview before/after browser suites
+          path: bayview-premium
+          persist-credentials: false
+
       - name: Recover missing main-campaign environment art
         shell: bash
         working-directory: visual-preview
@@ -1107,6 +1114,57 @@ jobs:
           (p/'index.html').write_text('<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><title>V128 Real Gameplay Quality Review</title><style>body{background:#102b3b;color:#f6eac9;font:16px system-ui;padding:20px}section{margin:20px 0}section>div{display:flex;flex-wrap:wrap;gap:12px}img{width:47%;max-width:420px;border-radius:9px}h2{font-size:19px}</style><h1>V128 vs V127 — Actual Harbor City Browser Captures</h1><p>Left: V127. Right: V128. Ten existing district/edge positions, same original connected game and viewport. Emulated Chrome is not an Android FPS certification.</p>'+cards+'<h2>Road-network junctions</h2><p>Newly connected original world routes</p>'+''.join(f'<figure><img src="road-{r}.png"><figcaption>{r.replace("-"," ").title()}</figcaption></figure>' for r in ['precinct-arterial','westfield-southern-ring','midtown-bayview-feeder','southbay-loop-junction','northgate-arterial'])+'<h2>Jay standing and running</h2><img src="v128-idle.png"><img src="v128-running.png">')
           print('PASS V128 real playable before/after gallery and sprint states')
           PY
+
+      - name: Build separate Bayview premium waterfront — preserve live V128
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v129-bayview
+          cp -a bayview-premium/published-game-capture/. site/preview/v129-bayview/
+          python3 bayview-premium/tools/build_bayview_preview.py site/preview/v129-bayview
+          node --check site/preview/v129-bayview/game-v115.bundle.js
+          (cd bayview-premium && node qa/check-bayview-frontage.cjs)
+          cmp -s site/preview/v128-world-quality/game.js site/preview/v129-bayview/game.js
+          cmp -s site/preview/v128-world-quality/outbreak.css site/preview/v129-bayview/outbreak.css
+          cmp -s site/preview/v128-world-quality/v115-world.js site/preview/v129-bayview/v115-world.js
+          cmp -s site/preview/v128-world-quality/v115-campus.js site/preview/v129-bayview/v115-campus.js
+          cmp -s site/preview/v128-world-quality/v116-marina.js site/preview/v129-bayview/v116-marina.js
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          echo 'PASS independent Bayview: identical campaign, Zombie, Marina and connected-city geometry; only enhanced city art adapter'
+
+      - name: Verify actual Bayview before/after browser screenshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          BAYVIEW_BEFORE_URL='http://127.0.0.1:8765/preview/v128-world-quality/?v116QA=0&pilotQA=1' \
+          BAYVIEW_AFTER_URL='http://127.0.0.1:8765/preview/v129-bayview/?v116QA=0&pilotQA=1' \
+          BAYVIEW_EVIDENCE="$PWD/site/preview/v129-bayview/evidence" \
+            node bayview-premium/qa/capture-bayview-frontage.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageChops
+          import json,html
+          p=Path('site/preview/v129-bayview/evidence')
+          scenes=[
+            'recorded-bayview-road-mouth','southbay-road-approach',
+            'bayview-south-terrace','bayview-west-promenade',
+            'bayview-marina-seam','original-marina-protected']
+          metrics={}
+          for scene in scenes:
+            with Image.open(p/f'{scene}-before.png') as a, Image.open(p/f'{scene}-after.png') as b:
+              aa=a.convert('RGB');bb=b.convert('RGB')
+              assert aa.size==bb.size
+              dif=ImageChops.difference(aa,bb).convert('L').histogram()
+              metrics[scene]=round(sum(dif[15:])/max(1,sum(dif)),4)
+          assert all(metrics[s]>.002 for s in scenes[:5]),'Bayview art changes must be visible in actual gameplay'
+          (p/'pixel-differences.json').write_text(json.dumps(metrics,indent=2))
+          cards=''.join('<section><h2>'+html.escape(n.replace('-',' ').title())+'</h2><div><img src="'+n+'-before.png" alt="Before"><img src="'+n+'-after.png" alt="After"></div></section>' for n in scenes)
+          (p/'index.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bayview Premium — Actual Gameplay Comparisons</title><style>body{background:#112c38;color:#f6e8bd;font:15px system-ui;padding:18px}h1{font-size:24px}h2{font-size:18px}section{margin:25px 0}section div{display:flex;gap:10px;flex-wrap:wrap}img{width:46%;min-width:155px;max-width:430px;border-radius:8px}</style><h1>ROOKIE Harbor City — Bayview Waterfront Repair</h1><p>Left: working V128 before. Right: restored roadway and premium Bayview extension. Actual emulated mobile-browser gameplay, same camera and world. Original Marina remains authoritative.</p>'+cards+'</html>')
+          print('PASS six real before/after Bayview game captures',metrics)
+          PY
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

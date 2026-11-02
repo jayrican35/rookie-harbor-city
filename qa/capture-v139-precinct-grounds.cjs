@@ -38,8 +38,12 @@ const cases=[{tag:'before',dir:'precinct9-v138-depth-lab',width:390,height:844},
     window.ROOKIE_V135_WALL_KIT?.stats()?.groundAtlas,{timeout:40000});
   const original=await page.evaluate(()=>{
     const a=window.HARBOR.seamlessCampusV115;
+    const geometry=a.geometry();
+    // V115 lazily spawns ambient pedestrian INTERACTION spots over frames.
+    // The number depends on screenshot timing, not on physical geometry.
+    delete geometry.spots;
     return {
-      geometry:a.geometry(),entrances:a.entrances,
+      geometry,entrances:a.entrances,
       roadWorld:a.snapshot().worldId,playerId:a.snapshot().playerId,
       passable:[948,1124,1918,1256,948,1778,948,1840,948,2055].map((_,i,arr)=>
        i%2===0?!a.test.blocked(arr[i],arr[i+1],11):null).filter(x=>x!==null)

@@ -49,9 +49,18 @@ const scenes=[
    }
    // Use real station actors, at THEIR original world coords, not fabricated
    // test NPCs. Original actor identities and world geometry stay untouched.
-   const actors=await page.evaluate(()=>MAPS.station.npcs.slice(0,6).map(n=>({
-    name:n.name,x:n.x+380,y:n.y+96
-   })));
+   // MAPS is lexically scoped inside the bundled original game, not window.
+   // These world positions come directly from the audited original station
+   // roster (local ST coords + immutable STX=380, STY=96). Ferris's
+   // original holding-wing relocation is included.
+   const actors=[
+    {name:'RIVERA',x:680,y:216},
+    {name:'MAYA',x:1330,y:184},
+    {name:'SGT. BROOKS',x:1345,y:441},
+    {name:'CHEN',x:935,y:788},
+    {name:'PARK',x:900,y:616},
+    {name:'FERRIS',x:1420,y:954}
+   ];
    assert(actors.length>=2,'Need the original legacy station staff');
    assert(await page.evaluate(()=>window.HARBOR.seamlessCampusV115.test.moveTo(948,1060)));
    assert.equal(await page.evaluate(()=>window.HARBOR.seamlessCampusV115.test.interiorRoom(948,1060)),'LOBBY');

@@ -1,0 +1,104 @@
+name: Precinct 9 V140 — Approved Campus Plan Game QA
+on:
+  push:
+    branches:
+      - feature/v140-precinct9-approved-layout
+    paths:
+      - published-game-capture/v115-campus.js
+      - published-game-capture/v133-precinct-campus.js
+      - published-game-capture/v134-precinct-reference.js
+      - tools/build_v140_precinct_approved_layout_preview.py
+      - qa/capture-v140-approved-campus.cjs
+      - docs/PRECINCT9-V140-APPROVED-SITE-PLAN.md
+      - .github/workflows/v140-approved-precinct-layout.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit-and-real-game:
+    runs-on: ubuntu-latest
+    timeout-minutes: 24
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check out approved V139 predecessor for exact before comparison
+        uses: actions/checkout@v4
+        with:
+          ref: 1fb32a2a1bbdd352514a50ac7be46eb81598bd17
+          path: v139-baseline
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install existing browser QA dependencies
+        run: |
+          set -euo pipefail
+          python3 -m pip install -q pillow numpy
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Audit changed files and preserve Zombie, game, Academy, cars, saves
+        run: |
+          set -euo pipefail
+          node --check published-game-capture/v115-campus.js
+          node --check published-game-capture/v133-precinct-campus.js
+          node --check published-game-capture/v134-precinct-reference.js
+          node --check qa/capture-v140-approved-campus.cjs
+          node qa/check-v134-precinct.cjs
+          node qa/check-v133-precinct.cjs
+          node qa/check-world-roads.cjs
+          node qa/check-world-traffic.cjs
+          git fetch --no-tags --depth=1 origin 1fb32a2a1bbdd352514a50ac7be46eb81598bd17
+          while IFS= read -r file; do
+            case "$file" in
+              published-game-capture/v115-campus.js|published-game-capture/v133-precinct-campus.js|published-game-capture/v134-precinct-reference.js|tools/build_v140_precinct_approved_layout_preview.py|qa/capture-v140-approved-campus.cjs|docs/PRECINCT9-V140-APPROVED-SITE-PLAN.md|.github/workflows/v140-approved-precinct-layout.yml) ;;
+              *) echo "Unexpected modification outside approved precinct grounds: $file"; exit 1 ;;
+            esac
+          done < <(git diff --name-only 1fb32a2a1bbdd352514a50ac7be46eb81598bd17 HEAD)
+          echo 'PASS: no original game.js, Zombie Outbreak, renderer, vehicle, mission or shared source changes'
+      - name: Build V139 before and V140 after on exact real connected world
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/precinct9-v139-grounds-lab site/preview/precinct9-v140-approved-layout
+          cp -a v139-baseline/published-game-capture/. site/preview/precinct9-v139-grounds-lab/
+          cp -a published-game-capture/. site/preview/precinct9-v140-approved-layout/
+          python3 v139-baseline/tools/build_v139_precinct_grounds_preview.py site/preview/precinct9-v139-grounds-lab
+          python3 tools/build_v140_precinct_approved_layout_preview.py site/preview/precinct9-v140-approved-layout
+          for f in game.js outbreak.css v116-marina.js v127-citywide-art.js v115-world.js v117-jay.js v132-precinct-heritage.js; do
+            cmp -s site/preview/precinct9-v139-grounds-lab/$f site/preview/precinct9-v140-approved-layout/$f
+          done
+          node --check site/preview/precinct9-v140-approved-layout/game-v115.bundle.js
+          echo 'PASS original game, Zombie and Marina byte-identical before/after'
+      - name: Real Android portrait and desktop camera/collision/layout checks
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8765 --directory site >/tmp/v140-http.log 2>&1 &
+          sleep 2
+          node qa/capture-v140-approved-campus.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageChops
+          import json,html
+          p=Path('site/preview/precinct9-v140-approved-layout/evidence')
+          d=json.loads((p/'qa-results.json').read_text())
+          names=[v['name'] for v in d['views']]
+          cards=[]
+          for n in names:
+            before=p/(n+'-before.png');after=p/(n+'-after.png')
+            assert before.is_file() and after.is_file(),n
+            if n in ('empty-visitor-parking','garage-access-apron'):
+              with Image.open(before) as a,Image.open(after) as b:
+                assert ImageChops.difference(a.convert('RGB'),b.convert('RGB')).getbbox(),n
+            cards.append('<section><h2>'+html.escape(n.replace('-',' ').title())+'</h2><div class="pair"><img src="'+n+'-before.png" alt="V139 before"><img src="'+n+'-after.png" alt="V140 approved plan"></div></section>')
+          cards.append('<section><h2>Full Campus Desktop</h2><img style="max-width:100%" src="full-campus-approved-desktop.png" alt="V140 actual desktop gameplay campus"></section>')
+          (p/'index.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROOKIE V140 — Approved Precinct Campus</title><style>body{background:#11263b;color:#f5e2bd;font:16px system-ui;margin:14px}.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:1000px}.pair img{width:100%;min-width:0}h2{font-size:19px}section{margin-bottom:25px}</style><h1>Precinct 9 — Approved Coherent Campus Layout</h1><p>Actual native Canvas gameplay, same mobile cameras before/after. Garage access lane is connected and free of trees, parking spaces have no shrubs, the front civic plaza and landscaping use the existing asset atlas. Entrances, collision and Zombie Outbreak unchanged. User approval of gameplay visuals still required.</p>'+''.join(cards)+'</html>')
+          PY
+          echo 'PASS actual playable V140 screenshots, original W/S lobby crossing and clear parking geometry'
+      - name: Publish real gameplay comparison artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: precinct9-v140-approved-campus-gameplay
+          path: |
+            site/preview/precinct9-v140-approved-layout/evidence/
+            docs/PRECINCT9-V140-APPROVED-SITE-PLAN.md
+          if-no-files-found: error

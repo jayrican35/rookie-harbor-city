@@ -1056,7 +1056,10 @@ jobs:
           (cd v128-world-quality && node qa/check-v127-citywide.cjs)
           (cd v128-world-quality && node qa/check-v126-polish.cjs)
           (cd v128-world-quality && node qa/check-v117-jay.cjs)
-          cmp -s game-backup/published-game-capture/game.js site/preview/v128-world-quality/game.js
+          # The connected-city preview inherits its campaign game.js from V127,
+          # not from the older published-v1 backup. Compare like-for-like.
+          # The production site still receives only published-v1 below.
+          cmp -s site/preview/v127-citywide/game.js site/preview/v128-world-quality/game.js
           cmp -s game-backup/published-game-capture/outbreak.css site/preview/v128-world-quality/outbreak.css
           cmp -s site/preview/v127-citywide/outbreak.css site/preview/v128-world-quality/outbreak.css
           cmp -s game-backup/published-game-capture/game.js site/game.js

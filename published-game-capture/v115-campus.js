@@ -375,7 +375,13 @@
         // Original station rooms/furniture keep their physical rectangles.
         // Only their DRAWING is upgraded with cached classic art sources.
         ST.rooms.forEach(r=>{
-          if(!previous?.room(c,r))drawRoom(r);
+          if(r.label==='GARAGE'){
+            // The prior classic garage already owns the correct ramps,
+            // door arrow and bay geometry. Only port missing original
+            // cabinet/counter art as a small post-paint source crop.
+            drawRoom(r);
+            previous?.garageDetails?.(c,r);
+          }else if(!previous?.room(c,r))drawRoom(r);
         });
         ST.furn.forEach(f=>{
           if(!previous?.furniture(c,f))drawFurn(f);

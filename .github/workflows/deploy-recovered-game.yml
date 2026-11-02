@@ -1613,10 +1613,13 @@ jobs:
           node --check site/preview/precinct9-v140-approved-layout/v115-campus.js
           node --check site/preview/precinct9-v140-approved-layout/v133-precinct-campus.js
           node --check site/preview/precinct9-v140-approved-layout/v134-precinct-reference.js
-          for f in game.js outbreak.css v116-marina.js v127-citywide-art.js v115-world.js v117-jay.js v132-precinct-heritage.js; do
+          for f in game.js outbreak.css v116-marina.js v127-citywide-art.js v115-world.js v117-jay.js; do
             cmp -s "site/preview/precinct9-v139-grounds-lab/$f" "site/preview/precinct9-v140-approved-layout/$f"
             cmp -s "site/preview/v128-world-quality/$f" "site/preview/precinct9-v140-approved-layout/$f"
           done
+          # V132's precinct roof artwork did not exist in V128; validate it
+          # against the direct V139 parent instead of a nonexistent file.
+          cmp -s site/preview/precinct9-v139-grounds-lab/v132-precinct-heritage.js site/preview/precinct9-v140-approved-layout/v132-precinct-heritage.js
           cmp -s game-backup/published-game-capture/game.js site/game.js
           cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
           echo 'PASS original story, Zombie, NPC/vehicle engine and approved building files all unchanged'

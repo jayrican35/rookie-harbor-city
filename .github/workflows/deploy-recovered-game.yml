@@ -186,7 +186,7 @@ jobs:
       - name: Check out original-art Precinct 9 review candidate (isolated)
         uses: actions/checkout@v4
         with:
-          ref: 166803ca2741d17e05b30453e646875399c5c074 # real mobile 14-scene and source QA successful
+          ref: c0b391611cc96805b279b0bbca9e6c75988d1598 # real mobile 14-scene and source QA successful
           path: precinct9-legacy
           persist-credentials: false
 

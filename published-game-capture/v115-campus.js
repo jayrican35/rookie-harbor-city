@@ -485,9 +485,11 @@
     g.fillStyle='rgba(255,255,255,.30)';for(let y=FRONT.y+20;y<1650;y+=36)g.fillRect(FRONT.x-41,y,82,2);
     // The rebuilt building now has room for its entire 1,936-unit interior.
     // The old 640x448 building and its unrelated garage are NOT rendered.
-    g.fillStyle='#535960';g.fillRect(2325,1280,380,378);
+    if(!window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE){
+     g.fillStyle='#535960';g.fillRect(2325,1280,380,378);
     g.fillStyle='#bbc2c5';for(let i=0;i<5;i++)g.fillRect(2337+i*70,1280,60,364);
-    g.fillStyle='#d2b77c';g.fillRect(2345,1267,312,16);
+     g.fillStyle='#d2b77c';g.fillRect(2345,1267,312,16);
+    } // V140 paints this obsolete lot as planted buffer in original ground cache
     g.fillStyle='#c9d5d9';g.fillRect(STX-15,STY+1027,1180,28);
   }
   function drawDecorFallback(d){
@@ -693,8 +695,18 @@
       drawDecorFallback(d);
     }
     // Scaled landscape composition along the expanded precinct promenade.
-    for(const [x,y,r] of [[440,1310,31],[530,1530,28],[1450,1480,35],[1730,1510,36],[2140,1538,38],[2470,1140,29]])drawTree(x,y,r);
-    for(const [x,y] of [[690,1325],[1260,1315],[1950,1310]]){
+    // Earlier decorative trees at 1450/1480,1730/1510,2140/1538
+    // physically cover the new parking stalls and garage drive. Do not
+    // spawn them in the owner-approved layout; trees stay on perimeter.
+    const trees=window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE?
+      [[440,1310,31],[530,1530,28],[2470,1140,29]]:
+      [[440,1310,31],[530,1530,28],[1450,1480,35],
+       [1730,1510,36],[2140,1538,38],[2470,1140,29]];
+    for(const [x,y,r] of trees)drawTree(x,y,r);
+    const lamps=window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE?
+      [[690,1325],[1260,1315],[2301,1455]]:
+      [[690,1325],[1260,1315],[1950,1310]];
+    for(const [x,y] of lamps){
       g.fillStyle='#203e49';g.fillRect(x-4,y-34,8,38);g.fillStyle='#fbe0a0';g.fillRect(x-9,y-37,18,10);
     }
     g.fillStyle='rgba(21,36,55,.58)';g.fillRect(580,1448,345,32);

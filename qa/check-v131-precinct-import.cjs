@@ -8,8 +8,13 @@ const root=path.join(__dirname,'../published-game-capture');
 const src=fs.readFileSync(path.join(root,'v131-precinct-legacy-bridge.js'),'utf8');
 const v115=fs.readFileSync(path.join(root,'v115-campus.js'),'utf8');
 const built=fs.readFileSync(path.join(__dirname,'../tools/build_v131_precinct_preview.py'),'utf8');
-assert(!/new Image\s*\(|requestAnimationFrame|localStorage|sessionStorage|window\.MAPS\s*=/.test(src),
- 'Bridge must only reuse original image objects and existing layout');
+assert(!/requestAnimationFrame|setInterval|localStorage|sessionStorage|window\.MAPS\s*=/.test(src),
+ 'Bridge must never create a game loop, persistent state or collision changes');
+assert(src.includes("const classicFiles=Object.freeze({") &&
+ src.includes("lockers:'f330a30836b8ab16d8e3.webp'") &&
+ src.includes("board:'642e392a9f180d575f32.webp'") &&
+ src.includes("im.src='./assets/embedded/'+file"),
+ 'B2 fallback must decode only the SAME user-authored original repository sprites');
 assert(built.includes('v131-precinct-legacy-bridge.js?v='));
 assert(!src.includes('canvas.addEventListener')&&!src.includes('worldId='));
 assert(v115.includes('const previous=window.ROOKIE_V131_PRECINCT_BRIDGE;'));

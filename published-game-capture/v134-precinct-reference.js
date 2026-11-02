@@ -475,7 +475,10 @@ function makeGround(){
   // Flower borders on each side; NOT across the central x948 path.
   basket(g,x,y,w);
  }
- for(const [x,y,w]of [[425,1480,131],[652,1540,97],[1085,1498,114],[1134,1625,176]])
+ const plantedBorders=window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE?
+   [[462,1623,140],[646,1623,145],[1092,1623,170],[1340,1623,194]]:
+   [[425,1480,131],[652,1540,97],[1085,1498,114],[1134,1625,176]];
+ for(const [x,y,w]of plantedBorders)
   basket(g,x,y,w);
  // Matching original-reference palms and city bench/vantage boundaries.
  palm(g,422,1301,72);palm(g,1300,1340,77);

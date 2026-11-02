@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Precinct 9 — Layout Review</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#102238;color:#f4e6c9;font:15px system-ui,sans-serif}
+header{padding:12px 18px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}h1{font-size:19px;margin:0}
+button,a{font:inherit;color:inherit}button{background:#24445b;border:1px solid #c2a46b;border-radius:5px;padding:8px 12px;cursor:pointer}
+button[aria-pressed=true]{background:#e5c786;color:#14263c}small{color:#c9d2d6}iframe{width:100%;height:calc(100dvh - 100px);min-height:500px;border:0;display:block}
+</style>
+<header><h1>Precinct 9</h1><button data-version="after" aria-pressed="true">Updated layout</button><button data-version="before" aria-pressed="false">Previous layout</button><a href="./evidence/">Screenshots & walkthrough</a><small id="status">Loading review…</small></header>
+<iframe title="Playable Precinct 9 review" allow="autoplay"></iframe>
+<script>
+const frame=document.querySelector('iframe'),status=document.querySelector('#status');
+let attempt=0;
+function load(version){
+ attempt++;
+ document.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.version===version)));
+ status.textContent='Loading review…';
+ frame.src='./preview/'+(version==='before'?'precinct9-audit-before':'precinct9-v140-approved-layout')+'/?pilotQA=1&v116QA=0';
+}
+frame.addEventListener('load',()=>{
+ const current=attempt;
+ function ready(tries){
+  if(current!==attempt)return;
+  const game=frame.contentWindow.HARBOR?.seamlessCampusV115;
+  if(game&&game.openAt(948,1430,.8)){status.textContent='Development preview · WASD / arrows or touch controls';return;}
+  if(tries>0)setTimeout(()=>ready(tries-1),100);
+  else status.textContent='Could not open preview. Reload to retry.';
+ }
+ ready(100);
+});
+document.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>load(b.dataset.version)));
+load('after');
+</script></html>

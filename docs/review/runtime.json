@@ -1,0 +1,632 @@
+[
+  {
+    "variant": "before",
+    "width": 390,
+    "height": 844,
+    "inside": {
+      "cameraX": 753,
+      "cameraY": 719.3250103017108,
+      "zoom": 1,
+      "follows": true,
+      "roofAlpha": 0.04,
+      "playerX": 948,
+      "playerY": 1121.3082440279536,
+      "dir": "up",
+      "room": "LOBBY",
+      "crossings": 2
+    },
+    "outside": {
+      "cameraX": 753,
+      "cameraY": 716.7263416209257,
+      "zoom": 1,
+      "follows": true,
+      "roofAlpha": 0.12,
+      "playerX": 948,
+      "playerY": 1152.3272181897787,
+      "dir": "down",
+      "room": null,
+      "crossings": 3
+    },
+    "touch": {
+      "dx": 73.95822203457465,
+      "dy": 0
+    },
+    "errors": [],
+    "failed": [
+      {
+        "status": 404,
+        "url": "http://127.0.0.1:8766/preview/precinct9-audit-before/assets/exterior/parking_bay.webp"
+      },
+      {
+        "status": 404,
+        "url": "http://127.0.0.1:8766/preview/precinct9-audit-before/assets/exterior/wheel_stop.webp"
+      },
+      {
+        "status": 404,
+        "url": "http://127.0.0.1:8766/preview/precinct9-audit-before/assets/civilians/civilian_man_blue.webp"
+      },
+      {
+        "status": 404,
+        "url": "http://127.0.0.1:8766/preview/precinct9-audit-before/assets/civilians/civilian_man_tan.webp"
+      },
+      {
+        "status": 404,
+        "url": "http://127.0.0.1:8766/preview/precinct9-audit-before/assets/civilians/civilian_woman_red.webp"
+      }
+    ],
+    "runtime": {
+      "snapshot": {
+        "schema": 1,
+        "worldId": "harbor-main",
+        "areaId": "precinct-campus-v115",
+        "playerId": "local-preview",
+        "x": 2053.9582220345746,
+        "y": 1550,
+        "instanceId": "harbor-main:campus",
+        "transport": "none",
+        "authoritativeServer": false,
+        "committedToSave": false
+      },
+      "geometry": {
+        "walls": 34,
+        "furniture": 41,
+        "rooms": 11,
+        "stationFootprint": {
+          "x": 380,
+          "y": 96,
+          "w": 1936,
+          "h": 1172
+        },
+        "plazaPlacement": {
+          "x": 148,
+          "y": 600
+        },
+        "separateSceneLoads": 0,
+        "doorTransitions": "world-space-continuous"
+      },
+      "metrics": {
+        "ground": 865,
+        "facade": 0,
+        "actors": 2595,
+        "groundBuilds": 1,
+        "styleVersion": "v133-precinct-campus-art-1",
+        "stoneReady": true,
+        "groundAtlas": true,
+        "approvedCampus": true
+      },
+      "atlas": {
+        "loaded": true,
+        "error": null,
+        "frameDraws": 317,
+        "testPaints": 0,
+        "windowDraws": 18,
+        "entranceFrames": 1,
+        "entranceDoorDraws": 263,
+        "moduleCount": 49,
+        "atlasSize": [
+          1024,
+          1024
+        ],
+        "windowAtlas": true,
+        "entranceAtlas": true,
+        "groundAtlas": true,
+        "groundError": null,
+        "groundDraws": 1411,
+        "groundModuleCount": 34
+      },
+      "passability": [
+        {
+          "x": 1675,
+          "y": 1560,
+          "blocked": false
+        },
+        {
+          "x": 1750,
+          "y": 1560,
+          "blocked": false
+        },
+        {
+          "x": 1825,
+          "y": 1560,
+          "blocked": false
+        },
+        {
+          "x": 1900,
+          "y": 1560,
+          "blocked": false
+        },
+        {
+          "x": 1975,
+          "y": 1560,
+          "blocked": false
+        },
+        {
+          "x": 2050,
+          "y": 1560,
+          "blocked": false
+        },
+        {
+          "x": 2125,
+          "y": 1560,
+          "blocked": false
+        },
+        {
+          "x": 2200,
+          "y": 1560,
+          "blocked": false
+        }
+      ]
+    }
+  },
+  {
+    "variant": "before",
+    "width": 1280,
+    "height": 720,
+    "inside": {
+      "cameraX": 308,
+      "cameraY": 781.3048515365906,
+      "zoom": 1,
+      "follows": true,
+      "roofAlpha": 0.04,
+      "playerX": 948,
+      "playerY": 1121.287477667086,
+      "dir": "up",
+      "room": "LOBBY",
+      "crossings": 2
+    },
+    "outside": {
+      "cameraX": 308,
+      "cameraY": 778.0228265288421,
+      "zoom": 1,
+      "follows": true,
+      "roofAlpha": 0.12,
+      "playerX": 948,
+      "playerY": 1152.0901222178663,
+      "dir": "down",
+      "room": null,
+      "crossings": 3
+    },
+    "touch": null,
+    "errors": [],
+    "failed": [
+      {
+        "status": 404,
+        "url": "http://127.0.0.1:8766/preview/precinct9-audit-before/assets/exterior/parking_bay.webp"
+      },
+      {
+        "status": 404,
+        "url": "http://127.0.0.1:8766/preview/precinct9-audit-before/assets/exterior/wheel_stop.webp"
+      },
+      {
+        "status": 404,
+        "url": "http://127.0.0.1:8766/preview/precinct9-audit-before/assets/civilians/civilian_man_blue.webp"
+      },
+      {
+        "status": 404,
+        "url": "http://127.0.0.1:8766/preview/precinct9-audit-before/assets/civilians/civilian_man_tan.webp"
+      },
+      {
+        "status": 404,
+        "url": "http://127.0.0.1:8766/preview/precinct9-audit-before/assets/civilians/civilian_woman_red.webp"
+      }
+    ],
+    "runtime": {
+      "snapshot": {
+        "schema": 1,
+        "worldId": "harbor-main",
+        "areaId": "precinct-campus-v115",
+        "playerId": "local-preview",
+        "x": 1980,
+        "y": 1550,
+        "instanceId": "harbor-main:campus",
+        "transport": "none",
+        "authoritativeServer": false,
+        "committedToSave": false
+      },
+      "geometry": {
+        "walls": 34,
+        "furniture": 41,
+        "rooms": 11,
+        "stationFootprint": {
+          "x": 380,
+          "y": 96,
+          "w": 1936,
+          "h": 1172
+        },
+        "plazaPlacement": {
+          "x": 148,
+          "y": 600
+        },
+        "separateSceneLoads": 0,
+        "doorTransitions": "world-space-continuous"
+      },
+      "metrics": {
+        "ground": 827,
+        "facade": 0,
+        "actors": 2481,
+        "groundBuilds": 1,
+        "styleVersion": "v133-precinct-campus-art-1",
+        "stoneReady": true,
+        "groundAtlas": true,
+        "approvedCampus": true
+      },
+      "atlas": {
+        "loaded": true,
+        "error": null,
+        "frameDraws": 564,
+        "testPaints": 0,
+        "windowDraws": 18,
+        "entranceFrames": 1,
+        "entranceDoorDraws": 510,
+        "moduleCount": 49,
+        "atlasSize": [
+          1024,
+          1024
+        ],
+        "windowAtlas": true,
+        "entranceAtlas": true,
+        "groundAtlas": true,
+        "groundError": null,
+        "groundDraws": 1411,
+        "groundModuleCount": 34
+      },
+      "passability": [
+        {
+          "x": 1675,
+          "y": 1560,
+          "blocked": false
+        },
+        {
+          "x": 1750,
+          "y": 1560,
+          "blocked": false
+        },
+        {
+          "x": 1825,
+          "y": 1560,
+          "blocked": false
+        },
+        {
+          "x": 1900,
+          "y": 1560,
+          "blocked": false
+        },
+        {
+          "x": 1975,
+          "y": 1560,
+          "blocked": false
+        },
+        {
+          "x": 2050,
+          "y": 1560,
+          "blocked": false
+        },
+        {
+          "x": 2125,
+          "y": 1560,
+          "blocked": false
+        },
+        {
+          "x": 2200,
+          "y": 1560,
+          "blocked": false
+        }
+      ]
+    }
+  },
+  {
+    "variant": "after",
+    "width": 390,
+    "height": 844,
+    "inside": {
+      "cameraX": 753,
+      "cameraY": 719.3053164823293,
+      "zoom": 1,
+      "follows": true,
+      "roofAlpha": 0.04,
+      "playerX": 948,
+      "playerY": 1121.2874776670865,
+      "dir": "up",
+      "room": "LOBBY",
+      "crossings": 2
+    },
+    "outside": {
+      "cameraX": 753,
+      "cameraY": 716.1427275599686,
+      "zoom": 1,
+      "follows": true,
+      "roofAlpha": 0.12,
+      "playerX": 948,
+      "playerY": 1151.6592596820485,
+      "dir": "down",
+      "room": null,
+      "crossings": 3
+    },
+    "touch": {
+      "dx": 76.7088362839836,
+      "dy": 0
+    },
+    "errors": [],
+    "failed": [
+      {
+        "status": 404,
+        "url": "http://127.0.0.1:8766/preview/precinct9-v140-approved-layout/assets/exterior/parking_bay.webp"
+      },
+      {
+        "status": 404,
+        "url": "http://127.0.0.1:8766/preview/precinct9-v140-approved-layout/assets/exterior/wheel_stop.webp"
+      },
+      {
+        "status": 404,
+        "url": "http://127.0.0.1:8766/preview/precinct9-v140-approved-layout/assets/civilians/civilian_man_blue.webp"
+      },
+      {
+        "status": 404,
+        "url": "http://127.0.0.1:8766/preview/precinct9-v140-approved-layout/assets/civilians/civilian_man_tan.webp"
+      },
+      {
+        "status": 404,
+        "url": "http://127.0.0.1:8766/preview/precinct9-v140-approved-layout/assets/civilians/civilian_woman_red.webp"
+      }
+    ],
+    "runtime": {
+      "snapshot": {
+        "schema": 1,
+        "worldId": "harbor-main",
+        "areaId": "precinct-campus-v115",
+        "playerId": "local-preview",
+        "x": 2056.7088362839836,
+        "y": 1550,
+        "instanceId": "harbor-main:campus",
+        "transport": "none",
+        "authoritativeServer": false,
+        "committedToSave": false
+      },
+      "geometry": {
+        "walls": 34,
+        "furniture": 41,
+        "rooms": 11,
+        "stationFootprint": {
+          "x": 380,
+          "y": 96,
+          "w": 1936,
+          "h": 1172
+        },
+        "plazaPlacement": {
+          "x": 148,
+          "y": 600
+        },
+        "separateSceneLoads": 0,
+        "doorTransitions": "world-space-continuous"
+      },
+      "metrics": {
+        "ground": 875,
+        "facade": 0,
+        "actors": 2625,
+        "groundBuilds": 1,
+        "styleVersion": "v133-precinct-campus-art-1",
+        "stoneReady": true,
+        "groundAtlas": true,
+        "approvedCampus": true
+      },
+      "atlas": {
+        "loaded": true,
+        "error": null,
+        "frameDraws": 323,
+        "testPaints": 0,
+        "windowDraws": 18,
+        "entranceFrames": 1,
+        "entranceDoorDraws": 269,
+        "moduleCount": 49,
+        "atlasSize": [
+          1024,
+          1024
+        ],
+        "windowAtlas": true,
+        "entranceAtlas": true,
+        "groundAtlas": true,
+        "groundError": null,
+        "groundDraws": 1879,
+        "groundModuleCount": 34
+      },
+      "passability": [
+        {
+          "x": 1675,
+          "y": 1560,
+          "blocked": false
+        },
+        {
+          "x": 1750,
+          "y": 1560,
+          "blocked": false
+        },
+        {
+          "x": 1825,
+          "y": 1560,
+          "blocked": false
+        },
+        {
+          "x": 1900,
+          "y": 1560,
+          "blocked": false
+        },
+        {
+          "x": 1975,
+          "y": 1560,
+          "blocked": false
+        },
+        {
+          "x": 2050,
+          "y": 1560,
+          "blocked": false
+        },
+        {
+          "x": 2125,
+          "y": 1560,
+          "blocked": false
+        },
+        {
+          "x": 2200,
+          "y": 1560,
+          "blocked": false
+        }
+      ]
+    }
+  },
+  {
+    "variant": "after",
+    "width": 1280,
+    "height": 720,
+    "inside": {
+      "cameraX": 308,
+      "cameraY": 781.0392947165503,
+      "zoom": 1,
+      "follows": true,
+      "roofAlpha": 0.04,
+      "playerX": 948,
+      "playerY": 1121.2874776670863,
+      "dir": "up",
+      "room": "LOBBY",
+      "crossings": 2
+    },
+    "outside": {
+      "cameraX": 308,
+      "cameraY": 779.5249749864231,
+      "zoom": 1,
+      "follows": true,
+      "roofAlpha": 0.12,
+      "playerX": 948,
+      "playerY": 1151.5900798836435,
+      "dir": "down",
+      "room": null,
+      "crossings": 3
+    },
+    "touch": null,
+    "errors": [],
+    "failed": [
+      {
+        "status": 404,
+        "url": "http://127.0.0.1:8766/preview/precinct9-v140-approved-layout/assets/exterior/parking_bay.webp"
+      },
+      {
+        "status": 404,
+        "url": "http://127.0.0.1:8766/preview/precinct9-v140-approved-layout/assets/exterior/wheel_stop.webp"
+      },
+      {
+        "status": 404,
+        "url": "http://127.0.0.1:8766/preview/precinct9-v140-approved-layout/assets/civilians/civilian_man_blue.webp"
+      },
+      {
+        "status": 404,
+        "url": "http://127.0.0.1:8766/preview/precinct9-v140-approved-layout/assets/civilians/civilian_man_tan.webp"
+      },
+      {
+        "status": 404,
+        "url": "http://127.0.0.1:8766/preview/precinct9-v140-approved-layout/assets/civilians/civilian_woman_red.webp"
+      }
+    ],
+    "runtime": {
+      "snapshot": {
+        "schema": 1,
+        "worldId": "harbor-main",
+        "areaId": "precinct-campus-v115",
+        "playerId": "local-preview",
+        "x": 1980,
+        "y": 1550,
+        "instanceId": "harbor-main:campus",
+        "transport": "none",
+        "authoritativeServer": false,
+        "committedToSave": false
+      },
+      "geometry": {
+        "walls": 34,
+        "furniture": 41,
+        "rooms": 11,
+        "stationFootprint": {
+          "x": 380,
+          "y": 96,
+          "w": 1936,
+          "h": 1172
+        },
+        "plazaPlacement": {
+          "x": 148,
+          "y": 600
+        },
+        "separateSceneLoads": 0,
+        "doorTransitions": "world-space-continuous"
+      },
+      "metrics": {
+        "ground": 869,
+        "facade": 0,
+        "actors": 2607,
+        "groundBuilds": 2,
+        "styleVersion": "v133-precinct-campus-art-1",
+        "stoneReady": true,
+        "groundAtlas": true,
+        "approvedCampus": true
+      },
+      "atlas": {
+        "loaded": true,
+        "error": null,
+        "frameDraws": 549,
+        "testPaints": 0,
+        "windowDraws": 18,
+        "entranceFrames": 1,
+        "entranceDoorDraws": 496,
+        "moduleCount": 49,
+        "atlasSize": [
+          1024,
+          1024
+        ],
+        "windowAtlas": true,
+        "entranceAtlas": true,
+        "groundAtlas": true,
+        "groundError": null,
+        "groundDraws": 1879,
+        "groundModuleCount": 34
+      },
+      "passability": [
+        {
+          "x": 1675,
+          "y": 1560,
+          "blocked": false
+        },
+        {
+          "x": 1750,
+          "y": 1560,
+          "blocked": false
+        },
+        {
+          "x": 1825,
+          "y": 1560,
+          "blocked": false
+        },
+        {
+          "x": 1900,
+          "y": 1560,
+          "blocked": false
+        },
+        {
+          "x": 1975,
+          "y": 1560,
+          "blocked": false
+        },
+        {
+          "x": 2050,
+          "y": 1560,
+          "blocked": false
+        },
+        {
+          "x": 2125,
+          "y": 1560,
+          "blocked": false
+        },
+        {
+          "x": 2200,
+          "y": 1560,
+          "blocked": false
+        }
+      ]
+    }
+  }
+]

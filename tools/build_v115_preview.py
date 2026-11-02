@@ -76,7 +76,7 @@ html = html.replace('</body>',
     '<span id="v115PreviewStamp" aria-label="V115 development preview">V115 DEV BUILD</span>\n</body>')
 entry_file.write_text(html, encoding='utf-8')
 
-assert source == engine_file.read_text('utf-8'), 'The legacy engine was modified'
+assert engine_bytes == engine_file.read_bytes(), 'The legacy engine was modified'
 assert html.index('v115-preview-save-isolation.js') < html.index('game-v115.bundle.js')
 assert 'src="./game.js"' not in html
 assert 'src="./v115-world.js"' not in html

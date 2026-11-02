@@ -193,12 +193,25 @@ function approvedParkingSpace(g,x,y,w=70,h=92,accessible=false){
  }
 }
 function approvedNorthGround(g){
+ // One authoritative base for the north-campus rectangle. The older
+ // optional terrain passes are clipped here by the existing world painter.
+ if(!fillT(g,'grass',310,1110,2400,611))ink(g,310,1110,2400,611,'#628d56');
  // First paint over the visually detached old lot, into a continuous
  // pedestrian plaza. V134's existing civic planter and entrance paint
  // remains authoritative above this base surface.
  pavers(g,419,1280,1210,416,32);
  pavers(g,876,1133,143,546,32);
+ // Continuous street-side pedestrian pavement reaches Harbor Avenue;
+ // the driveway is cut through this strip by the asphalt authoring below.
+ pavers(g,310,1696,2000,25,32);
  ink(g,884,1134,125,4,'#e9d9bc');
+ // Reference Option A: planted civic islands flank the continuous main
+ // walk. Keep their edges west of parking and outside x876..1019.
+ for(const b of [{x:450,y:1480,w:360,h:174},{x:1080,y:1480,w:470,h:174}]){
+   if(!fillT(g,'grass',b.x,b.y,b.w,b.h))ink(g,b.x,b.y,b.w,b.h,'#628d56');
+   curb(g,b.x-5,b.y-5,b.w+10,7);
+   curb(g,b.x-5,b.y+b.h,b.w+10,7);
+ }
  // Landscaped borders OUTSIDE the new vehicle rectangle.
  hedge(g,1575,1316,21,293);
  hedge(g,425,1342,188,16);
@@ -349,7 +362,7 @@ function roadPhase5(g){
 }
 function makeGround(){
  const imageReady=ready(texture());
- const targetVersion=(imageReady?'heritage':'fallback')+'|'+(terrainReady()?'phase5':'original');
+const targetVersion=(imageReady?'heritage':'fallback')+'|'+(terrainReady()?'phase5':'original')+'|'+approvedLayout();
  if(cachedGround&&cacheReady===targetVersion)return cachedGround;
  const cv=document.createElement('canvas');
  cv.width=2410;cv.height=1720;

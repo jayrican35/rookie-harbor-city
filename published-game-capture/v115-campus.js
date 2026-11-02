@@ -686,6 +686,9 @@
 
   function drawOutdoorDecor(){
     for(const d of PL.decors){
+      // The former visitor lot is now the pedestrian plaza. Its campaign
+      // sign remains in MAPS; omit only its obsolete connected-preview copy.
+      if(window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE&&d.t==='sign'&&d.text==='VISITOR PARKING')continue;
       if(d.ext==='precinct'||d.ext==='garage'||d.t==='extcar'||d.t==='shed')continue;
       // Existing small-precinct art was designed inside the much larger
       // corrected station footprint. Keep scenery only outside that shell.
@@ -887,6 +890,14 @@
     const art=window.ROOKIE_V115_SHOWCASE;
     const view={x:campus.camX,y:campus.camY,w:viewW,h:viewH};
     drawCampusGround();
+    // V133 owns the approved north-campus surface. Clip the historical
+    // terrain painters at its boundary instead of repainting their old lots
+    // and paving beneath it. Other districts and Harbor Avenue stay intact.
+    g.save();
+    if(window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE){
+      g.beginPath();g.rect(MIN_X,MIN_Y,W-MIN_X,HGT-MIN_Y);
+      g.rect(310,1110,2400,611);g.clip('evenodd');
+    }
     if(art)art.ground(g,{zoom:campus.zoom,view},t);
     const pilot=window.ROOKIE_V115_PRECINCT_PILOT;
     if(pilot)pilot.ground(g,{zoom:campus.zoom,view},t);
@@ -894,11 +905,12 @@
     if(reference)reference.terrain(g,{zoom:campus.zoom,view},t);
     const premium=window.ROOKIE_V115_PREMIUM;
     if(premium)premium.terrain(g,{zoom:campus.zoom,view},t);
+    g.restore();
     drawLinkedDistricts(t);
     // Precinct 9 art sits over existing station/parking pavement only.
     // The adapter cannot move roads or change original district rendering.
     const precinctVisual=window.ROOKIE_V130_PRECINCT;
-    if(precinctVisual)precinctVisual.ground(g,{zoom:campus.zoom,view},t);
+    if(precinctVisual&&!window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE)precinctVisual.ground(g,{zoom:campus.zoom,view},t);
     if(reference)reference.gameOverlay(g,{zoom:campus.zoom,view,districts:districtEntries},t);
     if(premium)premium.overlay(g,{zoom:campus.zoom,view,districts:districtEntries},t);
     if(art)art.streets(g,{zoom:campus.zoom,view},t);

@@ -19,13 +19,19 @@ const source=(key)=>({
   wall:craft().wall,interview:craft().interview,crate:craft().crate,
   visitorTable:craft().visitorTable,typing:craft().typing,
   reception:H.receptionRoom?.art,plant:H.receptionRoom?.plant,
-  bench:window.B2?.bench,changingBench:window.EXT_IMG?.bench,
+  bench:window.B2?.bench,changingBench:window.B2?.bench,
+  board:window.B2?.board,terminal:window.B2?.terminal,
+  counter:window.B2?.counter,evidence:window.B2?.evidence,
+  cabinet:window.B2?.cabinet,lockers:window.B2?.lockers,
+  officeDesk:window.B2?.desk,chair:window.B2?.chair,
+  interviewB2:window.B2?.interview,wallH:window.B2?.wallH,
   garage:garage(),clock:cinema().clock,sconce:cinema().sconce,
   workbench:cinema().workbench,sofa:H.worldFurniture?.art?.sofa
 })[key];
 const keys=['carpet','cream','cool','wood','wall','interview','crate',
   'visitorTable','reception','plant','bench','changingBench','garage',
-  'clock','sconce','workbench','sofa'];
+  'clock','sconce','workbench','sofa','board','terminal','counter',
+  'evidence','cabinet','lockers','officeDesk','chair','interviewB2','wallH'];
 // One integer fingerprint is enough to rebuild the stationary room cache
 // only as ORIGINAL legacy sprites decode. No per-frame texture allocation.
 function assetEpoch(){
@@ -85,7 +91,25 @@ function room(g,r){
   if(r.label==='GARAGE')return garageFloor(g,r);
   const key=material(r),im=source(key);
   if(!ready(im))return false;
-  // Draw the ORIGINAL 64px precinct-craft material as a repeating tile.
+  // The original cinematic renderer already owns the finished room
+  // lighting, source-art floor materials and furniture contact shadows.
+  // It normally runs only in the classic station scene; explicitly call
+  // its public read-only Canvas painter here in the connected station.
+  // No classic scene swap, no state.map rewrite and no extra game loop.
+  if(typeof H.precinctCinematic?.floor==='function'){
+    try{
+      g.save();g.imageSmoothingEnabled=false;
+      H.precinctCinematic.floor(r,g);
+      g.restore();
+      label(g,r);stats.floors++;
+      return true;
+    }catch(e){
+      g.restore();stats.missing.push('cinematic:'+r.label);
+      // Keep original pixel-art tile material even if a legacy edition's
+      // optional cinematic painter is incompatible with the connected view.
+    }
+  }
+  // The ORIGINAL 64px precinct-craft material remains our safe fallback.
   g.save();g.imageSmoothingEnabled=false;
   g.fillStyle=g.createPattern(im,'repeat');
   g.fillRect(r.x,r.y,r.w,r.h);
@@ -150,9 +174,57 @@ function furniture(g,f){
   }else if(type==='crate'&&f.x===28&&f.y===240){
     im=source('crate');x=f.x+f.w/2-28;y=f.y+f.h+2-44;w=56;h=44;
   }
+  // The room layout itself is always the original MAPS.station.furn.
+  // Restore precisely the original B2 artist sprites, with the same world
+  // feet and dimensions as b2FurnArt() from the classic playable game.
+  // Unlike b2FurnArt(), none of these branches gate on state.map='station'.
+  if(!ready(im)){
+    const base=f.y+f.h+2,cx=f.x+f.w/2;
+    switch(type){
+      case 'board':
+        im=source('board');w=84;h=84;x=cx-w/2;y=f.y+62-h;break;
+      case 'locker':
+        im=source('lockers');w=Math.min(Math.max(f.w,130),Math.max(60,(base-14)*1.5));
+        h=w*2/3;x=cx-w/2;y=base-h;break;
+      case 'cabinet':
+        im=source('cabinet');w=54;h=108;x=cx-w/2;y=base-h;break;
+      case 'desk':{
+        const terminal=f.x===430&&f.y===56||f.x===600&&f.y===150;
+        im=terminal&&ready(source('terminal'))?source('terminal'):source('officeDesk');
+        w=terminal&&ready(source('terminal'))?86:Math.min(Math.max(f.w,96),150);
+        h=terminal&&ready(source('terminal'))?86:w*.75;
+        x=cx-w/2;y=base-h;break;
+      }
+      case 'shelf':
+        if(f.y<300){im=source('evidence');w=f.w+8;h=Math.min(w,base-2);
+          x=cx-w/2;y=base-h;}break;
+      case 'counter':
+      case 'reception':
+        im=source('counter');w=type==='reception'?Math.max(f.w+24,180):Math.max(f.w,120);
+        h=Math.min(w*.5,120,base-16);
+        x=cx-w/2;y=base-h;break;
+      case 'table':
+        if(f.w>=120){im=source('interviewB2');w=150;h=120;
+          x=cx-w/2;y=base-h;}break;
+      case 'bench':
+        im=source('bench');w=Math.max(f.w,110);
+        h=Math.min(w*40/72,base-14);x=cx-w/2;y=base-h;break;
+      case 'hcReceptionSign':
+        g.save();g.fillStyle='#19364d';g.fillRect(f.x,f.y,f.w,f.h);
+        g.fillStyle='#f2e6c2';g.font='bold 7px sans-serif';g.textAlign='center';
+        g.fillText('PRECINCT 9 · RECEPTION',f.x+f.w/2,f.y+12);
+        g.restore();stats.furniture++;return true;
+    }
+  }
   if(ready(im)){
     g.save();g.imageSmoothingEnabled=false;
-    g.drawImage(im,x,y,w,h);g.restore();
+    // The source sprite replaces its old flat vector placeholder; the
+    // official furniture rectangle/collision/interaction is unchanged.
+    g.drawImage(im,Math.round(x),Math.round(y),Math.round(w),Math.round(h));
+    if(type==='desk'&&ready(source('chair'))&&f.y<850&&f.x<1400)
+      g.drawImage(source('chair'),Math.round(f.x+f.w/2-15),
+        Math.round(f.y+f.h+1),30,40);
+    g.restore();
     stats.furniture++;return true;
   }
   return false; // keep original classic vector fallback, never a blank object

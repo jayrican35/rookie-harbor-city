@@ -207,7 +207,7 @@ jobs:
       - name: Check out V134 reference-quality Precinct 9 exterior (isolated)
         uses: actions/checkout@v4
         with:
-          ref: 9e94c91633994f27ce8add32316d9edaefe42d98 # green source and real Android 390x844 gameplay tests
+          ref: 9a8843692cf27a19cc805b3f15c2fc417378072c # green source and real Android 390x844 gameplay tests
           path: precinct9-v134
           persist-credentials: false
 

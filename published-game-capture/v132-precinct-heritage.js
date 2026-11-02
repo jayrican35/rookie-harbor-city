@@ -170,30 +170,43 @@ function npc(g,actor){
  const id=String(actor?.id||'');
  if(!id.startsWith('station-npc:')&&id!=='campus-npc:diaz')return false;
  const key=H.cast?.identity?.(actor.name,false);
- const spec=key&&legacySpecs()[key];
+ // MAYA is not on the 8-file officer atlas: the original classic precinct
+ // drew her from the separate, measured station-cast.png visitor sheet.
+ const visitor=!key&&actor.name==='MAYA'&&H.precinctVisual?.spec?.actors?.maya;
+ const spec=key?legacySpecs()[key]:visitor;
  if(!spec||!Array.isArray(spec.frames)||spec.frames.length<12)return false;
- let im=officerImages[key];
+ const imageKey=key||'maya';
+ let im=officerImages[imageKey];
  if(!im){
    im=new Image();im.decoding='async';
-   im.src='./assets/precinct-cast/'+spec.file;
-   officerImages[key]=im;
+   im.src=key?'./assets/precinct-cast/'+spec.file:'./assets/precinct9-v1/station-cast.png';
+   officerImages[imageKey]=im;
  }
  if(!imageReady(im)){stats.fallbacks++;return false;}
  const dir=actor.dir==='up'?1:actor.dir==='left'?2:actor.dir==='right'?3:0;
  const frame=spec.frames[dir*3];
  if(!frame||!Array.isArray(frame.rect))return false;
- const [sx,sy,sw,sh]=frame.rect,scale=(spec.heightInWorld||66)/spec.frames[0].rect[3];
+ const [sx,sy,sw,sh]=frame.rect;
+ const scale=(spec.heightInWorld||66)/(visitor?spec.sourceHeight:spec.frames[0].rect[3]);
  const w=sw*scale,h=sh*scale;
  g.save();g.imageSmoothingEnabled=false;
  g.fillStyle='rgba(6,15,24,.29)';g.beginPath();
  g.ellipse(actor.x,actor.y+2,14,5,0,0,Math.PI*2);g.fill();
- g.drawImage(im,sx,sy,sw,sh,Math.round(actor.x-w/2),Math.round(actor.y-h),Math.round(w),Math.round(h));
+ // Original Maya is seated: retain the source's 64x49 upper-body clipping
+ // instead of showing standing feet through the interview room furniture.
+ if(visitor){g.beginPath();g.rect(actor.x-32,actor.y-72,64,49);g.clip();}
+ const dx=Math.round(actor.x-w/2),dy=Math.round(actor.y-h);
+ if(frame.mirror){
+   g.save();g.translate(Math.round(actor.x+w/2),0);g.scale(-1,1);
+   g.drawImage(im,sx,sy,sw,sh,0,dy,Math.round(w),Math.round(h));
+   g.restore();
+ }else g.drawImage(im,sx,sy,sw,sh,dx,dy,Math.round(w),Math.round(h));
  if(actor.showLabel){
    g.font='bold 13px Barlow Condensed, sans-serif';g.textAlign='center';
    g.fillStyle='#f8ebc4';g.fillText(actor.name,actor.x,actor.y-h-7);
  }
  g.restore();
- stats.castFrames++;stats.castNames[key]=(stats.castNames[key]||0)+1;
+ stats.castFrames++;stats.castNames[imageKey]=(stats.castNames[imageKey]||0)+1;
  return true;
 }
 window.ROOKIE_V132_PRECINCT=Object.freeze({

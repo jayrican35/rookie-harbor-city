@@ -118,6 +118,21 @@
     // usable interior. Existing station west/east/south wall gaps stay real.
     return false;
   }
+  // Read-only browser QA aid: explain actual collider ownership when an
+  // apparently open new street is impassable. Never used by normal gameplay.
+  function roadCollisionDiagnostic(x,y,r=12){
+    if(!/[?&]pilotQA=1(?:&|$)/.test(window.location.search))return null;
+    const district=districtAt(x,y);
+    const raw=(!district?collision:districtSolids).filter(b=>
+      (district&&!window.ROOKIE_V116_MARINA?.ownsSolid?.(b))||!district).filter(b=>circleHitsRect(x,y,r,b));
+    return {x,y,district:district?.id||null,
+      bounds:x<MIN_X+r||y<MIN_Y+r||x>W-r||y>HGT-r,
+      solidHits:raw.slice(0,12).map(b=>({x:b.x,y:b.y,w:b.w,h:b.h,id:b.id||'precinct'})),
+      marina:!!window.ROOKIE_V116_MARINA?.blocksProp(x,y,r),
+      water:!!window.ROOKIE_V127_CITY?.waterBlocked(x,y),
+      trees:!!window.ROOKIE_V127_CITY?.scenicBlocked(x,y,r,districtEntries),
+      traffic:trafficBlocked(x,y,r),result:blocked(x,y,r)};
+  }
   // A small set of real pedestrian routines brings life to connected districts.
   // Borrow the already-loaded V123 Marina WALK atlases and the existing actor
   // queue. Movement is advanced inside simulate(dt); no parallel game loop.
@@ -986,7 +1001,7 @@
       campus.camX=x-tw/(2*campus.zoom);campus.camY=y-th/(2*campus.zoom);
       return true;
     },
-    test:{blocked,interiorRoom,chunkAt,moveTo:(x,y)=>{if(blocked(x,y))return false;campus.x=x;campus.y=y;return true;},
+    test:{blocked,roadCollisionDiagnostic,interiorRoom,chunkAt,moveTo:(x,y)=>{if(blocked(x,y))return false;campus.x=x;campus.y=y;return true;},
       position:()=>({x:campus.x,y:campus.y}),doorCrossings:()=>campus.doorCrossings},
     scope:'Connected district geography and precinct foot exploration share one camera. Missions, street NPC routines, interiors beyond Precinct 9, live multiplayer and cars still require migration.'};
   H.seamlessCampusV115=Object.freeze(api);

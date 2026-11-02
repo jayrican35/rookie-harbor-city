@@ -45,8 +45,8 @@ jobs:
           old=json.loads((a/'manifest.json').read_text())
           new=json.loads((b/'manifest.json').read_text())
           assert old['tileSize']==new['tileSize']==32
-          assert len(old['frames'])==26 and len(new['frames'])==40
-          assert len(new['newFrames'])==14
+          assert len(old['frames'])==26 and len(new['frames'])==42
+          assert len(new['newFrames'])==16
           src=Image.open(a/old['atlas']).convert('RGBA')
           atlas=Image.open(b/new['atlas']).convert('RGBA')
           assert src.size==atlas.size==(1024,1024)
@@ -65,7 +65,7 @@ jobs:
           dark=Image.open(b/'window_single_dark.png').convert('RGBA')
           assert ImageChops.difference(warm.convert('RGB'),dark.convert('RGB')).getbbox() is not None
           assert warm.getpixel((0,0))[3]==0
-          print('PASS 14 new transparent window modules, 40-frame atlas, all 26 Phase-1 original rectangles untouched')
+          print('PASS 16 new transparent window modules, 42-frame atlas, all 26 Phase-1 original rectangles untouched')
           PY
       - name: Fail on modifications to protected Zombie and off-scope game files
         run: |

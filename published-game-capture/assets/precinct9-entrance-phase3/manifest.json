@@ -1,0 +1,908 @@
+{
+  "version": "precinct9-entrance-phase3",
+  "tileSize": 32,
+  "worldPixelsPerAssetPixel": 1,
+  "atlas": "precinct9_phase3_combined_atlas.png",
+  "atlasSize": [
+    1024,
+    1024
+  ],
+  "frames": {
+    "wall_brick_narrow": {
+      "file": "wall_brick_narrow.png",
+      "atlas": {
+        "x": 8,
+        "y": 8,
+        "w": 64,
+        "h": 128
+      },
+      "width": 64,
+      "height": 128,
+      "anchor": {
+        "x": 0,
+        "y": 128
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "windowOpeningOnly": false
+    },
+    "wall_brick_medium": {
+      "file": "wall_brick_medium.png",
+      "atlas": {
+        "x": 80,
+        "y": 8,
+        "w": 128,
+        "h": 128
+      },
+      "width": 128,
+      "height": 128,
+      "anchor": {
+        "x": 0,
+        "y": 128
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "windowOpeningOnly": false
+    },
+    "wall_brick_wide": {
+      "file": "wall_brick_wide.png",
+      "atlas": {
+        "x": 216,
+        "y": 8,
+        "w": 256,
+        "h": 128
+      },
+      "width": 256,
+      "height": 128,
+      "anchor": {
+        "x": 0,
+        "y": 128
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "windowOpeningOnly": false
+    },
+    "wall_left_edge": {
+      "file": "wall_left_edge.png",
+      "atlas": {
+        "x": 480,
+        "y": 8,
+        "w": 64,
+        "h": 128
+      },
+      "width": 64,
+      "height": 128,
+      "anchor": {
+        "x": 0,
+        "y": 128
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "windowOpeningOnly": false
+    },
+    "wall_right_edge": {
+      "file": "wall_right_edge.png",
+      "atlas": {
+        "x": 552,
+        "y": 8,
+        "w": 64,
+        "h": 128
+      },
+      "width": 64,
+      "height": 128,
+      "anchor": {
+        "x": 0,
+        "y": 128
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "windowOpeningOnly": false
+    },
+    "wall_inner_corner": {
+      "file": "wall_inner_corner.png",
+      "atlas": {
+        "x": 624,
+        "y": 8,
+        "w": 64,
+        "h": 64
+      },
+      "width": 64,
+      "height": 64,
+      "anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "windowOpeningOnly": false
+    },
+    "wall_outer_corner": {
+      "file": "wall_outer_corner.png",
+      "atlas": {
+        "x": 696,
+        "y": 8,
+        "w": 64,
+        "h": 64
+      },
+      "width": 64,
+      "height": 64,
+      "anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "windowOpeningOnly": false
+    },
+    "wall_top_band": {
+      "file": "wall_top_band.png",
+      "atlas": {
+        "x": 768,
+        "y": 8,
+        "w": 128,
+        "h": 32
+      },
+      "width": 128,
+      "height": 32,
+      "anchor": {
+        "x": 0,
+        "y": 32
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "windowOpeningOnly": false
+    },
+    "wall_bottom_band": {
+      "file": "wall_bottom_band.png",
+      "atlas": {
+        "x": 8,
+        "y": 144,
+        "w": 128,
+        "h": 32
+      },
+      "width": 128,
+      "height": 32,
+      "anchor": {
+        "x": 0,
+        "y": 32
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "windowOpeningOnly": false
+    },
+    "wall_filler_strip": {
+      "file": "wall_filler_strip.png",
+      "atlas": {
+        "x": 144,
+        "y": 144,
+        "w": 32,
+        "h": 128
+      },
+      "width": 32,
+      "height": 128,
+      "anchor": {
+        "x": 0,
+        "y": 128
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "windowOpeningOnly": false
+    },
+    "stone_cornice": {
+      "file": "stone_cornice.png",
+      "atlas": {
+        "x": 184,
+        "y": 144,
+        "w": 128,
+        "h": 32
+      },
+      "width": 128,
+      "height": 32,
+      "anchor": {
+        "x": 0,
+        "y": 32
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "windowOpeningOnly": false
+    },
+    "stone_base_trim": {
+      "file": "stone_base_trim.png",
+      "atlas": {
+        "x": 320,
+        "y": 144,
+        "w": 128,
+        "h": 32
+      },
+      "width": 128,
+      "height": 32,
+      "anchor": {
+        "x": 0,
+        "y": 32
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "windowOpeningOnly": false
+    },
+    "stone_side_trim_left": {
+      "file": "stone_side_trim_left.png",
+      "atlas": {
+        "x": 456,
+        "y": 144,
+        "w": 32,
+        "h": 128
+      },
+      "width": 32,
+      "height": 128,
+      "anchor": {
+        "x": 0,
+        "y": 128
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "windowOpeningOnly": false
+    },
+    "stone_side_trim_right": {
+      "file": "stone_side_trim_right.png",
+      "atlas": {
+        "x": 496,
+        "y": 144,
+        "w": 32,
+        "h": 128
+      },
+      "width": 32,
+      "height": 128,
+      "anchor": {
+        "x": 0,
+        "y": 128
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "windowOpeningOnly": false
+    },
+    "stone_column_cap": {
+      "file": "stone_column_cap.png",
+      "atlas": {
+        "x": 536,
+        "y": 144,
+        "w": 64,
+        "h": 32
+      },
+      "width": 64,
+      "height": 32,
+      "anchor": {
+        "x": 0,
+        "y": 32
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "windowOpeningOnly": false
+    },
+    "stone_wall_end_cap": {
+      "file": "stone_wall_end_cap.png",
+      "atlas": {
+        "x": 608,
+        "y": 144,
+        "w": 64,
+        "h": 32
+      },
+      "width": 64,
+      "height": 32,
+      "anchor": {
+        "x": 0,
+        "y": 32
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "windowOpeningOnly": false
+    },
+    "pilaster_full": {
+      "file": "pilaster_full.png",
+      "atlas": {
+        "x": 680,
+        "y": 144,
+        "w": 64,
+        "h": 128
+      },
+      "width": 64,
+      "height": 128,
+      "anchor": {
+        "x": 0,
+        "y": 128
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "windowOpeningOnly": false
+    },
+    "pilaster_divider": {
+      "file": "pilaster_divider.png",
+      "atlas": {
+        "x": 752,
+        "y": 144,
+        "w": 32,
+        "h": 128
+      },
+      "width": 32,
+      "height": 128,
+      "anchor": {
+        "x": 0,
+        "y": 128
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "windowOpeningOnly": false
+    },
+    "pilaster_corner": {
+      "file": "pilaster_corner.png",
+      "atlas": {
+        "x": 792,
+        "y": 144,
+        "w": 64,
+        "h": 128
+      },
+      "width": 64,
+      "height": 128,
+      "anchor": {
+        "x": 0,
+        "y": 128
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "windowOpeningOnly": false
+    },
+    "wall_window_cut_single": {
+      "file": "wall_window_cut_single.png",
+      "atlas": {
+        "x": 864,
+        "y": 144,
+        "w": 128,
+        "h": 128
+      },
+      "width": 128,
+      "height": 128,
+      "anchor": {
+        "x": 0,
+        "y": 128
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "windowOpeningOnly": true
+    },
+    "wall_window_cut_double": {
+      "file": "wall_window_cut_double.png",
+      "atlas": {
+        "x": 8,
+        "y": 280,
+        "w": 256,
+        "h": 128
+      },
+      "width": 256,
+      "height": 128,
+      "anchor": {
+        "x": 0,
+        "y": 128
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "windowOpeningOnly": true
+    },
+    "wall_window_spacer": {
+      "file": "wall_window_spacer.png",
+      "atlas": {
+        "x": 272,
+        "y": 280,
+        "w": 32,
+        "h": 128
+      },
+      "width": 32,
+      "height": 128,
+      "anchor": {
+        "x": 0,
+        "y": 128
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "windowOpeningOnly": false
+    },
+    "stone_cornice_corner_left": {
+      "file": "stone_cornice_corner_left.png",
+      "atlas": {
+        "x": 312,
+        "y": 280,
+        "w": 32,
+        "h": 32
+      },
+      "width": 32,
+      "height": 32,
+      "anchor": {
+        "x": 0,
+        "y": 32
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "windowOpeningOnly": false
+    },
+    "stone_cornice_corner_right": {
+      "file": "stone_cornice_corner_right.png",
+      "atlas": {
+        "x": 352,
+        "y": 280,
+        "w": 32,
+        "h": 32
+      },
+      "width": 32,
+      "height": 32,
+      "anchor": {
+        "x": 0,
+        "y": 32
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "windowOpeningOnly": false
+    },
+    "stone_base_corner_left": {
+      "file": "stone_base_corner_left.png",
+      "atlas": {
+        "x": 392,
+        "y": 280,
+        "w": 32,
+        "h": 32
+      },
+      "width": 32,
+      "height": 32,
+      "anchor": {
+        "x": 0,
+        "y": 32
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "windowOpeningOnly": false
+    },
+    "stone_base_corner_right": {
+      "file": "stone_base_corner_right.png",
+      "atlas": {
+        "x": 432,
+        "y": 280,
+        "w": 32,
+        "h": 32
+      },
+      "width": 32,
+      "height": 32,
+      "anchor": {
+        "x": 0,
+        "y": 32
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "windowOpeningOnly": false
+    },
+    "window_wide_warm": {
+      "file": "window_wide_warm.png",
+      "atlas": {
+        "x": 8,
+        "y": 448,
+        "w": 96,
+        "h": 96
+      },
+      "width": 96,
+      "height": 96,
+      "anchor": {
+        "x": 48,
+        "y": 96
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "lightMode": "warm"
+    },
+    "window_wide_dark": {
+      "file": "window_wide_dark.png",
+      "atlas": {
+        "x": 112,
+        "y": 448,
+        "w": 96,
+        "h": 96
+      },
+      "width": 96,
+      "height": 96,
+      "anchor": {
+        "x": 48,
+        "y": 96
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "lightMode": "unlit"
+    },
+    "window_single_warm": {
+      "file": "window_single_warm.png",
+      "atlas": {
+        "x": 216,
+        "y": 448,
+        "w": 64,
+        "h": 96
+      },
+      "width": 64,
+      "height": 96,
+      "anchor": {
+        "x": 32,
+        "y": 96
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "lightMode": "warm"
+    },
+    "window_single_dark": {
+      "file": "window_single_dark.png",
+      "atlas": {
+        "x": 288,
+        "y": 448,
+        "w": 64,
+        "h": 96
+      },
+      "width": 64,
+      "height": 96,
+      "anchor": {
+        "x": 32,
+        "y": 96
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "lightMode": "unlit"
+    },
+    "window_single_blinds": {
+      "file": "window_single_blinds.png",
+      "atlas": {
+        "x": 360,
+        "y": 448,
+        "w": 64,
+        "h": 96
+      },
+      "width": 64,
+      "height": 96,
+      "anchor": {
+        "x": 32,
+        "y": 96
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "lightMode": "decorative"
+    },
+    "window_single_closed": {
+      "file": "window_single_closed.png",
+      "atlas": {
+        "x": 432,
+        "y": 448,
+        "w": 64,
+        "h": 96
+      },
+      "width": 64,
+      "height": 96,
+      "anchor": {
+        "x": 32,
+        "y": 96
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "lightMode": "decorative"
+    },
+    "window_double_warm": {
+      "file": "window_double_warm.png",
+      "atlas": {
+        "x": 504,
+        "y": 448,
+        "w": 128,
+        "h": 96
+      },
+      "width": 128,
+      "height": 96,
+      "anchor": {
+        "x": 64,
+        "y": 96
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "lightMode": "warm"
+    },
+    "window_double_dark": {
+      "file": "window_double_dark.png",
+      "atlas": {
+        "x": 640,
+        "y": 448,
+        "w": 128,
+        "h": 96
+      },
+      "width": 128,
+      "height": 96,
+      "anchor": {
+        "x": 64,
+        "y": 96
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "lightMode": "unlit"
+    },
+    "window_double_mixed": {
+      "file": "window_double_mixed.png",
+      "atlas": {
+        "x": 776,
+        "y": 448,
+        "w": 128,
+        "h": 96
+      },
+      "width": 128,
+      "height": 96,
+      "anchor": {
+        "x": 64,
+        "y": 96
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "lightMode": "decorative"
+    },
+    "window_triple_warm": {
+      "file": "window_triple_warm.png",
+      "atlas": {
+        "x": 8,
+        "y": 552,
+        "w": 192,
+        "h": 96
+      },
+      "width": 192,
+      "height": 96,
+      "anchor": {
+        "x": 96,
+        "y": 96
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "lightMode": "warm"
+    },
+    "window_triple_mixed": {
+      "file": "window_triple_mixed.png",
+      "atlas": {
+        "x": 208,
+        "y": 552,
+        "w": 192,
+        "h": 96
+      },
+      "width": 192,
+      "height": 96,
+      "anchor": {
+        "x": 96,
+        "y": 96
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "lightMode": "decorative"
+    },
+    "window_stone_frame": {
+      "file": "window_stone_frame.png",
+      "atlas": {
+        "x": 408,
+        "y": 552,
+        "w": 64,
+        "h": 96
+      },
+      "width": 64,
+      "height": 96,
+      "anchor": {
+        "x": 32,
+        "y": 96
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "lightMode": "decorative"
+    },
+    "window_blinds_overlay": {
+      "file": "window_blinds_overlay.png",
+      "atlas": {
+        "x": 480,
+        "y": 552,
+        "w": 64,
+        "h": 96
+      },
+      "width": 64,
+      "height": 96,
+      "anchor": {
+        "x": 32,
+        "y": 96
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "lightMode": "decorative"
+    },
+    "window_stone_lintel": {
+      "file": "window_stone_lintel.png",
+      "atlas": {
+        "x": 552,
+        "y": 552,
+        "w": 64,
+        "h": 32
+      },
+      "width": 64,
+      "height": 32,
+      "anchor": {
+        "x": 32,
+        "y": 32
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "lightMode": "decorative"
+    },
+    "window_stone_sill": {
+      "file": "window_stone_sill.png",
+      "atlas": {
+        "x": 624,
+        "y": 552,
+        "w": 64,
+        "h": 32
+      },
+      "width": 64,
+      "height": 32,
+      "anchor": {
+        "x": 32,
+        "y": 32
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "lightMode": "decorative"
+    },
+    "window_connector": {
+      "file": "window_connector.png",
+      "atlas": {
+        "x": 696,
+        "y": 552,
+        "w": 32,
+        "h": 96
+      },
+      "width": 32,
+      "height": 96,
+      "anchor": {
+        "x": 16,
+        "y": 96
+      },
+      "worldScale": 1,
+      "collision": "inherit-existing-world",
+      "lightMode": "decorative"
+    },
+    "entry_stone_portal_frame": {
+      "file": "entry_stone_portal_frame.png",
+      "atlas": {
+        "x": 8,
+        "y": 664,
+        "w": 192,
+        "h": 128
+      },
+      "width": 192,
+      "height": 128,
+      "anchor": {
+        "x": 96,
+        "y": 128
+      },
+      "worldScale": 1,
+      "collision": "original-72px-precinct-front-opening",
+      "usage": "Phase 3 entrance modular art, no collider authored"
+    },
+    "entry_double_glass_closed": {
+      "file": "entry_double_glass_closed.png",
+      "atlas": {
+        "x": 208,
+        "y": 664,
+        "w": 96,
+        "h": 96
+      },
+      "width": 96,
+      "height": 96,
+      "anchor": {
+        "x": 48,
+        "y": 96
+      },
+      "worldScale": 1,
+      "collision": "original-72px-precinct-front-opening",
+      "usage": "Phase 3 entrance modular art, no collider authored"
+    },
+    "entry_double_glass_half": {
+      "file": "entry_double_glass_half.png",
+      "atlas": {
+        "x": 312,
+        "y": 664,
+        "w": 96,
+        "h": 96
+      },
+      "width": 96,
+      "height": 96,
+      "anchor": {
+        "x": 48,
+        "y": 96
+      },
+      "worldScale": 1,
+      "collision": "original-72px-precinct-front-opening",
+      "usage": "Phase 3 entrance modular art, no collider authored"
+    },
+    "entry_double_glass_open": {
+      "file": "entry_double_glass_open.png",
+      "atlas": {
+        "x": 416,
+        "y": 664,
+        "w": 96,
+        "h": 96
+      },
+      "width": 96,
+      "height": 96,
+      "anchor": {
+        "x": 48,
+        "y": 96
+      },
+      "worldScale": 1,
+      "collision": "original-72px-precinct-front-opening",
+      "usage": "Phase 3 entrance modular art, no collider authored"
+    },
+    "entry_blue_awning_roof": {
+      "file": "entry_blue_awning_roof.png",
+      "atlas": {
+        "x": 520,
+        "y": 664,
+        "w": 256,
+        "h": 64
+      },
+      "width": 256,
+      "height": 64,
+      "anchor": {
+        "x": 128,
+        "y": 64
+      },
+      "worldScale": 1,
+      "collision": "original-72px-precinct-front-opening",
+      "usage": "Phase 3 entrance modular art, no collider authored"
+    },
+    "entry_blue_awning_edge": {
+      "file": "entry_blue_awning_edge.png",
+      "atlas": {
+        "x": 8,
+        "y": 800,
+        "w": 256,
+        "h": 32
+      },
+      "width": 256,
+      "height": 32,
+      "anchor": {
+        "x": 128,
+        "y": 32
+      },
+      "worldScale": 1,
+      "collision": "original-72px-precinct-front-opening",
+      "usage": "Phase 3 entrance modular art, no collider authored"
+    },
+    "entry_main_entrance_sign": {
+      "file": "entry_main_entrance_sign.png",
+      "atlas": {
+        "x": 272,
+        "y": 800,
+        "w": 192,
+        "h": 32
+      },
+      "width": 192,
+      "height": 32,
+      "anchor": {
+        "x": 96,
+        "y": 32
+      },
+      "worldScale": 1,
+      "collision": "original-72px-precinct-front-opening",
+      "usage": "Phase 3 entrance modular art, no collider authored"
+    }
+  },
+  "collision": "decorative only; existing precinct collision retained",
+  "scope": "entrance art and auto-door only; no map, collider or mode mutations",
+  "phase1Unchanged": true,
+  "newFrames": [
+    "entry_stone_portal_frame",
+    "entry_double_glass_closed",
+    "entry_double_glass_half",
+    "entry_double_glass_open",
+    "entry_blue_awning_roof",
+    "entry_blue_awning_edge",
+    "entry_main_entrance_sign"
+  ],
+  "sourceReference": "user-approved Precinct 9 pixel facade sheet; existing V134 crest, pilasters, lettering reused",
+  "phase2Unchanged": true
+}

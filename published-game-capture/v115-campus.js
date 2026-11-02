@@ -446,6 +446,9 @@
     campus.moved=dist>.04;if(campus.moved){campus.stride+=dist*.055;dialogue.hidden=true;}
     if(shared?.eligible())shared.update('connected-jay',{x:campus.x,y:campus.y,dir:campus.dir,map:WORLD_ID,run},dt);
     marina?.updateInteriors?.({x:campus.x,y:campus.y},dt);
+    // Phase-3 glass doors reuse the EXISTING movement simulation clock.
+    // No scene, coordinate, player state or collision change.
+    window.ROOKIE_V134_PRECINCT?.stepEntrance?.({x:campus.x,y:campus.y},dt);
     const nowRoom=interiorRoom(campus.x,campus.y);
     if((campus.previousRoom===null)!==(nowRoom===null))campus.doorCrossings++;
     campus.previousRoom=nowRoom;
@@ -1068,6 +1071,13 @@
     links:()=>links.map(l=>({...l})),
     intersections:()=>crossings.map(c=>({...c})),
     roadTopologyVersion:roadNetwork.version,
+    // Read-only query-gated telemetry. Existing camera, roof and player
+    // state continue to be owned by the original connected game loop.
+    entranceQA:()=>/[?&]pilotQA=1(?:&|$)/.test(window.location.search)?
+      {cameraX:campus.camX,cameraY:campus.camY,zoom:campus.zoom,
+       follows:campus.follow,roofAlpha:roofAlpha(),
+       playerX:campus.x,playerY:campus.y,dir:campus.dir,
+       room:interiorRoom(campus.x,campus.y),crossings:campus.doorCrossings}:null,
     districtAt:(x,y)=>districtAt(x,y)?.id||'precinct-campus',
     open,close,isOpen:()=>campus.open,
     openAt:(x,y,z=1.1)=>{

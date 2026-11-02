@@ -1071,6 +1071,13 @@
     links:()=>links.map(l=>({...l})),
     intersections:()=>crossings.map(c=>({...c})),
     roadTopologyVersion:roadNetwork.version,
+    // Read-only query-gated telemetry. Existing camera, roof and player
+    // state continue to be owned by the original connected game loop.
+    entranceQA:()=>/[?&]pilotQA=1(?:&|$)/.test(window.location.search)?
+      {cameraX:campus.camX,cameraY:campus.camY,zoom:campus.zoom,
+       follows:campus.follow,roofAlpha:roofAlpha(),
+       playerX:campus.x,playerY:campus.y,dir:campus.dir,
+       room:interiorRoom(campus.x,campus.y),crossings:campus.doorCrossings}:null,
     districtAt:(x,y)=>districtAt(x,y)?.id||'precinct-campus',
     open,close,isOpen:()=>campus.open,
     openAt:(x,y,z=1.1)=>{

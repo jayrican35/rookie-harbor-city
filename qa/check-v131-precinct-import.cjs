@@ -61,7 +61,7 @@ const artCases=[
  {type:'hcReception',x:534,y:746,w:184,h:32,im:'reception'},
  {type:'hcLobbyPlant',x:418,y:694,w:24,h:24,im:'plant'},
  {type:'hcWaitingPair',x:416,y:744,w:84,h:26,im:'bench'},
- {type:'hcChangingBench',x:1184,y:550,w:108,h:18,im:'bench'},
+
  {type:'table',x:880,y:110,w:140,h:40,im:'interview'},
  {type:'table',x:60,y:170,w:100,h:38,im:'workbench'},
  {type:'crate',x:28,y:240,w:56,h:20,im:'crate'},
@@ -74,6 +74,8 @@ for(const f of artCases){
  if(f.im)assert(calls.slice(before).some(v=>v[0]==='draw'&&v[1]===f.im),
   'No old asset '+f.im+' drawn for '+f.type);
 }
+assert.equal(bridge.furniture(g,{type:'hcChangingBench',x:1184,y:550,w:108,h:18}),false,
+ 'Preserve original better carved-wood changing benches');
 assert.equal(bridge.furniture(g,{type:'nonexistent',x:0,y:0,w:20,h:20}),false);
 const rooms=[{label:'BRIEFING',x:1156,y:12,w:392,h:288,lx:1170,ly:40},
 {label:'LOBBY',x:388,y:648,w:376,h:380,lx:706,ly:1016},
@@ -83,11 +85,10 @@ for(const room of rooms)assert.equal(bridge.room(g,room),true);
 assert.equal(cinematicCalls,3,'All original interior rooms use old cinematic painter when loaded');
 assert(calls.some(v=>v[0]==='draw'&&v[1]==='plate'&&v[2].length===8&&v[2][0]===696),
  'Original actual garage tool cabinet crop must render');
-assert(bridge.wallSkins(g,[{x:372,y:12,w:24,h:130},{x:12,y:288,w:134,h:32}]));
-assert(calls.some(v=>v[0]==='draw'&&v[1]==='wall'),
- 'User-authored wall source must render on real source wall segment');
+assert.equal(bridge.wallSkins(g,[{x:372,y:12,w:24,h:130},{x:12,y:288,w:134,h:32}]),false,
+ 'Preserve the approved V130 navy wall silhouettes; avoid old cream source skins');
 const count=bridge.stats();
-assert(count.furniture>=artCases.length-1&&count.floors>=3&&count.garage>0&&count.walls>0,
+assert(count.furniture>=artCases.length-2&&count.floors>=3&&count.garage>0&&count.walls===0,
  'Recovered art was not actually painted: '+JSON.stringify(count));
 const prev=window.B2.lockers.complete;window.B2.lockers.complete=false;
 assert.notEqual(bridge.assetEpoch(),initial,'Real browser cache must invalidate when original images decode');

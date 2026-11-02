@@ -11,8 +11,8 @@ if len(sys.argv)!=2:raise SystemExit('Usage: build_precinct9_phase5_ground.py OU
 OUT=Path(sys.argv[1]);OUT.mkdir(parents=True,exist_ok=True)
 T=64;alpha=(0,0,0,0)
 # Sampled/cleaned colors of user's supplied 1448x1086 pixel-art parts sheet.
-SAND=(224,195,177,255);SAND2=(230,203,185,255);LIGHT=(246,224,205,255)
-JOINT=(149,132,127,255);REDSTONE=(219,179,174,255)
+SAND=(216,203,182,255);SAND2=(229,216,194,255);LIGHT=(246,233,211,255)
+JOINT=(154,148,137,255);REDSTONE=(219,179,174,255)
 ASPHALT=(60,62,81,255);ROAD_LIGHT=(74,76,93,255);ROAD_DARK=(49,51,69,255)
 YELLOW=(245,179,48,255);WHITE=(232,229,220,255)
 GRASS=(91,141,33,255);GRASS_DARK=(48,106,24,255);LEAF=(43,99,38,255)
@@ -35,18 +35,19 @@ def paver(mode='stone',variant=0):
  im,d=draw(base)
  rng=random.Random(531+variant)
  noise(d,64,64,1250+variant,
-  [(235,209,188,255),(204,173,159,255),(218,187,171,255)],2)
+  ([(238,221,199,255),(197,186,166,255),(215,206,184,255)] if mode=='stone' else
+   [(235,200,194,255),(199,154,153,255),(222,184,177,255)]),2)
  # Native 32-unit repeatable pavers. Dividers are at exact tile boundaries.
  for yy in (0,32):
   R(d,0,yy,64,2,JOINT if mode=='stone' else (143,112,117,255))
-  R(d,1,yy+2,62,1,(249,230,210,255))
+  R(d,1,yy+2,62,1,(248,236,212,255))
   shift=16 if yy==32 else 0
   for x in range(shift,65,32):
    R(d,x%64,yy+2,2,29,(154,135,129,255))
-   R(d,(x+2)%64,yy+3,1,26,(238,212,195,255))
+   R(d,(x+2)%64,yy+3,1,26,(241,226,201,255))
  for i in range(9):
   x=rng.randrange(4,60);y=rng.randrange(4,61)
-  R(d,x,y,2+rng.randrange(6),1,(248,220,198,255) if i%2 else (193,162,152,255))
+  R(d,x,y,2+rng.randrange(6),1,(247,232,209,255) if i%2 else (187,174,153,255))
  return im
 def asphalt(seed=0):
  im,d=draw(ASPHALT);rng=random.Random(71+seed)

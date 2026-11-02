@@ -279,12 +279,104 @@ function coastline(g,opt){
    metrics.coast++;
  }
 }
+// Avoid the original Southbay waterfront here: its native east/west roadway
+// occupies y=3681..3807. An old blanket y=3650..3784 brick overlay hid most
+// of that road, creating the abrupt dead-end visible in the mobile recording.
+// Bayview has a separate coast-following walkway SOUTH of the intact street.
 const promenades=[
- [-3100,-650],[-506,2800],[2800,3460],[3630,4400],[5900,6556],[6556,8156],[8156,9656]
+ [-3100,-650],[-506,2800],[5900,6556],[6556,8156],[8156,9656]
 ];
+const BAYVIEW={left:2800,right:4352,roadBottom:3808,landscapeTop:3550};
+// The original Marina terrain starts at x=4352: paint nothing beyond it.
+// Source Southbay road is y=3681..3807; the stone plaza begins at y=3808.
+function bayviewPromenadeAt(x,y){
+ if(x<BAYVIEW.left||x>=BAYVIEW.right||y<BAYVIEW.roadBottom)return false;
+ return y<Math.min(4200,coastY(x)-34);
+}
+function bayviewFrontage(g,opt){
+ if(opt.zoom<.18)return;
+ const v=opt.view,area={x:2800,y:3505,w:1552,h:700};
+ if(!visible(area,v,5))return;
+ const left=Math.max(BAYVIEW.left,Math.floor(Math.max(BAYVIEW.left,v.x)/32)*32);
+ const right=Math.min(BAYVIEW.right,v.x+v.w+32);
+ // Clip the original 32px Harbor/Marina brick tile to a coast-following edge:
+ // there is no water overpaint, and no rectangular stop at the marina.
+ g.save();g.beginPath();g.moveTo(BAYVIEW.left,BAYVIEW.roadBottom);
+ g.lineTo(BAYVIEW.right,BAYVIEW.roadBottom);
+ for(let x=BAYVIEW.right;x>=BAYVIEW.left;x-=24)
+   g.lineTo(x,Math.min(4200,coastY(x)-34));
+ g.closePath();g.clip();
+ surface(g,{x:BAYVIEW.left,y:BAYVIEW.roadBottom,
+   w:BAYVIEW.right-BAYVIEW.left,h:420},'brick',v);
+ // Harbor promenade visual language: real masonry edge, double trim,
+ // staggered inlay, runoff grates and regularly spaced shoreline lights.
+ g.fillStyle='#d9c5a2';g.fillRect(BAYVIEW.left,3810,1552,6);
+ g.fillStyle='rgba(58,78,78,.55)';g.fillRect(BAYVIEW.left,3816,1552,3);
+ const s=Math.max(BAYVIEW.left,Math.floor(v.x/80)*80);
+ for(let x=s;x<right;x+=80){
+   const n=hash(x/80,33,7);
+   g.fillStyle='rgba(250,228,187,.27)';
+   g.fillRect(x+9,3844,34,3);g.fillRect(x+43,3850,28,2);
+   if(n%3===0){
+     g.fillStyle='rgba(41,72,79,.36)';g.fillRect(x+58,3833,18,6);
+     g.fillStyle='#a9b5a8';for(let t=0;t<4;t++)g.fillRect(x+60+t*4,3834,1,4);
+   }
+   const cy=coastY(x)-43;
+   if(cy>3890){
+     g.fillStyle='rgba(38,64,57,.24)';g.fillRect(x+7,cy-5,69,4);
+     g.fillStyle='rgba(235,205,152,.58)';g.fillRect(x+7,cy-8,69,3);
+     if(n%5===0){
+       g.fillStyle='#a69b7d';g.fillRect(x+38,cy-23,12,14);
+       g.fillStyle='#d9b57a';g.fillRect(x+38,cy-23,12,3);
+     }
+   }
+ }
+ g.restore();
+ // North of the preserved asphalt: extend finished Bayview streetscaping
+ // around the actual street-mouth x3937..4165. Never pave the roadway itself.
+ const corners=[
+  {x:3168,y:3570,w:340,h:84},
+  {x:3737,y:3563,w:164,h:92},
+  {x:4167,y:3558,w:166,h:99}
+ ];
+ for(const r of corners){
+   if(!visible(r,v))continue;
+   surface(g,r,'stone',v);
+   g.fillStyle='#d8c39e';g.fillRect(r.x,r.y,r.w,5);
+   g.fillStyle='rgba(28,56,54,.23)';g.fillRect(r.x,r.y+r.h-7,r.w,5);
+   const cols=Math.max(2,Math.floor(r.w/48));
+   for(let i=0;i<cols;i++){
+     const x=r.x+14+i*(r.w-28)/cols;
+     g.fillStyle='rgba(65,98,73,.32)';g.fillRect(x,r.y+24,27,33);
+     g.fillStyle='#476d4e';g.fillRect(x+3,r.y+27,21,25);
+     g.fillStyle=i%2?'#dfb66d':'#d78976';
+     for(let p=0;p<3;p++)g.fillRect(x+5+p*7,r.y+32+(p%2)*5,3,3);
+   }
+ }
+ metrics.details+=corners.filter(r=>visible(r,v)).length;
+}
+// Hand-placed source asset geometry, not a randomized decoration layer.
+// Every entry is outside the existing shops, roads, crossings, and the
+// V116-owned waterfront x>=4352. Native depth order handles occlusion.
+const BAYVIEW_FURNISHINGS=Object.freeze([
+ {t:'palm',x:3080,y:4000},{t:'palm',x:3350,y:3980},
+ {t:'palm',x:3620,y:3960},{t:'palm',x:3890,y:3900},
+ {t:'palm',x:4210,y:3834},
+ {t:'bench',x:3150,y:3891},{t:'bench',x:3480,y:3889},
+ {t:'bench',x:3770,y:3845},
+ {t:'lamp',x:2960,y:3865},{t:'lamp',x:3290,y:3859},
+ {t:'lamp',x:3605,y:3854},{t:'lamp',x:3880,y:3850},
+ {t:'lamp',x:4230,y:3824},
+ {t:'planter',x:3070,y:3840},{t:'planter',x:3420,y:3844},
+ {t:'planter',x:3690,y:3848},{t:'planter',x:4145,y:3824},
+ {t:'flowerbed',x:3220,y:3603,w:94},{t:'flowerbed',x:3780,y:3612,w:76},
+ {t:'flowerbed',x:4192,y:3615,w:90}
+].map(o=>Object.freeze(o)));
+
 function walkways(g,opt){
  if(opt.zoom<.16)return;
  const v=opt.view;
+ bayviewFrontage(g,opt);
  // One aligned coastline pedestrian avenue, physically continuous through
  // the same real district coordinate system and original road crossings.
  for(const [x1,x2] of promenades){
@@ -551,6 +643,14 @@ function depthProps(view,districts){
    if(!handlesDecor(o))continue;
    const b=propGeometry(o,d);if(visible(b,view,24))entries.push({object:o,district:d,box:b,depthY:b.depthY});
   }
+  if(d.id==='southbay')for(const item of BAYVIEW_FURNISHINGS){
+   // The existing MAPS district's true origin is 2800,3220.
+   // Keep the same rendering queue and source sprites used throughout Marina.
+   const o={...item,x:item.x-d.x,y:item.y-d.y,bayviewExtension:true};
+   if(!handlesDecor(o))continue;
+   const b=propGeometry(o,d);
+   if(visible(b,view,24))entries.push({object:o,district:d,box:b,depthY:b.depthY});
+  }
   // New groves share the same sorted depth queue and exact native sprites.
   // Cull using the same cell index used for player/tree collision.
   scenicFor(d);
@@ -600,7 +700,7 @@ function map(g,x,y){
 }
 window.ROOKIE_V127_CITY=Object.freeze({
  version:'127-citywide-material-continuity',worldId:'harbor-main',
- base,surface,colorKind,districtGround,road,coastline,walkways,depthProps,drawDepthProp,
+ base,surface,colorKind,districtGround,road,coastline,walkways,bayviewPromenadeAt,depthProps,drawDepthProp,
  building,handlesDecor,scenicBlocked,spriteImage:type=>spriteReady(type)?sprites[type]:null,waterBlocked:coastalWater,location,map,
  metrics:()=>({...metrics,cacheMax:CAP,atlasReady:atlas.complete&&atlas.naturalWidth>0})
 });

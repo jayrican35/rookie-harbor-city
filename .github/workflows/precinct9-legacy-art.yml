@@ -71,7 +71,7 @@ jobs:
           done
           grep -q 'v131-precinct-legacy-bridge.js' site/preview/precinct9-legacy-lab/index.html
           echo 'PASS production, Zombie, Academy, Marina, world roads and Jay assets unchanged'
-      - name: Inspect eleven actual mobile game scenes and original source assets
+      - name: Inspect fourteen actual mobile game scenes and original source assets
         run: |
           set -euo pipefail
           python3 -m http.server 8765 --directory site >/tmp/precinct9-legacy-http.log 2>&1 &
@@ -83,8 +83,12 @@ jobs:
           import json
           p=Path('site/preview/precinct9-legacy-lab/evidence')
           d=json.loads((p/'review-data.json').read_text())
-          scenes=[s['id'] for s in d['scenePositions']]+['station-interior-roof-revealed']
-          assert len(scenes)==11,len(scenes)
+          scenes=[s['id'] for s in d['scenePositions']]+[
+            'station-interior-roof-revealed',
+            'interior-briefing-real-art',
+            'interior-locker-room-real-art',
+            'interior-garage-real-art']
+          assert len(scenes)==14,len(scenes)
           assert d['results'][1]['legacy']['stats']['furniture']>=20
           cards=[]
           for scene in scenes:
@@ -99,7 +103,7 @@ jobs:
               paired.save(p/(scene+'-compare.png'))
               cards.append('<section><h2>'+scene.replace('-',' ').title()+'</h2><img src="'+scene+'-compare.png"></section>')
           (p/'index.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Precinct 9 Original Art — Live Game Review</title><style>body{background:#102938;color:#f3e2bf;font:16px system-ui;padding:14px}section{margin:22px 0}h1{font-size:24px}h2{font-size:18px}img{width:100%;max-width:900px;border-radius:7px}</style><h1>Precinct 9 — Original Art Port</h1><p>Left: V128 legacy placeholder. Right: source-authored precinct floors/furniture/reception/garage restored inside SAME world. Real Chromium mobile screenshots; art quality still requires human approval.</p>'+''.join(cards)+'</html>')
-          print('PASS 11 original game real-browser comparisons; source sprites loaded and drawn')
+          print('PASS 14 original game real-browser comparisons; source sprites loaded and drawn')
           PY
       - name: Save real phone-scale screenshots and art validation
         if: always()

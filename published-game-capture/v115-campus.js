@@ -886,7 +886,11 @@
     // Avoid double glazing/vents over the ported legacy material and signs.
     if(art&&!window.ROOKIE_V132_PRECINCT)art.precinct(g,{zoom:campus.zoom,view,STX,STY,alpha:roofAlpha()},t);
     // Precinct art respects the SAME roof alpha and existing native geometry.
-    if(precinctVisual)precinctVisual.frontage(g,{zoom:campus.zoom,view,roofAlpha:roofAlpha()},t);
+    // V130 old entry label/sill would overwrite the actual new glass doors.
+    // V134 owns the entire facade and the real vehicle threshold artwork;
+    // keep only V130's original pavement/road-ground graphics.
+    if(precinctVisual&&!window.ROOKIE_V134_PRECINCT)
+      precinctVisual.frontage(g,{zoom:campus.zoom,view,roofAlpha:roofAlpha()},t);
     // Architectural wall band, public overhang and garage threshold details
     // fade with the SAME original station roof, never into the interior.
     if(!window.ROOKIE_V134_PRECINCT)

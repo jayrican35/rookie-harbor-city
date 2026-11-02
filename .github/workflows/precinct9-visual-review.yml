@@ -31,7 +31,7 @@ jobs:
           node qa/check-v126-polish.cjs
           node qa/check-v117-jay.cjs
           node qa/check-v115-campus.cjs
-      - name: Absolute scoped diff: no original game, Zombie or Marina changes
+      - name: 'Absolute scoped diff: no original game, Zombie or Marina changes'
         run: |
           set -euo pipefail
           git fetch --no-tags --depth=1 origin 7339eaba5a3756b4fc9dbcbc72ba54c5e7822a8c

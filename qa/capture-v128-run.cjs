@@ -62,8 +62,17 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
   console.log('ROAD COLLISION DIAGNOSTIC',JSON.stringify(roadDiagnosis.filter(r=>r.result)));
   assert(passability.every(r=>!r.blocked),
     'Road drawn across physical wall/tree: '+JSON.stringify(passability));
+  // Every 25 world-units along the entire new feeder, including the exact
+  // original bench obstruction; paint-only road fixes cannot pass this gate.
+  const feederScan=await page.evaluate(()=>{
+    const q=window.HARBOR.seamlessCampusV115.test.roadCollisionDiagnostic;
+    const out=[];for(let y=2625;y<=3660;y+=25){
+      const o=q(4050,y,12);if(o?.result)out.push(o);
+    }return out;
+  });
+  assert.equal(feederScan.length,0,'Still-blocked Midtown→Bayview route: '+JSON.stringify(feederScan));
   assert.equal(errors.length,0,'No JS console errors: '+errors.join(', '));
-  fs.writeFileSync(path.join(folder,'v128-run-metrics.json'),JSON.stringify({running:{mode:running.mode,phase:running.phase},stopped:{mode:stopped.mode,phase:stopped.phase},ambientPedestrians:cityMetrics.ambientPedestrians,ambientDistrictsInitialized:cityMetrics.ambientDistrictsInitialized,streetCars:cityMetrics.streetCars,roadShots:roadShots.map(r=>r.id),roadPassability:passability,viewport:'390x844 Chromium emulated mobile',errors},null,2));
+  fs.writeFileSync(path.join(folder,'v128-run-metrics.json'),JSON.stringify({running:{mode:running.mode,phase:running.phase},stopped:{mode:stopped.mode,phase:stopped.phase},ambientPedestrians:cityMetrics.ambientPedestrians,ambientDistrictsInitialized:cityMetrics.ambientDistrictsInitialized,streetCars:cityMetrics.streetCars,roadShots:roadShots.map(r=>r.id),roadPassability:passability,feederScanBlockedCount:feederScan.length,viewport:'390x844 Chromium emulated mobile',errors},null,2));
   console.log('PASS V128 live mobile-size gameplay RUN / idle transition in the original single player/camera world');
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exit(1)});

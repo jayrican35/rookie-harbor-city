@@ -64,6 +64,11 @@ function lamp(g,x,y,scale=1){
  g.restore();
 }
 function windowPane(g,x,y,w,h){
+ // This branch changes only the pane itself, inside the SAME cached V134
+ // building sprite. Existing architectural bay coordinates, surrounding
+ // masonry, stone pilasters and roof-alpha/collision stay authoritative.
+ if(window.ROOKIE_V136_WINDOW_KIT_ACTIVE &&
+    window.ROOKIE_V135_WALL_KIT?.drawFacadeWindow(g,x,y,w,h))return;
  // Navy mullions, warm interior, actual pixel-scale venetian blinds and
  // stone lintels. Four depth planes; no full-screen source-image overlay.
  px(g,x+7,y+14,w,h,'rgba(4,17,24,.35)');
@@ -318,7 +323,8 @@ function architecture(g,o){
    // Phase-1 wall-kit smoke assembly: rendered in THIS existing V134 facade
    // layer and the SAME roofAlpha(), not a second precinct or render pass.
    // A single southwest 320×128 sample, outside the real lobby/garage door.
-   window.ROOKIE_V135_WALL_KIT?.drawTest(g,{x:STX+32,y:STY+TOP+512});
+   if(!window.ROOKIE_V136_WINDOW_KIT_ACTIVE)
+     window.ROOKIE_V135_WALL_KIT?.drawTest(g,{x:STX+32,y:STY+TOP+512});
  }
  if(garageVisible){
    if(!garageFace)garageFace=renderGarage();
@@ -461,6 +467,11 @@ function forecourt(g,o){
  g.drawImage(forecourtArt,387,1127);g.restore();
 }
 window.ROOKIE_V134_PRECINCT=Object.freeze({
+ invalidateFacade:()=>{
+   // Recreate approved V134 canvases once after the EXISTING atlas loader
+   // finishes. Never add a scene or draw loop.
+   face=null;garageFace=null;
+ },
  version:'v134-reference-architectural-reconstruction',
  architecture,ground,forecourt,
  layout:Object.freeze({facade:{x:STX,y:STY+TOP,w:WIDTH,h:HEIGHT},

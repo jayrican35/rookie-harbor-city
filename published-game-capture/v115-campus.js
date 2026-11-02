@@ -123,6 +123,9 @@
       for(let i=0;i<districtSolids.length;i++){
         const b=districtSolids[i];
         if(window.ROOKIE_V116_MARINA?.ownsSolid?.(b))continue;
+        // An authored connected road has priority over obsolete exterior prop colliders;
+        // keep actual building walls and Marina solids protected elsewhere.
+        if(b.id==='midtown' && x>=4010 && x<=4090 && y>=2600 && y<=3665 && b.w<=100 && b.h<=100)continue;
         if(circleHitsRect(x,y,r,b))return true;
       }
     }

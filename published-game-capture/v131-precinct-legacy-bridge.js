@@ -3,7 +3,10 @@
  * The V115 continuous world previously cached generic room placeholders and
  * missed late-decoded sprites / classic state.map-only texture overrides.
  * This adapter paints those original assets at their ORIGINAL room coordinates.
- * It creates no Images, assets, maps, colliders, saves, or simulation loops.
+ * It never creates NEW artwork, maps, colliders, saves or simulation loops.
+ * The classic B2 sprite objects were private to game.js; this review-only
+ * bridge decodes their EXACT existing 2026-10-13/14 source files once when
+ * global B2 is inaccessible, reusing the browser cache and native dimensions.
  */
 (function(){
 'use strict';
@@ -14,17 +17,46 @@ const ready=im=>!!(im&&im.complete&&im.naturalWidth>0);
 const craft=()=>H.precinctCraft?.art||{};
 const cinema=()=>H.precinctCinematic?.art||{};
 const garage=()=>window.__GARAGE?.img?.plate;
+// The classic campaign wraps `var B2` inside its game script, so it cannot
+// be reached as window.B2 from the standalone connected-world renderer.
+// The original source images ARE available locally. Load exactly those
+// files (one decode each, same cached browser URLs), never substitute art.
+const classicFiles=Object.freeze({
+  board:'642e392a9f180d575f32.webp',
+  terminal:'1910741edc0ad733dfa3.webp',
+  counter:'4007c9b0a59daff94429.webp',
+  evidence:'656124c949796ab7fac9.webp',
+  cabinet:'aeb62a8d3147f4724c61.webp',
+  lockers:'f330a30836b8ab16d8e3.webp',
+  desk:'b83efba068cc3a967e89.webp',
+  chair:'563224c86afd608efbe0.webp',
+  wallH:'172c05b4d3c69b60aff8.webp',
+  bench:'545e448ac49ce80de3d7.webp',
+  interview:'7da6f6234db1910de04c.webp'
+});
+let privateB2=null;
+function b2(){
+ if(window.B2)return window.B2;
+ if(privateB2)return privateB2;
+ const loaded=Object.create(null);
+ for(const [key,file] of Object.entries(classicFiles)){
+   const im=new Image();
+   im.decoding='async';im.src='./assets/embedded/'+file;
+   loaded[key]=im;
+ }
+ privateB2=loaded;return loaded;
+}
 const source=(key)=>({
   carpet:craft().carpet,cream:craft().cream,cool:craft().cool,wood:craft().wood,
   wall:craft().wall,interview:craft().interview,crate:craft().crate,
   visitorTable:craft().visitorTable,typing:craft().typing,
   reception:H.receptionRoom?.art,plant:H.receptionRoom?.plant,
-  bench:window.B2?.bench,changingBench:window.B2?.bench,
-  board:window.B2?.board,terminal:window.B2?.terminal,
-  counter:window.B2?.counter,evidence:window.B2?.evidence,
-  cabinet:window.B2?.cabinet,lockers:window.B2?.lockers,
-  officeDesk:window.B2?.desk,chair:window.B2?.chair,
-  interviewB2:window.B2?.interview,wallH:window.B2?.wallH,
+  bench:b2().bench,changingBench:b2().bench,
+  board:b2().board,terminal:b2().terminal,
+  counter:b2().counter,evidence:b2().evidence,
+  cabinet:b2().cabinet,lockers:b2().lockers,
+  officeDesk:b2().desk,chair:b2().chair,
+  interviewB2:b2().interview,wallH:b2().wallH,
   garage:garage(),clock:cinema().clock,sconce:cinema().sconce,
   workbench:cinema().workbench,sofa:H.worldFurniture?.art?.sofa
 })[key];

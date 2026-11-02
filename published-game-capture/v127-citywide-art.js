@@ -614,6 +614,28 @@ function scenicFor(d){
  scenicCache.set(d.id,{map:d.map,trees,cells,cellSize:CELL});return trees;
 }
 function scenicBlocked(x,y,r=12,districts=[]){
+ // Hand-authored Bayview furnishings use the SAME existing player collision
+ // API as the rest of the connected city. Only visible loaded sprite feet are
+ // solid: a bench is not an invisible wall and a palm canopy stays walk-under.
+ if(x>=BAYVIEW.left-16&&x<BAYVIEW.right+16&&y>=BAYVIEW.landscapeTop){
+  for(const o of BAYVIEW_FURNISHINGS){
+   if(!spriteReady(o.t))continue;
+   let dx=x-o.x,dy=y-o.y;
+   if(o.t==='palm'||o.t==='lamp'){
+     const limit=r+(o.t==='palm'?11:4);
+     if(dx*dx+dy*dy<limit*limit)return true;
+   }else if(o.t==='bench'){
+     const px=Math.max(o.x+12,Math.min(x,o.x+78));
+     const py=Math.max(o.y-5,Math.min(y,o.y+13));
+     if((x-px)**2+(y-py)**2<r*r)return true;
+   }else if(o.t==='planter'||o.t==='flowerbed'){
+     const width=o.t==='flowerbed'?(o.w||66):48;
+     const px=Math.max(o.x-width/2,Math.min(x,o.x+width/2));
+     const py=Math.max(o.y-7,Math.min(y,o.y+8));
+     if((x-px)**2+(y-py)**2<r*r)return true;
+   }
+  }
+ }
  for(const d of districts){
    if(d.id==='waterfront'||x<d.x-24||y<d.y-24||x>d.x+d.w+24||y>d.y+d.h+24)continue;
    scenicFor(d); // lazily build a deterministic index just once per native map

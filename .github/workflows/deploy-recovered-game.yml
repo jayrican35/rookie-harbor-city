@@ -193,14 +193,14 @@ jobs:
       - name: Check out protected V132 precinct roof and legacy cast review (isolated)
         uses: actions/checkout@v4
         with:
-          ref: 26ef5be1df51d9d7d1ceb8ba9b70363355a8d650 # passed native source, game, roof and named officer Chromium review
+          ref: b14e26b1f0355965d233b0392408af2dfcae57b9 # passed native source, game, roof and named officer Chromium review
           path: precinct9-v132
           persist-credentials: false
 
       - name: Check out V133 Precinct 9 civic campus review — separate from production
         uses: actions/checkout@v4
         with:
-          ref: 5b04f46f4485c34b76d187fa21473741b8627c13 # passed V133 protected-file checks + real Chromium Android gameplay QA
+          ref: 798c7f61a5ba9508ea1c89d71b8011c760849e33 # passed V133 protected-file checks + real Chromium Android gameplay QA
           path: precinct9-v133
           persist-credentials: false
 

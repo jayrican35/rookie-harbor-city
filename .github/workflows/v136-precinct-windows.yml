@@ -1,0 +1,143 @@
+name: Precinct 9 Phase 2 — Native Windows Integration
+on:
+  push:
+    branches:
+      - feature/v136-precinct9-phase2-windows
+    paths:
+      - tools/build_precinct9_windows_phase2.py
+      - tools/build_v136_precinct_windows_preview.py
+      - published-game-capture/v134-precinct-reference.js
+      - published-game-capture/v135-precinct-wallkit-test.js
+      - qa/capture-v136-windows.cjs
+      - docs/PRECINCT9-PHASE2-WINDOWS.md
+      - .github/workflows/v136-precinct-windows.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  art-and-native-game:
+    runs-on: ubuntu-latest
+    timeout-minutes: 26
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install existing game and image QA dependencies
+        run: |
+          set -euo pipefail
+          python3 -m pip install -q pillow numpy
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Build reusable window PNGs by extending Phase 1 art atlas
+        run: |
+          set -euo pipefail
+          python3 tools/build_precinct9_windows_phase2.py published-game-capture/assets/precinct9-wall-kit-phase1 published-game-capture/assets/precinct9-windows-phase2
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageChops
+          import json
+          a=Path('published-game-capture/assets/precinct9-wall-kit-phase1')
+          b=Path('published-game-capture/assets/precinct9-windows-phase2')
+          old=json.loads((a/'manifest.json').read_text())
+          new=json.loads((b/'manifest.json').read_text())
+          assert old['tileSize']==new['tileSize']==32
+          assert len(old['frames'])==26 and len(new['frames'])==40
+          assert len(new['newFrames'])==14
+          src=Image.open(a/old['atlas']).convert('RGBA')
+          atlas=Image.open(b/new['atlas']).convert('RGBA')
+          assert src.size==atlas.size==(1024,1024)
+          for name,frame in old['frames'].items():
+            assert new['frames'][name]==frame,name
+            q=frame['atlas'];box=(q['x'],q['y'],q['x']+q['w'],q['y']+q['h'])
+            assert ImageChops.difference(src.crop(box),atlas.crop(box)).getbbox() is None,name
+          for name in new['newFrames']:
+            frame=new['frames'][name]
+            art=Image.open(b/frame['file']).convert('RGBA')
+            assert art.width%32==0 and art.height%32==0,name
+            q=frame['atlas']
+            assert art.size==(q['w'],q['h'])
+            assert ImageChops.difference(art,atlas.crop((q['x'],q['y'],q['x']+q['w'],q['y']+q['h']))).getbbox() is None,name
+          warm=Image.open(b/'window_single_warm.png').convert('RGBA')
+          dark=Image.open(b/'window_single_dark.png').convert('RGBA')
+          assert ImageChops.difference(warm,dark).getbbox() is not None
+          assert warm.getpixel((0,0))[3]==0
+          print('PASS 14 new transparent window modules, 40-frame atlas, all 26 Phase-1 original rectangles untouched')
+          PY
+      - name: Fail on modifications to protected Zombie and off-scope game files
+        run: |
+          set -euo pipefail
+          node --check published-game-capture/v134-precinct-reference.js
+          node --check published-game-capture/v135-precinct-wallkit-test.js
+          node --check qa/capture-v136-windows.cjs
+          node qa/check-v134-precinct.cjs
+          node qa/check-world-roads.cjs
+          node qa/check-world-traffic.cjs
+          git fetch --no-tags --depth=1 origin e8ad822013bc91f9149c2399b2de1298ea03c6be
+          while IFS= read -r file; do
+            case "$file" in
+              published-game-capture/v134-precinct-reference.js|published-game-capture/v135-precinct-wallkit-test.js|published-game-capture/assets/precinct9-windows-phase2/*|tools/build_precinct9_windows_phase2.py|tools/build_v136_precinct_windows_preview.py|qa/capture-v136-windows.cjs|docs/PRECINCT9-PHASE2-WINDOWS.md|.github/workflows/v136-precinct-windows.yml) ;;
+              *) echo "STOP unexpected non-precinct or Zombie change: $file"; exit 1 ;;
+            esac
+          done < <(git diff --name-only e8ad822013bc91f9149c2399b2de1298ea03c6be HEAD)
+          echo 'PASS main campaign, Zombie Outbreak, Marina, roads, original wall PNGs unchanged'
+      - name: Build real V135 before versus V136 after in separate playable worlds
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/precinct9-v135-wallkit-lab site/preview/precinct9-v136-windows-lab
+          cp -a published-game-capture/. site/preview/precinct9-v135-wallkit-lab/
+          cp -a published-game-capture/. site/preview/precinct9-v136-windows-lab/
+          python3 tools/build_v135_precinct_wallkit_preview.py site/preview/precinct9-v135-wallkit-lab
+          python3 tools/build_v136_precinct_windows_preview.py site/preview/precinct9-v136-windows-lab
+          node --check site/preview/precinct9-v136-windows-lab/game-v115.bundle.js
+          for f in game.js outbreak.css v116-marina.js v127-citywide-art.js v115-world.js v117-jay.js; do
+            cmp -s site/preview/precinct9-v135-wallkit-lab/$f site/preview/precinct9-v136-windows-lab/$f
+          done
+          echo 'PASS identical protected source in both original playable builds'
+      - name: Real Android-size Canvas test — window placement, cache, lights, door and road
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8765 --directory site >/tmp/v136-http.log 2>&1 &
+          sleep 2
+          node qa/capture-v136-windows.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageChops
+          import json,html
+          d=Path('site/preview/precinct9-v136-windows-lab/evidence')
+          data=json.loads((d/'qa-results.json').read_text())
+          names=[x['name'] for x in data['comparisons']]+['seamless-roof-reveal']
+          cards=[]
+          for n in names:
+            a=d/(n+'-before.png');b=d/(n+'-after.png')
+            assert a.is_file() and b.is_file()
+            if n=='left-wing-warm-dark-windows':
+              with Image.open(a) as src,Image.open(b) as dest:
+                assert ImageChops.difference(src.convert('RGB'),dest.convert('RGB')).getbbox(), 'New window art did not appear'
+            cards.append('<section><h2>'+html.escape(n.replace('-',' ').title())+'</h2><div class="pair"><img src="'+n+'-before.png" alt="V135 before"><img src="'+n+'-after.png" alt="V136 windows after"></div></section>')
+          (d/'index.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROOKIE Precinct 9 Phase 2 Windows</title><style>body{background:#10263c;color:#f5dfac;margin:15px;font:16px system-ui}.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:1000px}.pair img{width:100%;min-width:0}h2{font-size:18px}</style><h1>Precinct 9 Phase 2 — Modular Windows</h1><p>Actual Android-size gameplay. Left: V135. Right: V136 original Phase-1 walls with warm/dark transparent window PNGs drawn inside the V134 cached façade. Rooftop cutaway, entrance, Marina, roads and Zombie Outbreak unchanged. Artistic approval pending.</p>'+''.join(cards)+'</html>')
+          print('PASS matched real V136 game screenshots; no synthetic showcase scene')
+          PY
+      - name: Upload Phase 2 reusable RGBA window assets and actual game screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: precinct9-phase2-window-assets-and-gameplay
+          path: |
+            published-game-capture/assets/precinct9-windows-phase2/
+            site/preview/precinct9-v136-windows-lab/evidence/
+          if-no-files-found: error
+      - name: Commit generated window PNG and manifest on isolated feature branch
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add published-game-capture/assets/precinct9-windows-phase2/
+          if git diff --cached --quiet; then
+            echo 'Phase-2 window art already committed'
+          else
+            git commit -m 'V136 Phase 2: 14 RGBA window modules and 40-frame combined atlas, original Phase-1 bytes preserved'
+            git push origin HEAD:feature/v136-precinct9-phase2-windows
+          fi

@@ -225,6 +225,13 @@ jobs:
           path: precinct9-v137
           persist-credentials: false
 
+      - name: Check out V138 character-front-of-precinct depth fix (isolated)
+        uses: actions/checkout@v4
+        with:
+          ref: d564d9693445fdc77c9ba7a5c42bf052d8582f7b # green mobile 390x844 and desktop 1280x720, actual door walk tests
+          path: precinct9-v138
+          persist-credentials: false
+
       - name: Recover missing main-campaign environment art
         shell: bash
         working-directory: visual-preview
@@ -1485,6 +1492,52 @@ jobs:
             cards.append('<section><h2>'+html.escape(name.replace('-',' ').title())+'</h2><div class="pair"><img loading="lazy" src="'+name+'-before.png" alt="V136 before"><img loading="lazy" src="'+name+'-after.png" alt="V137 entrance"></div></section>')
           (d/'index.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROOKIE V137 — Precinct 9 Seamless Front Doors</title><style>body{margin:14px;background:#142a40;color:#f7e4ba;font:16px system-ui}.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:940px}.pair img{width:100%;min-width:0}section{margin:26px 0}h2{font-size:18px}video{max-width:390px;width:100%}</style><h1>V137: Precinct 9 Modular Main Entrance</h1><p>REAL mobile gameplay: Jay walks from the old civic entrance through the original furnished lobby and back, on one continuous world and camera with automatic doors. Existing Phase 1/2 art retained. The original campaign missions and vehicles have NOT yet been migrated to this V115 connected-world prototype. Draft, awaiting your approval.</p><video controls playsinline src="continuous-entry-exit.webm"></video>'+''.join(cards)+'</html>')
           print('PASS real V137 mobile gameplay, original door/camera/roof and authentic video, no mockups')
+          PY
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+
+      - name: Build isolated V138 Precinct 9 correct actor-versus-building occlusion
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/precinct9-v138-depth-lab
+          cp -a precinct9-v138/published-game-capture/. site/preview/precinct9-v138-depth-lab/
+          python3 precinct9-v138/tools/build_v138_precinct_depth_preview.py site/preview/precinct9-v138-depth-lab
+          node --check site/preview/precinct9-v138-depth-lab/game-v115.bundle.js
+          node --check site/preview/precinct9-v138-depth-lab/v115-campus.js
+          node --check site/preview/precinct9-v138-depth-lab/v134-precinct-reference.js
+          for f in game.js outbreak.css v116-marina.js v127-citywide-art.js v115-world.js v117-jay.js; do
+            cmp -s "site/preview/precinct9-v137-entrance-lab/$f" "site/preview/precinct9-v138-depth-lab/$f"
+            cmp -s "site/preview/v128-world-quality/$f" "site/preview/precinct9-v138-depth-lab/$f"
+          done
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          echo 'PASS same original player, camera, world, roads, doors, Zombie and original campaign'
+
+      - name: Publish V138 real mobile before-after facade-occlusion screenshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          node precinct9-v138/qa/capture-v138-precinct-depth.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageChops
+          import json,html
+          p=Path('site/preview/precinct9-v138-depth-lab/evidence')
+          data=json.loads((p/'qa-results.json').read_text())
+          names=[v['name'] for v in data['screenshots']]
+          cards=[]
+          for name in names:
+            a=p/(name+'-before.png');b=p/(name+'-after.png')
+            assert a.exists() and b.exists(),name
+            if name=='character-east-wing-walkway':
+              with Image.open(a) as x, Image.open(b) as y:
+                assert ImageChops.difference(x.convert('RGB'),y.convert('RGB')).getbbox(), \
+                  'Outdoor character occlusion fix must change actual gameplay pixels'
+            cards.append('<section><h2>'+html.escape(name.replace('-',' ').title())+'</h2><div class="pair"><img loading="lazy" src="'+name+'-before.png" alt="V137 Jay obscured"><img loading="lazy" src="'+name+'-after.png" alt="V138 Jay visible"></div></section>')
+          for name in names:assert (p/(name+'-desktop-after.png')).is_file()
+          (p/'index.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROOKIE V138 — Precinct Player Occlusion Fix</title><style>body{margin:15px;background:#11283f;color:#fae6bd;font:16px system-ui}.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:900px}.pair img{width:100%;min-width:0}h2{font-size:18px}section{margin:24px 0}</style><h1>Precinct 9 — Character / Facade Correct Depth</h1><p>Actual game screenshots: original V137 on left, corrected V138 on right. Jay now renders in front of the building when on the public walkway, but behind the roof inside, with same door collision, camera, player sprite, roads and Zombie Outbreak untouched. Review candidate only.</p>'+''.join(cards)+'</html>')
+          print('PASS V138 actual 390x844 gameplay image comparisons, keyboard entry/exit and 1280x720 desktop')
           PY
           cmp -s game-backup/published-game-capture/game.js site/game.js
           cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css

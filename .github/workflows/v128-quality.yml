@@ -85,3 +85,68 @@ jobs:
           name: harbor-world-browser-road-evidence
           path: site/preview/v128-world-quality/evidence/
           if-no-files-found: warn
+  bayview-visual-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch last verified published V128 for exact-camera comparison
+        uses: actions/checkout@v4
+        with:
+          ref: 7339eaba5a3756b4fc9dbcbc72ba54c5e7822a8c
+          path: reference-v128
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install actual game builder and Chromium
+        run: |
+          python3 -m pip install -q pillow numpy
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Build separate original and improved playable previews
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v128-world-quality site/preview/v129-bayview
+          cp -a reference-v128/published-game-capture/. site/preview/v128-world-quality/
+          cp -a published-game-capture/. site/preview/v129-bayview/
+          python3 reference-v128/tools/build_v128_preview.py site/preview/v128-world-quality
+          python3 tools/build_bayview_preview.py site/preview/v129-bayview
+          node --check site/preview/v129-bayview/game-v115.bundle.js
+          cmp -s site/preview/v128-world-quality/game.js site/preview/v129-bayview/game.js
+          cmp -s site/preview/v128-world-quality/outbreak.css site/preview/v129-bayview/outbreak.css
+      - name: Capture 6 exact-camera Android-size real-game before/after pairs
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8765 --directory site >/tmp/bayview-http.log 2>&1 &
+          sleep 2
+          node qa/capture-bayview-frontage.cjs
+          python3 - <<'PY'
+          from PIL import Image,ImageChops
+          from pathlib import Path
+          import json
+          p=Path('site/preview/v129-bayview/evidence')
+          scenes=['recorded-bayview-road-mouth','southbay-road-approach','bayview-south-terrace',
+             'bayview-west-promenade','bayview-marina-seam','original-marina-protected']
+          metrics={}
+          for scene in scenes:
+            with Image.open(p/(scene+'-before.png')) as a,Image.open(p/(scene+'-after.png')) as b:
+              aa=a.convert('RGB');bb=b.convert('RGB')
+              assert aa.size==bb.size,(scene,aa.size,bb.size)
+              histogram=ImageChops.difference(aa,bb).convert('L').histogram()
+              metrics[scene]=round(sum(histogram[15:])/max(1,sum(histogram)),4)
+          (p/'pixel-differences.json').write_text(json.dumps(metrics,indent=2))
+          for name in scenes[:5]:
+            assert metrics[name]>.002,(name,'No visible environmental improvement')
+          print('PASS REAL before/after pixel differences',metrics)
+          PY
+      - name: Publish development evidence artifact only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bayview-waterfront-mobile-before-after
+          path: site/preview/v129-bayview/evidence/
+          if-no-files-found: warn

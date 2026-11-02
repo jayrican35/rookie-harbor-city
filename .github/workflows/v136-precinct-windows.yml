@@ -63,7 +63,7 @@ jobs:
             assert ImageChops.difference(art,atlas.crop((q['x'],q['y'],q['x']+q['w'],q['y']+q['h']))).getbbox() is None,name
           warm=Image.open(b/'window_single_warm.png').convert('RGBA')
           dark=Image.open(b/'window_single_dark.png').convert('RGBA')
-          assert ImageChops.difference(warm,dark).getbbox() is not None
+          assert ImageChops.difference(warm.convert('RGB'),dark.convert('RGB')).getbbox() is not None
           assert warm.getpixel((0,0))[3]==0
           print('PASS 14 new transparent window modules, 40-frame atlas, all 26 Phase-1 original rectangles untouched')
           PY

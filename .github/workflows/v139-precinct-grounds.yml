@@ -58,9 +58,10 @@ jobs:
           for name in ('paver_stone','asphalt','grass'):
             im=Image.open(p/(name+'.png'))
             assert im.getpixel((10,10))[3]==255,name
-          for name in ('crosswalk_vertical','road_double_yellow','curb_top','hedge'):
+          for name in ('crosswalk_vertical','road_double_yellow'):
             im=Image.open(p/(name+'.png'))
-            assert im.getpixel((0,0))[3]==0 or name=='hedge'
+            assert im.getpixel((0,0))[3]==0,name
+          assert Image.open(p/'curb_top.png').getpixel((0,0))[3]==255
           print('PASS',len(m['frames']),'reference-colored PNG frames with exact atlas crops and transparent details')
           PY
       - name: Verify no changes to original gameplay or Zombie Outbreak

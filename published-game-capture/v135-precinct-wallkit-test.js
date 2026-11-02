@@ -18,7 +18,7 @@ fetch(dir+'manifest.json').then(r=>{
  if(m.tileSize!==32||m.worldPixelsPerAssetPixel!==1)throw Error('wall-kit scale mismatch');
  if(!m.frames?.wall_brick_medium||!m.frames?.pilaster_full)throw Error('missing Phase-1 walls');
  if(window.ROOKIE_V136_WINDOW_KIT_ACTIVE && (!m.frames?.window_single_warm||
-   !m.frames?.window_single_dark||Object.keys(m.frames).length!==40))
+   !m.frames?.window_single_dark||Object.keys(m.frames).length!==42))
      throw Error('Phase-2 window atlas missing or incompatible');
  atlas=im;manifest=m;loaded=true;
  // V134 caches the original façade. Repaint its existing cache ONCE, so
@@ -58,9 +58,11 @@ function drawFacadeWindow(g,x,y,w,h){
  // Existing V134 architectural bay coordinates are authoritative.
  // Phase-2 PNGs are 1:1 pixels, unscaled, centered inside the bay. No
  // facade overlay or new collision polygons. Only this old window changes.
- const sx=Math.round(x+(w-64)/2),sy=Math.round(y+(h-96)/2);
+ const wide=w>=98,unit=wide?96:64;
+ const sx=Math.round(x+(w-unit)/2),sy=Math.round(y+(h-96)/2);
  const warm=(Math.round(x/50)+Math.round(y/37))%4!==0;
- const type=warm?'window_single_warm':'window_single_dark';
+ const type=wide?(warm?'window_wide_warm':'window_wide_dark'):
+   warm?'window_single_warm':'window_single_dark';
  const success=tile(g,type,sx,sy);
  if(success)windowDraws++;
  if(success&&warm&&((Math.round(x/31)%3)===0)){

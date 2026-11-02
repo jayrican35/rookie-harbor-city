@@ -211,6 +211,13 @@ jobs:
           path: precinct9-v134
           persist-credentials: false
 
+      - name: Check out V136 Phase 2 precinct window assets (isolated review)
+        uses: actions/checkout@v4
+        with:
+          ref: bb694f5885b6795702c386bd8a824e8d148da568 # real Android browser QA passed; production PNG assets included
+          path: precinct9-v136
+          persist-credentials: false
+
       - name: Recover missing main-campaign environment art
         shell: bash
         working-directory: visual-preview
@@ -1380,6 +1387,51 @@ jobs:
             assert difference[n],n+' unchanged — never publish a missing visual upgrade'
           (p/'index.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROOKIE V134 — True Reference-Based Police HQ</title><style>body{margin:14px;background:#12273a;color:#f2e0ba;font:16px system-ui}.comparison{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:940px}.comparison img{width:100%}h1{font-size:24px}h2{font-size:18px}section{margin:24px 0}</style><h1>Precinct 9 — User Reference Architectural Reconstruction</h1><p>Real mobile game screenshots at same camera: LEFT V133 previous; RIGHT V134 with layered two-story navy-brick / cream-stone police headquarters, gold badge, lit windows, flags, matching service garage, civic plaza and landscaping. The original lobby doors, roof reveal, Harbor Avenue, Marina and Zombie Outbreak remain intact. Your artistic approval remains the final gate.</p>'+''.join(cards)+'</html>')
           print('PASS',len(scenes),'matched Android screenshots show actual HQ/garage/plaza visual changes; user approval pending')
+          PY
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+
+      - name: Build isolated V136 Phase-2 windows playable preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/precinct9-v135-wallkit-lab site/preview/precinct9-v136-windows-lab
+          cp -a precinct9-v136/published-game-capture/. site/preview/precinct9-v135-wallkit-lab/
+          cp -a precinct9-v136/published-game-capture/. site/preview/precinct9-v136-windows-lab/
+          python3 precinct9-v136/tools/build_v135_precinct_wallkit_preview.py site/preview/precinct9-v135-wallkit-lab
+          python3 precinct9-v136/tools/build_v136_precinct_windows_preview.py site/preview/precinct9-v136-windows-lab
+          node --check site/preview/precinct9-v136-windows-lab/game-v115.bundle.js
+          for f in game.js outbreak.css v116-marina.js v127-citywide-art.js v115-world.js v117-jay.js; do
+            cmp -s "site/preview/v128-world-quality/$f" "site/preview/precinct9-v136-windows-lab/$f"
+            cmp -s "site/preview/precinct9-v135-wallkit-lab/$f" "site/preview/precinct9-v136-windows-lab/$f"
+          done
+          cmp -s game-backup/published-game-capture/game.js site/game.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
+          echo 'PASS Phase-2 window asset-only preview, original main campaign and Zombie byte-unchanged'
+
+      - name: Publish V136 actual 390x844 before-after window and entrance screenshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          node precinct9-v136/qa/capture-v136-windows.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageChops
+          import json,html
+          p=Path('site/preview/precinct9-v136-windows-lab/evidence')
+          q=json.loads((p/'qa-results.json').read_text())
+          names=[x['name'] for x in q['comparisons']]+['seamless-roof-reveal']
+          cards=[]
+          for name in names:
+            old=p/(name+'-before.png');new=p/(name+'-after.png')
+            assert old.is_file() and new.is_file(),name
+            if name=='main-precinct-window-bays':
+              with Image.open(old) as a,Image.open(new) as b:
+                assert ImageChops.difference(a.convert('RGB'),b.convert('RGB')).getbbox(), \
+                  'Real façade has no visible window improvement'
+            cards.append('<section><h2>'+html.escape(name.replace('-',' ').title())+'</h2><div class="compare"><img loading="lazy" src="'+name+'-before.png" alt="V135 before"><img loading="lazy" src="'+name+'-after.png" alt="V136 after"></div></section>')
+          (p/'index.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROOKIE V136 — Phase 2 Windows</title><style>body{background:#11273b;color:#f4e4bd;margin:14px;font:16px system-ui}.compare{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:950px}.compare img{width:100%;min-width:0}h2{font-size:18px}section{margin:24px 0}</style><h1>Phase 2 — Precinct 9 Windows</h1><p>Actual 390x844 playable game at matching camera positions. Left V135 original; right V136 Phase 2 native 64px and 96px window PNGs, lit/dark on original blue-brick V134 facade. Existing wall atlas, roof reveal, lobby and garage doors, NPCs, Marina and Zombie protected; awaiting human artistic approval.</p>'+''.join(cards)+'</html>')
+          print('PASS',len(names),'real game comparison screenshots, no fake showcase')
           PY
           cmp -s game-backup/published-game-capture/game.js site/game.js
           cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css

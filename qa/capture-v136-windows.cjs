@@ -63,7 +63,7 @@ const cases=[
     facade:window.ROOKIE_V134_PRECINCT?.stats()
   }));
   if(version==='after'){
-    assert(stats.walls.windowAtlas&&stats.walls.moduleCount===40);
+    assert(stats.walls.windowAtlas&&stats.walls.moduleCount===42);
     assert(stats.walls.windowDraws>=8,
       'Window PNGs were not integrated into existing V134 fascia: '+JSON.stringify(stats.walls));
     assert(stats.facade.facadeBuilds<=3&&stats.facade.garageReady,
@@ -78,6 +78,6 @@ const cases=[
    comparisons:cases,results,approvedArtworkUnchanged:true,visualApprovalRequired:true,
    protectedZombieSourceUnchanged:true,originalV134FacadeReused:true
  },null,2));
- console.log('PASS 40 atlas frames, warm/dark integrated windows, original roof fade, mobile, doors/collisions, Marina');
+ console.log('PASS 42 atlas frames, warm/dark integrated windows, original roof fade, mobile, doors/collisions, Marina');
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

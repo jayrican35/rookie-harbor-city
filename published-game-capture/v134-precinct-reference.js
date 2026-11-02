@@ -370,11 +370,39 @@ function plaque(g,x,y,w=257){
  g.font='bold 12px Barlow Condensed,sans-serif';
  g.fillText('HARBOR CITY POLICE',x+w*.60,y+45,w*.67);
 }
+function plazaPavers(g,x,y,w,h){
+ // Native-world pixel-crafted civic forecourt; the formerly huge dark-blue
+ // strip outside the main doorway becomes warm stone public paving.
+ // Still entirely passable: this is a draw layer, NOT a collision surface.
+ px(g,x+7,y+7,w,h,'rgba(6,29,37,.30)');
+ px(g,x,y,w,h,'#c6bba3');
+ px(g,x,y,w,5,'#e5d7b8');
+ px(g,x,y+h-7,w,7,'#8f9792');
+ for(let row=0,yy=y+8;yy<y+h-8;yy+=28,row++){
+  px(g,x+5,yy,w-10,2,'#9f9c90');
+  const shift=(row%2)*21;
+  for(let xx=x+6+shift;xx<x+w-6;xx+=42){
+    px(g,xx,yy+2,2,24,'rgba(99,104,98,.40)');
+    if(seed(xx,yy)%7===0)px(g,xx+6,yy+7,10,3,'rgba(245,225,180,.55)');
+    if(seed(xx,yy)%13===0)px(g,xx+19,yy+18,4,3,'rgba(112,115,98,.17)');
+  }
+ }
+ // Two precisely bordered planting strips are off the 72px public walkway.
+ px(g,x+10,y+h-19,246,9,'#a99d86');
+ px(g,x+w-211,y+h-19,192,9,'#a99d86');
+}
 let grounds=null;
 function makeGround(){
  const cv=document.createElement('canvas');cv.width=1710;cv.height=647;
  const g=cv.getContext('2d');if(!g)return null;
  g.imageSmoothingEnabled=false;g.translate(-310,-1108);
+ // Replace the under-designed dark asphalt band south of the main public
+ // entrance. The original lobby remains at x=948,y=1124 and its passage is
+ // exactly the same. Do not paint on the public parking/road to the east.
+ plazaPavers(g,387,1127,931,169);
+ basket(g,426,1256,210);
+ basket(g,1108,1256,173);
+ // Original central promenade and visitor parking remain real geography.
  // Public facing stone plaza between the physical station entry and road.
  // In 133, frontage tiles/roads already exist: this is fine detail atop them.
  for(const [x,y,w]of [[379,1320,360],[1060,1292,330]]){

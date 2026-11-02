@@ -103,6 +103,22 @@ const scenes=[
   await page.waitForTimeout(440);
   await canvas.screenshot({path:path.join(folder,'station-interior-roof-revealed-'+version+'.png')});
   captures.push('station-interior-roof-revealed');
+  // The original failure was photographed from INSIDE the briefing,
+  // locker and garage rooms. Move the actual Jay collision character into
+  // each room (world-space, zero scene transitions) so the roof becomes
+  // transparent and our screenshots show furniture rather than roof panels.
+  for(const shot of [
+    {id:'interior-briefing-real-art',x:1580,y:346,z:.94},
+    {id:'interior-locker-room-real-art',x:1625,y:448,z:.94},
+    {id:'interior-garage-real-art',x:1830,y:1071,z:.86}
+  ]){
+    const moved=await page.evaluate(p=>window.HARBOR.seamlessCampusV115.test.moveTo(p.x,p.y),shot);
+    assert(moved,version+': must reach original '+shot.id+' without crossing wall/vehicle collider');
+    assert(await page.evaluate(p=>window.HARBOR.seamlessCampusV115.qaCamera(p.x,p.y,p.z),shot));
+    await page.waitForTimeout(400);
+    await canvas.screenshot({path:path.join(folder,shot.id+'-'+version+'.png')});
+    captures.push(shot.id);
+  }
   const legacy=await page.evaluate(()=>{
     const p=window.ROOKIE_V131_PRECINCT_BRIDGE;
     return p?{version:p.version,assets:p.assetStatus(),stats:p.stats(),

@@ -30,7 +30,7 @@
       {id:'harbor-ave-east',x:2068,y:1721,w:733,h:127,kind:'arterial'},
       {id:'maple-to-southbay',x:-650,y:1800,w:144,h:1958,kind:'collector'},
       {id:'south-connector',x:-650,y:3680,w:3450,h:128,kind:'collector'},
-      {id:'midtown-south',x:3460,y:3070,w:170,h:230,kind:'collector'},
+      // Obsolete isolated Midtown dead-end replaced by the real Bayview feeder below.
       {id:'northgate-downtown',x:5800,y:945,w:110,h:352,kind:'collector'},
       {id:'downtown-waterfront',x:5720,y:2230,w:150,h:1640,kind:'collector'},
       {id:'bayview-link',x:4388,y:3680,w:55,h:128,kind:'collector'},

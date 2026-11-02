@@ -7,7 +7,7 @@
 'use strict';
 if(window.ROOKIE_V135_WALL_KIT)return;
 const dir=window.ROOKIE_V136_WINDOW_KIT_ACTIVE ? './assets/precinct9-windows-phase2/' : './assets/precinct9-wall-kit-phase1/';
-let manifest=null,atlas=null,loaded=false,error=null,frameDraws=0,testPaints=0;
+let manifest=null,atlas=null,loaded=false,error=null,frameDraws=0,testPaints=0,windowDraws=0;
 const im=new Image();im.decoding='async';
 fetch(dir+'manifest.json').then(r=>{
  if(!r.ok)throw Error('precinct atlas manifest '+r.status);return r.json();
@@ -62,6 +62,7 @@ function drawFacadeWindow(g,x,y,w,h){
  const warm=(Math.round(x/50)+Math.round(y/37))%4!==0;
  const type=warm?'window_single_warm':'window_single_dark';
  const success=tile(g,type,sx,sy);
+ if(success)windowDraws++;
  if(success&&warm&&((Math.round(x/31)%3)===0)){
   g.save();g.globalAlpha=.11;
   g.fillStyle='#edbf76';g.fillRect(sx-3,sy+79,70,7);
@@ -72,7 +73,7 @@ function drawFacadeWindow(g,x,y,w,h){
 window.ROOKIE_V135_WALL_KIT=Object.freeze({
  version:'v135-phase1-wall-kit',
  drawTest,drawFacadeWindow,
- stats:()=>({loaded,error,frameDraws,testPaints,moduleCount:Object.keys(manifest?.frames||{}).length,
+ stats:()=>({loaded,error,frameDraws,testPaints,windowDraws,moduleCount:Object.keys(manifest?.frames||{}).length,
   atlasSize:atlas?[atlas.naturalWidth,atlas.naturalHeight]:null,
   windowAtlas:manifest?.version==='precinct9-windows-phase2'}),
  scope:'Only 32-grid modular wall kit test on existing V134 precinct facade; no other gameplay change'

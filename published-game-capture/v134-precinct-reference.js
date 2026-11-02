@@ -120,6 +120,25 @@ function crest(g,x,y,r){
  g.restore();
 }
 function flag(g,x,y,dir=1){
+ if(window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE){
+  // Approved two modest flags; no oversized solid horizontal block strips.
+  g.save();g.translate(x,y);g.imageSmoothingEnabled=false;
+  const d=dir<0?-1:1;
+  px(g,3,8,7,160,'rgba(7,22,32,.24)');
+  px(g,-2,-9,6,158,'#b8c6c7');px(g,-2,-9,2,158,'#f0e9d6');
+  px(g,-7,-15,16,6,'#d6bd7f');px(g,-3,-22,7,8,'#f8e6a3');
+  for(let i=0;i<11;i++){
+    const wave=Math.round(Math.sin(i*.61)*4),len=66+(i%3)*2;
+    px(g,4+(d<0?-len:0)+wave*d,12+i*7,len,7,
+       i%2?'#eee6d9':'#b82f46');
+  }
+  px(g,d<0?-29:4,12,33,35,'#264a76');
+  for(let yy=0;yy<4;yy++)
+    for(let xx=0;xx<4;xx++)
+      px(g,(d<0?-26:9)+xx*7,17+yy*8,2,2,'#f8f2df');
+  g.restore();return;
+ }
+
  px(g,x+6,y+10,8,210,'rgba(6,16,25,.32)');
  px(g,x,y-12,7,228,'#d6ddce');
  px(g,x+2,y-12,3,228,'#667f8c');
@@ -466,7 +485,10 @@ function makeGround(){
  // Inviting central walk illuminated without obstructing the original portal.
  for(const [x,y]of [[820,1455],[1075,1455],[580,1619],[1250,1619]])lamp(g,x,y,1);
  // Secondary civic flags on the real pedestrian plaza, all presentation.
- flag(g,510,1411,1);flag(g,1306,1411,-1);
+ // Retain two restrained facade-mounted flags; remove duplicate plaza poles.
+ if(!window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE){
+  flag(g,510,1411,1);flag(g,1306,1411,-1);
+ }
  // Border to emphasize existing sidewalk to the road.
  for(let x=483;x<1415;x+=81){
   px(g,x,1659,63,3,'rgba(242,214,165,.35)');

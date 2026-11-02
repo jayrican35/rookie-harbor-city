@@ -30,10 +30,34 @@
       {id:'harbor-ave-east',x:2068,y:1721,w:733,h:127,kind:'arterial'},
       {id:'maple-to-southbay',x:-650,y:1800,w:144,h:1958,kind:'collector'},
       {id:'south-connector',x:-650,y:3680,w:3450,h:128,kind:'collector'},
-      {id:'midtown-south',x:3460,y:3070,w:170,h:230,kind:'collector'},
+      // Obsolete isolated Midtown dead-end replaced by the real Bayview feeder below.
       {id:'northgate-downtown',x:5800,y:945,w:110,h:352,kind:'collector'},
       {id:'downtown-waterfront',x:5720,y:2230,w:150,h:1640,kind:'collector'},
-      {id:'bayview-link',x:4388,y:3680,w:55,h:128,kind:'collector'}
+      {id:'bayview-link',x:4388,y:3680,w:55,h:128,kind:'collector'},
+      // Harbor Avenue: a single actual asphalt corridor west -> precinct ->
+      // Midtown -> Downtown -> Industrial. Existing district road tiles win.
+      {id:'harbor-precinct-link',x:149,y:1721,w:1920,h:127,kind:'arterial',newRoad:true},
+      {id:'harbor-east-through',x:2800,y:1721,w:6856,h:127,kind:'arterial',newRoad:true,underNative:true},
+      // Western ring: follow Westfield's EXISTING southern exit lane,
+      // continue through currently empty connected-world coordinates, and
+      // join Maple's existing Southbay collector with a true junction.
+      {id:'westfield-native-spine',x:-1927,y:1847,w:156,h:513,kind:'collector',newRoad:true,underNative:true},
+      {id:'westfield-south-extension',x:-1927,y:2359,w:156,h:1385,kind:'collector',newRoad:true},
+      {id:'westfield-south-connector',x:-1927,y:3680,w:1278,h:128,kind:'collector',newRoad:true},
+      // Southbay's horizontal road is already authored at y=3681..3807.
+      // Logical graph edge only: NEVER paint duplicate asphalt on finished art.
+      {id:'southbay-loop',x:2800,y:3680,w:1589,h:128,kind:'collector',newRoad:true,underNative:true},
+      // Source map inspection: Midtown's REAL lower avenue is at world
+      // y=2476..2604 and its east spine at world x=4848..5016.
+      {id:'midtown-east-spine',x:4848,y:1847,w:168,h:758,kind:'collector',newRoad:true,underNative:true},
+      {id:'midtown-lower-avenue',x:2800,y:2476,w:2256,h:128,kind:'collector',newRoad:true,underNative:true},
+      // This NEW clear southbound feeder runs west of Midtown's new deli
+      // block, meeting Southbay's *actual* east entrance x=3973..4129.
+      {id:'midtown-south',x:3973,y:2603,w:156,h:618,kind:'collector',newRoad:true,corrected:true},
+      {id:'bayview-native-east-spine',x:3973,y:3220,w:156,h:462,kind:'collector',newRoad:true,underNative:true},
+      // The Northgate and Downtown native roads already meet. Register their
+      // through-line as topology; don't cover the original storefront paving.
+      {id:'northgate-through-link',x:5800,y:1296,w:110,h:935,kind:'collector',newRoad:true,underNative:true}
     ].map(r=>Object.freeze(r))),
     // Road boundary points are pedestrian crossings and future AI graph nodes;
     // NOT teleports, mission triggers, or server-owned gameplay logic.
@@ -48,7 +72,12 @@
       {id:'maple-south-road',x:-578,y:3744,axis:'h',type:'intersection'},
       {id:'northgate-downtown',x:5855,y:1283,axis:'v',type:'intersection'},
       {id:'downtown-waterfront',x:5795,y:2283,axis:'v',type:'intersection'},
-      {id:'southbay-waterfront',x:4400,y:3744,axis:'v',type:'district-seam'}
+      {id:'southbay-waterfront',x:4400,y:3744,axis:'v',type:'district-seam'},
+      {id:'midtown-harbor-junction',x:4932,y:1784,axis:'h',type:'intersection'},
+      {id:'midtown-lower-junction',x:4050,y:2540,axis:'h',type:'intersection'},
+      {id:'midtown-southbay-junction',x:4050,y:3744,axis:'h',type:'intersection'},
+      {id:'westfield-south-junction',x:-1850,y:3744,axis:'h',type:'intersection'},
+      {id:'northgate-harbor-junction',x:5855,y:1784,axis:'h',type:'intersection'}
     ].map(r=>Object.freeze(r))),
     landmarks:Object.freeze([
       {id:'precinct',label:'PRECINCT 9',x:948,y:1160},

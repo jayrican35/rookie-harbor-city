@@ -26,7 +26,7 @@ for(const [type,file] of Object.entries(spriteFiles)){
  const im=new Image();im.decoding='async';im.src='./assets/exterior/'+file;sprites[type]=im;
 }
 const spriteReady=type=>!!(sprites[type]?.complete&&sprites[type]?.naturalWidth>0);
-const cache=new Map();const metrics={chunks:0,drawn:0,props:0,coast:0};
+const cache=new Map();const metrics={chunks:0,drawn:0,props:0,coast:0,details:0};
 let frameZoom=1; // use color LOD only when whole-city overview is zoomed far out
 // Invalidate fallback-color chunks as soon as the shared atlas decodes.
 // Otherwise first-frame blank tiles could remain cached across the whole city.
@@ -74,8 +74,11 @@ function tileChunk(type,cx,cy){
      g.fillStyle='rgba(102,80,54,.16)';
      for(let k=0;k<6;k++)g.fillRect(x+hash(k,n)%29,y+hash(n,k+2)%29,2,1);
    }else if(type==='brick'){
-     g.fillStyle='rgba(255,228,181,.09)';
-     g.fillRect(x+5,y+4,20,1);
+     // World-anchored masonry: staggered joins, mortar and occasional edge wear.
+     g.fillStyle='rgba(255,228,181,.14)';g.fillRect(x+3,y+4,24,1);
+     g.fillStyle='rgba(59,57,53,.18)';g.fillRect(x,y+30,32,2);
+     g.fillRect(x+(n%2?15:26),y+5,1,24);
+     if(n%7===0){g.fillStyle='rgba(83,89,74,.22)';g.fillRect(x+2,y+27,5,2);}
    }
  }
  if(cache.size>=CAP)cache.delete(cache.keys().next().value);
@@ -100,15 +103,153 @@ function base(g,opt){
  const view=opt.view||{x:WORLD.minX,y:0,w:WORLD.maxX-WORLD.minX,h:WORLD.maxY};
  surface(g,{x:WORLD.minX,y:0,w:WORLD.maxX-WORLD.minX,h:WORLD.maxY},'grass',view);
 }
+// Subtle art-directed ground dressing follows *existing* district ground layers.
+// Nothing new is collidable, interactive, or saved. Chunk-independent coordinates
+// ensure no seams as the same camera crosses district boundaries.
 function districtGround(g,d,view){
- const m=d.map;
+ const m=d.map,ground=m.ground||[];
  surface(g,{x:d.x,y:d.y,w:d.w,h:d.h},colorKind(m.base||'#729763'),view);
- for(const r of m.ground||[]){
+ for(const r of ground){
    const abs={x:d.x+r.x,y:d.y+r.y,w:r.w,h:r.h};
    if(!visible(abs,view))continue;
    surface(g,abs,colorKind(r.c),view);
  }
+ if(frameZoom<.45||d.id==='waterfront')return; // protected Marina art is authoritative
+ const step=92,fromX=Math.max(d.x,Math.floor(view.x/step)*step),
+   fromY=Math.max(d.y,Math.floor(view.y/step)*step);
+ const maxX=Math.min(d.x+d.w,view.x+view.w+step),
+   maxY=Math.min(d.y+d.h,view.y+view.h+step);
+ for(let y=fromY;y<maxY;y+=step)for(let x=fromX;x<maxX;x+=step){
+   const n=hash(Math.floor(x/step),Math.floor(y/step),String(d.id||'generic').length);
+   if(n%4===0)continue;
+   const lx=x-d.x+19+(n%37),ly=y-d.y+20+((n>>>5)%37);
+   if(lx<8||ly<8||lx>d.w-8||ly>d.h-8)continue;
+   let type=colorKind(m.base||'#729763');
+   for(const r of ground)if(lx>=r.x&&lx<r.x+r.w&&ly>=r.y&&ly<r.y+r.h)type=colorKind(r.c);
+   if(type!=='grass')continue; // never plant tufts onto streets or brick
+   const px=d.x+lx,py=d.y+ly;
+   // Grass blades, leaf litter and occasional tiny wildflowers (not fake trees).
+   g.fillStyle=n%2?'rgba(28,92,46,.42)':'rgba(194,221,114,.46)';
+   g.fillRect(px,py-3,2,6);g.fillRect(px-4,py,4,2);g.fillRect(px+3,py-2,3,3);
+   if(n%9===0){g.fillStyle='#e7d18a';g.fillRect(px+8,py-4,3,3);
+     g.fillStyle='#476a45';g.fillRect(px+9,py-1,1,3);}
+   metrics.details++;
+ }
+ districtFinish(g,d,view);
 }
+// District identity is painted from the real MAPS footprint and authored decor
+// positions, not from a fake overview layer. Everything here sits ON the ground:
+// the existing collision and depth queues remain the source of physical truth.
+const districtThemes=Object.freeze({
+ westfield:{stone:'#9a9a79',flora:'#548049',accent:'#d5ad72',step:208},
+ residential:{stone:'#b6aa91',flora:'#467b49',accent:'#e1b477',step:192},
+ midtown:{stone:'#afa49b',flora:'#537451',accent:'#d2a571',step:176},
+ downtown:{stone:'#c4b59d',flora:'#426b56',accent:'#d6b879',step:160},
+ eastside:{stone:'#a5b0a6',flora:'#457a61',accent:'#97bec2',step:184},
+ industrial:{stone:'#7f8f8d',flora:'#66745d',accent:'#d4b36f',step:200},
+ northgate:{stone:'#919888',flora:'#3f654b',accent:'#c9b88d',step:206},
+ southbay:{stone:'#b5af90',flora:'#568a64',accent:'#deb882',step:192}
+});
+function groundTypeAt(d,lx,ly){
+ const m=d.map;let type=colorKind(m.base||'#729763');
+ for(const r of m.ground||[])if(lx>=r.x&&ly>=r.y&&lx<r.x+r.w&&ly<r.y+r.h)
+   type=colorKind(r.c);
+ return type;
+}
+function districtFinish(g,d,view){
+ const theme=districtThemes[d.id];
+ // The authored waterfront's depth, water and furniture are never overpainted.
+ if(!theme||frameZoom<.38||!visible(d,view))return;
+ const step=theme.step;
+ const left=Math.max(d.x,Math.floor(Math.max(d.x,view.x)/step)*step);
+ const top=Math.max(d.y,Math.floor(Math.max(d.y,view.y)/step)*step);
+ const right=Math.min(d.x+d.w,view.x+view.w+step);
+ const bottom=Math.min(d.y+d.h,view.y+view.h+step);
+ const drawGrassFeature=(px,py,n)=>{
+   // Restrained color bands suggest groundskeepers, wild patches or foot traffic.
+   // Pixel forms remain entirely at ground height and cannot occlude characters.
+   if(d.id==='industrial'){
+     g.fillStyle='rgba(67,83,74,.18)';g.fillRect(px-33,py-10,66,23);
+     g.fillStyle='rgba(200,187,123,.30)';for(let i=0;i<4;i++)g.fillRect(px-27+i*16,py-6,9,3);
+   }else if(d.id==='residential'){
+     g.fillStyle='rgba(28,89,42,.21)';g.fillRect(px-38,py-17,76,31);
+     g.fillStyle=theme.flora;
+     for(let i=0;i<6;i++){const h=hash(n,i)%8;g.fillRect(px-33+i*11,py+2-h,7,7+h);}
+     if(n%3===0){g.fillStyle=theme.accent;for(let i=0;i<3;i++)g.fillRect(px-24+i*20,py-4,3,3);}
+   }else if(d.id==='westfield'||d.id==='northgate'){
+     g.fillStyle='rgba(33,76,42,.20)';g.fillRect(px-40,py-13,80,26);
+     g.fillStyle=theme.flora;
+     for(let i=0;i<7;i++){let dx=hash(n,i)%68-34,dy=hash(i,n)%20-9;g.fillRect(px+dx,py+dy,6,5);}
+     if(n%4===0){g.fillStyle=theme.stone;g.fillRect(px+17,py+5,16,5);g.fillRect(px+10,py+3,10,5);}
+   }else if(d.id==='southbay'){
+     g.fillStyle='rgba(213,194,140,.20)';g.fillRect(px-39,py-12,78,24);
+     g.fillStyle=theme.flora;for(let i=0;i<5;i++)g.fillRect(px-29+i*13,py+hash(n,i)%9-5,3,9);
+     if(n%5===0){g.fillStyle=theme.accent;g.fillRect(px+18,py-8,10,3);}
+   }else {
+     g.fillStyle='rgba(36,83,58,.13)';g.fillRect(px-34,py-12,68,24);
+     g.fillStyle=theme.flora;for(let i=0;i<5;i++)g.fillRect(px-25+i*12,py+hash(i,n)%7-4,5,7);
+     if(n%4===0){g.fillStyle=theme.accent;g.fillRect(px+15,py-10,4,4);}
+   }
+ };
+ for(let y=top;y<bottom;y+=step)for(let x=left;x<right;x+=step){
+   // World-seeded placement: no temporal flicker or chunk boundary seams.
+   const n=hash(Math.floor(x/step),Math.floor(y/step),theme.step);
+   if(n%6===0)continue;
+   const px=x+34+n%73,py=y+37+((n>>>7)%73),lx=px-d.x,ly=py-d.y;
+   if(lx<60||ly<60||lx>d.w-60||ly>d.h-60)continue;
+   if(groundTypeAt(d,lx,ly)!=='grass'||
+      groundTypeAt(d,lx-44,ly-27)!=='grass'||
+      groundTypeAt(d,lx+44,ly-27)!=='grass'||
+      groundTypeAt(d,lx-44,ly+27)!=='grass'||
+      groundTypeAt(d,lx+44,ly+27)!=='grass')continue;
+   if(!visible({x:px-46,y:py-27,w:92,h:54},view,4))continue;
+   drawGrassFeature(px,py,n);metrics.details++;
+ }
+ // Ground-level entrance treatments are generated from actual building outlines.
+ // They visually connect buildings to the paths instead of floating in green.
+ // No physical doorway, house bounds or NPC routing are changed.
+ if(frameZoom<.52)return;
+ for(const o of d.map.decors||[]){
+   if(!['bldg','house','shed','mtbldg'].includes(o.t))continue;
+   const bx=o.t==='mtbldg'?(o.bx??o.x??0):(o.x||0);
+   const by=o.t==='mtbldg'?(o.btop??o.y??0):(o.y||0);
+   const bw=o.t==='mtbldg'?(o.bw??o.w??0):(o.w||0);
+   const bh=o.t==='mtbldg'?(o.bh??o.h??0):(o.h||0);
+   if(bw<60||bh<60)continue;
+   const wx=d.x+bx+bw/2,wy=d.y+by+bh;
+   if(!visible({x:wx-44,y:wy,w:88,h:32},view,6))continue;
+   // Suppress ground treatment when it would land inside water/road.
+   const kind=groundTypeAt(d,bx+bw/2,by+bh+12);
+   if(kind==='water'||kind==='road')continue;
+   const seed=hash(Math.floor(wx),Math.floor(wy),97);
+   g.fillStyle='rgba(14,31,37,.18)';g.fillRect(wx-30,wy+1,60,5);
+   g.fillStyle=theme.stone;g.fillRect(wx-22,wy+6,44,17);
+   g.fillStyle='rgba(242,228,198,.28)';g.fillRect(wx-20,wy+7,40,2);
+   g.fillStyle='rgba(61,65,62,.18)';g.fillRect(wx-22,wy+20,44,3);
+   if(o.t==='house'||d.id==='residential'){
+     for(const side of [-1,1]){
+       const px=wx+side*(bw/2-15);
+       g.fillStyle='rgba(39,79,45,.34)';g.fillRect(px-13,wy+2,26,14);
+       g.fillStyle=theme.flora;
+       for(let i=0;i<3;i++)g.fillRect(px-10+i*8,wy+4+(seed+i)%4,6,8);
+     }
+   }else if(d.id==='industrial'){
+     g.fillStyle='rgba(224,186,99,.54)';
+     for(let i=0;i<4;i++)g.fillRect(wx-35+i*20,wy+26,9,3);
+   }
+   metrics.details++;
+ }
+ // The existing lamp objects cast a small grounded ambient pool;
+ // lamp sprites and player shadows continue through the real depth queue.
+ for(const o of d.map.decors||[]){
+   if(o.t!=='lamp')continue;
+   const x=d.x+(o.x||0),y=d.y+(o.y||0);
+   if(!visible({x:x-53,y:y-22,w:106,h:44},view))continue;
+   g.fillStyle='rgba(250,211,120,.07)';g.beginPath();g.arc(x,y,45,0,Math.PI*2);g.fill();
+   g.fillStyle='rgba(254,216,142,.08)';g.beginPath();g.arc(x,y,22,0,Math.PI*2);g.fill();
+ }
+}
+
 function road(g,r,view){surface(g,r,'road',view);}
 function coastY(x){
  if(x>=4400&&x<5900)return 3800;
@@ -154,10 +295,16 @@ function walkways(g,opt){
   const from=Math.max(x1,Math.floor(v.x/64)*64);
   g.save();g.beginPath();g.rect(r.x,r.y,r.w,r.h);g.clip();
   g.fillStyle='rgba(56,61,58,.22)';g.fillRect(x1,3778,x2-x1,6);
-  g.fillStyle='rgba(249,217,166,.26)';g.fillRect(x1,3652,x2-x1,3);
+  g.fillStyle='rgba(249,217,166,.34)';g.fillRect(x1,3652,x2-x1,3);
   for(let x=from;x<x2&&x<v.x+v.w+64;x+=64){
    const h=hash(x/64,57);
-   if(h%5===0){g.fillStyle='rgba(32,64,58,.16)';g.fillRect(x+12,3709,3,2);}
+   // Mortar breaks and restrained drainage details replace the flat ribbon.
+   g.fillStyle='rgba(62,58,51,.15)';g.fillRect(x,3660,2,111);
+   if(h%5===0){g.fillStyle='rgba(32,64,58,.30)';g.fillRect(x+12,3709,6,2);}
+   if(h%7===0){
+     g.fillStyle='#7b8278';g.fillRect(x+36,3754,18,6);
+     g.fillStyle='#3e5360';for(let k=0;k<4;k++)g.fillRect(x+38+k*4,3755,1,4);
+   }
   }
   g.restore();
  }
@@ -181,7 +328,14 @@ function building(g,b,zoom){
  const x=b.x,y=b.y,w=b.w,h=b.h;
  if(![x,y,w,h].every(Number.isFinite)||w<32||h<35)return false;
  const seed=hash(Math.floor(x),Math.floor(y),31);
- const roofs=['#a45743','#326982','#b57449','#6c727c','#528177','#995d52'];
+ const district=b.district||'',kind=b.kind||'';
+ const palettes={
+   residential:['#945748','#7d685a','#647b78','#9b6d56'],
+   industrial:['#62737a','#677b75','#717780','#715e57'],
+   downtown:['#9c5545','#426780','#9b734c','#527b78'],
+   northgate:['#786c69','#54747a','#a17150','#6b7777']
+ };
+ const roofs=palettes[district]||['#a45743','#326982','#b57449','#6c727c','#528177','#995d52'];
  const roof=roofs[seed%roofs.length],face=['#d5b998','#dac8aa','#b6c3bf'][seed%3];
  const roofH=Math.max(26,Math.min(h*.67,h-31));
  g.save();g.imageSmoothingEnabled=false;
@@ -223,6 +377,86 @@ function building(g,b,zoom){
   g.fillStyle='#304d5d';g.fillRect(vx+5,vy+4,17,9);
   g.fillStyle='rgba(255,239,196,.48)';g.fillRect(vx+1,vy+1,25,2);
  }
+ // Original coordinates, richer structural articulation: vent stacks, roof
+ // flashing, bay windows and storefront shade. No replacement asset or collider.
+ if(zoom>.26){
+   g.fillStyle='rgba(22,36,47,.34)';
+   g.fillRect(x+3,y+roofH+3,w-6,3);
+   if(w>98&&h>105){
+     const ux=x+19+seed%29,uy=y+16+(seed>>>3)%13;
+     g.fillStyle='#5c6e72';g.fillRect(ux+3,uy+7,28,21);
+     g.fillStyle='#9eb4b2';g.fillRect(ux,uy,28,15);
+     g.fillStyle='#3e565b';g.fillRect(ux+5,uy+5,18,7);
+     g.fillStyle='rgba(255,238,190,.42)';g.fillRect(ux+2,uy+2,24,2);
+   }
+   if(kind==='house'||district==='residential'){
+     g.fillStyle='#ece1c3';
+     for(const wx of [x+11,x+w-22])if(wx>x+5&&wx<x+w-10)
+       {g.fillRect(wx,wallTop+6,3,24);g.fillRect(wx+19,wallTop+6,3,24);}
+   }else if(w>94&&h-roofH>44){
+     const awnY=y+h-37;
+     g.fillStyle='#2d4a58';g.fillRect(x+6,awnY+7,w-12,5);
+     g.fillStyle=seed%2?'#b76e55':'#638b86';
+     g.fillRect(x+6,awnY,w-12,8);
+     for(let xx=x+11;xx<x+w-11;xx+=18){
+       g.fillStyle='rgba(244,223,181,.5)';g.fillRect(xx,awnY+1,7,6);
+     }
+   }
+ }
+ // Distinct building finishes, all within the original physical shell.
+ // Preserve source storefront sprites and existing doors/footprints.
+ if(zoom>.43){
+  if(district==='industrial'){
+   // Steel loading door, rails, warning bands and weathered metal roof.
+   const loadingW=Math.min(w-22,Math.max(46,w*.55)),lx=x+w/2-loadingW/2;
+   const ly=y+h-Math.min(39,h-roofH-9);
+   g.fillStyle='#354d5a';g.fillRect(lx-5,ly-5,loadingW+10,37);
+   g.fillStyle='#8799a0';g.fillRect(lx,ly,loadingW,28);
+   g.fillStyle='#526c79';
+   for(let q=4;q<27;q+=6)g.fillRect(lx+2,ly+q,loadingW-4,2);
+   g.fillStyle='#d7b26f';g.fillRect(lx-7,ly+28,8,3);g.fillRect(lx+loadingW-1,ly+28,8,3);
+   for(let j=0;j<3;j++){
+    const px=x+13+j*(w-30)/3,py=y+13+((seed>>>j)%7);
+    g.fillStyle='#a5a79a';g.fillRect(px,py,18,9);
+    g.fillStyle='#354e56';g.fillRect(px+3,py+3,12,3);
+   }
+  }else if(district==='residential'||kind==='house'){
+   // Door stoop with roof overhang, porch rail, front window planters.
+   g.fillStyle='rgba(30,44,51,.39)';g.fillRect(x+8,y+h-14,w-16,5);
+   g.fillStyle='#d8cbad';g.fillRect(x+w/2-29,y+h-11,58,6);
+   g.fillStyle='#837e72';g.fillRect(x+w/2-26,y+h-5,52,4);
+   if(w>96){
+    for(const wx of [x+18,x+w-39]){
+     g.fillStyle='#777a64';g.fillRect(wx,y+h-27,24,4);
+     g.fillStyle='#507749';g.fillRect(wx+2,y+h-34,20,7);
+     g.fillStyle=seed%2?'#e1bd86':'#d29282';
+     g.fillRect(wx+6,y+h-32,4,3);g.fillRect(wx+15,y+h-33,3,3);
+    }
+   }
+   g.fillStyle='rgba(238,220,178,.50)';g.fillRect(x+6,y+roofH-3,w-12,3);
+  }else if(district==='downtown'||district==='midtown'){
+   // Commercial street frontage with readable fascia and mullioned glass.
+   const fw=w-18,fy=y+h-49;
+   if(fw>56){
+    g.fillStyle='#394f5a';g.fillRect(x+9,fy,fw,30);
+    g.fillStyle='#93b2b5';g.fillRect(x+13,fy+3,fw-8,22);
+    g.fillStyle='#365a63';
+    for(let wx=x+28;wx<x+w-16;wx+=26)g.fillRect(wx,fy+3,3,23);
+    g.fillStyle='#233f4e';g.fillRect(x+10,fy-13,fw-2,10);
+    g.fillStyle=seed%2?'#d9aa64':'#d4c692';g.fillRect(x+17,fy-9,Math.min(fw-18,46),3);
+   }
+  }else if(district==='northgate'||district==='westfield'){
+   // Stone pier bases and timber frame trusses for mountain-side buildings.
+   g.fillStyle='#8e8975';
+   for(const px of [x+8,x+w-19])g.fillRect(px,y+h-30,11,22);
+   g.fillStyle='rgba(31,57,56,.4)';g.fillRect(x+8,y+roofH-3,w-16,5);
+  }else if(district==='eastside'||district==='southbay'){
+   // Coastal facades have cooler lintels, deep sills and sunlit wall accents.
+   g.fillStyle='#f2dcb5';g.fillRect(x+5,y+roofH+2,w-10,4);
+   g.fillStyle='#607e80';g.fillRect(x+11,y+h-16,w-22,4);
+   if(w>128){g.fillStyle='rgba(173,212,198,.65)';g.fillRect(x+21,y+roofH+15,18,7);}
+  }
+ }
  g.restore();return true;
 }
 function handlesDecor(o){
@@ -239,6 +473,73 @@ function propGeometry(o,d){
  const [w,h,ox,oy]=sizes[o.t]||[60,52,-30,-46];
  return {x:x+ox,y:y+oy,w,h,depthY:o.t==='bench'||o.t==='flowerbed'?y+14:y+4};
 }
+// Additional authored-feeling grove positions are derived ONCE per native
+// district. Trees render in the existing actor depth queue; their narrow trunks
+// are solid in the existing movement/collision system. No second scene or save.
+const scenicCache=new Map();
+function scenicFor(d){
+ if(!d||!d.id||d.id==='waterfront'||!d.map?.base||!Array.isArray(d.map.ground))
+   return [];
+ const existing=scenicCache.get(d.id);
+ if(existing&&existing.map===d.map)return existing.trees;
+ const trees=[],step=d.id==='industrial'?372:296;
+ const roads=H?.worldV115?.roadNetwork?.().segments||[];
+ const solids=d.map.pedSolids||d.map.solids||[];
+ const features=d.map.decors||[];
+ const reserved=d.map.spots||[];
+ for(let ly=140;ly<d.h-100;ly+=step)for(let lx=120;lx<d.w-100;lx+=step){
+   const seed=hash(Math.floor(lx/step),Math.floor(ly/step),d.id.length*17);
+   if(seed%(d.id==='industrial'?4:6)<(d.id==='industrial'?3:1))continue;
+   const x=lx+((seed>>>4)%91)-45,y=ly+((seed>>>13)%91)-45;
+   if(x<75||y<85||x>d.w-75||y>d.h-85)continue;
+   if(groundTypeAt(d,x,y)!=='grass')continue;
+   if(groundTypeAt(d,x-44,y-40)!=='grass'||groundTypeAt(d,x+44,y+36)!=='grass')continue;
+   const wx=d.x+x,wy=d.y+y;
+   // Original road graph, sidewalks, doors and interaction spots stay clear.
+   if(roads.some(r=>wx>r.x-66&&wx<r.x+r.w+66&&wy>r.y-66&&wy<r.y+r.h+66))continue;
+   if(solids.some(s=>x>s.x-63&&x<s.x+s.w+63&&y>s.y-60&&y<s.y+s.h+67))continue;
+   if(features.some(o=>{
+     const t=o.t||'';
+     if(['tree','bigtree','palm'].includes(t))return Math.hypot(x-(o.x||0),y-(o.y||0))<110;
+     if(!['bldg','house','shed','lighthouse','mtbldg'].includes(t))return false;
+     const bx=t==='mtbldg'?(o.bx??o.x??0):(o.x||0);
+     const by=t==='mtbldg'?(o.btop??o.y??0):(o.y||0);
+     const bw=t==='mtbldg'?(o.bw??o.w??0):(o.w||0);
+     const bh=t==='mtbldg'?(o.bh??o.h??0):(o.h||0);
+     return x>bx-72&&x<bx+bw+72&&y>by-72&&y<by+bh+86;
+   }))continue;
+   if(reserved.some(o=>Number.isFinite(o.x)&&Number.isFinite(o.y)&&Math.hypot(x-o.x,y-o.y)<115))continue;
+   trees.push({t:d.id==='southbay'?'palm':d.id==='industrial'?'tree':seed%7===0?'bigtree':'tree',x,y,generated:true});
+ }
+ // A compact district-local bucket index avoids scanning every tree twice per
+ // movement frame. Keep physical and drawn positions from the SAME tree data.
+ const CELL=192,cells=new Map();
+ for(const o of trees){
+   const key=Math.floor(o.x/CELL)+':'+Math.floor(o.y/CELL);
+   if(!cells.has(key))cells.set(key,[]);
+   cells.get(key).push(o);
+ }
+ scenicCache.set(d.id,{map:d.map,trees,cells,cellSize:CELL});return trees;
+}
+function scenicBlocked(x,y,r=12,districts=[]){
+ for(const d of districts){
+   if(d.id==='waterfront'||x<d.x-24||y<d.y-24||x>d.x+d.w+24||y>d.y+d.h+24)continue;
+   scenicFor(d); // lazily build a deterministic index just once per native map
+   const index=scenicCache.get(d.id);if(!index||index.map!==d.map)continue;
+   const dx=x-d.x,dy=y-d.y,rad=Math.max(0,r)+17;
+   const size=index.cellSize;
+   const x0=Math.floor((dx-rad)/size),x1=Math.floor((dx+rad)/size);
+   const y0=Math.floor((dy-rad)/size),y1=Math.floor((dy+rad)/size);
+   for(let cy=y0;cy<=y1;cy++)for(let cx=x0;cx<=x1;cx++){
+     for(const o of index.cells.get(cx+':'+cy)||[]){
+       const px=dx-o.x,py=dy-o.y,limit=r+(o.t==='bigtree'?17:12);
+       if(px*px+py*py<limit*limit)return true;
+     }
+   }
+ }
+ return false;
+}
+
 function depthProps(view,districts){
  const entries=[];
  if(frameZoom<.18)return entries; // premium props vanish naturally in overview
@@ -249,6 +550,22 @@ function depthProps(view,districts){
   for(const o of d.map.decors||[]){
    if(!handlesDecor(o))continue;
    const b=propGeometry(o,d);if(visible(b,view,24))entries.push({object:o,district:d,box:b,depthY:b.depthY});
+  }
+  // New groves share the same sorted depth queue and exact native sprites.
+  // Cull using the same cell index used for player/tree collision.
+  scenicFor(d);
+  const index=scenicCache.get(d.id);
+  if(index?.map===d.map){
+    const size=index.cellSize;
+    const x0=Math.floor((view.x-d.x-170)/size),x1=Math.floor((view.x+view.w-d.x+170)/size);
+    const y0=Math.floor((view.y-d.y-170)/size),y1=Math.floor((view.y+view.h-d.y+170)/size);
+    for(let cy=y0;cy<=y1;cy++)for(let cx=x0;cx<=x1;cx++){
+      for(const o of index.cells.get(cx+':'+cy)||[]){
+        if(!handlesDecor(o))continue;
+        const b=propGeometry(o,d);
+        if(visible(b,view,24))entries.push({object:o,district:d,box:b,depthY:b.depthY});
+      }
+    }
   }
  }
  metrics.props=entries.length;
@@ -284,7 +601,7 @@ function map(g,x,y){
 window.ROOKIE_V127_CITY=Object.freeze({
  version:'127-citywide-material-continuity',worldId:'harbor-main',
  base,surface,colorKind,districtGround,road,coastline,walkways,depthProps,drawDepthProp,
- building,handlesDecor,spriteImage:type=>spriteReady(type)?sprites[type]:null,waterBlocked:coastalWater,location,map,
+ building,handlesDecor,scenicBlocked,spriteImage:type=>spriteReady(type)?sprites[type]:null,waterBlocked:coastalWater,location,map,
  metrics:()=>({...metrics,cacheMax:CAP,atlasReady:atlas.complete&&atlas.naturalWidth>0})
 });
 })();

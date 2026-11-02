@@ -25,6 +25,28 @@
     id,x:pos.x,y:pos.y,w:MAPS[id].w,h:MAPS[id].h,map:MAPS[id],
     instanceId:'harbor-main:district:'+id
   }));
+  // Road completion: the legacy Midtown landscaping pass placed a 80px
+  // bench at (1210,1690). Its real 65.6px collider crossed the newly
+  // connected Bayview feeder at world (4050,2950). In the CONNECTED
+  // prototype only, move that bench and its matching collider to the open
+  // plaza at x=900. Never mutate MAPS.midtown, campaign art, quests or saves.
+  const connectedMidtown=districtEntries.find(d=>d.id==='midtown');
+  if(connectedMidtown){
+    const original=connectedMidtown.map,benchWidth=80*.82;
+    const originalColliderX=1210-benchWidth/2,relocatedX=900;
+    const oldBench=(original.decors||[]).filter(o=>
+      o.t==='landscapeV1'&&o.role==='bench'&&o.x===1210&&o.y===1690);
+    const oldSolid=(original.pedSolids||[]).filter(b=>
+      Math.abs(b.x-originalColliderX)<.1&&b.y===1680&&
+      Math.abs(b.w-benchWidth)<.1&&b.h===12);
+    if(oldBench.length!==1||oldSolid.length!==1)
+      throw new Error('Midtown bench/road alignment changed: verify connected feeder before release');
+    connectedMidtown.map={
+      ...original,
+      decors:original.decors.map(o=>o===oldBench[0]?{...o,x:relocatedX}:o),
+      pedSolids:original.pedSolids.map(b=>b===oldSolid[0]?{...b,x:relocatedX-benchWidth/2}:b)
+    };
+  }
   function inDistrict(d,x,y){return x>=d.x&&x<d.x+d.w&&y>=d.y&&y<d.y+d.h;}
   function districtAt(x,y){
     for(const d of districtEntries)if(inDistrict(d,x,y))return d;
@@ -110,9 +132,99 @@
     // Citywide coastline uses the SAME player collider. No walking on newly
     // extended water just outside the original marina material rectangle.
     if(window.ROOKIE_V127_CITY?.waterBlocked(x,y))return true;
+    // World Completion: authored-feeling new groves are physical at their trunk
+    // feet, and use the SAME player radius and native collision response.
+    if(window.ROOKIE_V127_CITY?.scenicBlocked(x,y,r,districtEntries))return true;
+    if(trafficBlocked(x,y,r))return true;
     // The blank northeast corner of the irregular station footprint is not
     // usable interior. Existing station west/east/south wall gaps stay real.
     return false;
+  }
+  // Read-only browser QA aid: explain actual collider ownership when an
+  // apparently open new street is impassable. Never used by normal gameplay.
+  function roadCollisionDiagnostic(x,y,r=12){
+    if(!/[?&]pilotQA=1(?:&|$)/.test(window.location.search))return null;
+    const district=districtAt(x,y);
+    const raw=(!district?collision:districtSolids).filter(b=>
+      (district&&!window.ROOKIE_V116_MARINA?.ownsSolid?.(b))||!district).filter(b=>circleHitsRect(x,y,r,b));
+    return {x,y,district:district?.id||null,
+      bounds:x<MIN_X+r||y<MIN_Y+r||x>W-r||y>HGT-r,
+      solidHits:raw.slice(0,12).map(b=>({x:b.x,y:b.y,w:b.w,h:b.h,id:b.id||'precinct'})),
+      marina:!!window.ROOKIE_V116_MARINA?.blocksProp(x,y,r),
+      water:!!window.ROOKIE_V127_CITY?.waterBlocked(x,y),
+      trees:!!window.ROOKIE_V127_CITY?.scenicBlocked(x,y,r,districtEntries),
+      traffic:trafficBlocked(x,y,r),result:blocked(x,y,r)};
+  }
+  // A small set of real pedestrian routines brings life to connected districts.
+  // Borrow the already-loaded V123 Marina WALK atlases and the existing actor
+  // queue. Movement is advanced inside simulate(dt); no parallel game loop.
+  // Marina's own actors, patrols, interiors and mission data are not changed.
+  const ambientRoutes=[],ambientSpeech={
+    westfield:'Beautiful morning for a walk through Westfield.',
+    residential:'Just heading home. Have a good shift, officer.',
+    midtown:'Every day there is something new happening on this block.',
+    downtown:'The crosswalk was clear when I came through.',
+    eastside:'Nice weather for a little walk around the neighborhood.',
+    industrial:'Delivery should be around the corner shortly.',
+    northgate:'Those trees make this part of town peaceful.',
+    southbay:'The waterfront looks beautiful this afternoon.'
+  };
+  let ambientInit=0;
+  function safeStreetSegment(x1,y1,x2,y2){
+    const length=Math.hypot(x2-x1,y2-y1);
+    if(length<50||length>150)return false;
+    for(let i=0;i<=10;i++){
+      const t=i/10;
+      if(blocked(x1+(x2-x1)*t,y1+(y2-y1)*t,14))return false;
+    }
+    return true;
+  }
+  function prepareDistrictPedestrians(d){
+    if(!d||d.id==='waterfront'||!ambientSpeech[d.id])return;
+    const candidates=[[.26,.36],[.69,.60],[.38,.74],[.56,.28]];
+    const offsets=[[0,0],[-78,0],[0,78],[78,0],[0,-78]];
+    let added=0;
+    for(const [fx,fy] of candidates){
+      if(added>=2)break;
+      let found=null;
+      for(const [ox,oy] of offsets){
+        const x=Math.round(d.x+d.w*fx+ox),y=Math.round(d.y+d.h*fy+oy);
+        // Remain inside this district; don't spawn pedestrians in Marina.
+        if(x<d.x+110||x>d.x+d.w-110||y<d.y+110||y>d.y+d.h-110)continue;
+        for(const [rx,ry] of [[95,0],[0,95],[-95,0],[0,-95]]){
+          const x2=x+rx,y2=y+ry;
+          if(x2<d.x+80||x2>d.x+d.w-80||y2<d.y+80||y2>d.y+d.h-80)continue;
+          if(!safeStreetSegment(x,y,x2,y2))continue;
+          found={x,y,x2,y2};break;
+        }
+        if(found)break;
+      }
+      if(!found)continue;
+      const idx=ambientRoutes.length;
+      const actor={id:'ambient:'+d.id+':'+added,name:'Pedestrian',npcStyle:(idx%3===0?2:3),
+        x:found.x,y:found.y,dir:found.x2>found.x?'right':found.x2<found.x?'left':found.y2>found.y?'down':'up',
+        moving:false,distance:idx*13,route:[[found.x,found.y],[found.x2,found.y2]],speed:22+(idx%4)*5};
+      const spot={id:actor.id,label:'Talk to pedestrian',x:actor.x,y:actor.y,
+        text:ambientSpeech[d.id],ambientActor:actor};
+      actor.interaction=spot;
+      ambientRoutes.push(actor);npcActors.push(actor);worldSpots.push(spot);added++;
+    }
+  }
+  function stepAmbientPedestrians(dt){
+    // Spread district placement across simulation frames to avoid a long
+    // initialization hitch on midrange mobile phones.
+    if(ambientInit<districtEntries.length)prepareDistrictPedestrians(districtEntries[ambientInit++]);
+    for(const a of ambientRoutes){
+      const target=a.route[a.targetIndex||1],vx=target[0]-a.x,vy=target[1]-a.y;
+      const remain=Math.hypot(vx,vy),step=Math.min(remain,a.speed*Math.min(.05,Math.max(0,dt)));
+      if(remain<1.5){a.targetIndex=(a.targetIndex||1)===1?0:1;a.moving=false;continue;}
+      const nx=a.x+vx/remain*step,ny=a.y+vy/remain*step;
+      // Collision remains authoritative and catches late-loaded scenery.
+      if(blocked(nx,ny,13)){a.targetIndex=(a.targetIndex||1)===1?0:1;a.moving=false;continue;}
+      a.dir=Math.abs(vx)>=Math.abs(vy)?(vx>0?'right':'left'):(vy>0?'down':'up');
+      a.x=nx;a.y=ny;a.distance+=step;a.moving=step>.03;
+      a.interaction.x=a.x;a.interaction.y=a.y;
+    }
   }
   function interiorRoom(x,y){
     for(let i=0;i<roomRects.length;i++){
@@ -120,6 +232,90 @@
     }
     return null;
   }
+
+  // World Completion: bounded non-interactive street traffic on the ONE native
+  // Harbor Avenue road graph. Existing main-campaign driving is untouched.
+  // Cars share this simulation clock and depth queue, with zero new RAF loops.
+  const streetTraffic=[];
+  let streetTrafficInitialized=false;
+  const avenueStart=-2850,avenueEnd=9380;
+  const avenueTop=1754,avenueBottom=1815;
+  const avenueLength=avenueEnd-avenueStart,trafficLoop=2*avenueLength+2*(avenueBottom-avenueTop);
+  const trafficColors=['#557e9a','#a66852','#7d8b76','#c5a975','#597b7c','#ac7671'];
+  function streetPose(distance){
+    let p=((distance%trafficLoop)+trafficLoop)%trafficLoop;
+    if(p<avenueLength)return {x:avenueStart+p,y:avenueTop,dir:'right'};
+    p-=avenueLength;
+    if(p<avenueBottom-avenueTop)return {x:avenueEnd,y:avenueTop+p,dir:'down'};
+    p-=avenueBottom-avenueTop;
+    if(p<avenueLength)return {x:avenueEnd-p,y:avenueBottom,dir:'left'};
+    p-=avenueLength;
+    return {x:avenueStart,y:avenueBottom-p,dir:'up'};
+  }
+  function initializeStreetTraffic(){
+    if(streetTrafficInitialized)return;
+    streetTrafficInitialized=true;
+    // Verify the authored lane is truly linked from the western borough
+    // through the precinct to the east. Otherwise, fail closed, no fake cars.
+    const required=['harbor-ave-west','harbor-precinct-link','harbor-ave-east','harbor-east-through'];
+    if(!required.every(id=>links.some(r=>r.id===id)))return;
+    for(let i=0;i<18;i++){
+      const phase=trafficLoop*i/18+390*(i%3),kind=i%9===0?'patrol':i%5===0?'delivery':'civilian';
+      streetTraffic.push({id:'street:'+i,progress:phase,speed:98+i%5*12,
+        color:trafficColors[i%trafficColors.length],kind,...streetPose(phase)});
+    }
+  }
+  function stepStreetTraffic(dt){
+    initializeStreetTraffic();
+    const seconds=Math.max(0,Math.min(.05,dt||0));
+    for(const car of streetTraffic){
+      // Civilian traffic yields near the player; it never injures or shoves Jay.
+      const nearJay=Math.abs(car.x-campus.x)<145&&Math.abs(car.y-campus.y)<62;
+      const speed=nearJay?0:car.speed;
+      car.progress=(car.progress+seconds*speed)%trafficLoop;
+      Object.assign(car,streetPose(car.progress));
+      car.stopped=nearJay;
+    }
+  }
+  function trafficBlocked(x,y,r=12){
+    for(const car of streetTraffic){
+      if(Math.abs(x-car.x)<43+r&&Math.abs(y-car.y)<19+r)return true;
+    }
+    return false;
+  }
+  function drawStreetTraffic(g,car){
+    if(campus.zoom<.19)return;
+    const dir=car.dir||'right';
+    g.save();g.translate(car.x,car.y);
+    g.rotate(dir==='left'?Math.PI:dir==='down'?Math.PI/2:dir==='up'?-Math.PI/2:0);
+    g.fillStyle='rgba(9,25,36,.34)';g.beginPath();g.ellipse(0,6,48,20,0,0,Math.PI*2);g.fill();
+    g.fillStyle='#192b34';for(const px of [-29,24])for(const py of [-19,13])g.fillRect(px,py,13,7);
+    const long=car.kind==='delivery',bodyW=long?104:86,half=bodyW/2;
+    g.fillStyle='#1f3442';g.fillRect(-half-2,-17,bodyW+4,34);
+    g.fillStyle=car.kind==='patrol'?'#e6e4d7':car.color;g.fillRect(-half,-15,bodyW,30);
+    g.fillStyle='rgba(255,234,188,.25)';g.fillRect(-half+4,-13,bodyW-8,3);
+    g.fillStyle='rgba(20,43,53,.24)';g.fillRect(-half+4,10,bodyW-8,3);
+    g.fillStyle='#294957';
+    if(long){
+      g.fillRect(-half+10,-12,49,24);
+      g.fillStyle='#9eb5b6';g.fillRect(-half+60,-10,23,20);
+    }else{
+      g.fillRect(-17,-12,36,24);
+      g.fillStyle='#83abb6';g.fillRect(-14,-9,13,18);g.fillRect(3,-9,13,18);
+    }
+    if(car.kind==='patrol'){
+      g.fillStyle='#193c63';g.fillRect(-half+7,-15,22,30);
+      g.fillStyle='#cb333e';g.fillRect(-3,-19,9,4);
+      g.fillStyle='#468cca';g.fillRect(6,-19,9,4);
+    }else if(car.kind==='delivery'){
+      g.fillStyle='#efe0b9';g.fillRect(-half+17,-3,26,5);
+      g.fillStyle='#36586a';g.fillRect(-half+18,4,14,3);
+    }
+    g.fillStyle='#efcc8d';g.fillRect(half-4,-12,5,7);g.fillRect(half-4,5,5,7);
+    g.fillStyle='#aa4252';g.fillRect(-half-1,-12,4,7);g.fillRect(-half-1,5,4,7);
+    g.restore();
+  }
+
   const campus={open:false,x:FRONT.x,y:FRONT.y+86,dir:'up',stride:0,moved:false,speed:0,
     camX:0,camY:0,zoom:1.15,autoZoom:true,follow:true,keys:new Set(),stick:null,runHeld:false,frame:0,last:0,
     paintCosts:[],paintCount:0,near:null,firstPaint:true,doorCrossings:0,previousRoom:null,visibleChunks:[]};
@@ -208,6 +404,8 @@
     attachMarinaActors();
     const marina=window.ROOKIE_V116_MARINA;
     if(marina)marina.stepNPCs(dt);
+    stepAmbientPedestrians(dt);
+    stepStreetTraffic(dt);
     let {dx,dy}=direction();
     const shared=window.ROOKIE_JAY,run=!!shared?.requestRun()||!!(campus.runHeld&&shared?.eligible());
     if(Math.hypot(dx,dy)<.08){dx=0;dy=0;}
@@ -365,7 +563,7 @@
     if(tree.complete&&tree.naturalWidth>0){g.drawImage(tree,x-r*1.25,y-r*2.25,r*2.5,r*2.7);}
     else drawTree(x,y,r);
   }
-  function paintedBuilding(d){
+  function paintedBuilding(d,districtId){
     const bx=d.t==='mtbldg'?(d.bx||d.x):(d.x||0),
       by=d.t==='mtbldg'?(d.btop||d.y):(d.y||0),
       bw=d.t==='mtbldg'?(d.bw||d.w):(d.w||200),
@@ -380,7 +578,7 @@
        window.ROOKIE_V115_SHOWCASE.buildingFallback(g,d,campus.zoom))return;
     // V127: source sprite first; new shared architecture in place of older
     // simple color rectangles, with exactly the original wall footprint.
-    if(window.ROOKIE_V127_CITY?.building(g,{x:bx,y:by,w:bw,h:bh},campus.zoom))return;
+    if(window.ROOKIE_V127_CITY?.building(g,{x:bx,y:by,w:bw,h:bh,kind:d.t,district:districtId},campus.zoom))return;
     const roof=d.roof||'#615a55',wall=d.c||'#c1a98e';
     g.fillStyle='rgba(12,25,37,.27)';g.fillRect(bx+8,by+9,bw,bh);
     g.fillStyle=wall;g.fillRect(bx,by+18,bw,Math.max(20,bh-18));
@@ -417,7 +615,7 @@
     for(const o of d.map.decors||[]){
       const x=o.x||0,y=o.y||0;
       if(!nearViewport(d.x+x-130,d.y+y-170,(o.w||240)+260,(o.h||200)+260))continue;
-      if(['bldg','house','shed','lighthouse','mtbldg'].includes(o.t)){if(!window.ROOKIE_V116_MARINA?.ownsSolid?.({x:d.x+x,y:d.y+y,w:o.w,h:o.h}))paintedBuilding(o);continue;}
+      if(['bldg','house','shed','lighthouse','mtbldg'].includes(o.t)){if(!window.ROOKIE_V116_MARINA?.ownsSolid?.({x:d.x+x,y:d.y+y,w:o.w,h:o.h}))paintedBuilding(o,d.id);continue;}
       // Native world decoration sprites now depth-sort with Jay, not underfoot.
       if(window.ROOKIE_V127_CITY?.handlesDecor(o))continue;
       if(o.t==='tree'||o.t==='bigtree'||o.t==='palm'){districtTree(x,y,o.t==='bigtree'?38:26);continue;}
@@ -436,8 +634,12 @@
   function drawLinkedDistricts(t){
     // Connected asphalt first; native streets, buildings and natural ground
     // retain their material quality. Crossings seal visibly disjoint seams.
-    for(const link of links)if(nearViewport(link.x,link.y,link.w,link.h))roadRect(link);
+    // Native district pavement remains authoritative on through-roads.
+    // Existing links are left exactly as they were. Genuine new connectors
+    // render AFTER district ground but BEFORE original buildings and actors.
+    for(const link of links)if(!link.newRoad&&nearViewport(link.x,link.y,link.w,link.h))roadRect(link);
     for(const d of districtEntries)if(nearViewport(d.x,d.y,d.w,d.h))districtGround(d);
+    for(const link of links)if(link.newRoad&&!link.underNative&&nearViewport(link.x,link.y,link.w,link.h))roadRect(link);
     // V127 extends waterfront-quality pavement, landscaping materials and
     // shoreline across the native regions, without a new scene or map switch.
     const city=window.ROOKIE_V127_CITY;
@@ -549,6 +751,9 @@
     const marina=window.ROOKIE_V116_MARINA;
     // One depth queue: existing actors and new furnishing geometry share it.
     const entries=npcActors.filter(npc=>visible(npc)&&(!marina?.interiorActorVisible||marina.interiorActorVisible(npc))).map(npc=>({y:npc.y,actor:npc}));
+    // Vehicles join Jay, NPCs, roofs and trees in the SAME world-depth queue.
+    if(campus.zoom>=.19)for(const car of streetTraffic)if(visible(car))
+      entries.push({y:car.y,trafficCar:car});
     if(marina?.interiorFurniture)for(const f of marina.interiorFurniture(view))entries.push({y:f.y+f.h,furniture:f});
     // V122: native marina piling bases join the SAME y-sorted draw queue as
     // Jay, ambient NPCs and interior furniture. This gives genuine occlusion:
@@ -566,6 +771,7 @@
     }
     entries.push({y:campus.y,player:true});entries.sort((a,b)=>a.y-b.y);
     for(const entry of entries){
+      if(entry.trafficCar){drawStreetTraffic(g,entry.trafficCar);continue;}
       if(entry.cityProp){window.ROOKIE_V127_CITY.drawDepthProp(g,entry.cityProp);continue;}
       if(entry.depthProp){
         marina.drawDepthProp(g,entry.depthProp,{zoom:campus.zoom,view,player:{x:campus.x,y:campus.y}},t);continue;
@@ -682,6 +888,10 @@
   modal.querySelector('#v115CampusInteract').addEventListener('click',()=>{
     const sp=campus.near;
     const marina=window.ROOKIE_V116_MARINA;
+    if(sp?.ambientActor){
+      const dialogue=modal.querySelector('#v116Dialogue');
+      if(dialogue){dialogue.hidden=false;dialogue.textContent=sp.text;return;}
+    }
     if(sp&&marina&&sp.id.startsWith('v116:')){
       const dialogue=modal.querySelector('#v116Dialogue');
       if(dialogue){dialogue.hidden=false;dialogue.textContent=sp.text||sp.label;}
@@ -798,7 +1008,7 @@
     },
     toWorld:(areaId,x,y)=>areaId==='station'?{worldId:WORLD_ID,areaId,x:STX+x,y:STY+y}:
       areaId==='plaza'?{worldId:WORLD_ID,areaId:'precinct-campus-v115',x:PLX+x,y:PLY+y}:null,
-    metrics:()=>{const times=campus.paintCosts.slice().sort((a,b)=>a-b);return {frames:campus.paintCount,paintP95Ms:times[Math.floor((times.length-1)*.95)]||0,paintMaxMs:times.at(-1)||0,samples:times.length};},
+    metrics:()=>{const times=campus.paintCosts.slice().sort((a,b)=>a-b);return {frames:campus.paintCount,paintP95Ms:times[Math.floor((times.length-1)*.95)]||0,paintMaxMs:times.at(-1)||0,samples:times.length,ambientPedestrians:ambientRoutes.length,ambientDistrictsInitialized:ambientInit,streetCars:streetTraffic.length,stoppedCars:streetTraffic.filter(c=>c.stopped).length};},
     snapshot:()=>Object.freeze({schema:1,worldId:WORLD_ID,areaId:districtAt(campus.x,campus.y)?.id||AREA_ID,
       playerId:'local-preview',x:campus.x,y:campus.y,instanceId:districtAt(campus.x,campus.y)?.instanceId||'harbor-main:campus',
       transport:'none',authoritativeServer:false,committedToSave:false}),
@@ -813,7 +1023,7 @@
       campus.camX=x-tw/(2*campus.zoom);campus.camY=y-th/(2*campus.zoom);
       return true;
     },
-    test:{blocked,interiorRoom,chunkAt,moveTo:(x,y)=>{if(blocked(x,y))return false;campus.x=x;campus.y=y;return true;},
+    test:{blocked,roadCollisionDiagnostic,interiorRoom,chunkAt,moveTo:(x,y)=>{if(blocked(x,y))return false;campus.x=x;campus.y=y;return true;},
       position:()=>({x:campus.x,y:campus.y}),doorCrossings:()=>campus.doorCrossings},
     scope:'Connected district geography and precinct foot exploration share one camera. Missions, street NPC routines, interiors beyond Precinct 9, live multiplayer and cars still require migration.'};
   H.seamlessCampusV115=Object.freeze(api);

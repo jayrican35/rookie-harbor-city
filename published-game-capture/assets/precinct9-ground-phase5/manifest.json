@@ -1,0 +1,627 @@
+{
+  "version": "precinct9-phase5-ground",
+  "tileSize": 32,
+  "worldPixelsPerAssetPixel": 1,
+  "atlas": "precinct9_ground_phase5_atlas.png",
+  "atlasSize": [
+    1024,
+    1024
+  ],
+  "frames": {
+    "paver_stone": {
+      "file": "paver_stone.png",
+      "atlas": {
+        "x": 8,
+        "y": 8,
+        "w": 64,
+        "h": 64
+      },
+      "width": 64,
+      "height": 64,
+      "anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "terrain"
+    },
+    "paver_stone_var": {
+      "file": "paver_stone_var.png",
+      "atlas": {
+        "x": 80,
+        "y": 8,
+        "w": 64,
+        "h": 64
+      },
+      "width": 64,
+      "height": 64,
+      "anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "terrain"
+    },
+    "paver_brick": {
+      "file": "paver_brick.png",
+      "atlas": {
+        "x": 152,
+        "y": 8,
+        "w": 64,
+        "h": 64
+      },
+      "width": 64,
+      "height": 64,
+      "anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "terrain"
+    },
+    "paver_brick_var": {
+      "file": "paver_brick_var.png",
+      "atlas": {
+        "x": 224,
+        "y": 8,
+        "w": 64,
+        "h": 64
+      },
+      "width": 64,
+      "height": 64,
+      "anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "terrain"
+    },
+    "asphalt": {
+      "file": "asphalt.png",
+      "atlas": {
+        "x": 296,
+        "y": 8,
+        "w": 64,
+        "h": 64
+      },
+      "width": 64,
+      "height": 64,
+      "anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "terrain"
+    },
+    "asphalt_var": {
+      "file": "asphalt_var.png",
+      "atlas": {
+        "x": 368,
+        "y": 8,
+        "w": 64,
+        "h": 64
+      },
+      "width": 64,
+      "height": 64,
+      "anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "terrain"
+    },
+    "grass": {
+      "file": "grass.png",
+      "atlas": {
+        "x": 440,
+        "y": 8,
+        "w": 64,
+        "h": 64
+      },
+      "width": 64,
+      "height": 64,
+      "anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "terrain"
+    },
+    "grass_var": {
+      "file": "grass_var.png",
+      "atlas": {
+        "x": 512,
+        "y": 8,
+        "w": 64,
+        "h": 64
+      },
+      "width": 64,
+      "height": 64,
+      "anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "terrain"
+    },
+    "hedge": {
+      "file": "hedge.png",
+      "atlas": {
+        "x": 584,
+        "y": 8,
+        "w": 64,
+        "h": 32
+      },
+      "width": 64,
+      "height": 32,
+      "anchor": {
+        "x": 0,
+        "y": 32
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "detail"
+    },
+    "hedge_corner": {
+      "file": "hedge_corner.png",
+      "atlas": {
+        "x": 656,
+        "y": 8,
+        "w": 64,
+        "h": 32
+      },
+      "width": 64,
+      "height": 32,
+      "anchor": {
+        "x": 0,
+        "y": 32
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "detail"
+    },
+    "flower_planter": {
+      "file": "flower_planter.png",
+      "atlas": {
+        "x": 728,
+        "y": 8,
+        "w": 128,
+        "h": 48
+      },
+      "width": 128,
+      "height": 48,
+      "anchor": {
+        "x": 0,
+        "y": 48
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "detail"
+    },
+    "lamp": {
+      "file": "lamp.png",
+      "atlas": {
+        "x": 864,
+        "y": 8,
+        "w": 32,
+        "h": 96
+      },
+      "width": 32,
+      "height": 96,
+      "anchor": {
+        "x": 0,
+        "y": 96
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "detail"
+    },
+    "bollard": {
+      "file": "bollard.png",
+      "atlas": {
+        "x": 904,
+        "y": 8,
+        "w": 32,
+        "h": 48
+      },
+      "width": 32,
+      "height": 48,
+      "anchor": {
+        "x": 0,
+        "y": 48
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "detail"
+    },
+    "drain_grate": {
+      "file": "drain_grate.png",
+      "atlas": {
+        "x": 944,
+        "y": 8,
+        "w": 64,
+        "h": 32
+      },
+      "width": 64,
+      "height": 32,
+      "anchor": {
+        "x": 0,
+        "y": 32
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "detail"
+    },
+    "utility_cover": {
+      "file": "utility_cover.png",
+      "atlas": {
+        "x": 8,
+        "y": 112,
+        "w": 64,
+        "h": 64
+      },
+      "width": 64,
+      "height": 64,
+      "anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "detail"
+    },
+    "road_double_yellow": {
+      "file": "road_double_yellow.png",
+      "atlas": {
+        "x": 80,
+        "y": 112,
+        "w": 64,
+        "h": 64
+      },
+      "width": 64,
+      "height": 64,
+      "anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "detail"
+    },
+    "road_center_dashes": {
+      "file": "road_center_dashes.png",
+      "atlas": {
+        "x": 152,
+        "y": 112,
+        "w": 64,
+        "h": 64
+      },
+      "width": 64,
+      "height": 64,
+      "anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "detail"
+    },
+    "road_single_white": {
+      "file": "road_single_white.png",
+      "atlas": {
+        "x": 224,
+        "y": 112,
+        "w": 64,
+        "h": 64
+      },
+      "width": 64,
+      "height": 64,
+      "anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "detail"
+    },
+    "crosswalk_vertical": {
+      "file": "crosswalk_vertical.png",
+      "atlas": {
+        "x": 296,
+        "y": 112,
+        "w": 64,
+        "h": 64
+      },
+      "width": 64,
+      "height": 64,
+      "anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "detail"
+    },
+    "crosswalk_horizontal": {
+      "file": "crosswalk_horizontal.png",
+      "atlas": {
+        "x": 368,
+        "y": 112,
+        "w": 64,
+        "h": 64
+      },
+      "width": 64,
+      "height": 64,
+      "anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "detail"
+    },
+    "parking_stall_top": {
+      "file": "parking_stall_top.png",
+      "atlas": {
+        "x": 440,
+        "y": 112,
+        "w": 64,
+        "h": 64
+      },
+      "width": 64,
+      "height": 64,
+      "anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "detail"
+    },
+    "parking_accessible": {
+      "file": "parking_accessible.png",
+      "atlas": {
+        "x": 512,
+        "y": 112,
+        "w": 64,
+        "h": 64
+      },
+      "width": 64,
+      "height": 64,
+      "anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "detail"
+    },
+    "parking_access_symbol": {
+      "file": "parking_access_symbol.png",
+      "atlas": {
+        "x": 584,
+        "y": 112,
+        "w": 64,
+        "h": 64
+      },
+      "width": 64,
+      "height": 64,
+      "anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "detail"
+    },
+    "curb_top": {
+      "file": "curb_top.png",
+      "atlas": {
+        "x": 656,
+        "y": 112,
+        "w": 64,
+        "h": 64
+      },
+      "width": 64,
+      "height": 64,
+      "anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "detail"
+    },
+    "curb_bottom": {
+      "file": "curb_bottom.png",
+      "atlas": {
+        "x": 728,
+        "y": 112,
+        "w": 64,
+        "h": 64
+      },
+      "width": 64,
+      "height": 64,
+      "anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "detail"
+    },
+    "curb_left": {
+      "file": "curb_left.png",
+      "atlas": {
+        "x": 800,
+        "y": 112,
+        "w": 64,
+        "h": 64
+      },
+      "width": 64,
+      "height": 64,
+      "anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "detail"
+    },
+    "curb_right": {
+      "file": "curb_right.png",
+      "atlas": {
+        "x": 872,
+        "y": 112,
+        "w": 64,
+        "h": 64
+      },
+      "width": 64,
+      "height": 64,
+      "anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "detail"
+    },
+    "stone_border": {
+      "file": "stone_border.png",
+      "atlas": {
+        "x": 944,
+        "y": 112,
+        "w": 64,
+        "h": 64
+      },
+      "width": 64,
+      "height": 64,
+      "anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "detail"
+    },
+    "sidewalk_grass_edge": {
+      "file": "sidewalk_grass_edge.png",
+      "atlas": {
+        "x": 8,
+        "y": 184,
+        "w": 64,
+        "h": 64
+      },
+      "width": 64,
+      "height": 64,
+      "anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "detail"
+    },
+    "parking_wheelstop": {
+      "file": "parking_wheelstop.png",
+      "atlas": {
+        "x": 80,
+        "y": 184,
+        "w": 64,
+        "h": 64
+      },
+      "width": 64,
+      "height": 64,
+      "anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "detail"
+    },
+    "curb_corner_nw": {
+      "file": "curb_corner_nw.png",
+      "atlas": {
+        "x": 152,
+        "y": 184,
+        "w": 64,
+        "h": 64
+      },
+      "width": 64,
+      "height": 64,
+      "anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "detail"
+    },
+    "curb_corner_ne": {
+      "file": "curb_corner_ne.png",
+      "atlas": {
+        "x": 224,
+        "y": 184,
+        "w": 64,
+        "h": 64
+      },
+      "width": 64,
+      "height": 64,
+      "anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "detail"
+    },
+    "curb_corner_sw": {
+      "file": "curb_corner_sw.png",
+      "atlas": {
+        "x": 296,
+        "y": 184,
+        "w": 64,
+        "h": 64
+      },
+      "width": 64,
+      "height": 64,
+      "anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "detail"
+    },
+    "curb_corner_se": {
+      "file": "curb_corner_se.png",
+      "atlas": {
+        "x": 368,
+        "y": 184,
+        "w": 64,
+        "h": 64
+      },
+      "width": 64,
+      "height": 64,
+      "anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "worldScale": 1,
+      "collision": "existing-world-collider-only",
+      "layer": "detail"
+    }
+  },
+  "scope": "precinct9 civic grounds and existing road only",
+  "sourceReference": "owner supplied precinct sidewalk/road/plaza sheet; palette inspected and art cleaned/reconstructed",
+  "sameWorldGeometry": true
+}

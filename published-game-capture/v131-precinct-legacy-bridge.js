@@ -187,10 +187,9 @@ function furniture(g,f){
     }
   }
   if(type==='hcChangingBench'){
-    im=source('changingBench');if(ready(im)){
-      g.drawImage(im,f.x,f.y-20,f.w,38);
-      stats.furniture++;return true;
-    }
+    // The connected world already renders the original dark-wood changing
+    // benches better than the old generic blue seating sprite. Preserve it.
+    return false;
   }
   if(type==='hcLobbyTable'){
     im=source('visitorTable');if(ready(im)){
@@ -262,22 +261,14 @@ function furniture(g,f){
   return false; // keep original classic vector fallback, never a blank object
 }
 function wallSkins(g,walls){
-  const im=source('wall');if(!ready(im))return false;
-  // Reuse ONLY real horizontal collision-wall rectangles and draw the
-  // original native 96x48 wall material. The classic wall gaps are already
-  // absent from ST.walls; this cannot close a door or relocate geometry.
-  g.save();g.imageSmoothingEnabled=false;
-  for(const r of walls){
-    if(!(r.h<=32&&r.w>r.h)||r.x<=0||r.y<=0)continue;
-    const top=r.y+r.h/2-24;
-    for(let x=0;x<r.w;x+=96){
-      const w=Math.min(96,r.w-x);
-      g.drawImage(im,0,0,w,48,r.x+x,top,w,48);
-    }
-    stats.walls++;
-  }
-  g.restore();return true;
+  // The source old cream horizontal wall atlas clashes with the current
+  // connected station's signed navy collision wall (and adds visually
+  // exaggerated striping around the locker/garage doors). Keep the intact
+  // V130 wall art until a true spatially authored wall-pass is approved.
+  // No collision, doorway or roof transparency is changed.
+  return false;
 }
+
 window.ROOKIE_V131_PRECINCT_BRIDGE=Object.freeze({
  version:'legacy-authored-precinct-reuse-1',worldId:'harbor-main',
  assetEpoch,material,room,furniture,wallSkins,

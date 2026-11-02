@@ -42,11 +42,28 @@ const scenes=[
   // The independent classic precinct source atlas is asynchronously decoded.
   // Test readiness before capturing; do not mistake placeholders for a
   // successful port. Old V128 baseline intentionally has no V131 bridge.
-  if(version==='after')await page.waitForFunction(()=>{
-   const p=window.ROOKIE_V131_PRECINCT_BRIDGE,s=p?.assetStatus();
-   return !!(s?.carpet&&s?.cool&&s?.wood&&s?.cream&&s?.garage&&
-      s?.lockers&&s?.board&&s?.cabinet&&s?.bench&&s?.reception);
-  },{timeout:45000});
+  if(version==='after'){
+    console.log('BRIDGE INITIAL STATE',JSON.stringify(await page.evaluate(()=>{
+      const p=window.ROOKIE_V131_PRECINCT_BRIDGE;
+      return {exists:!!p,HARBOR:!!window.HARBOR,
+       craft:!!window.HARBOR?.precinctCraft,cinema:!!window.HARBOR?.precinctCinematic,
+       reception:!!window.HARBOR?.receptionRoom,globalB2:!!window.B2,
+       globalGarage:!!window.__GARAGE,assets:p?.assetStatus()||null};
+    })));
+    try{
+      await page.waitForFunction(()=>{
+        const p=window.ROOKIE_V131_PRECINCT_BRIDGE,s=p?.assetStatus();
+        return !!(s?.carpet&&s?.cool&&s?.wood&&s?.cream&&s?.garage&&
+           s?.lockers&&s?.board&&s?.cabinet&&s?.bench&&s?.reception);
+      },null,{timeout:12000});
+    }catch(e){
+      console.error('BRIDGE LOAD DIAGNOSTIC',JSON.stringify(await page.evaluate(()=>{
+        const p=window.ROOKIE_V131_PRECINCT_BRIDGE;
+        return {hasBridge:!!p,globalB2:!!window.B2,assets:p?.assetStatus()||null};
+      })));
+      throw e;
+    }
+  }
   const entry=await page.evaluate(()=>{
    const api=window.HARBOR.seamlessCampusV115;
    return {

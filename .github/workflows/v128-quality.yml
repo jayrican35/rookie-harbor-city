@@ -44,3 +44,40 @@ jobs:
           set -euo pipefail
           git diff --name-only ${{ github.event.before || 'HEAD^' }} HEAD | grep -Ev '^(published-game-capture/(v117-jay\.js|v115-campus\.js|v115-world\.js|v127-citywide-art\.js)|qa/check-v128-quality\.cjs|qa/check-world-completion\.cjs|qa/check-world-pedestrians\.cjs|qa/check-world-roads\.cjs|qa/check-world-traffic\.cjs|qa/capture-v128-run\.cjs|tools/build_v128_preview\.py|docs/(V128-WORLD-QUALITY|HARBOR-CITY-WORLD-COMPLETION)\.md|\.github/workflows/v128-quality\.yml)$' > /tmp/out-of-scope || true
           if [ -s /tmp/out-of-scope ]; then cat /tmp/out-of-scope; exit 1; fi
+
+  browser-road-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install exact build and browser dependencies
+        run: |
+          python3 -m pip install -q pillow numpy
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Build single isolated World Completion game
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/v128-world-quality
+          cp -a published-game-capture/. site/preview/v128-world-quality/
+          python3 tools/build_v128_preview.py site/preview/v128-world-quality
+          node --check site/preview/v128-world-quality/game-v115.bundle.js
+      - name: Run real Chromium phone-viewport road, Jay and traffic tests
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8765 --directory site >/tmp/world-road-http.log 2>&1 &
+          sleep 2
+          node qa/capture-v128-run.cjs
+      - name: Save real gameplay evidence and diagnostic trace
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: harbor-world-browser-road-evidence
+          path: site/preview/v128-world-quality/evidence/
+          if-no-files-found: warn

@@ -446,6 +446,9 @@
     campus.moved=dist>.04;if(campus.moved){campus.stride+=dist*.055;dialogue.hidden=true;}
     if(shared?.eligible())shared.update('connected-jay',{x:campus.x,y:campus.y,dir:campus.dir,map:WORLD_ID,run},dt);
     marina?.updateInteriors?.({x:campus.x,y:campus.y},dt);
+    // Phase-3 glass doors reuse the EXISTING movement simulation clock.
+    // No scene, coordinate, player state or collision change.
+    window.ROOKIE_V134_PRECINCT?.stepEntrance?.({x:campus.x,y:campus.y},dt);
     const nowRoom=interiorRoom(campus.x,campus.y);
     if((campus.previousRoom===null)!==(nowRoom===null))campus.doorCrossings++;
     campus.previousRoom=nowRoom;

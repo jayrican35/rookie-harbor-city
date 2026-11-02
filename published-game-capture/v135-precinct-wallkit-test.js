@@ -37,6 +37,54 @@ function tile(g,id,x,y,w,h){
    Math.round(w||sw),Math.round(h||sh));
  frameDraws++;return true;
 }
+// V139 Phase 5 uses THIS SAME existing atlas/manifest loader contract for
+// additional terrain artwork. No second renderer, map, camera, loop or save.
+let groundManifest=null,groundSheet=null,groundLoaded=false,groundError=null,groundDraws=0;
+if(window.ROOKIE_V139_GROUND_ACTIVE){
+ const base='./assets/precinct9-ground-phase5/';
+ fetch(base+'manifest.json').then(r=>{
+  if(!r.ok)throw Error('precinct ground manifest '+r.status);
+  return r.json();
+ }).then(m=>new Promise((resolve,reject)=>{
+  const tileImage=new Image();tileImage.decoding='async';
+  tileImage.onload=()=>resolve({m,tileImage});
+  tileImage.onerror=()=>reject(Error('phase-5 terrain atlas failed to load'));
+  tileImage.src=base+m.atlas;
+ })).then(({m,tileImage})=>{
+  if(m.version!=='precinct9-phase5-ground'||m.tileSize!==32||
+      m.worldPixelsPerAssetPixel!==1||!m.frames?.paver_stone||!m.frames?.asphalt||
+      !m.frames?.grass)throw Error('phase-5 terrain asset contract mismatch');
+  groundSheet=tileImage;groundManifest=m;groundLoaded=true;
+ }).catch(e=>{groundError=e.message;console.warn('ROOKIE ground kit:',groundError);});
+}
+function drawGroundSprite(g,id,x,y,w,h){
+ const f=groundManifest?.frames?.[id];
+ if(!groundLoaded||!groundSheet||!f)return false;
+ const a=f.atlas;
+ g.drawImage(groundSheet,a.x,a.y,a.w,a.h,
+  Math.round(x),Math.round(y),Math.round(w??a.w),Math.round(h??a.h));
+ groundDraws++;return true;
+}
+function fillGround(g,id,x,y,w,h){
+ const f=groundManifest?.frames?.[id];
+ if(!groundLoaded||!groundSheet||!f||w<=0||h<=0)return false;
+ const a=f.atlas;
+ // Repeating the true native-size PNGs — NO resizing — clipped to the
+ // EXISTING walk/road/parking rectangles in the original V133 ground cache.
+ g.save();g.beginPath();g.rect(x,y,w,h);g.clip();
+ // Full surfaces repeat on the global 32-grid; edge/road marking
+ // overlays anchor to their requested physical rectangle so a cropped
+ // curb cannot accidentally draw its transparent midpoint at the edge.
+ const edge=/^(?:curb_|road_|crosswalk_|parking_|stone_border|sidewalk_grass_edge)/.test(id);
+ const y0=edge?y:Math.floor(y/a.h)*a.h;
+ const x0=edge?x:Math.floor(x/a.w)*a.w;
+ for(let yy=y0;yy<y+h;yy+=a.h)
+  for(let xx=x0;xx<x+w;xx+=a.w){
+   g.drawImage(groundSheet,a.x,a.y,a.w,a.h,xx,yy,a.w,a.h);
+   groundDraws++;
+  }
+ g.restore();return true;
+}
 function drawTest(g,opts){
  if(!loaded||!g||!opts||!Number.isFinite(opts.x)||!Number.isFinite(opts.y))return false;
  // One deliberately SMALL section of the current V134 SOUTH wall, drawn
@@ -114,11 +162,13 @@ function drawEntranceDoors(g,centerX,topY,openRatio){
 }
 window.ROOKIE_V135_WALL_KIT=Object.freeze({
  version:'v135-phase1-wall-kit',
- drawTest,drawFacadeWindow,drawEntranceStatic,drawEntranceDoors,
+ drawTest,drawFacadeWindow,drawEntranceStatic,drawEntranceDoors,drawGroundSprite,fillGround,
  stats:()=>({loaded,error,frameDraws,testPaints,windowDraws,entranceFrames,entranceDoorDraws,moduleCount:Object.keys(manifest?.frames||{}).length,
   atlasSize:atlas?[atlas.naturalWidth,atlas.naturalHeight]:null,
   windowAtlas:['precinct9-windows-phase2','precinct9-entrance-phase3'].includes(manifest?.version),
-  entranceAtlas:manifest?.version==='precinct9-entrance-phase3'}),
+  entranceAtlas:manifest?.version==='precinct9-entrance-phase3',
+  groundAtlas:groundLoaded,groundError,groundDraws,
+  groundModuleCount:Object.keys(groundManifest?.frames||{}).length}),
  scope:'Only 32-grid modular wall kit test on existing V134 precinct facade; no other gameplay change'
 });
 })();

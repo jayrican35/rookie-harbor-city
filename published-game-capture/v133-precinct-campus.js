@@ -15,9 +15,21 @@ const ink=(g,x,y,w,h,c)=>{g.fillStyle=c;g.fillRect(Math.round(x),Math.round(y),M
 const seen=(v,b)=>!v||b.x<v.x+v.w+30&&b.x+b.w>v.x-30&&b.y<v.y+v.h+30&&b.y+b.h>v.y-30;
 const hash=(a,b)=>((a*73856093)^(b*19349663))>>>0;
 let cachedGround=null,cacheReady=false;
+// All Phase-5 tiles are drawn INTO this same original cached V133 ground
+// composition via the already-loaded V135 asset/manifest pipeline.
+const groundKit=()=>window.ROOKIE_V139_GROUND_ACTIVE?window.ROOKIE_V135_WALL_KIT:null;
+const fillT=(g,id,x,y,w,h)=>!!groundKit()?.fillGround?.(g,id,x,y,w,h);
+const drawT=(g,id,x,y,w,h)=>!!groundKit()?.drawGroundSprite?.(g,id,x,y,w,h);
+const terrainReady=()=>!!groundKit()?.stats?.().groundAtlas;
 const texture=()=>window.HARBOR?.precinctExterior?.art?.stone;
 const ready=im=>!!(im&&im.complete&&im.naturalWidth);
 function pavers(g,x,y,w,h,tile=24){
+  if(terrainReady()&&fillT(g,'paver_stone',x,y,w,h)){
+    // Preserve existing authored path widths and their readable stone edges.
+    ink(g,x,y,w,3,'rgba(251,230,206,.87)');
+    ink(g,x,y+h-5,w,5,'rgba(110,108,114,.74)');
+    return;
+  }
   const src=texture();
   ink(g,x+4,y+8,w,h,'rgba(8,27,38,.19)');
   ink(g,x,y,w,h,'#b7ad94');
@@ -44,6 +56,9 @@ function curb(g,x,y,w,h){
   for(let xx=x+32;xx<x+w;xx+=96)ink(g,xx,y+3,2,h-6,'#8c9690');
 }
 function hedge(g,x,y,w,h){
+  if(terrainReady()&&fillT(g,'hedge',x,y,w,Math.max(24,h))){
+    return;
+  }
   // Low landscape edging: it is decoration, not an invented hard collision.
   ink(g,x+3,y+7,w,h,'rgba(15,38,30,.22)');
   ink(g,x,y,w,h,'#3c6146');
@@ -54,6 +69,7 @@ function hedge(g,x,y,w,h){
   }
 }
 function light(g,x,y){
+  if(terrainReady()&&drawT(g,'lamp',x-16,y-83,32,96))return;
   ink(g,x+5,y+5,15,7,'rgba(17,38,36,.25)');
   ink(g,x-3,y-4,6,8,'#233c46');
   ink(g,x-8,y-43,16,43,'#344b52');
@@ -99,6 +115,18 @@ function line(g,x,y,w){
   ink(g,x+3,y+5,w-6,2,'rgba(21,43,52,.26)');
 }
 function lotArt(g){
+  if(terrainReady()){
+    // Exactly the ORIGINAL parking lot footprint/aisles. Lane markings are
+    // repainted on the new asphalt material at the same earlier coordinates.
+    fillT(g,'asphalt',lot.x,lot.y,lot.w,lot.h);
+    for(const xx of [1368,1456,1544,1632,1720,1808]){
+      ink(g,xx,1295,3,112,'rgba(246,233,210,.90)');
+      ink(g,xx,1530,3,110,'rgba(246,233,210,.90)');
+    }
+    fillT(g,'parking_accessible',1355,1364,82,64);
+    drawT(g,'parking_access_symbol',1370,1328,64,64);
+    fillT(g,'curb_top',lot.x,lot.y-11,lot.w,25);
+  }
   // V130's authentic original asphalt and stalls remain; this is a finish
   // layer, never an opaque replacement for a connected street or sidewalk.
   const b=lot;
@@ -156,6 +184,11 @@ function northGround(g){
   for(const x of [1730,1810,2143])ink(g,x,1313,6,42,'rgba(225,203,143,.39)');
 }
 function southGround(g){
+  if(terrainReady()){
+    // This existing precinct lawn is the ONLY area receiving new green
+    // material. Paths/hedges below overwrite it inside the same cache.
+    fillT(g,'grass',330,1905,2180,754);
+  }
   const {x,y,w,h}=south;
   // Grass currently runs empty for hundreds of world units. This is a
   // composed civilian precinct park on the SAME uninterrupted walkable plane.
@@ -203,15 +236,40 @@ function southGround(g){
   g.fillStyle='#f5e1ae';g.textAlign='center';g.font='bold 21px Barlow Condensed, sans-serif';
   g.fillText('COMMUNITY GREEN',954,1983,185);
 }
+function roadPhase5(g){
+ if(!terrainReady())return;
+ // Real connected Harbor Avenue (V115 topology): x149..2069, y1721..1848.
+ // Use existing road rectangle only; NO new road geometry or side streets.
+ const x=road.x,y=road.y,w=road.w,h=road.h;
+ g.save();
+ // Texture full street, taper its lateral ends into the existing citywide
+ // material so road connectors cannot become harsh visual dead-ends.
+ for(const [xx,ww,a]of [[x,80,.10],[x+80,80,.28],[x+160,w-320,.90],
+                         [x+w-160,80,.28],[x+w-80,80,.10]]){
+  g.globalAlpha=a;fillT(g,'asphalt',xx,y,ww,h);
+ }
+ g.globalAlpha=1;
+ // Preserve the original single center-lane markings and crosswalk axis.
+ for(let xx=x+20;xx<x+w-32;xx+=76){
+  if(xx>878&&xx<1040)continue;
+  drawT(g,'road_center_dashes',xx,1752);
+ }
+ fillT(g,'curb_bottom',x,y-10,w,20);
+ fillT(g,'curb_top',x,y+h-9,w,20);
+ // Signed pedestrian crossing aligned with the original sidewalk x948.
+ fillT(g,'crosswalk_vertical',899,1741,108,90);
+ g.restore();
+}
 function makeGround(){
  const imageReady=ready(texture());
- if(cachedGround&&cacheReady===imageReady)return cachedGround;
+ const targetVersion=(imageReady?'heritage':'fallback')+'|'+(terrainReady()?'phase5':'original');
+ if(cachedGround&&cacheReady===targetVersion)return cachedGround;
  const cv=document.createElement('canvas');
  cv.width=2410;cv.height=1720;
  const g=cv.getContext('2d');if(!g)return null;
  g.imageSmoothingEnabled=false;g.translate(-300,-1110);
- northGround(g);southGround(g);
- cachedGround=cv;cacheReady=imageReady;m.groundBuilds++;
+ northGround(g);southGround(g);roadPhase5(g);
+ cachedGround=cv;cacheReady=targetVersion;m.groundBuilds++;
  return cv;
 }
 function ground(g,opt){
@@ -307,7 +365,7 @@ window.ROOKIE_V133_PRECINCT=Object.freeze({
  version:'v133-precinct-campus-art-1',worldId:'harbor-main',
  ground,facade,actors,
  geometry:Object.freeze({roof,front,garage,lot,road,south}),
- metrics:()=>({...m,stoneReady:ready(texture())}),
+ metrics:()=>({...m,stoneReady:ready(texture()),groundAtlas:terrainReady()}),
  scope:'Original 1:1 precinct exterior and existing civic grounds only. Nonblocking visual landscape and 3 bounded station-role ambience actors; no new roads, solids, modes or loops.'
 });
 })();

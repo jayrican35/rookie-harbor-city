@@ -24,9 +24,10 @@ const views=[
    await page.goto(url,{waitUntil:'domcontentloaded',timeout:65000});
    await page.waitForFunction(()=>window.HARBOR?.seamlessCampusV115&&window.ROOKIE_JAY,{timeout:45000});
    assert(await page.evaluate(()=>window.HARBOR.seamlessCampusV115.openAt(4700,3950,.95)));
+   // V134's building canvas is lazily painted only when camera reaches
+   // precinct; starting camera is the protected Marina at (4700,3950).
    await page.waitForFunction(()=>document.body.classList.contains('v116-play-mode')
-     &&window.ROOKIE_V127_CITY?.metrics()?.atlasReady
-     &&window.ROOKIE_V134_PRECINCT?.stats()?.facadeReady,{timeout:35000});
+     &&window.ROOKIE_V127_CITY?.metrics()?.atlasReady,{timeout:35000});
    if(type==='after')await page.waitForFunction(()=>window.ROOKIE_V135_WALL_KIT?.stats()?.loaded,
      {timeout:20000});
    const geometry=await page.evaluate(()=>{

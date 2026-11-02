@@ -158,7 +158,91 @@ function lotArt(g){
   curb(g,1329,1695,577,12);
   for(const [x,y]of [[1320,1327],[1902,1622]])light(g,x,y);
 }
+
+/* V140 approved site plan: same cached V133 ground, no new game renderer.
+ * The garage at (1918,1256), lobby at (948,1124), road, and all collisions
+ * retain their existing world positions. No vegetation in parking stalls.
+ */
+const approvedLayout=()=>window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE===true;
+const approvedParking=Object.freeze({x:1640,y:1464,w:670,h:237});
+const approvedApron=Object.freeze({x:1742,y:1264,w:354,h:224});
+const approvedDrive=Object.freeze({x:1856,y:1450,w:146,h:271});
+function approvedAsphalt(g,x,y,w,h){
+ if(!fillT(g,'asphalt',x,y,w,h))ink(g,x,y,w,h,'#3d4756');
+ for(let xx=x+19;xx<x+w-15;xx+=74)
+   for(let yy=y+14;yy<y+h-15;yy+=69)
+     ink(g,xx,yy,7,2,'rgba(168,170,164,.12)');
+}
+function approvedParkingSpace(g,x,y,w=70,h=92,accessible=false){
+ // Empty open-ended stalls: markings are paint only, no physical colliders.
+ ink(g,x,y,3,h,'rgba(239,237,222,.92)');
+ ink(g,x+w-3,y,3,h,'rgba(239,237,222,.92)');
+ ink(g,x,y,w,3,'rgba(239,237,222,.83)');
+ ink(g,x+7,y+6,w-14,6,'rgba(18,29,37,.32)');
+ ink(g,x+7,y+4,w-14,5,'#aeb3ab');
+ ink(g,x+9,y+4,w-18,2,'#e3dfce');
+ if(accessible){
+   ink(g,x+5,y+13,w-10,h-20,'rgba(49,107,149,.22)');
+   g.strokeStyle='#8cc9df';g.lineWidth=3;
+   g.strokeRect(x+13,y+22,w-26,44);
+   g.fillStyle='#b1dbeb';g.textAlign='center';
+   g.font='bold 31px sans-serif';g.fillText('♿',x+w/2,y+60);
+ }
+}
+function approvedNorthGround(g){
+ // First paint over the visually detached old lot, into a continuous
+ // pedestrian plaza. V134's existing civic planter and entrance paint
+ // remains authoritative above this base surface.
+ pavers(g,419,1280,1210,416,32);
+ pavers(g,876,1133,143,546,32);
+ ink(g,884,1134,125,4,'#e9d9bc');
+ // Landscaped borders OUTSIDE the new vehicle rectangle.
+ hedge(g,1575,1316,21,293);
+ hedge(g,425,1342,188,16);
+ hedge(g,1154,1364,247,17);
+ hedge(g,1336,1638,180,17);
+ // Vehicle frontage and driveway are ONE connected shape, not separate
+ // parking stamps to the left of the fleet garage.
+ approvedAsphalt(g,approvedParking.x,approvedParking.y,
+   approvedParking.w,approvedParking.h);
+ approvedAsphalt(g,approvedApron.x,approvedApron.y,
+   approvedApron.w,approvedApron.h);
+ approvedAsphalt(g,approvedDrive.x,approvedDrive.y,
+   approvedDrive.w,approvedDrive.h);
+ ink(g,1754,1273,333,6,'#dbb660');
+ for(let xx=1764;xx<2082;xx+=34)
+   ink(g,xx,1279,17,3,'rgba(230,191,94,.60)');
+ // Two painted arrows, no planted island in the garage traffic lane.
+ for(const yy of [1360,1483]){
+   g.fillStyle='rgba(238,231,207,.82)';
+   g.beginPath();g.moveTo(1929,yy-20);g.lineTo(1907,yy+2);
+   g.lineTo(1919,yy+2);g.lineTo(1919,yy+24);
+   g.lineTo(1939,yy+24);g.lineTo(1939,yy+2);
+   g.lineTo(1951,yy+2);g.closePath();g.fill();
+ }
+ for(const xx of [1650,1725,1800])
+   approvedParkingSpace(g,xx,1513,70,109,xx===1650);
+ for(const xx of [2012,2087,2162,2237])
+   approvedParkingSpace(g,xx,1513,69,109,false);
+ // Clear central aisle x1856..2002 reconnects to the unchanged Avenue.
+ curb(g,1641,1692,213,11);
+ curb(g,2006,1692,303,11);
+ hedge(g,1587,1508,18,167);
+ hedge(g,2312,1508,20,164);
+ // Decommission an older disconnected east-side parking decoration;
+ // preserve the world terrain/road collision as-is.
+ if(!fillT(g,'grass',2326,1280,373,378))
+   ink(g,2326,1280,373,378,'#628d56');
+ hedge(g,2360,1642,287,18);
+ g.fillStyle='#f1e5c6';g.font='bold 20px Barlow Condensed,sans-serif';
+ g.textAlign='center';g.fillText('VISITOR PARKING',2160,1671,230);
+ g.fillStyle='#f5dca1';g.font='bold 17px Barlow Condensed,sans-serif';
+ g.fillText('GARAGE ACCESS',1918,1324,205);
+ ink(g,1857,1714,145,5,'rgba(227,205,154,.62)');
+}
+
 function northGround(g){
+ if(approvedLayout()){approvedNorthGround(g);return;}
   // Historic centered public entry path. Do not place an opaque gate over
   // real 72px doorway x=912..984 at world y=1124.
   pavers(g,878,1139,139,528,34);
@@ -364,7 +448,7 @@ function actors(t){
 window.ROOKIE_V133_PRECINCT=Object.freeze({
  version:'v133-precinct-campus-art-1',worldId:'harbor-main',
  ground,facade,actors,
- geometry:Object.freeze({roof,front,garage,lot,road,south}),
+ geometry:Object.freeze({roof,front,garage,lot,road,south,approvedParking,approvedApron,approvedDrive}),
  metrics:()=>({...m,stoneReady:ready(texture()),groundAtlas:terrainReady()}),
  scope:'Original 1:1 precinct exterior and existing civic grounds only. Nonblocking visual landscape and 3 bounded station-role ambience actors; no new roads, solids, modes or loops.'
 });

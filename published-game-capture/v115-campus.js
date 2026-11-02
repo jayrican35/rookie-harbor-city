@@ -788,6 +788,11 @@
     const marina=window.ROOKIE_V116_MARINA;
     // One depth queue: existing actors and new furnishing geometry share it.
     const entries=npcActors.filter(npc=>visible(npc)&&(!marina?.interiorActorVisible||marina.interiorActorVisible(npc))).map(npc=>({y:npc.y,actor:npc}));
+    // Bounded V133 precinct staff share the existing depth queue and classic
+    // cast painter. No duplicated NPC engine or new citywide actor registry.
+    if(window.ROOKIE_V133_PRECINCT?.actors)
+      for(const a of window.ROOKIE_V133_PRECINCT.actors(t))
+        if(visible(a))entries.push({y:a.y,actor:a});
     // Vehicles join Jay, NPCs, roofs and trees in the SAME world-depth queue.
     if(campus.zoom>=.19)for(const car of streetTraffic)if(visible(car))
       entries.push({y:car.y,trafficCar:car});
@@ -857,6 +862,9 @@
     if(reference)reference.gameOverlay(g,{zoom:campus.zoom,view,districts:districtEntries},t);
     if(premium)premium.overlay(g,{zoom:campus.zoom,view,districts:districtEntries},t);
     if(art)art.streets(g,{zoom:campus.zoom,view},t);
+    // V133 original connected geometry remains under a cached civic-ground
+    // visual layer; do not paint into active roads or create scene transitions.
+    window.ROOKIE_V133_PRECINCT?.ground(g,{zoom:campus.zoom,view},t);
     drawOutdoorDecor();
     const marina=window.ROOKIE_V116_MARINA;
     if(marina)marina.background(g,{zoom:campus.zoom,view},t);
@@ -872,6 +880,9 @@
     if(art&&!window.ROOKIE_V132_PRECINCT)art.precinct(g,{zoom:campus.zoom,view,STX,STY,alpha:roofAlpha()},t);
     // Precinct art respects the SAME roof alpha and existing native geometry.
     if(precinctVisual)precinctVisual.frontage(g,{zoom:campus.zoom,view,roofAlpha:roofAlpha()},t);
+    // Architectural wall band, public overhang and garage threshold details
+    // fade with the SAME original station roof, never into the interior.
+    window.ROOKIE_V133_PRECINCT?.facade(g,{zoom:campus.zoom,view,alpha:roofAlpha()},t);
     if(marina)marina.foreground(g,{zoom:campus.zoom,view,player:{x:campus.x,y:campus.y}},t);
     if(cinematic)cinematic.atmosphere(g,{zoom:campus.zoom,view},t);
     if(pilot)pilot.animated(g,{zoom:campus.zoom,view},t);

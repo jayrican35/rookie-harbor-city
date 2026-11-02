@@ -168,7 +168,8 @@ function npc(g,actor){
  // Only the original physical precinct cast, NOT pedestrians, city NPCs,
  // the player's Jay sprite or Marina/Zombie/Academy actors.
  const id=String(actor?.id||'');
- if(!id.startsWith('station-npc:')&&id!=='campus-npc:diaz')return false;
+ if(!id.startsWith('station-npc:')&&id!=='campus-npc:diaz'&&
+   !id.startsWith('v133-precinct:'))return false;
  const key=H.cast?.identity?.(actor.name,false);
  // MAYA is not on the 8-file officer atlas: the original classic precinct
  // drew her from the separate, measured station-cast.png visitor sheet.

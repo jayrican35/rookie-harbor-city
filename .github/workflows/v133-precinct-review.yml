@@ -1,0 +1,102 @@
+name: Precinct 9 V133 — civic campus visual reconstruction
+on:
+  push:
+    branches: [feature/v133-precinct-campus-reconstruction]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  protected-source:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: V133 original graphics and connected-world source checks
+        run: |
+          set -euo pipefail
+          node --check published-game-capture/v133-precinct-campus.js
+          node --check published-game-capture/v132-precinct-heritage.js
+          node --check published-game-capture/v115-campus.js
+          node --check qa/capture-v133-precinct.cjs
+          node qa/check-v133-precinct.cjs
+          node qa/check-v132-precinct.cjs
+          node qa/check-v131-precinct-import.cjs
+          node qa/check-v130-precinct.cjs
+          node qa/check-v128-quality.cjs
+          node qa/check-v127-citywide.cjs
+          node qa/check-world-roads.cjs
+          node qa/check-world-traffic.cjs
+          node qa/check-v115-campus.cjs
+      - name: Fail if main campaign, Zombie, Marina or off-scope world files differ
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin 26ef5be1df51d9d7d1ceb8ba9b70363355a8d650
+          git diff --name-only 26ef5be1df51d9d7d1ceb8ba9b70363355a8d650 HEAD | grep -Ev '^((published-game-capture/(v115-campus|v132-precinct-heritage|v133-precinct-campus)\.js)|(tools/build_v133_precinct_preview\.py)|(qa/(check-v133-precinct|capture-v133-precinct)\.cjs)|(\.github/workflows/v133-precinct-review\.yml)|(docs/PRECINCT9-V133-REVIEW\.md))$' >/tmp/v133-outside || true
+          if [ -s /tmp/v133-outside ]; then cat /tmp/v133-outside; exit 1; fi
+          echo 'PASS all production modes, roads and unrelated world files byte-unchanged'
+  mobile-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Original connected-city build tools + Chromium
+        run: |
+          python3 -m pip install -q pillow numpy
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Build V132 BEFORE and V133 AFTER as two independent playable worlds
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/precinct9-v132-lab site/preview/precinct9-v133-lab
+          cp -a published-game-capture/. site/preview/precinct9-v132-lab/
+          cp -a published-game-capture/. site/preview/precinct9-v133-lab/
+          python3 tools/build_v132_precinct_preview.py site/preview/precinct9-v132-lab
+          python3 tools/build_v133_precinct_preview.py site/preview/precinct9-v133-lab
+          node --check site/preview/precinct9-v133-lab/game-v115.bundle.js
+          grep -q 'v133-precinct-campus.js' site/preview/precinct9-v133-lab/index.html
+          for f in game.js outbreak.css v116-marina.js v127-citywide-art.js v115-world.js v117-jay.js; do
+            cmp -s site/preview/precinct9-v132-lab/$f site/preview/precinct9-v133-lab/$f
+          done
+          echo 'PASS game.js, Zombie Outbreak, original roads, city, Marina, Jay byte-equal in real playable candidates'
+      - name: True 390x844 game screenshots, doors, road, restored NPCs, Marina reference
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8765 --directory site >/tmp/v133-http.log 2>&1 &
+          sleep 2
+          node qa/capture-v133-precinct.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,html
+          p=Path('site/preview/precinct9-v133-lab/evidence')
+          d=json.loads((p/'review-data.json').read_text())
+          shots=[s['id'] for s in d['scenes']]+['original-door-fade']
+          cards=[]
+          for name in shots:
+              assert (p/(name+'-before.png')).is_file(),name
+              assert (p/(name+'-after.png')).is_file(),name
+              cards.append('<section><h2>'+html.escape(name.replace('-',' ').title())+'</h2><div class="comparison"><img loading="lazy" src="'+name+'-before.png" alt="V132 before"><img loading="lazy" src="'+name+'-after.png" alt="V133 after"></div></section>')
+          (p/'index.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROOKIE V133 Precinct 9 — Before / After</title><style>body{margin:12px;background:#10263b;color:#f2e6c1;font:16px system-ui}.comparison{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:970px}.comparison img{width:100%}h2{font-size:18px}section{margin:24px 0}</style><h1>V133 Precinct 9: Major Civic-Campus Reconstruction</h1><p>Real mobile game screenshots. Left is V132, right V133. Building facades, public entrance, garage, detailed public parking, civic green, original NPC art. Door/collision/Marina remain unchanged. Human visual approval required.</p>'+''.join(cards)+'</html>')
+          print('PASS',len(shots),'actual matched 390×844 game views')
+          PY
+      - name: Upload real phone screenshots as review evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: precinct-v133-android-comparisons
+          path: site/preview/precinct9-v133-lab/evidence/
+          if-no-files-found: warn
+      - name: Upload protected V133 playable build
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: precinct-v133-playable
+          path: site/preview/precinct9-v133-lab/
+          if-no-files-found: error

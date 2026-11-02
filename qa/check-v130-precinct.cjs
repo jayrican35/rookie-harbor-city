@@ -53,6 +53,19 @@ p.frontage(g,{view:visible,zoom:1,roofAlpha:.04},0);
 assert.equal(fillLog.length,n,'Entrance architecture fades with real interior roof');
 assert(engine.includes('precinctVisual.ground(g,'),'Precinct uses existing Canvas world-ground pipeline');
 assert(engine.includes('precinctVisual.frontage(g,'),'Precinct uses existing roof fade and actor order');
+const paint=engine.slice(engine.indexOf('  function paint('),engine.indexOf('  function loop('));
+const floorAt=paint.indexOf('    drawStation();');
+const actorsAt=paint.indexOf('    drawEntityHighlights(t);');
+const roofAt=paint.indexOf('    drawStationRoof();');
+assert(floorAt>=0&&floorAt<actorsAt&&actorsAt<roofAt,
+ 'Precinct interiors and NPCs must draw UNDER the roof, never over its exterior');
+assert(engine.includes('function drawStationRoof()'),
+ 'The same original roof must remain a fading topmost structural layer');
+const roof=engine.slice(engine.indexOf('  function drawStationRoof()'),engine.indexOf('  function drawOfficer('));
+assert(roof.includes('const alpha=roofAlpha()')&&roof.includes('g.globalAlpha=alpha'),
+ 'Exterior roof must cover station NPCs but fade when Jay enters');
+assert(!paint.includes('drawStationRoof();\n    drawEntityHighlights(t);'),
+ 'Do not regress to the old showing-Rosa-on-the-roof order');
 assert(engine.includes('const FRONT={x:STX+568,y:STY+1028}'),'Actual V115 front doorway coordinate unchanged');
 assert(engine.includes('GARAGE={x:STX+1538,y:STY+1160}'),'Actual V115 garage door unchanged');
 assert(!/requestAnimationFrame|setInterval|setTimeout|localStorage|sessionStorage|fetch\s*\(/.test(art),

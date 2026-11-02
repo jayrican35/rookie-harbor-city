@@ -172,7 +172,7 @@ jobs:
       - name: Check out V128 guarded world-quality candidate (isolated)
         uses: actions/checkout@v4
         with:
-          ref: 06bf90e4c701690a885a85b4a774da63ef7b0c87 # World Completion: source-aligned street graph, Westfield ring, Midtown feeder, living traffic
+          ref: 7339eaba5a3756b4fc9dbcbc72ba54c5e7822a8c # World Completion: browser-verified real street, moved bench collider, exhaustive feeder walk test
           path: v128-world-quality
           persist-credentials: false
 

@@ -242,8 +242,14 @@ function renderArchitecture(){
  flag(g,375,172,-1);flag(g,770,172,1);
  // Public ground-floor lobby and architectural entry canopy.
  px(g,392,460,358,137,'#17344e');
- blueCanopy(g);
- doorway(g);
+ // Preserve the exact original one-world entrance geometry, placing
+ // assembled atlas components into THIS cached facade rather than overlaying
+ // a full-window mural or building another renderer.
+ if(!(window.ROOKIE_V137_ENTRANCE_ACTIVE &&
+      window.ROOKIE_V135_WALL_KIT?.drawEntranceStatic(g,WIDTH/2))){
+   blueCanopy(g);
+   doorway(g);
+ }
  for(const x of [22,1110])lamp(g,x,486,.85);
  for(const x of [344,799])lamp(g,x,486,.85);
  // Reflected glints and deeply recessed warm-lit offices.
@@ -308,6 +314,23 @@ function renderGarage(){
  return cv;
 }
 let face=null,garageFace=null;
+let doorRatio=0,doorApproaches=0,doorWasNear=false,doorChanges=0;
+function stepEntrance(player,dt){
+ if(!window.ROOKIE_V137_ENTRANCE_ACTIVE||!player)return;
+ const near=Math.abs(player.x-FRONT.x)<86 && player.y>960 && player.y<1240;
+ if(near&&!doorWasNear)doorApproaches++;
+ doorWasNear=near;
+ // Sensor opens BEFORE Jay reaches the original 72px walkable threshold.
+ // The existing simulation and collision response continue unchanged.
+ const to=near?1:0,from=doorRatio;
+ const speed=Math.min(.2,Math.max(0,Math.min(.05,dt))*4);
+ doorRatio+=Math.sign(to-doorRatio)*Math.min(Math.abs(to-doorRatio),speed);
+ if(Math.abs(from-doorRatio)>.0001)doorChanges++;
+}
+function entranceState(){
+ return {open:doorRatio,near:doorWasNear,approaches:doorApproaches,
+   updates:doorChanges,front:{x:FRONT.x,y:FRONT.y},worldSpace:true};
+}
 function architecture(g,o){
  if(!o)return;
  const mainBox={x:STX,y:STY+TOP,w:WIDTH,h:HEIGHT};
@@ -320,6 +343,11 @@ function architecture(g,o){
  if(mainVisible){
    if(!face)face=renderArchitecture();
    if(face){g.drawImage(face,STX,STY+TOP);M.facadeFrames++;}
+   // Animated glass leaf poses drawn on the existing single Canvas with
+   // the EXACT same fade as the roof; no duplicate animation tick.
+   if(window.ROOKIE_V137_ENTRANCE_ACTIVE)
+     window.ROOKIE_V135_WALL_KIT?.drawEntranceDoors(g,STX+WIDTH/2,
+       STY+TOP+543,doorRatio);
    // Phase-1 wall-kit smoke assembly: rendered in THIS existing V134 facade
    // layer and the SAME roofAlpha(), not a second precinct or render pass.
    // A single southwest 320×128 sample, outside the real lobby/garage door.
@@ -467,6 +495,7 @@ function forecourt(g,o){
  g.drawImage(forecourtArt,387,1127);g.restore();
 }
 window.ROOKIE_V134_PRECINCT=Object.freeze({
+ stepEntrance,entranceState,
  invalidateFacade:()=>{
    // Recreate approved V134 canvases once after the EXISTING atlas loader
    // finishes. Never add a scene or draw loop.

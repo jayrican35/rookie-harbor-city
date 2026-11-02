@@ -1,0 +1,144 @@
+name: Precinct 9 Phase 3 — Real Seamless Entrance and Glass Door QA
+on:
+  push:
+    branches:
+      - feature/v137-precinct9-phase3-main-entrance
+    paths:
+      - tools/build_precinct9_entrance_phase3.py
+      - tools/build_v137_precinct_entrance_preview.py
+      - published-game-capture/v115-campus.js
+      - published-game-capture/v134-precinct-reference.js
+      - published-game-capture/v135-precinct-wallkit-test.js
+      - qa/capture-v137-entrance.cjs
+      - docs/PRECINCT9-PHASE3-ENTRANCE.md
+      - .github/workflows/v137-precinct-entrance.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  verify-real-entrance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 27
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install existing image and browser QA libraries
+        run: |
+          set -euo pipefail
+          python3 -m pip install -q pillow numpy
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Build RGBA entrance modules preserving every existing atlas frame
+        run: |
+          set -euo pipefail
+          python3 tools/build_precinct9_entrance_phase3.py published-game-capture/assets/precinct9-windows-phase2 published-game-capture/assets/precinct9-entrance-phase3
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageChops
+          import json
+          a=Path('published-game-capture/assets/precinct9-windows-phase2')
+          b=Path('published-game-capture/assets/precinct9-entrance-phase3')
+          old=json.loads((a/'manifest.json').read_text())
+          new=json.loads((b/'manifest.json').read_text())
+          assert old['tileSize']==new['tileSize']==32 and len(old['frames'])==42
+          assert len(new['frames'])==49 and len(new['newFrames'])==7
+          x=Image.open(a/old['atlas']).convert('RGBA')
+          y=Image.open(b/new['atlas']).convert('RGBA')
+          assert x.size==y.size==(1024,1024)
+          for name,f in old['frames'].items():
+            assert new['frames'][name]==f
+            q=f['atlas'];box=(q['x'],q['y'],q['x']+q['w'],q['y']+q['h'])
+            assert ImageChops.difference(x.crop(box),y.crop(box)).getbbox() is None,name
+          for name in new['newFrames']:
+            f=new['frames'][name]
+            im=Image.open(b/f['file']).convert('RGBA')
+            q=f['atlas'];box=(q['x'],q['y'],q['x']+q['w'],q['y']+q['h'])
+            assert im.size==(q['w'],q['h'])
+            assert ImageChops.difference(im,y.crop(box)).getbbox() is None,name
+          assert Image.open(b/'entry_double_glass_open.png').getpixel((45,55))[3]==0
+          assert Image.open(b/'entry_double_glass_closed.png').getpixel((45,55))[3]>0
+          print('PASS 7 new modular entrance PNGs and unaltered 42 approved previous frames')
+          PY
+      - name: Audit minimum changes and protected game systems
+        run: |
+          set -euo pipefail
+          node --check published-game-capture/v115-campus.js
+          node --check published-game-capture/v134-precinct-reference.js
+          node --check published-game-capture/v135-precinct-wallkit-test.js
+          node --check qa/capture-v137-entrance.cjs
+          node qa/check-v134-precinct.cjs
+          node qa/check-world-roads.cjs
+          node qa/check-world-traffic.cjs
+          git fetch --no-tags --depth=1 origin bb694f5885b6795702c386bd8a824e8d148da568
+          while IFS= read -r f; do
+            case "$f" in
+              published-game-capture/v115-campus.js|published-game-capture/v134-precinct-reference.js|published-game-capture/v135-precinct-wallkit-test.js|published-game-capture/assets/precinct9-entrance-phase3/*|tools/build_precinct9_entrance_phase3.py|tools/build_v137_precinct_entrance_preview.py|qa/capture-v137-entrance.cjs|docs/PRECINCT9-PHASE3-ENTRANCE.md|.github/workflows/v137-precinct-entrance.yml) ;;
+              *) echo "Unexpected Phase-3 change outside original precinct: $f";exit 1 ;;
+            esac
+          done < <(git diff --name-only bb694f5885b6795702c386bd8a824e8d148da568 HEAD)
+          echo 'PASS Zombie Outbreak, main campaign, Academy, Marina, roads, cars, saves, controls, original wall+window PNGs unchanged'
+      - name: Build real separate V136 vs V137 continuous playable world
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/precinct9-v136-windows-lab site/preview/precinct9-v137-entrance-lab
+          cp -a published-game-capture/. site/preview/precinct9-v136-windows-lab/
+          cp -a published-game-capture/. site/preview/precinct9-v137-entrance-lab/
+          python3 tools/build_v136_precinct_windows_preview.py site/preview/precinct9-v136-windows-lab
+          python3 tools/build_v137_precinct_entrance_preview.py site/preview/precinct9-v137-entrance-lab
+          node --check site/preview/precinct9-v137-entrance-lab/game-v115.bundle.js
+          for f in game.js outbreak.css v116-marina.js v127-citywide-art.js v115-world.js v117-jay.js; do
+            cmp -s site/preview/precinct9-v136-windows-lab/$f site/preview/precinct9-v137-entrance-lab/$f
+          done
+          echo 'PASS same original game, player, city, Marina, Zombie, Academy, vehicle and UI assets'
+      - name: Actually walk Jay through the old entrance and back, record gameplay video
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8765 --directory site >/tmp/v137-web.log 2>&1 &
+          sleep 2
+          node qa/capture-v137-entrance.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageChops
+          import html,json
+          d=Path('site/preview/precinct9-v137-entrance-lab/evidence')
+          result=json.loads((d/'qa-results.json').read_text())
+          assert result['movement']['outside']['camera']['crossings']>=result['movement']['start']['camera']['crossings']+2
+          assert (d/'continuous-entry-exit.webm').stat().st_size>2048
+          names=['precinct-entrance-approach','stone-frame-and-blue-awning','civic-walk-facing-entrance',
+            'left-window-facade-retained','garage-fleet-door-retained','protected-marina','actual-existing-lobby']
+          cards=[]
+          for name in names:
+            bef=d/(name+'-before.png');aft=d/(name+'-after.png')
+            assert bef.is_file() and aft.is_file(),name
+            if name=='stone-frame-and-blue-awning':
+              with Image.open(bef) as old,Image.open(aft) as new:
+                assert ImageChops.difference(old.convert('RGB'),new.convert('RGB')).getbbox(), 'New entrance artwork failed to render'
+            cards.append('<section><h2>'+html.escape(name.replace('-',' ').title())+'</h2><div class="pair"><img src="'+name+'-before.png" alt="V136 before"><img src="'+name+'-after.png" alt="V137 after"></div></section>')
+          (d/'index.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROOKIE Phase 3 — Precinct 9 Seamless Entrance</title><style>body{margin:15px;background:#12283d;color:#f3e3ba;font:16px system-ui}.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:940px}.pair img{width:100%;min-width:0}h2{font-size:18px}video{max-width:390px;width:100%}</style><h1>Precinct 9 — Modular Entrance and Seamless Door</h1><p>REAL 390×844 Canvas game. V136 before left, V137 modular entrance right. Jay walks through original continuous-world entrance and returns on the same camera, controller, coordinates and roof fade. Zombie, campaign, Academy, Marina untouched. Draft pending your visual approval.</p><video controls playsinline src="continuous-entry-exit.webm"></video>'+''.join(cards)+'</html>')
+          print('PASS real gameplay entry and exit video plus matching mobile exterior/interior screenshots')
+          PY
+      - name: Store actual RGBA production sprites and phone gameplay evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: precinct9-phase3-entrance-assets-gameplay
+          path: |
+            published-game-capture/assets/precinct9-entrance-phase3/
+            site/preview/precinct9-v137-entrance-lab/evidence/
+          if-no-files-found: error
+      - name: Commit generated Phase-3 PNGs into isolated review branch
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add published-game-capture/assets/precinct9-entrance-phase3/
+          if git diff --cached --quiet; then
+            echo 'Generated entrance assets already committed'
+          else
+            git commit -m 'Precinct 9 Phase 3: reusable entrance PNGs and 49-frame combined manifest'
+            git push origin HEAD:feature/v137-precinct9-phase3-main-entrance
+          fi

@@ -376,11 +376,29 @@ function drawPilotVehicle(g,car){
  pilotMetrics.byDirection[direction]=(pilotMetrics.byDirection[direction]||0)+1;
  return true;
 }
+let interiorSheet=null,interiorManifest=null,interiorLoading=false,interiorError=null,interiorDraws=0;
+function prepareInteriorWalls(){
+ if(interiorLoading||!window.ROOKIE_INTERIOR_WALLS_ACTIVE||!window.HARBOR?.seamlessCampusV115?.isOpen()||window.HARBOR?.academy?.active?.()||window.HARBOR?.outbreak?.active?.())return;
+ interiorLoading=true;
+ fetch('./assets/precinct-interior-walls/manifest.json').then(r=>{if(!r.ok)throw Error('Interior walls '+r.status);return r.json();})
+ .then(m=>new Promise((resolve,reject)=>{const im=new Image();im.decoding='async';im.onload=()=>resolve({im,m});im.onerror=()=>reject(Error('Interior wall atlas unavailable'));im.src='./assets/precinct-interior-walls/'+m.atlas;}))
+ .then(({im,m})=>{if(m.tileSize!==32||m.wallHeight!==48)throw Error('Interior wall module scale');interiorSheet=im;interiorManifest=m;})
+ .catch(e=>{interiorError=e.message;console.warn(e.message);});
+}
+function drawInteriorModule(g,id,x,y,w,h){
+ const a=interiorManifest?.frames?.[id]?.atlas;if(!a||!interiorSheet)return false;
+ g.save();g.imageSmoothingEnabled=false;
+ // Partial horizontal repeats are cropped, not stretched into short segments.
+ const cut=id.startsWith('wall_')&&id!=='wall_vertical'&&w<a.w;
+ g.drawImage(interiorSheet,a.x,a.y,cut?w:a.w,a.h,x,y,w??a.w,h??a.h);g.restore();interiorDraws++;return true;
+}
 window.ROOKIE_V135_WALL_KIT=Object.freeze({
  version:'v135-phase1-wall-kit',
  drawTest,drawFacadeWindow,drawEntranceStatic,drawEntranceDoors,drawGroundSprite,fillGround,drawCommunitySprite,prepareCommunityAssets,fillCommunityGround,drawCommunityBorder,
  drawRoadNetwork,fillRoadMaterial,drawRoadDecal,
  preparePerspectivePilot,drawPilotVehicle,
+ prepareInteriorWalls,drawInteriorModule,
+ interiorWalls:()=>({loaded:!!interiorSheet,error:interiorError,frames:Object.keys(interiorManifest?.frames||{}).length,draws:interiorDraws}),
  perspectivePilot:()=>({active:pilotAllowed(),citywide:!!window.ROOKIE_CITY_PERSPECTIVE_ACTIVE,loaded:!!pilotImage,error:pilotError,bounds:window.ROOKIE_CITY_PERSPECTIVE_ACTIVE?null:{...pilotBounds},frames:Object.keys(pilotManifest?.frames||{}).length,...JSON.parse(JSON.stringify(pilotMetrics))}),
  roadwayPlan:()=>roadPlan?JSON.parse(JSON.stringify(roadPlan)):null,
  stats:()=>({loaded,error,frameDraws,testPaints,windowDraws,entranceFrames,entranceDoorDraws,moduleCount:Object.keys(manifest?.frames||{}).length,

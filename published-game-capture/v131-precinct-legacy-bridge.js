@@ -69,6 +69,7 @@ const keys=['carpet','cream','cool','wood','wall','interview','crate',
 function assetEpoch(){
   let fingerprint=0;
   for(let i=0;i<keys.length;i++)if(ready(source(keys[i])))fingerprint+=2**i;
+  if(interiorActive())fingerprint+=2**keys.length;
   return fingerprint;
 }
 function material(r){
@@ -250,17 +251,83 @@ function furniture(g,f){
   return false; // keep original classic vector fallback, never a blank object
 }
 function wallSkins(g,walls){
-  // The source old cream horizontal wall atlas clashes with the current
-  // connected station's signed navy collision wall (and adds visually
-  // exaggerated striping around the locker/garage doors). Keep the intact
-  // V130 wall art until a true spatially authored wall-pass is approved.
-  // No collision, doorway or roof transparency is changed.
+  // Keep the footprint in the existing station cache. The approved modular
+  // faces use interiorDepthProps in the canonical actor queue below, so
+  // they are never painted twice or trapped beneath every character.
   return false;
+}
+
+// The connected station already owns these walls, rooms and door plans.
+// Extend this bridge's formerly disabled wall skin; do not create geometry.
+const wallKit=()=>window.ROOKIE_V135_WALL_KIT;
+function interiorActive(){return !!window.ROOKIE_INTERIOR_WALLS_ACTIVE&&!!wallKit()?.interiorWalls?.().loaded&&!!H.seamlessCampusV115?.isOpen()&&!H.academy?.active?.()&&!H.outbreak?.active?.();}
+function scopedRoom(r){return !Array.isArray(window.ROOKIE_INTERIOR_WALL_ROOMS)||window.ROOKIE_INTERIOR_WALL_ROOMS.includes(r.label);}
+function interiorFurnitureActive(f,rooms){return interiorActive()&&rooms.some(r=>scopedRoom(r)&&f.x+f.w/2>=r.x&&f.x+f.w/2<r.x+r.w&&f.y+f.h/2>=r.y&&f.y+f.h/2<r.y+r.h);}
+let wallPlan=null,wallPlanSource=null;
+const wallMetrics={builds:0,draws:0,faded:0};
+function interiorWallPlan(walls,rooms,furn){
+ if(wallPlanSource===walls)return wallPlan;
+ const parts=[],decorated=new Set();
+ for(const [index,w]of walls.entries()){
+  if(w.h<=6)continue; // existing holding-cell bars are not opaque plaster.
+  const horizontal=w.w>w.h;
+  if(horizontal){
+   for(let offset=0;offset<w.w;offset+=64){
+    const width=Math.min(64,w.w-offset),x=w.x+offset,base=w.y+w.h;
+    let module='wall_plain';
+    const room=rooms.find(r=>Math.abs(base-r.y)<=20&&x+width/2>r.x+24&&x+width/2<r.x+r.w-24);
+    if(room?.label==='GARAGE')module='wall_stone';
+    if(room&&width===64&&!decorated.has(room.label)&&!furn.some(f=>f.type==='board'&&f.x>=room.x&&f.x<room.x+room.w&&f.y>=room.y&&f.y<room.y+room.h)){
+      module=room.label==='LOBBY'||room.label==='EVIDENCE'?'wall_badge':room.label==='GARAGE'?'wall_utility':'wall_picture';decorated.add(room.label);
+    }
+    parts.push({id:'wall:'+index+':'+offset,module,x,y:base-48,w:width,h:48,base,physical:{x,y:w.y,w:width,h:w.h},orientation:'h'});
+   }
+  }else{
+   const lift=48-w.w;
+   for(let offset=0;offset<w.h;offset+=32){const height=Math.min(32,w.h-offset),y=w.y+offset;
+    parts.push({id:'wall:'+index+':'+offset,module:'wall_vertical',x:w.x,y:y-lift,w:w.w,h:height,base:y+height,physical:{x:w.x,y,w:w.w,h:height},orientation:'v'});
+   }
+   const end=w.y+w.h;
+   if(!walls.some(other=>other!==w&&other.w>other.h&&w.x<other.x+other.w&&w.x+w.w>other.x&&end>=other.y&&end<=other.y+other.h))
+    parts.push({id:'wall:'+index+':end',module:'end_cap',x:w.x,y:end-48,w:w.w,h:48,base:end,physical:{...w},orientation:'v'});
+  }
+ }
+ // Reuse the original door opening calculation. Only jambs are skinned;
+ // no leaf/controller, collision, passage fill or replacement room is added.
+ for(const door of H.precinctDoors?.doors||[]){
+  const plan=H.precinctDoors.plan(door);
+  for(const p of plan.parts.filter(p=>p.id.includes('jamb'))){
+   const horizontal=door.axis==='h',y=horizontal?door.cy+16-48:p.y-24;
+   parts.push({id:'door:'+plan.id+':'+p.id,module:horizontal?'jamb':'top_cap',x:p.x,y,w:p.w,h:horizontal?48:p.h,
+    base:horizontal?door.cy+16:p.y+p.h,physical:{x:p.x,y:p.y,w:p.w,h:p.h},orientation:door.axis,door:plan.id});
+  }
+ }
+ wallPlanSource=walls;wallPlan=parts;wallMetrics.builds++;return parts;
+}
+function interiorDepthProps(walls,rooms,furn,view){
+ if(!interiorActive())return [];
+ return interiorWallPlan(walls,rooms,furn).filter(p=>{
+  const q=p.physical;
+  if(!rooms.some(r=>scopedRoom(r)&&q.x<r.x+r.w+20&&q.x+q.w>r.x-20&&q.y<r.y+r.h+20&&q.y+q.h>r.y-20))return false;
+  return !view||p.x+380<view.x+view.w+20&&p.x+p.w+380>view.x-20&&p.y+96<view.y+view.h+20&&p.y+p.h+96>view.y-20;
+ }).map(p=>({...p,depthY:p.base+96}));
+}
+function drawInteriorWall(g,p,options){
+ if(!interiorActive())return false;
+ const r=options.room,player=options.player;
+ // Use the SAME occupied-room and roof-cutaway state as the current scene.
+ // Only nearby foreground sections fade; far walls retain their full height.
+ const foreground=r&&options.roofAlpha<.1&&p.base>player.y&&p.base-player.y<110&&
+   p.x<r.x+r.w+24&&p.x+p.w>r.x-24;
+ g.save();if(foreground){g.globalAlpha*=.38;wallMetrics.faded++;}
+ wallKit().drawInteriorModule(g,p.module,p.x+380,p.y+96,p.w,p.h);g.restore();wallMetrics.draws++;return true;
 }
 
 window.ROOKIE_V131_PRECINCT_BRIDGE=Object.freeze({
  version:'legacy-authored-precinct-reuse-1',worldId:'harbor-main',
  assetEpoch,material,room,garageDetails,furniture,wallSkins,
+  interiorActive,interiorFurnitureActive,interiorDepthProps,drawInteriorWall,
+  interiorStats:()=>({...wallMetrics,parts:wallPlan?.length||0}),
  assetStatus:()=>Object.fromEntries(keys.map(k=>[k,ready(source(k))])),
  stats:()=>({...stats}),
  source:'Original HARBOR.precinctCraft, precinctCinematic, receptionRoom, B2, EXT_IMG and __GARAGE. No new assets or world geometry.'

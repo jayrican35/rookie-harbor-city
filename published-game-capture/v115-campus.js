@@ -391,6 +391,7 @@
           }else if(!previous?.room(c,r))drawRoom(r);
         });
         ST.furn.forEach(f=>{
+          if(previous?.interiorFurnitureActive?.(f,ST.rooms))return;
           if(!previous?.furniture(c,f))drawFurn(f);
         });
       });
@@ -401,10 +402,13 @@
       c.fillStyle='#253953';c.fillRect(0,0,ST.w,ST.h);
       withOriginalContext(c,()=>{
         ST.rooms.forEach(r=>drawRoom(r));
-        ST.furn.forEach(f=>drawFurn(f));
+        ST.furn.forEach(f=>{if(!previous?.interiorFurnitureActive?.(f,ST.rooms))drawFurn(f);});
       });
     }
-    c.fillStyle='rgba(10,25,44,.36)';ST.walls.forEach(r=>c.fillRect(r.x+2,r.y+7,r.w,r.h));
+    c.fillStyle='rgba(10,25,44,.36)';
+    if(previous?.interiorActive?.()){
+      c.beginPath();ST.walls.forEach(r=>c.rect(r.x+2,r.y+7,r.w,r.h));c.fill();
+    }else ST.walls.forEach(r=>c.fillRect(r.x+2,r.y+7,r.w,r.h));
     c.fillStyle='#13263d';ST.walls.forEach(r=>c.fillRect(r.x,r.y,r.w,r.h));
     // Reapply the ORIGINAL 96px precinct-craft wall artwork only where
     // the existing real collision wall rectangles are actually solid.
@@ -909,6 +913,11 @@
     const marina=window.ROOKIE_V116_MARINA;
     // One depth queue: existing actors and new furnishing geometry share it.
     const entries=npcActors.filter(npc=>visible(npc)&&(!marina?.interiorActorVisible||marina.interiorActorVisible(npc))).map(npc=>({y:npc.y,actor:npc}));
+    const bridge=window.ROOKIE_V131_PRECINCT_BRIDGE;
+    for(const wall of bridge?.interiorDepthProps?.(ST.walls,ST.rooms,ST.furn,view)||[])
+      entries.push({y:wall.depthY,interiorWall:wall});
+    for(const f of ST.furn)if(bridge?.interiorFurnitureActive?.(f,ST.rooms)&&nearViewport(STX+f.x-100,STY+f.y-140,f.w+200,f.h+240))
+      entries.push({y:STY+f.y+f.h,stationFurniture:f});
     // Approved city pass: existing district silhouettes join the SAME queue
     // as actors. No new geometry, projection, camera or building instances.
     if(window.ROOKIE_CITY_PERSPECTIVE_ACTIVE&&campus.zoom>=.10)
@@ -961,6 +970,15 @@
     entries.push({y:GARAGE.y-1,precinctShell:'garage'});
     entries.push({y:campus.y,player:true});entries.sort((a,b)=>a.y-b.y);
     for(const entry of entries){
+      if(entry.interiorWall){
+        bridge.drawInteriorWall(g,entry.interiorWall,{room:ST.rooms.find(r=>r.label===interiorRoom(campus.x,campus.y)),
+          player:{x:campus.x-STX,y:campus.y-STY},roofAlpha:roofAlpha()});continue;
+      }
+      if(entry.stationFurniture){
+        g.save();g.translate(STX,STY);
+        withOriginalContext(g,()=>{if(!bridge.furniture(g,entry.stationFurniture))drawFurn(entry.stationFurniture);});
+        g.restore();continue;
+      }
       if(entry.nativeProp){
         const p=entry.nativeProp,x=p.district.x+p.x,y=p.district.y+p.y;
         g.save();g.imageSmoothingEnabled=false;
@@ -1026,6 +1044,8 @@
     // They receive a read-only view rectangle and the drawing context only.
     const art=window.ROOKIE_V115_SHOWCASE;
     const view={x:campus.camX,y:campus.camY,w:viewW,h:viewH};
+    if(view.x<STX+ST.w&&view.x+view.w>STX&&view.y<STY+ST.h&&view.y+view.h>STY)
+      window.ROOKIE_V135_WALL_KIT?.prepareInteriorWalls?.();
     window.ROOKIE_V135_WALL_KIT?.preparePerspectivePilot?.(view);
     drawCampusGround();
     // V133 owns the approved north-campus surface. Clip the historical

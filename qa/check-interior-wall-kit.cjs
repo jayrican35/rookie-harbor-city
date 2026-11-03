@@ -1,0 +1,17 @@
+'use strict';
+const fs=require('fs'),vm=require('vm'),assert=require('assert/strict');
+const game=fs.readFileSync('published-game-capture/game.js','utf8'),source=fs.readFileSync('published-game-capture/v131-precinct-legacy-bridge.js','utf8');
+const start=game.indexOf('MAPS.station = {'),end=game.indexOf('/* ---------- PRECINCT GROUNDS',start),maps={MAPS:{}};vm.runInNewContext(game.slice(start,end),maps);const m=maps.MAPS.station;
+const doors=Function('return '+game.match(/var P9_DOORS = (\[[\s\S]*?\]);/)[1])();
+const offset=game.indexOf('/* Cutaway door presentation.'),a=game.indexOf(' var H=window.HARBOR,m=MAPS.station,plans=',offset),z=game.indexOf(' function roomAt(',a);
+let open=true,zombie=false,academy=false;const H={seamlessCampusV115:{isOpen:()=>open},academy:{active:()=>academy},outbreak:{active:()=>zombie}};
+const planner=Function('window','MAPS',game.slice(a,z)+'return{plan,opening};')({HARBOR:H},maps.MAPS);H.precinctDoors={...planner,doors};
+const calls=[],window={HARBOR:H,ROOKIE_INTERIOR_WALLS_ACTIVE:true,ROOKIE_V135_WALL_KIT:{interiorWalls:()=>({loaded:true}),drawInteriorModule(g,id,x,y,w,h){calls.push({id,x,y,w,h,alpha:g.globalAlpha});return true;}}};
+vm.runInNewContext(source,{window,Image:class{},console,Map,Set,Object,Array,Math,Number});const bridge=window.ROOKIE_V131_PRECINCT_BRIDGE,view={x:0,y:0,w:4000,h:4000},original=JSON.stringify(m);
+const parts=bridge.interiorDepthProps(m.walls,m.rooms,m.furn,view);assert(parts.length>200);bridge.interiorDepthProps(m.walls,m.rooms,m.furn,view);assert.equal(bridge.interiorStats().builds,1,'Compile one reusable wall plan');
+for(const w of m.walls.filter(w=>w.h>6))for(let y=w.y+2;y<w.y+w.h;y+=8)for(let x=w.x+2;x<w.x+w.w;x+=8)if(m.rooms.some(r=>x>=r.x-20&&x<=r.x+r.w+20&&y>=r.y-20&&y<=r.y+r.h+20))assert(parts.some(p=>!p.door&&x>=p.physical.x&&x<p.physical.x+p.physical.w&&y>=p.physical.y&&y<p.physical.y+p.physical.h),'Every solid wall body is skinned');
+for(const d of doors){const plan=planner.plan(d);for(const p of parts.filter(p=>p.door===plan.id)){const a=p.physical,b=plan.passage;assert(!(a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y),'No jamb may fill its original door passage');}}
+const stack=[],g={globalAlpha:1,save(){stack.push(this.globalAlpha)},restore(){this.globalAlpha=stack.pop()}};for(const p of parts)bridge.drawInteriorWall(g,p,{room:m.rooms.find(r=>r.label==='LOBBY'),player:{x:568,y:1000},roofAlpha:.04});assert(calls.some(c=>c.alpha<1),'Existing room cutaway must fade nearby foreground faces');assert(calls.every(c=>[c.x,c.y,c.w,c.h].every(Number.isFinite)&&c.w>0&&c.h>0));assert.equal(JSON.stringify(m),original,'No map/furniture/layout mutation');
+window.ROOKIE_INTERIOR_WALL_ROOMS=['LOBBY'];assert(bridge.interiorDepthProps(m.walls,m.rooms,m.furn,view).length<parts.length,'Lobby pilot stays scoped');assert(!bridge.interiorFurnitureActive(m.furn[0],m.rooms),'Evidence furniture is unchanged by lobby pilot');for(const mode of ['closed','academy','zombie']){open=mode!=='closed';academy=mode==='academy';zombie=mode==='zombie';assert.equal(bridge.interiorActive(),false);assert.equal(bridge.interiorDepthProps(m.walls,m.rooms,m.furn,view).length,0);}
+const manifest=JSON.parse(fs.readFileSync('published-game-capture/assets/precinct-interior-walls/manifest.json','utf8'));for(const[k,f]of Object.entries(manifest.frames)){const a=f.atlas;assert(a.x>=0&&a.y>=0&&a.x+a.w<=512&&a.y+a.h<=256,k);}console.log('PASS native wall-union coverage, exact door gaps, one plan, foreground cutaway, lobby scope, immutable layout and protected-mode guards');
+

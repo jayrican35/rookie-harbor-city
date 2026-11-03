@@ -12,4 +12,8 @@
 /city-perspective-build.log
 /city-perspective-qa.log
 /city-perspective-depth.log
+/interior-wall-evidence/
+/interior-wall-build.log
+/interior-wall-qa.log
+/interior-wall-pilot-qa.log
 __pycache__/

@@ -1073,6 +1073,7 @@
       if(entry.player){drawOfficer({x:campus.x,y:campus.y,color:'#2b467a'},true,t);continue;}
       if(entry.furniture){marina.drawInteriorFurniture(g,entry.furniture);continue;}
       const npc=entry.actor;
+      if(window.ROOKIE_CIVILIANS?.draw(g,npc))continue;
       if(marina&&(npc.npcStyle!==undefined||marina.inMarina(npc.x,npc.y))){if(marina.active())marina.drawNpc(g,npc.npcStyle!==undefined?npc:{...npc,npcStyle:1},t);}
       else if(!window.ROOKIE_V132_PRECINCT?.npc(g,{...npc,showLabel:campus.zoom>.54&&!npc.hideName}))drawOfficer(npc,false,t);
     }
@@ -1337,6 +1338,13 @@
     intersections:()=>crossings.map(c=>({...c})),
     roadTopologyVersion:roadNetwork.version,
     streetRepairs:()=>JSON.parse(JSON.stringify(streetRelocations)),
+    civilianQA:()=>/[?&]pilotQA=1(?:&|$)/.test(window.location.search)?{
+      actors:npcActors.map(n=>({id:n.id,name:n.name,role:window.ROOKIE_CIVILIANS?.roleFor(n)||null,
+        protected:!!window.ROOKIE_CIVILIANS?.protectedActor(n),speed:n.speed||0,route:n.route?.map(p=>p.slice())||null,
+        dir:n.dir,moving:!!n.moving,distance:n.distance||0,x:n.x,y:n.y})),
+      interactions:worldSpots.map(s=>({id:s.id,label:s.label,text:s.text,building:s.building})),
+      geometry:{walls:walls.length,furniture:furniture.length,rooms:roomRects.length}
+    }:null,
     // Read-only query-gated telemetry. Existing camera, roof and player
     // state continue to be owned by the original connected game loop.
     entranceQA:()=>/[?&]pilotQA=1(?:&|$)/.test(window.location.search)?

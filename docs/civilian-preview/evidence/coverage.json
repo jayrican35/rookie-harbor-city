@@ -1,0 +1,875 @@
+{
+  "metrics": {
+    "draws": 491,
+    "pendingFallbacks": 44,
+    "errors": 0,
+    "loaded": 22,
+    "requested": 22,
+    "ownedDecodedBytes": 28835840,
+    "actorRoles": {
+      "v116:bait-customer": "shopper",
+      "v116:bay-visitor": "beachgoer",
+      "v116:bay-fisher": "fisher",
+      "ambient:southbay:0": "beachgoer",
+      "ambient:southbay:1": "tourist",
+      "residential:npc:0": "elder",
+      "ambient:residential:0": "resident",
+      "ambient:westfield:1": "gardener_alt",
+      "downtown:npc:0": "elder",
+      "ambient:downtown:0": "business_citizen",
+      "ambient:downtown:1": "office_worker",
+      "v116:customer": "shopper",
+      "waterfront:npc:0": "fisher",
+      "v116:visitor": "tourist",
+      "v116:fisher": "fisher",
+      "v116:worker": "dock_worker",
+      "v116:stroller": "jogger",
+      "v116:cafe-staff": "barista",
+      "v116:office-staff": "office_worker",
+      "v116:bait-staff": "store_clerk",
+      "v116:workshop-staff": "mechanic",
+      "ambient:westfield:0": "hiker",
+      "ambient:residential:1": "elder",
+      "ambient:midtown:0": "student",
+      "ambient:midtown:1": "shopper",
+      "ambient:eastside:0": "jogger",
+      "ambient:eastside:1": "civilian_casual",
+      "industrial:npc:0": "vendor",
+      "ambient:industrial:0": "construction",
+      "ambient:industrial:1": "delivery",
+      "ambient:northgate:0": "coach",
+      "ambient:northgate:1": "librarian"
+    },
+    "scope": "connected-preview-only",
+    "frameSize": [
+      128,
+      160
+    ],
+    "anchor": [
+      64,
+      153
+    ]
+  },
+  "actors": [
+    {
+      "id": "station-npc:0",
+      "name": "FERRIS",
+      "role": null,
+      "protected": true,
+      "speed": 0,
+      "route": null,
+      "dir": "down",
+      "moving": false,
+      "distance": 0,
+      "x": 1420,
+      "y": 954
+    },
+    {
+      "id": "station-npc:1",
+      "name": "ELIAS REED",
+      "role": null,
+      "protected": true,
+      "speed": 0,
+      "route": null,
+      "dir": "down",
+      "moving": false,
+      "distance": 0,
+      "x": 1278,
+      "y": 966
+    },
+    {
+      "id": "station-npc:2",
+      "name": "SGT. BROOKS",
+      "role": null,
+      "protected": true,
+      "speed": 0,
+      "route": null,
+      "dir": "down",
+      "moving": false,
+      "distance": 0,
+      "x": 1590,
+      "y": 316
+    },
+    {
+      "id": "station-npc:3",
+      "name": "RIVERA",
+      "role": null,
+      "protected": true,
+      "speed": 0,
+      "route": null,
+      "dir": "down",
+      "moving": false,
+      "distance": 0,
+      "x": 1940,
+      "y": 319
+    },
+    {
+      "id": "station-npc:4",
+      "name": "OFFICER TORRES",
+      "role": null,
+      "protected": true,
+      "speed": 0,
+      "route": null,
+      "dir": "down",
+      "moving": false,
+      "distance": 0,
+      "x": 936,
+      "y": 304
+    },
+    {
+      "id": "station-npc:5",
+      "name": "MAYA",
+      "role": null,
+      "protected": true,
+      "speed": 0,
+      "route": null,
+      "dir": "down",
+      "moving": false,
+      "distance": 0,
+      "x": 660,
+      "y": 880
+    },
+    {
+      "id": "station-npc:6",
+      "name": "ROSA",
+      "role": null,
+      "protected": true,
+      "speed": 0,
+      "route": null,
+      "dir": "down",
+      "moving": false,
+      "distance": 0,
+      "x": 1080,
+      "y": 946
+    },
+    {
+      "id": "station-npc:7",
+      "name": "KALEB",
+      "role": null,
+      "protected": true,
+      "speed": 0,
+      "route": null,
+      "dir": "down",
+      "moving": false,
+      "distance": 0,
+      "x": 1860,
+      "y": 316
+    },
+    {
+      "id": "station-npc:8",
+      "name": "GIGI",
+      "role": null,
+      "protected": true,
+      "speed": 0,
+      "route": null,
+      "dir": "down",
+      "moving": false,
+      "distance": 0,
+      "x": 1880,
+      "y": 226
+    },
+    {
+      "id": "station-npc:9",
+      "name": "SARITAH",
+      "role": null,
+      "protected": true,
+      "speed": 0,
+      "route": null,
+      "dir": "down",
+      "moving": false,
+      "distance": 0,
+      "x": 2070,
+      "y": 346
+    },
+    {
+      "id": "campus-npc:diaz",
+      "name": "OFCR. DIAZ",
+      "role": null,
+      "protected": true,
+      "speed": 0,
+      "route": null,
+      "moving": false,
+      "distance": 0,
+      "x": 1108,
+      "y": 1240
+    },
+    {
+      "id": "residential:npc:0",
+      "name": "MRS. ALMEIDA",
+      "role": "elder",
+      "protected": false,
+      "speed": 0,
+      "route": null,
+      "moving": false,
+      "distance": 0,
+      "x": -1260,
+      "y": 1670
+    },
+    {
+      "id": "downtown:npc:0",
+      "name": "MS. IBARRA",
+      "role": "elder",
+      "protected": false,
+      "speed": 0,
+      "route": null,
+      "moving": false,
+      "distance": 0,
+      "x": 5656,
+      "y": 1923
+    },
+    {
+      "id": "industrial:npc:0",
+      "name": "MARCO",
+      "role": "vendor",
+      "protected": false,
+      "speed": 0,
+      "route": null,
+      "moving": false,
+      "distance": 0,
+      "x": 8636,
+      "y": 1563
+    },
+    {
+      "id": "waterfront:npc:0",
+      "name": "OLD TOM",
+      "role": "fisher",
+      "protected": false,
+      "speed": 0,
+      "route": null,
+      "moving": false,
+      "distance": 0,
+      "x": 4900,
+      "y": 3700
+    },
+    {
+      "id": "v116:bay-visitor",
+      "name": "Bayview visitor",
+      "role": "beachgoer",
+      "protected": false,
+      "speed": 18,
+      "route": [
+        [
+          3270,
+          4045
+        ],
+        [
+          3310,
+          4045
+        ]
+      ],
+      "dir": "right",
+      "moving": true,
+      "distance": 85.7765999999999,
+      "x": 3281.9874000000013,
+      "y": 4045
+    },
+    {
+      "id": "v116:bay-fisher",
+      "name": "Bayview angler",
+      "role": "fisher",
+      "protected": false,
+      "speed": 0,
+      "route": [
+        [
+          4478,
+          4230
+        ]
+      ],
+      "moving": false,
+      "distance": 0,
+      "x": 4478,
+      "y": 4230
+    },
+    {
+      "id": "v116:fisher",
+      "name": "Fisherman",
+      "role": "fisher",
+      "protected": false,
+      "speed": 11,
+      "route": [
+        [
+          5117,
+          4000
+        ],
+        [
+          5117,
+          4040
+        ]
+      ],
+      "dir": "up",
+      "moving": true,
+      "distance": 52.60163333333323,
+      "x": 5117,
+      "y": 4023.6474333333404
+    },
+    {
+      "id": "v116:worker",
+      "name": "Marina worker",
+      "role": "dock_worker",
+      "protected": false,
+      "speed": 27,
+      "route": [
+        [
+          5400,
+          3710
+        ],
+        [
+          5480,
+          3710
+        ],
+        [
+          5515,
+          3710
+        ],
+        [
+          5400,
+          3710
+        ]
+      ],
+      "dir": "left",
+      "moving": true,
+      "distance": 128.66489999999985,
+      "x": 5498.079300000001,
+      "y": 3710
+    },
+    {
+      "id": "v116:visitor",
+      "name": "Visitor",
+      "role": "tourist",
+      "protected": false,
+      "speed": 15,
+      "route": [
+        [
+          4932,
+          3710
+        ],
+        [
+          5010,
+          3710
+        ],
+        [
+          4932,
+          3710
+        ]
+      ],
+      "dir": "right",
+      "moving": true,
+      "distance": 71.9799999999999,
+      "x": 5003.980000000001,
+      "y": 3710
+    },
+    {
+      "id": "v116:customer",
+      "name": "Café customer",
+      "role": "shopper",
+      "protected": false,
+      "speed": 0,
+      "route": [
+        [
+          4558,
+          3420
+        ]
+      ],
+      "moving": false,
+      "distance": 0,
+      "x": 4558,
+      "y": 3420
+    },
+    {
+      "id": "v116:stroller",
+      "name": "Pedestrian",
+      "role": "jogger",
+      "protected": false,
+      "speed": 30,
+      "route": [
+        [
+          5570,
+          3710
+        ],
+        [
+          5480,
+          3710
+        ],
+        [
+          5400,
+          3710
+        ],
+        [
+          5570,
+          3710
+        ]
+      ],
+      "dir": "left",
+      "moving": true,
+      "distance": 143.46199999999985,
+      "x": 5426.538000000002,
+      "y": 3710
+    },
+    {
+      "id": "v116:cafe-staff",
+      "name": "Marina barista",
+      "role": "barista",
+      "protected": false,
+      "speed": 0,
+      "route": [
+        [
+          4597,
+          3266
+        ]
+      ],
+      "dir": "down",
+      "moving": false,
+      "distance": 0,
+      "x": 4597,
+      "y": 3266
+    },
+    {
+      "id": "v116:office-staff",
+      "name": "Harbor assistant",
+      "role": "office_worker",
+      "protected": false,
+      "speed": 0,
+      "route": [
+        [
+          4704,
+          3423
+        ]
+      ],
+      "dir": "down",
+      "moving": false,
+      "distance": 0,
+      "x": 4704,
+      "y": 3423
+    },
+    {
+      "id": "v116:bait-staff",
+      "name": "Tackle shopkeeper",
+      "role": "store_clerk",
+      "protected": false,
+      "speed": 0,
+      "route": [
+        [
+          4034,
+          3866
+        ]
+      ],
+      "dir": "down",
+      "moving": false,
+      "distance": 0,
+      "x": 4034,
+      "y": 3866
+    },
+    {
+      "id": "v116:workshop-staff",
+      "name": "Boat mechanic",
+      "role": "mechanic",
+      "protected": false,
+      "speed": 0,
+      "route": [
+        [
+          5142,
+          3446
+        ]
+      ],
+      "dir": "down",
+      "moving": false,
+      "distance": 0,
+      "x": 5142,
+      "y": 3446
+    },
+    {
+      "id": "v116:bait-customer",
+      "name": "Local customer",
+      "role": "shopper",
+      "protected": false,
+      "speed": 14,
+      "route": [
+        [
+          3971,
+          4042
+        ],
+        [
+          3971,
+          3976
+        ],
+        [
+          3963,
+          3976
+        ],
+        [
+          3963,
+          3916
+        ],
+        [
+          3963,
+          3976
+        ],
+        [
+          3971,
+          3976
+        ],
+        [
+          3971,
+          4042
+        ]
+      ],
+      "dir": "left",
+      "moving": true,
+      "distance": 66.9503333333334,
+      "x": 3968.270708195976,
+      "y": 3977.21955403142
+    },
+    {
+      "id": "ambient:westfield:0",
+      "name": "Pedestrian",
+      "role": "hiker",
+      "protected": false,
+      "speed": 22,
+      "route": [
+        [
+          -2684,
+          1656
+        ],
+        [
+          -2589,
+          1656
+        ]
+      ],
+      "dir": "right",
+      "moving": false,
+      "distance": 93.84466666666655,
+      "x": -2590.1553333333322,
+      "y": 1656
+    },
+    {
+      "id": "ambient:westfield:1",
+      "name": "Pedestrian",
+      "role": "gardener_alt",
+      "protected": false,
+      "speed": 27,
+      "route": [
+        [
+          -1996,
+          1920
+        ],
+        [
+          -1901,
+          1920
+        ]
+      ],
+      "dir": "right",
+      "moving": false,
+      "distance": 106.57839999999997,
+      "x": -1902.421600000001,
+      "y": 1920
+    },
+    {
+      "id": "ambient:residential:0",
+      "name": "Pedestrian",
+      "role": "resident",
+      "protected": false,
+      "speed": 32,
+      "route": [
+        [
+          -1032,
+          1678
+        ],
+        [
+          -1032,
+          1773
+        ]
+      ],
+      "dir": "down",
+      "moving": false,
+      "distance": 120.91199999999994,
+      "x": -1032,
+      "y": 1772.9119999999953
+    },
+    {
+      "id": "ambient:residential:1",
+      "name": "Pedestrian",
+      "role": "elder",
+      "protected": false,
+      "speed": 37,
+      "route": [
+        [
+          -465,
+          1956
+        ],
+        [
+          -370,
+          1956
+        ]
+      ],
+      "dir": "right",
+      "moving": false,
+      "distance": 132.7098999999999,
+      "x": -371.29009999999926,
+      "y": 1956
+    },
+    {
+      "id": "ambient:midtown:0",
+      "name": "Pedestrian",
+      "role": "student",
+      "protected": false,
+      "speed": 22,
+      "route": [
+        [
+          3387,
+          1866
+        ],
+        [
+          3482,
+          1866
+        ]
+      ],
+      "dir": "right",
+      "moving": false,
+      "distance": 145.8409999999997,
+      "x": 3480.841000000001,
+      "y": 1866
+    },
+    {
+      "id": "ambient:midtown:1",
+      "name": "Pedestrian",
+      "role": "shopper",
+      "protected": false,
+      "speed": 27,
+      "route": [
+        [
+          4357,
+          2400
+        ],
+        [
+          4452,
+          2400
+        ]
+      ],
+      "dir": "right",
+      "moving": false,
+      "distance": 158.57929999999993,
+      "x": 4450.579300000003,
+      "y": 2400
+    },
+    {
+      "id": "ambient:downtown:0",
+      "name": "Pedestrian",
+      "role": "business_citizen",
+      "protected": false,
+      "speed": 32,
+      "route": [
+        [
+          5446,
+          1721
+        ],
+        [
+          5541,
+          1721
+        ]
+      ],
+      "dir": "right",
+      "moving": false,
+      "distance": 171.84319999999988,
+      "x": 5539.8432000000175,
+      "y": 1721
+    },
+    {
+      "id": "ambient:downtown:1",
+      "name": "Pedestrian",
+      "role": "office_worker",
+      "protected": false,
+      "speed": 37,
+      "route": [
+        [
+          6013,
+          1883
+        ],
+        [
+          5918,
+          1883
+        ]
+      ],
+      "dir": "left",
+      "moving": false,
+      "distance": 185.32409999999976,
+      "x": 5918.675899999983,
+      "y": 1883
+    },
+    {
+      "id": "ambient:eastside:0",
+      "name": "Pedestrian",
+      "role": "jogger",
+      "protected": false,
+      "speed": 22,
+      "route": [
+        [
+          6972,
+          1734
+        ],
+        [
+          6972,
+          1829
+        ]
+      ],
+      "dir": "down",
+      "moving": false,
+      "distance": 197.83879999999954,
+      "x": 6972,
+      "y": 1827.8387999999973
+    },
+    {
+      "id": "ambient:eastside:1",
+      "name": "Pedestrian",
+      "role": "civilian_casual",
+      "protected": false,
+      "speed": 27,
+      "route": [
+        [
+          7660,
+          1920
+        ],
+        [
+          7755,
+          1920
+        ]
+      ],
+      "dir": "right",
+      "moving": false,
+      "distance": 211.02749999999983,
+      "x": 7754.027500000003,
+      "y": 1920
+    },
+    {
+      "id": "ambient:industrial:0",
+      "name": "Pedestrian",
+      "role": "construction",
+      "protected": false,
+      "speed": 32,
+      "route": [
+        [
+          9191,
+          1603
+        ],
+        [
+          9286,
+          1603
+        ]
+      ],
+      "dir": "right",
+      "moving": false,
+      "distance": 223.8400000000001,
+      "x": 9284.840000000007,
+      "y": 1603
+    },
+    {
+      "id": "ambient:industrial:1",
+      "name": "Pedestrian",
+      "role": "delivery",
+      "protected": false,
+      "speed": 37,
+      "route": [
+        [
+          8726,
+          1743
+        ],
+        [
+          8821,
+          1743
+        ]
+      ],
+      "dir": "right",
+      "moving": false,
+      "distance": 236.70619999999974,
+      "x": 8819.7062,
+      "y": 1743
+    },
+    {
+      "id": "ambient:northgate:0",
+      "name": "Pedestrian",
+      "role": "coach",
+      "protected": false,
+      "speed": 22,
+      "route": [
+        [
+          5502,
+          579
+        ],
+        [
+          5502,
+          674
+        ]
+      ],
+      "dir": "down",
+      "moving": false,
+      "distance": 250.20179999999945,
+      "x": 5502,
+      "y": 673.2017999999995
+    },
+    {
+      "id": "ambient:northgate:1",
+      "name": "Pedestrian",
+      "role": "librarian",
+      "protected": false,
+      "speed": 27,
+      "route": [
+        [
+          6112,
+          843
+        ],
+        [
+          6112,
+          938
+        ]
+      ],
+      "dir": "down",
+      "moving": false,
+      "distance": 263.0274999999999,
+      "x": 6112,
+      "y": 937.0275000000012
+    },
+    {
+      "id": "ambient:southbay:0",
+      "name": "Pedestrian",
+      "role": "beachgoer",
+      "protected": false,
+      "speed": 32,
+      "route": [
+        [
+          3216,
+          3694
+        ],
+        [
+          3311,
+          3694
+        ]
+      ],
+      "dir": "right",
+      "moving": false,
+      "distance": 276.90560000000016,
+      "x": 3310.9055999999946,
+      "y": 3694
+    },
+    {
+      "id": "ambient:southbay:1",
+      "name": "Pedestrian",
+      "role": "tourist",
+      "protected": false,
+      "speed": 37,
+      "route": [
+        [
+          3904,
+          3802
+        ],
+        [
+          3999,
+          3802
+        ]
+      ],
+      "dir": "right",
+      "moving": false,
+      "distance": 288.70620000000014,
+      "x": 3997.7061999999987,
+      "y": 3802
+    }
+  ]
+}

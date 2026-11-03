@@ -1,0 +1,422 @@
+{
+  "resident": {
+    "frames": 16,
+    "directional_rows_distinct": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "transparent": true,
+    "size": [
+      512,
+      640
+    ]
+  },
+  "student": {
+    "frames": 16,
+    "directional_rows_distinct": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "transparent": true,
+    "size": [
+      512,
+      640
+    ]
+  },
+  "shopper": {
+    "frames": 16,
+    "directional_rows_distinct": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "transparent": true,
+    "size": [
+      512,
+      640
+    ]
+  },
+  "vendor": {
+    "frames": 16,
+    "directional_rows_distinct": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "transparent": true,
+    "size": [
+      512,
+      640
+    ]
+  },
+  "chef": {
+    "frames": 16,
+    "directional_rows_distinct": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "transparent": true,
+    "size": [
+      512,
+      640
+    ]
+  },
+  "construction": {
+    "frames": 16,
+    "directional_rows_distinct": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "transparent": true,
+    "size": [
+      512,
+      640
+    ]
+  },
+  "civilian_medic": {
+    "frames": 16,
+    "directional_rows_distinct": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "transparent": true,
+    "size": [
+      512,
+      640
+    ]
+  },
+  "fisher": {
+    "frames": 16,
+    "directional_rows_distinct": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "transparent": true,
+    "size": [
+      512,
+      640
+    ]
+  },
+  "tourist": {
+    "frames": 16,
+    "directional_rows_distinct": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "transparent": true,
+    "size": [
+      512,
+      640
+    ]
+  },
+  "jogger": {
+    "frames": 16,
+    "directional_rows_distinct": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "transparent": true,
+    "size": [
+      512,
+      640
+    ]
+  },
+  "office_worker": {
+    "frames": 16,
+    "directional_rows_distinct": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "transparent": true,
+    "size": [
+      512,
+      640
+    ]
+  },
+  "delivery": {
+    "frames": 16,
+    "directional_rows_distinct": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "transparent": true,
+    "size": [
+      512,
+      640
+    ]
+  },
+  "mail_clerk": {
+    "frames": 16,
+    "directional_rows_distinct": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "transparent": true,
+    "size": [
+      512,
+      640
+    ]
+  },
+  "gardener": {
+    "frames": 16,
+    "directional_rows_distinct": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "transparent": true,
+    "size": [
+      512,
+      640
+    ]
+  },
+  "gardener_alt": {
+    "frames": 16,
+    "directional_rows_distinct": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "transparent": true,
+    "size": [
+      512,
+      640
+    ]
+  },
+  "musician": {
+    "frames": 16,
+    "directional_rows_distinct": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "transparent": true,
+    "size": [
+      512,
+      640
+    ]
+  },
+  "artist": {
+    "frames": 16,
+    "directional_rows_distinct": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "transparent": true,
+    "size": [
+      512,
+      640
+    ]
+  },
+  "barista": {
+    "frames": 16,
+    "directional_rows_distinct": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "transparent": true,
+    "size": [
+      512,
+      640
+    ]
+  },
+  "store_clerk": {
+    "frames": 16,
+    "directional_rows_distinct": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "transparent": true,
+    "size": [
+      512,
+      640
+    ]
+  },
+  "waiter": {
+    "frames": 16,
+    "directional_rows_distinct": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "transparent": true,
+    "size": [
+      512,
+      640
+    ]
+  },
+  "librarian": {
+    "frames": 16,
+    "directional_rows_distinct": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "transparent": true,
+    "size": [
+      512,
+      640
+    ]
+  },
+  "coach": {
+    "frames": 16,
+    "directional_rows_distinct": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "transparent": true,
+    "size": [
+      512,
+      640
+    ]
+  },
+  "hiker": {
+    "frames": 16,
+    "directional_rows_distinct": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "transparent": true,
+    "size": [
+      512,
+      640
+    ]
+  },
+  "elder": {
+    "frames": 16,
+    "directional_rows_distinct": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "transparent": true,
+    "size": [
+      512,
+      640
+    ]
+  },
+  "kid": {
+    "frames": 16,
+    "directional_rows_distinct": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "transparent": true,
+    "size": [
+      512,
+      640
+    ]
+  },
+  "beachgoer": {
+    "frames": 16,
+    "directional_rows_distinct": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "transparent": true,
+    "size": [
+      512,
+      640
+    ]
+  },
+  "dock_worker": {
+    "frames": 16,
+    "directional_rows_distinct": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "transparent": true,
+    "size": [
+      512,
+      640
+    ]
+  },
+  "mechanic": {
+    "frames": 16,
+    "directional_rows_distinct": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "transparent": true,
+    "size": [
+      512,
+      640
+    ]
+  },
+  "business_citizen": {
+    "frames": 16,
+    "directional_rows_distinct": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "transparent": true,
+    "size": [
+      512,
+      640
+    ]
+  },
+  "civilian_casual": {
+    "frames": 16,
+    "directional_rows_distinct": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "transparent": true,
+    "size": [
+      512,
+      640
+    ]
+  }
+}

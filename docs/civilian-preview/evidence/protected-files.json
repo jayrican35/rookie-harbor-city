@@ -1,0 +1,15 @@
+{
+  "baseline": "943065e",
+  "normalization": "CRLF to LF",
+  "unchanged": {
+    "published-game-capture/game.js": "fed646e5a213439b9ec269a80a2b7bb928d16d378b6a99714f10483d8e830d3f",
+    "published-game-capture/outbreak.css": "69b1d1ff50c6e6db60a0eb33100b4d25ea9d2b93b6e224222b40421f5aa9065b",
+    "published-game-capture/v116-marina.js": "eb0005fd0e1c4a52ab7719271d93b0c59e2870cc5186ccc4efd719ef4335a210",
+    "published-game-capture/v116-marina-walk.js": "e8e9304768a26794abecb7da196744793b1fcb113f6405c0a0a5c6f601c26905",
+    "published-game-capture/v117-jay.js": "aaec1a78cf81303a3a9825a3f7982786cce9f66731b2b6affb435db0324af834",
+    "published-game-capture/v132-precinct-heritage.js": "2d0004feeed36032db57d985d24ae5bcc9213ad9f8a1d9297e033e68b3122626",
+    "published-game-capture/v133-precinct-campus.js": "be0c3fee1b0d7a2d340dfdeddd563cd69fe55f801a18a7681e4b662a4529c18e",
+    "published-game-capture/v135-precinct-wallkit-test.js": "748b81269c510c28ed067d35c247a29887f0d5c7839460fcc638810fa0dc607a",
+    "published-game-capture/v115-world.js": "07e152c0280f72bf2e002f72c548d5ac402d2be670f6e781fb8a876c0efa3699"
+  }
+}

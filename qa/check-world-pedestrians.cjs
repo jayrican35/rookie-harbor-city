@@ -40,10 +40,26 @@ for(const a of ambientRoutes){
  assert(Math.abs(a.x-a.interaction.x)<.00001&&Math.abs(a.y-a.interaction.y)<.00001,'Talk spots follow NPC');
  assert(['up','down','left','right'].includes(a.dir));
 }
+// Run beyond several complete outward/return trips. The old || default
+// pinned every actor at waypoint 1 as soon as targetIndex became zero.
+const beforeLoops=ambientRoutes.map(a=>a.distance);
+const visited=ambientRoutes.map(()=>new Set());
+for(let i=0;i<1800;i++){
+ stepAmbientPedestrians(1/30);
+ ambientRoutes.forEach((a,k)=>{
+  if(Math.hypot(a.x-a.route[0][0],a.y-a.route[0][1])<2)visited[k].add(0);
+  if(Math.hypot(a.x-a.route[1][0],a.y-a.route[1][1])<2)visited[k].add(1);
+ });
+}
+assert(visited.every(v=>v.size===2),'Every pedestrian visits BOTH ends and returns');
+assert(ambientRoutes.every((a,i)=>a.distance>beforeLoops[i]+a.speed*50),'Every pedestrian keeps walking over a full minute');
 const stopped=ambientRoutes.map(a=>[a.x,a.y]);
 blockAll=true;for(let i=0;i<10;i++)stepAmbientPedestrians(1/30);
 assert(ambientRoutes.every((a,i)=>a.x===stopped[i][0]&&a.y===stopped[i][1]),
  'Moving crowds must respect the same native collision gate');
+blockAll=false;const released=ambientRoutes.map(a=>a.distance);
+for(let i=0;i<90;i++)stepAmbientPedestrians(1/30);
+assert(ambientRoutes.every((a,i)=>a.distance>released[i]+10),'Every pedestrian resumes after an obstruction clears');
 assert(!/requestAnimationFrame|localStorage|sessionStorage|fetch\s*\(/.test(art),
  'Shared city art has no second loop, saves or web fetch');
 console.log('PASS Harbor living city: 16 bounded native-sim pedestrians, cleaned 4-way sprite routing, dialogue, collision & untouched Marina');

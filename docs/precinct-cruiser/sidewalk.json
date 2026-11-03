@@ -1,0 +1,300 @@
+{
+  "vehicle": {
+    "x": 7156,
+    "y": 1979.719636392841,
+    "angle": 1.5707963267948966,
+    "id": "precinct-unit-9",
+    "map": "harbor-main",
+    "speed": 0,
+    "engine": true,
+    "wheelPhase": 14.00116909339154,
+    "driving": true,
+    "collisions": 0,
+    "saveError": false,
+    "assetReady": true,
+    "count": 1
+  },
+  "retired": [
+    {
+      "district": "westfield",
+      "x": -3040,
+      "y": 1609,
+      "w": 240,
+      "h": 6
+    },
+    {
+      "district": "westfield",
+      "x": -2740,
+      "y": 1609,
+      "w": 240,
+      "h": 6
+    },
+    {
+      "district": "westfield",
+      "x": -2440,
+      "y": 1609,
+      "w": 240,
+      "h": 6
+    },
+    {
+      "district": "westfield",
+      "x": -2140,
+      "y": 1609,
+      "w": 240,
+      "h": 6
+    },
+    {
+      "district": "westfield",
+      "x": -1840,
+      "y": 1609,
+      "w": 280,
+      "h": 6
+    },
+    {
+      "district": "eastside",
+      "x": 6616,
+      "y": 1677,
+      "w": 680,
+      "h": 6
+    },
+    {
+      "district": "eastside",
+      "x": 7416,
+      "y": 1677,
+      "w": 680,
+      "h": 6
+    },
+    {
+      "district": "eastside",
+      "x": 6616,
+      "y": 1897,
+      "w": 680,
+      "h": 6
+    },
+    {
+      "district": "eastside",
+      "x": 7416,
+      "y": 1897,
+      "w": 680,
+      "h": 6
+    },
+    {
+      "district": "industrial",
+      "x": 8216,
+      "y": 1640,
+      "w": 620,
+      "h": 6
+    },
+    {
+      "district": "industrial",
+      "x": 8916,
+      "y": 1640,
+      "w": 660,
+      "h": 6
+    }
+  ],
+  "grassClear": true,
+  "buildingBlocked": true,
+  "waterBlocked": true,
+  "traffic": [
+    {
+      "id": "street:0",
+      "progress": 163.33333333333334,
+      "speed": 98,
+      "color": "#557e9a",
+      "kind": "patrol",
+      "x": -2686.666666666668,
+      "y": 1754,
+      "dir": "right",
+      "stopped": false
+    },
+    {
+      "id": "street:1",
+      "progress": 1939,
+      "speed": 110,
+      "color": "#a66852",
+      "kind": "civilian",
+      "x": -911,
+      "y": 1754,
+      "dir": "right",
+      "stopped": false
+    },
+    {
+      "id": "street:2",
+      "progress": 3714.666666666667,
+      "speed": 122,
+      "color": "#7d8b76",
+      "kind": "civilian",
+      "x": 864.6666666666679,
+      "y": 1754,
+      "dir": "right",
+      "stopped": false
+    },
+    {
+      "id": "street:3",
+      "progress": 4320.333333333328,
+      "speed": 134,
+      "color": "#c5a975",
+      "kind": "civilian",
+      "x": 1470.3333333333285,
+      "y": 1754,
+      "dir": "right",
+      "stopped": false
+    },
+    {
+      "id": "street:4",
+      "progress": 6095.999999999998,
+      "speed": 146,
+      "color": "#597b7c",
+      "kind": "civilian",
+      "x": 3246,
+      "y": 1754,
+      "dir": "right",
+      "stopped": false
+    },
+    {
+      "id": "street:5",
+      "progress": 7771.666666666657,
+      "speed": 98,
+      "color": "#ac7671",
+      "kind": "delivery",
+      "x": 4921.666666666657,
+      "y": 1754,
+      "dir": "right",
+      "stopped": false
+    },
+    {
+      "id": "street:6",
+      "progress": 8377.33333333333,
+      "speed": 110,
+      "color": "#557e9a",
+      "kind": "civilian",
+      "x": 5527.3333333333285,
+      "y": 1754,
+      "dir": "right",
+      "stopped": false
+    },
+    {
+      "id": "street:7",
+      "progress": 9980.78779999999,
+      "speed": 122,
+      "color": "#a66852",
+      "kind": "civilian",
+      "x": 7130.787799999991,
+      "y": 1754,
+      "dir": "right",
+      "stopped": false
+    },
+    {
+      "id": "street:8",
+      "progress": 11928.666666666677,
+      "speed": 134,
+      "color": "#7d8b76",
+      "kind": "civilian",
+      "x": 9078.666666666679,
+      "y": 1754,
+      "dir": "right",
+      "stopped": false
+    },
+    {
+      "id": "street:9",
+      "progress": 12534.333333333338,
+      "speed": 146,
+      "color": "#c5a975",
+      "kind": "patrol",
+      "x": 9136.666666666664,
+      "y": 1815,
+      "dir": "left",
+      "stopped": false
+    },
+    {
+      "id": "street:10",
+      "progress": 14209.999999999987,
+      "speed": 98,
+      "color": "#597b7c",
+      "kind": "delivery",
+      "x": 7461.000000000015,
+      "y": 1815,
+      "dir": "left",
+      "stopped": false
+    },
+    {
+      "id": "street:11",
+      "progress": 15985.666666666664,
+      "speed": 110,
+      "color": "#ac7671",
+      "kind": "civilian",
+      "x": 5685.333333333336,
+      "y": 1815,
+      "dir": "left",
+      "stopped": false
+    },
+    {
+      "id": "street:12",
+      "progress": 16591.33333333333,
+      "speed": 122,
+      "color": "#557e9a",
+      "kind": "civilian",
+      "x": 5079.6666666666715,
+      "y": 1815,
+      "dir": "left",
+      "stopped": false
+    },
+    {
+      "id": "street:13",
+      "progress": 18366.999999999978,
+      "speed": 134,
+      "color": "#a66852",
+      "kind": "civilian",
+      "x": 3304.000000000022,
+      "y": 1815,
+      "dir": "left",
+      "stopped": false
+    },
+    {
+      "id": "street:14",
+      "progress": 20142.66666666665,
+      "speed": 146,
+      "color": "#7d8b76",
+      "kind": "civilian",
+      "x": 1528.3333333333503,
+      "y": 1815,
+      "dir": "left",
+      "stopped": false
+    },
+    {
+      "id": "street:15",
+      "progress": 20648.33333333336,
+      "speed": 98,
+      "color": "#c5a975",
+      "kind": "delivery",
+      "x": 1022.6666666666424,
+      "y": 1815,
+      "dir": "left",
+      "stopped": false
+    },
+    {
+      "id": "street:16",
+      "progress": 22423.999999999996,
+      "speed": 110,
+      "color": "#597b7c",
+      "kind": "civilian",
+      "x": -753,
+      "y": 1815,
+      "dir": "left",
+      "stopped": false
+    },
+    {
+      "id": "street:17",
+      "progress": 24199.66666666666,
+      "speed": 122,
+      "color": "#ac7671",
+      "kind": "civilian",
+      "x": -2528.666666666657,
+      "y": 1815,
+      "dir": "left",
+      "stopped": false
+    }
+  ],
+  "errors": []
+}

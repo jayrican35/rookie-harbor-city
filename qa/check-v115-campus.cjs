@@ -39,7 +39,7 @@ const document={body,hidden:false,createElement:(tag)=>element(tag),
 const window={devicePixelRatio:1,events:{},addEventListener(type,fn,capture){window.events[type+(capture?'_capture':'')]=fn;},
  HARBOR:{worldV115:{version:'phase1',roadNetwork:()=>({worldId:'harbor-main',primary:{centerY:1784},segments:[],crossings:[]})},academy:{active:()=>false},outbreak:{active:()=>false}}};
 let raf=0;const queue=new Map();
-const sandbox={window,document,console,Math,Number,Date, state:{map:'station'},
+const sandbox={window,document,console,Math,Number,Date,overlayOpen:()=>false, state:{map:'station'},
  closeMap(){},canvas:element('original'),ctx,
  drawRoom(r){const p=sandbox.ctx;p.fillStyle=r.fill;p.fillRect(r.x,r.y,r.w,r.h);},
  drawFurn(f){sandbox.ctx.fillRect(f.x,f.y,f.w,f.h);},

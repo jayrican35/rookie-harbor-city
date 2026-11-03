@@ -11,6 +11,15 @@ parser=argparse.ArgumentParser();parser.add_argument('--candidate',action='store
 asset_dir=r/'published-game-capture/assets/civilian-corrected'
 art_ready = json.loads((asset_dir/'review-status.json').read_text())['approvedForPlayback']
 pack=json.loads((asset_dir/'manifest.json').read_text())
+# Bind the existing canonical controller to connected-world dependencies.
+engine=(r/'published-game-capture/game.js').read_text(encoding='utf-8')
+start=engine.index('var carReboundTime=0;');end=engine.index('function updateDriveUI()',start)
+controller=engine[start:end]
+factory='''function(car,keys,window,carCollidesAt,saveThrottled,feedback){
+const driveKeys={},CAR_MAX=265,CAR_REV=-92,document={getElementById:()=>null},AC=null,traffic=[];
+const syncPlayerToCar=()=>{},checkCarExits=()=>{},perfCollision=feedback,tone=()=>{},toast=()=>{};
+'''+controller+'\nreturn updateCar;}'
+cruiser=(r/'published-game-capture/precinct-cruiser.js').read_text(encoding='utf-8').replace('/* CANONICAL_CONTROLLER */null',factory)
 base = r / 'site/preview/marina-updated'
 before = r / 'site/preview/civilian-before'
 after = r / ('site/preview/civilian-candidate' if args.candidate else 'site/preview/civilian-updated')
@@ -23,9 +32,28 @@ for target in [before, after]:
     old = (target / name).read_text(encoding='utf-8')
     new = (r / 'published-game-capture' / name).read_text(encoding='utf-8')
     bundle = (target / 'game-v115.bundle.js').read_text(encoding='utf-8')
+    # The legacy importer rebuilds known fields before startup autosaves.
+    # Extend ONLY this preview's compiled importer, so parking survives that rebuild.
+    bundle=re.sub(r'  /\* connected cruiser save extension \*/.*?  state = f;', '  state = f;',bundle,flags=re.S)
+    if '/* connected cruiser save extension */' not in bundle:
+        schema='''  /* connected cruiser save extension */
+  var unit=s.connectedCruiser;
+  if(unit&&unit.id==='precinct-unit-9'&&Number.isFinite(unit.x)&&Number.isFinite(unit.y)&&Number.isFinite(unit.angle)&&unit.x>=-3100&&unit.x<=9656&&unit.y>=0&&unit.y<=4680)
+    f.connectedCruiser={id:unit.id,x:unit.x,y:unit.y,angle:unit.angle};
+'''
+        token='  state = f;'
+        assert bundle.count(token)==1
+        bundle=bundle.replace(token,schema+token)
+    prior=target/'precinct-cruiser.compiled.js'
+    if prior.exists():
+        previous=prior.read_text(encoding='utf-8')
+        assert bundle.count(previous)==1
+        bundle=bundle.replace(previous+'\n','')
     assert bundle.count(old) == 1
     (target / name).write_text(new, encoding='utf-8')
-    (target / 'game-v115.bundle.js').write_text(bundle.replace(old, new), encoding='utf-8')
+    (target / 'game-v115.bundle.js').write_text(bundle.replace(old, cruiser+'\n'+new), encoding='utf-8')
+    (target/'precinct-cruiser.compiled.js').write_text(cruiser,encoding='utf-8')
+    shutil.copytree(r/'published-game-capture/assets/police-driving',target/'assets/police-driving',dirs_exist_ok=True)
     html = (target / 'index.html').read_text(encoding='utf-8')
     digest = hashlib.sha256((target / 'game-v115.bundle.js').read_bytes()).hexdigest()[:12]
     html = re.sub(r'game-v115\.bundle\.js\?v=[\da-f]+', 'game-v115.bundle.js?v='+digest, html)

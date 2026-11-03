@@ -1,0 +1,9 @@
+{
+  "cars": 18,
+  "simulatedSeconds": 3600,
+  "queuedSeconds": 30,
+  "minimumGap": 146.89999999999782,
+  "pairChecks": 550800,
+  "bodyOverlaps": 0,
+  "savedCruiserSpawnClear": true
+}

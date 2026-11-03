@@ -1,8 +1,8 @@
 /* ROOKIE V115 — Seamless Precinct Campus, Phase 2 construction preview.
  * Purpose: physically contiguous 1:1 station rooms, grounds and street with
  * one simulation, one camera, and no screen/map swap at entrance thresholds.
- * This is an isolated walkable prototype; missions/vehicles are NOT migrated.
- * Never mutates MAPS, state, car, saves, Academy or Zombie Outbreak.
+ * This is a connected preview; the optional cruiser reuses the original controller.
+ * Never mutates MAPS, the campaign car, Academy or Zombie Outbreak.
  */
 (function () {
   'use strict';
@@ -10,6 +10,7 @@
       typeof MAPS === 'undefined' || !MAPS.station || !MAPS.plaza ||
       !document.querySelector('#mapOverlay .maptools')) return;
   const H=window.HARBOR, ST=MAPS.station, PL=MAPS.plaza;
+  let cruiser=null;
   const WORLD_ID='harbor-main', AREA_ID='precinct-campus-v115';
   const MIN_X=-3100, MIN_Y=0, W=9656,HGT=4680, TILE=32, CHUNK=512;
   // A single authored city graph, derived from the original district MAPS.
@@ -115,8 +116,20 @@
       pedSolids:m.pedSolids?.map(shift),solids:m.solids?.map(shift)};
     streetRelocations.push({district:d.id,type:o.t,from:{x:d.x+x,y:d.y+y,w,h},to:{x:d.x+x+move.dx,y:d.y+y+move.dy,w,h}});
   }
+  // These legacy fenceH lines have no painter in the connected presentation.
+  // Retire only their exact thin colliders, leaving visible fences, walls,
+  // buildings, street furniture and waterfront railings authoritative.
+  const retiredSidewalkBarriers=[];
+  for(const d of districtEntries){
+    if(d.id==='waterfront')continue;
+    const fences=(d.map.decors||[]).filter(o=>o.t==='fenceH');
+    const retired=b=>fences.some(o=>b.x===o.x&&b.y===o.y-3&&b.w===o.w&&b.h===6);
+    for(const b of d.map.pedSolids||[])if(retired(b))retiredSidewalkBarriers.push({district:d.id,x:d.x+b.x,y:d.y+b.y,w:b.w,h:b.h});
+    d.map={...d.map,decors:d.map.decors.filter(o=>o.t!=='fenceH'),
+      solids:d.map.solids?.filter(b=>!retired(b)),pedSolids:d.map.pedSolids?.filter(b=>!retired(b))};
+  }
   const linkCollision = []; // Roads are traversable, never scene exits.
-  const districtSolids=[];
+  const districtSolids=[],vehicleOnlySolids=[];
   for(const d of districtEntries){
     const solids = d.map.pedSolids || d.map.solids || [];
     for(const b of solids){
@@ -124,6 +137,10 @@
       if(b.w<=0||b.h<=0)continue;
       districtSolids.push({x:d.x+b.x,y:d.y+b.y,w:b.w,h:b.h,id:d.id});
     }
+    // Native vehicle solids also include thin visible posts that walkers may
+    // step around. Reuse those existing shapes rather than blocking pavement.
+    for(const b of d.map.solids||[])if(!solids.some(p=>p.x===b.x&&p.y===b.y&&p.w===b.w&&p.h===b.h))
+      vehicleOnlySolids.push({x:d.x+b.x,y:d.y+b.y,w:b.w,h:b.h,id:d.id});
   }
   const STX=380, STY=96, PLX=148, PLY=600;
   const FRONT={x:STX+568,y:STY+1028}, GARAGE={x:STX+1538,y:STY+1160};
@@ -170,7 +187,9 @@
     const px=Math.max(b.x,Math.min(b.x+b.w,x)),py=Math.max(b.y,Math.min(b.y+b.h,y));
     return (x-px)*(x-px)+(y-py)*(y-py) < radius*radius;
   }
-  function blocked(x,y,r=12){
+  function blocked(x,y,r=12,ignoreCruiser=false,vehicle=false){
+    if(vehicle)for(const b of vehicleOnlySolids){if(!window.ROOKIE_V116_MARINA?.ownsSolid?.(b)&&circleHitsRect(x,y,r,b))return true;}
+    if(!ignoreCruiser&&cruiser?.blocksWalker(x,y,r))return true;
     if(x<MIN_X+r||y<MIN_Y+r||x>W-r||y>HGT-r)return true;
     // Outside the precinct, preserve each district's original solid geometry.
     // Never let a hidden exterior district building block the rebuilt station.
@@ -319,20 +338,33 @@
     if(!required.every(id=>links.some(r=>r.id===id)))return;
     for(let i=0;i<18;i++){
       const phase=trafficLoop*i/18+390*(i%3),kind=i%9===0?'patrol':i%5===0?'delivery':'civilian';
-      streetTraffic.push({id:'street:'+i,progress:phase,speed:98+i%5*12,
-        color:trafficColors[i%trafficColors.length],kind,...streetPose(phase)});
+      const tc={id:'street:'+i,progress:phase,speed:98+i%5*12,
+        color:trafficColors[i%trafficColors.length],kind,...streetPose(phase)};
+      // A saved Unit 9 may already occupy this road position on reload.
+      if(cruiser?.overlapsTraffic(tc)){tc.progress=(phase-160+trafficLoop)%trafficLoop;Object.assign(tc,streetPose(tc.progress));}
+      streetTraffic.push(tc);
     }
   }
   function stepStreetTraffic(dt){
     initializeStreetTraffic();
     const seconds=Math.max(0,Math.min(.05,dt||0));
+    // Follow the next car on the same closed route, including its wrap seam.
+    // Different cruise speeds must form queues rather than pass through bodies.
+    const ordered=streetTraffic.slice().sort((a,b)=>a.progress-b.progress);
+    const moves=new Map();
+    for(let i=0;i<ordered.length;i++){
+      const car=ordered[i],leader=ordered[(i+1)%ordered.length];
+      const gap=(leader.progress-car.progress+trafficLoop)%trafficLoop;
+      const nearJay=!cruiser?.active()&&Math.abs(car.x-campus.x)<145&&Math.abs(car.y-campus.y)<62;
+      const yielding=nearJay||cruiser?.yields(car);
+      const desired=yielding?0:car.speed*seconds;
+      // 142 units covers the longest van body plus a visible following gap.
+      const travel=Math.min(desired,Math.max(0,gap-142));
+      moves.set(car,travel);car.stopped=yielding||travel<desired-.001;
+    }
     for(const car of streetTraffic){
-      // Civilian traffic yields near the player; it never injures or shoves Jay.
-      const nearJay=Math.abs(car.x-campus.x)<145&&Math.abs(car.y-campus.y)<62;
-      const speed=nearJay?0:car.speed;
-      car.progress=(car.progress+seconds*speed)%trafficLoop;
+      car.progress=(car.progress+moves.get(car))%trafficLoop;
       Object.assign(car,streetPose(car.progress));
-      car.stopped=nearJay;
     }
   }
   function trafficBlocked(x,y,r=12){
@@ -378,6 +410,8 @@
   const campus={open:false,x:FRONT.x,y:FRONT.y+86,dir:'up',stride:0,moved:false,speed:0,
     camX:0,camY:0,zoom:1.15,autoZoom:true,follow:true,keys:new Set(),stick:null,runHeld:false,frame:0,last:0,
     paintCosts:[],paintCount:0,near:null,firstPaint:true,doorCrossings:0,previousRoom:null,visibleChunks:[]};
+  const priorOverlay=overlayOpen;
+  overlayOpen=function(){return campus.open||priorOverlay();};
   const modal=document.createElement('section');modal.id='v115Campus';modal.hidden=true;
   modal.setAttribute('aria-label','V115 seamless precinct and grounds development preview');
   modal.innerHTML=`<canvas id="v115CampusCanvas" aria-label="Continuous 1:1 Precinct 9 interior, grounds and streets"></canvas>
@@ -388,13 +422,14 @@
     <div class="v115-campus-tools"><button id="v115CampusZoomOut" aria-label="Zoom out">−</button>
       <button id="v115CampusOverview" aria-label="Toggle full campus overview">ALL</button>
       <button id="v115CampusZoomIn" aria-label="Zoom in">+</button></div>
-    <div class="v115-campus-note" id="v115CampusNote">Continuous roads now share one topology with the city map. Driveable lanes, traffic and missions still need integration.</div>
+    <div class="v115-campus-note" id="v115CampusNote">Continuous roads now share one topology with the city map. Unit 9 is parked at Precinct 9. Approach it and choose Drive.</div>
     <div class="v115-campus-pad" id="v115CampusPad" aria-label="Floating movement joystick zone" role="button" tabindex="0">
       <div id="v125CampusBase" aria-hidden="true"><div id="v115CampusKnob"></div></div></div>
     <button id="v125CampusSprint" type="button" aria-label="Hold to run">RUN</button>
     <button id="v115CampusInteract" class="v115-campus-interact" type="button">Action</button>
-    <footer class="v115-campus-footer">Continuous city streets · joystick / WASD · all districts one canvas · game saves unchanged</footer>`;
+    <footer class="v115-campus-footer">Continuous city streets · joystick / WASD · all districts one canvas · Unit 9 parking saved per player</footer>`;
   document.body.appendChild(modal);
+  cruiser=H.connectedCruiser?.install({campus,modal,blocked,actors:()=>npcActors.concat(window.ROOKIE_V133_PRECINCT?.actors?.(performance.now())||[]),clearInput});
   const cv=modal.querySelector('canvas'),g=cv.getContext('2d',{alpha:false});
   const btn=document.createElement('button');btn.id='v115CampusLaunch';btn.type='button';
   btn.textContent='EXPLORE CONNECTED HARBOR CITY';btn.title='Walk inside and outside one continuous precinct world (experimental preview)';
@@ -402,7 +437,7 @@
   let tw=960,th=640,dpr=1,oldCtx=null,cache=null,cacheValid=false,roofCanvas=null,legacyAssetEpoch=-1;
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
   function pickZoom(z){campus.autoZoom=false;campus.zoom=clamp(z,.024,2.5);campus.follow=campus.zoom>.09;}
-  function clearInput(){window.ROOKIE_JAY?.reset();campus.speed=0;campus.keys.clear();campus.stick=null;campus.runHeld=false;modal.querySelector('#v115CampusKnob').style.transform='translate(-50%,-50%)';modal.querySelector('#v125CampusBase').classList.remove('active');modal.querySelector('#v125CampusSprint').classList.remove('held');}
+  function clearInput(){cruiser?.reset();window.ROOKIE_JAY?.reset();campus.speed=0;campus.keys.clear();campus.stick=null;campus.runHeld=false;modal.querySelector('#v115CampusKnob').style.transform='translate(-50%,-50%)';modal.querySelector('#v125CampusBase').classList.remove('active');modal.querySelector('#v125CampusSprint').classList.remove('held');}
   function resize(){
     if(!campus.open)return;
     const r=cv.getBoundingClientRect();dpr=Math.min(1.5,window.devicePixelRatio||1);
@@ -495,6 +530,7 @@
     if(marina)marina.stepNPCs(dt);
     stepAmbientPedestrians(dt);
     stepStreetTraffic(dt);
+    if(cruiser?.step(dt))return;
     let {dx,dy}=direction();
     const shared=window.ROOKIE_JAY,run=!!shared?.requestRun()||!!(campus.runHeld&&shared?.eligible());
     if(Math.hypot(dx,dy)<.08){dx=0;dy=0;}
@@ -1022,7 +1058,8 @@
     // inside actors draw behind each shell; outside actors draw in front.
     entries.push({y:FRONT.y-1,precinctShell:'main'});
     entries.push({y:GARAGE.y-1,precinctShell:'garage'});
-    entries.push({y:campus.y,player:true});entries.sort((a,b)=>a.y-b.y);
+    if(cruiser){const p=cruiser.position();if(visible(p))entries.push({y:p.y,patrolCruiser:true});}
+    if(!cruiser?.active())entries.push({y:campus.y,player:true});entries.sort((a,b)=>a.y-b.y);
     for(const entry of entries){
       if(entry.interiorWall){
         bridge.drawInteriorWall(g,entry.interiorWall,{room:ST.rooms.find(r=>r.label===interiorRoom(campus.x,campus.y)),
@@ -1071,6 +1108,7 @@
         marina.drawDepthProp(g,entry.depthProp,{zoom:campus.zoom,view,player:{x:campus.x,y:campus.y}},t);continue;
       }
       if(entry.pierPost){marina.drawPierPost(g,entry.pierPost);continue;}
+      if(entry.patrolCruiser){cruiser.draw(g);continue;}
       if(entry.player){drawOfficer({x:campus.x,y:campus.y,color:'#2b467a'},true,t);continue;}
       if(entry.furniture){marina.drawInteriorFurniture(g,entry.furniture);continue;}
       const npc=entry.actor;
@@ -1150,6 +1188,7 @@
     // the one feet-depth queue above. Jay in front of Precinct 9 no longer
     // disappears behind the wall. Interior actors remain behind the facade
     // until the SAME original roof cutaway reveals the rooms.
+    cruiser?.bayMark(g);
     drawEntityHighlights(t);
     // The V115 showcase also drew roof vents; V132 owns that layer now.
     // Avoid double glazing/vents over the ported legacy material and signs.
@@ -1177,9 +1216,10 @@
     if(window.ROOKIE_V116_HUD)window.ROOKIE_V116_HUD.paint({x:campus.x,y:campus.y},t);
     const act=modal.querySelector('#v115CampusInteract');
     const near=campus.near,actor=near&&marina?.actors?.some(a=>a.id===near.id);
-    const caption=near?(actor?'Talk':'Inspect'):'Action';
+    const vehicleAction=cruiser?.active()||cruiser?.near();
+    const caption=vehicleAction?(cruiser.active()?'Exit':'Drive'):near?(actor?'Talk':'Inspect'):'Action';
     if(act.textContent!==caption)act.textContent=caption;
-    if(act.disabled===!!near)act.disabled=!near;
+    act.disabled=!(near||vehicleAction);
     if(paintStart!==null){campus.paintCount++;campus.paintCosts.push(performance.now()-paintStart);if(campus.paintCosts.length>180)campus.paintCosts.shift();}
   }
   function loop(timestamp){
@@ -1210,7 +1250,7 @@
     clearInput();campus.last=0;resize();campus.frame=requestAnimationFrame(loop);
   }
   function close(){
-    if(!campus.open)return;campus.open=false;cancelAnimationFrame(campus.frame);clearInput();
+    if(!campus.open)return;if(cruiser&&cruiser.suspend()===false)return;campus.open=false;cancelAnimationFrame(campus.frame);clearInput();
     window.ROOKIE_V116_HUD?.close();
     modal.hidden=true;document.body.classList.remove('v115-campus-open','v116-play-mode');
   }
@@ -1224,6 +1264,7 @@
     else {pickZoom(Math.min(tw/(W-MIN_X),th/(HGT-MIN_Y))*.96);campus.follow=false;campus.camX=(MIN_X+W-tw/campus.zoom)/2;campus.camY=(HGT-th/campus.zoom)/2;}
   });
   modal.querySelector('#v115CampusInteract').addEventListener('click',()=>{
+    if(cruiser?.interact())return;
     const sp=campus.near;
     const marina=window.ROOKIE_V116_MARINA;
     if(sp?.ambientActor){
@@ -1295,6 +1336,7 @@
       clearInput();if(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d','e','m','i','escape'].includes(k)){e.preventDefault();e.stopImmediatePropagation();}
       if(k==='escape'&&down)window.ROOKIE_V116_HUD.close();return;
     }
+    if(cruiser?.key(k,down)){e.preventDefault();e.stopImmediatePropagation();return;}
     if(k==='e'){e.preventDefault();e.stopImmediatePropagation();if(down)modal.querySelector('#v115CampusInteract').click();return;}
 
     if(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d','escape','+','=','-'].includes(k)){
@@ -1326,7 +1368,8 @@
   cv.addEventListener('wheel',e=>{e.preventDefault();pickZoom(campus.zoom*(e.deltaY>0?.88:1.12));},{passive:false});
   window.addEventListener('blur',clearInput);
   window.addEventListener('resize',resize);
-  // None of this state is stored in game saves or synchronized over a network.
+  // Geography telemetry is read-only. Unit 9 parking is saved by its adapter;
+  // no world state is synchronized over a network.
   // This schema is deterministic and uses the same world ID as the Phase 1 atlas.
   const api={version:'115-phase2-seamless-precinct-prototype',worldId:WORLD_ID,areaId:AREA_ID,
     width:W-MIN_X,height:HGT,chunkSize:CHUNK,entrances:Object.freeze({front:FRONT,garage:GARAGE}),
@@ -1339,6 +1382,9 @@
     intersections:()=>crossings.map(c=>({...c})),
     roadTopologyVersion:roadNetwork.version,
     streetRepairs:()=>JSON.parse(JSON.stringify(streetRelocations)),
+    sidewalkRepairs:()=>JSON.parse(JSON.stringify(retiredSidewalkBarriers)),
+    cruiserQA:()=>/[?&]pilotQA=1(?:&|$)/.test(window.location.search)?cruiser:null,
+    trafficQA:()=>/[?&]pilotQA=1(?:&|$)/.test(window.location.search)?streetTraffic.map(c=>({...c})):null,
     civilianQA:()=>/[?&]pilotQA=1(?:&|$)/.test(window.location.search)?{
       actors:npcActors.map(n=>({id:n.id,name:n.name,role:window.ROOKIE_CIVILIANS?.roleFor(n)||null,
         protected:!!window.ROOKIE_CIVILIANS?.protectedActor(n),speed:n.speed||0,route:n.route?.map(p=>p.slice())||null,
@@ -1382,6 +1428,6 @@
     },
     test:{blocked,roadCollisionDiagnostic,interiorRoom,chunkAt,moveTo:(x,y)=>{if(blocked(x,y))return false;campus.x=x;campus.y=y;return true;},
       position:()=>({x:campus.x,y:campus.y}),doorCrossings:()=>campus.doorCrossings},
-    scope:'Connected district geography and precinct foot exploration share one camera. Missions, street NPC routines, interiors beyond Precinct 9, live multiplayer and cars still require migration.'};
+    scope:'Connected district geography and precinct foot exploration share one camera. Missions, street NPC routines, interiors beyond Precinct 9, live multiplayer and campaign missions still require migration; Unit 9 uses the canonical driving controller.'};
   H.seamlessCampusV115=Object.freeze(api);
 })();

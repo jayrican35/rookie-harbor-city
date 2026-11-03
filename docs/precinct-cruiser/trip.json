@@ -1,0 +1,46 @@
+{
+  "initial": {
+    "x": 1760,
+    "y": 1568,
+    "angle": 1.5707963267948966,
+    "id": "precinct-unit-9",
+    "map": "harbor-main",
+    "speed": 0,
+    "engine": false,
+    "driving": false,
+    "collisions": 0,
+    "saveError": false,
+    "assetReady": true,
+    "count": 1
+  },
+  "parked": {
+    "x": 1757.4356363045965,
+    "y": 1575.814159239711,
+    "angle": 5.051649505582988,
+    "id": "precinct-unit-9",
+    "map": "harbor-main",
+    "speed": 0,
+    "engine": false,
+    "wheelPhase": 303.1900117390169,
+    "driving": false,
+    "collisions": 1,
+    "saveError": false,
+    "assetReady": true,
+    "count": 1
+  },
+  "restored": {
+    "x": 1757.4356363045965,
+    "y": 1575.814159239711,
+    "angle": 5.051649505582988,
+    "id": "precinct-unit-9",
+    "map": "harbor-main",
+    "speed": 0,
+    "engine": false,
+    "driving": false,
+    "collisions": 0,
+    "saveError": false,
+    "assetReady": true,
+    "count": 1
+  },
+  "errors": []
+}

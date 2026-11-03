@@ -1,0 +1,6522 @@
+{
+  "source_zip_sha256": "0c66df90aa4a4d7d62dcbf12ab6f39545812c80ac42a1203a9dd9bdeb24c2502",
+  "source_frame": [
+    192,
+    240
+  ],
+  "runtime_frame": [
+    128,
+    160
+  ],
+  "source_anchor": [
+    96,
+    225
+  ],
+  "runtime_anchor": [
+    64,
+    150
+  ],
+  "processing": "Whole-frame nearest-neighbor export; tiny detached outer sheet fragments only removed; no anatomy recoloring or replacement",
+  "roles": [
+    {
+      "role": "resident",
+      "source_sha256": "d886145b3c96320a927ca18c8cd55e58de589dbf064506e388bce16b313b204b",
+      "runtime_sha256": "cc6eeb86a9592721717c0eeb737729bd6b33a574848ba589174517f48ba7e03b",
+      "clipped_front_frames": [],
+      "frames": [
+        {
+          "row": 0,
+          "column": 0,
+          "bounds": [
+            27,
+            3,
+            165,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "5571f1744a7665ff1efa947df1d914276cdf4524b6437b8e5746d4380b5384fe"
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "bounds": [
+            31,
+            3,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "f65b287e69af815823659a3d87c5cfdbe3da5156ae32c6890f19bd067c66c7b0"
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "bounds": [
+            31,
+            3,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "0aa8bd69473436ac53f467f136d2d0e1a07785d6afa9b2de102dc9d2e0a3606b"
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "bounds": [
+            32,
+            3,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "048ce31dcd37c1dd4baad3e0886c28888aee9673765e7b314439a806a76e138b"
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "bounds": [
+            43,
+            25,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "102d3e29f6cf6df03d3bc3b00d7a7292ba3a5275d7631af3dd27738162c7f047"
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "bounds": [
+            48,
+            25,
+            152,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "d346430aa6ae0e3dbead7c42da6f72429ae6371e7697edf9a8f321af593b5ed0"
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "bounds": [
+            48,
+            25,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "8dc55e674e4634d9c297497ded23a3a524c93e90de0da2ce423f4d904881c650"
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "bounds": [
+            48,
+            25,
+            158,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "55620cb75b9a0efc627fb518b2d0f9a94add507453b63a2b174e56f0eb050dba"
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "bounds": [
+            36,
+            25,
+            150,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "97e4721dd1084619eeaace2fff3b7143979d2337b94eadedf53d9e8620a046fe"
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "bounds": [
+            44,
+            25,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "f294026bb26bf57e8cb5f7b12fb51b786b2c80b36ba2771b960ed3f3c482f37e"
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "bounds": [
+            38,
+            25,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "a73808396112b86031209ed8936447055122e9f184742148d657d189b55268fc"
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "bounds": [
+            47,
+            25,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "017c77afd03e9551cfd8ce11b821b16b0b86ffc327b7277368c500430ca73a8c"
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "bounds": [
+            29,
+            25,
+            163,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "c04620abc8e57f4cb6b1b6f1d7f028abfd790e5c4e457edebdb0e52c90a0546b"
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "bounds": [
+            31,
+            25,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "d24dca30f1307b411f8f36a4a7530b46b74c9860bae735433eec56f4e77f7c03"
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "bounds": [
+            31,
+            25,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "4590f9a99980b909b9a6ed2d8bca5ee3b48beada470001b943aab16b7e8191f0"
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "bounds": [
+            31,
+            25,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "d806a628684550f4cd48bd3f7658381c625e03d62b3a6beadf03a17295b3a36a"
+        }
+      ]
+    },
+    {
+      "role": "student",
+      "source_sha256": "aa874a11a16ef2798d421052a9eb2e0994620416a4fa43ba2a7399f46cd1ddf7",
+      "runtime_sha256": "1956b14c4c19a728b83fbf754383fcb8897d73a3de018d6547f91a2f9d343626",
+      "clipped_front_frames": [],
+      "frames": [
+        {
+          "row": 0,
+          "column": 0,
+          "bounds": [
+            27,
+            13,
+            165,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "75c863accc0599e8ec787ac712ef6f77cf32269c5adc02fbe3d3788c0858c184"
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "bounds": [
+            31,
+            13,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "033250476f0a077b8307cb982799b02331f9c61ffa2e32d4a093e0de61ce2fec"
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "bounds": [
+            31,
+            13,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "36c0a25f36836a99ac54e693279a37bd5be4ee1013999250c7e98d5ce9db65c4"
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "bounds": [
+            32,
+            13,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "9030cc81bcf56f1fb044533d70d484c360a5b383fcaf3e5a030b1017234ad272"
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "bounds": [
+            43,
+            35,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "1ab96d4c9b466c8a90b6fdde8abb28fa6f53c1d9ad5e1cb6998c14e25d8fe660"
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "bounds": [
+            48,
+            35,
+            152,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "ac0c41614f7d92592cf3b6f1b32fee33d3177fe88fde5591c87c9a357eced6bb"
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "bounds": [
+            48,
+            35,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "7b4d5ae9d626b6a0b0fcf4f435f9817925b33bf151c6ae166f41ce8022c465f8"
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "bounds": [
+            48,
+            35,
+            158,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "da4d25c36da57a0606e48cd8652b3a1eb7a5089b3a44b76f538b940e34e5ee94"
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "bounds": [
+            36,
+            35,
+            150,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "7fdd18dbebaf625ee342388f9d1f809bea0c769c6463830a0e5549bac384b307"
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "bounds": [
+            44,
+            35,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "441c32ce38cc07ccc23f29044730a5f9f11826f46d9b916eb5a19e04cf50ecaf"
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "bounds": [
+            38,
+            35,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "756024b6ab466a409551c53b521d68fa3f9c4deb5038ed6cada282bfea3241bc"
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "bounds": [
+            47,
+            35,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "197700f59ae4d282c430d1ca25b59863c2c9196bea4bec185f85c2faf159f61c"
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "bounds": [
+            29,
+            35,
+            163,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "0ad9f59a894506ea39c0c53f037b949826b4fd55cf2752d2c2154d1ace59b739"
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "bounds": [
+            31,
+            35,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "a1c00da513818e1e9cac6de0670a3237adae77128b4cc96c7657710d473454af"
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "bounds": [
+            31,
+            35,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "fd9c17c90de759ca4da5ee8a12d2180fea9808c691875a0b473ef71d41bd9a6a"
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "bounds": [
+            31,
+            35,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "8e860aaff06806c6c9dae4fb76861bdc67961a537f963e4786f9985dcd50f217"
+        }
+      ]
+    },
+    {
+      "role": "shopper",
+      "source_sha256": "96dd5ecfc8d15b4f5c9e2122268ce577e240688077156c263dca7317a9bff917",
+      "runtime_sha256": "3f6592a2849abea2c3bfaf3ad63f818f7b687db97dfe1e18397420691110831f",
+      "clipped_front_frames": [],
+      "frames": [
+        {
+          "row": 0,
+          "column": 0,
+          "bounds": [
+            27,
+            14,
+            165,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "5bdea6c6f2a504bf7080c080e88ee0845e39dc5da71e11df0a3462b730e093a6"
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "bounds": [
+            31,
+            14,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "2641ca6a28619277ad806f3970d11973608987ff823e8d6551e2b3d4bee33c1f"
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "bounds": [
+            31,
+            14,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "36d11adc5dc43efe0017ec56303aa11d65a10f1427fa09382894c88346044fc3"
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "bounds": [
+            32,
+            14,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "ec514ead1bd07f763ef879a7e4c6656b5233cec9535137a322a262bd59505cf2"
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "bounds": [
+            43,
+            36,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "5fa42551420eb955826810bccb2e3812137b32ad54d05698afd08bdaae6d3ac2"
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "bounds": [
+            43,
+            36,
+            152,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "ada877165cbb3f79f2a8c20dc92c06111438843b9e96ca1bd97e68b788037158"
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "bounds": [
+            43,
+            36,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "2a5ceefb469846fb471040b22c9d12efb0237cb3097173fb0dca5eb4df27fb9b"
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "bounds": [
+            43,
+            36,
+            158,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "64f60aa089e11d3614a66cfcf70049be2a9921867c1ac5399b17eaf086a1ed9e"
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "bounds": [
+            36,
+            36,
+            150,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "864caae6d6470d01bb1c8a1d948c4afaa550c40d184b6874d6450b94b02d16d3"
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "bounds": [
+            44,
+            36,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "e19e29f724bc94f6efd872f8ea67fbcab4dfdf57fb1ed280543424ae745608ea"
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "bounds": [
+            38,
+            36,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "527f7b1122464ffc0e778ba5bb978f2c0e7013f5ac21478edf1fff53dec08b67"
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "bounds": [
+            44,
+            36,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "fa19b4c51c74fc5bee7873a41d75a33b30dfeff4946b59728a7f67d405510128"
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "bounds": [
+            29,
+            36,
+            163,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "1c7481cc9535d479c6ace9e5d8ff4cc8e70ca72f4dbd82f8bd5dfdf68cd1ec06"
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "bounds": [
+            31,
+            36,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "ea60e4d451d8d3dbaedc6ef76e6150d266064e5836fbede1aa648bf454ec5057"
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "bounds": [
+            31,
+            36,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "037a3f20693516da960355bbf506b5a30dec1be05b88f94184f23a740ff7f00a"
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "bounds": [
+            31,
+            36,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "aee384d3709831776608a4d3060269341a73c5203f09f1f36ffd4d6cc44932fb"
+        }
+      ]
+    },
+    {
+      "role": "vendor",
+      "source_sha256": "f86b9dfcb231f56e054432ae13c0931654c361ae4eb0d3e5ba8caa9aeda4858d",
+      "runtime_sha256": "288a452d6ecf45f368bd78afbe5890c0a1053baaeb033de21047d31cd5515dda",
+      "clipped_front_frames": [],
+      "frames": [
+        {
+          "row": 0,
+          "column": 0,
+          "bounds": [
+            27,
+            15,
+            165,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "6490403827e27fe9b263ba3c2cc133b2335d269f4e7848ddab40e37a5b210b8f"
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "bounds": [
+            31,
+            18,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "1cb82c97c3cef76bffd9463d907a7d29e3e6fa093108c773e19003ad6df5bb9e"
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "bounds": [
+            31,
+            15,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "5fb5feb49b7b10957c9f0d21ad5e93d0a034c42c5cc1fa56f951817520fc7038"
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "bounds": [
+            32,
+            22,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "73202f48d172b1170eb7a21fe00df6ec75c5b60c44e93a8c4dc114b47a16a4f6"
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "bounds": [
+            31,
+            24,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "9efda3622b0c63ab4072d960a8690550dd33b07ff1cf487cc15d726a79737bcc"
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "bounds": [
+            14,
+            23,
+            152,
+            225
+          ],
+          "removed_outer_fragment_pixels": 37,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "df6991985957520dda2dc82564b637f7fdd1f8bdec1d87d5d7bfdebd8887ecc3"
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "bounds": [
+            16,
+            22,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "781a27c1ffcb73d20027ef8383186507ba954aaa438e841c0689f77663a1a3ba"
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "bounds": [
+            34,
+            24,
+            158,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "16182ca18f3d106dcd9ec43d5f027f733b2a1f2ce88a5a0c6ff163fd71e486c4"
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "bounds": [
+            36,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "218cb6452f7c98cf7f5674852ba423c807e13eac88ddc74d58cf0aa12d58cb53"
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "bounds": [
+            14,
+            23,
+            178,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "35f4677bec8969a30b42975b1d8236e85e980104c9871cf1beeea01f79ccb97c"
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "bounds": [
+            16,
+            23,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "c683a98898842e3620275e1baa21b588d6034aec92672b8c0d23952f59304c69"
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "bounds": [
+            14,
+            23,
+            177,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "1a8c90b028b155b245f6d919a60b4bdb2d2e2ae3f9d30542076e987c011037e5"
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "bounds": [
+            29,
+            20,
+            163,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "dda2a785221042a00fe4a9218367dbc60bd04f4521c33558426c27007994b179"
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "bounds": [
+            31,
+            20,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "c76edf1b3fc31ed2ffda37b9cf8c226f896a591633e543faf2ab159c3588fff8"
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "bounds": [
+            31,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "829c5d9414a20b9eed428d95b79ed35268355adb4b6300f87b2451572f4cc10d"
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "bounds": [
+            31,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "1da5023ba2aeef3e4add17d4f097ec80d2835769d3d327b1227c339b8db05862"
+        }
+      ]
+    },
+    {
+      "role": "chef",
+      "source_sha256": "c2ca9b2bcb70d30769be5ae9b0259732ba7b9af5ba62f777a00c9fbee399c1d0",
+      "runtime_sha256": "20bb89340f1ccec0d0240bfe5d7e8d4e6aa893759b06465a377f4c3e4414d75f",
+      "clipped_front_frames": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "frames": [
+        {
+          "row": 0,
+          "column": 0,
+          "bounds": [
+            27,
+            0,
+            165,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "c4abfd12812682ad7a130502f310807e71e644e7513ccd8de4ca56d72f6c1f0d"
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "bounds": [
+            31,
+            0,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "43c0dc6a6aa5aaf82c25502a0e1ef4804ab866fcfcab862951aace864ff22f5a"
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "bounds": [
+            31,
+            0,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "07bfbed3f8b60b1206e451275c31c5c17524d29f6faa667fd93dd39bb1e448c2"
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "bounds": [
+            32,
+            0,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "81702209d7ea34fdf7501dcd41d5febbbcd648f47141cc4cc106c0baa336b8e7"
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "bounds": [
+            43,
+            5,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "11d659a86006bedf01dc1472c50d5ec1da3c8e4746fa3b3e22d10b065a298460"
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "bounds": [
+            44,
+            5,
+            152,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "26af19503ee0c6f7d1c03887d7257814b10f084fd8517c78622b00b54f7c6f14"
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "bounds": [
+            44,
+            5,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "c98f4fd13a0f6e5f5344795c529386b90bec980fa804331b275823a939543f28"
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "bounds": [
+            44,
+            5,
+            158,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "7cfb617ddc391f70c7961777e9d4639aa7f47ffc71b43c75552cbb1cbce6088a"
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "bounds": [
+            36,
+            5,
+            150,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "d25681ff4dd25190aa4d6964fa6679e2b5e75e9fe213bb03478fabce7bdf4baf"
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "bounds": [
+            44,
+            5,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "659fc0248c243a6ce4be96e7c955da501c28a292e16cf9180bb1c045ba963520"
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "bounds": [
+            38,
+            5,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "9c22fe91ba54738a9c7cb2c555e7298aaa6f17a1ade6a571006f1efb5a184b53"
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "bounds": [
+            47,
+            5,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "64db8e6899a1902302b803284ebe498beff791581531b6b4fd0ca0afc30f7959"
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "bounds": [
+            29,
+            5,
+            163,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "f2a03bc5c6e5679266afc85e9f3596284b6e65bf140aea1ee44d6e79cc34f403"
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "bounds": [
+            31,
+            5,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "246771c611feb6b2e24cd421431473be4c6008a6176c04918e6005f38aa4bfa3"
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "bounds": [
+            31,
+            5,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "0b88d7332a8d6ddacfac228f07d7324266ca2ed6efeba86768e2cc7f993323bd"
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "bounds": [
+            31,
+            5,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "c9d28cb9000d5962e45abea78fc3f47f29dedf5ff4d033ff231716934f00a35d"
+        }
+      ]
+    },
+    {
+      "role": "construction",
+      "source_sha256": "196dc3b809e98d0c594fdc2fcefd6df47a7ee960e27360482b4637c96b48aecc",
+      "runtime_sha256": "c3799ab9c732a1eb46faa53f2d084ff4344aab6f5f028dcd71715ab10d66b458",
+      "clipped_front_frames": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "frames": [
+        {
+          "row": 0,
+          "column": 0,
+          "bounds": [
+            27,
+            0,
+            165,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "47631654a23b464d06135ddcc1902d5cd74bb399c83762b1f6a306207aeb8e2f"
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "bounds": [
+            31,
+            0,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "dcc4d2df51ab48800e88d980cd958c1540434400004f30e3dd3365d0db8bbe00"
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "bounds": [
+            31,
+            0,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "8c6f33ce55d24fbab40561462da97a567f658da0877b29e9f396dc7bb967ed03"
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "bounds": [
+            32,
+            0,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "b92c2f30dc77210cb12979ca8a93485a4e4110280bbccef806dca7064113b132"
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "bounds": [
+            43,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "2dd8268745cedc618bc7c4590355f023e1b1a0c2c413016c49806fe049e50366"
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "bounds": [
+            48,
+            20,
+            152,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "70dde49ade7a5faa429a2f2997afa2bc4af7df166cdec6b30be8afca7e16e29e"
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "bounds": [
+            48,
+            20,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "73ed502546f92c235b4030e75aed3974b615a50d3ca21c98dbf5072f8d0e22cc"
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "bounds": [
+            48,
+            20,
+            158,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "2e6bfeb19b7f47ea664b51078e1860b02279e6e3721fc81a58ffdc1f1d5f24c2"
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "bounds": [
+            36,
+            20,
+            150,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "5ecda914325499fe3e1e632c5b942ac9f2de21c8b72077ca375d32c1faeb20c5"
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "bounds": [
+            44,
+            20,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "f307c22eaa6b7bb18ca3c5fd19987612d2e35c0ea521196aabff84465a0a760b"
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "bounds": [
+            38,
+            20,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "6e0415c49b1e0da9990abdfae389be59330730134655a43e9686ebd3f3639c95"
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "bounds": [
+            47,
+            20,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "0050ff6fca68eaa35cb3b20a9c28d1450c4f037b6e729c9e332a6399ab9f3c2b"
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "bounds": [
+            29,
+            20,
+            163,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "659ffb655a9d29cb575ae1908ffa411df5b46d2797e74d9bf3339a5bab8e453f"
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "bounds": [
+            31,
+            20,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "f058dcb99f2ccab33f2f8a2fd032138932c1d1f307a93dc91e15a26f20780c0a"
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "bounds": [
+            31,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "c1ff4a3f55c4736c61f79f3bddcf0593094cd61d1b95115be1eb1ecdeb16f4c0"
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "bounds": [
+            31,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "7e123550a498ae94f462dcc894f7719a63653b3a2e1f80a3805b5c302bf47fe5"
+        }
+      ]
+    },
+    {
+      "role": "medic_civilian",
+      "source_sha256": "26bd70347818353ff4c9473a9eb25d30b7a98983717407db0112050588a99f41",
+      "runtime_sha256": "2b45b4dcc9520212b01c9a57a9904171ec0ba44d215f12e9f9289c56b751dcd4",
+      "clipped_front_frames": [],
+      "frames": [
+        {
+          "row": 0,
+          "column": 0,
+          "bounds": [
+            27,
+            4,
+            165,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "431fba0c2ce7d38a93d9c912425876fec13b173b182af981e8acd7018eab1a19"
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "bounds": [
+            31,
+            4,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "3511a42bafb2bc0f79bf2ef4120e96aaea0b146928390c17e696d027e18316fd"
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "bounds": [
+            31,
+            4,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "ec0a37c882569669839995720be48e8b856427e02d52f6aa1ce7f593d353c3ef"
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "bounds": [
+            32,
+            4,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "9591f89d594b9975e4930f3cd06394df0df4e7de348bf9b53d74a64f4a1bf6f7"
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "bounds": [
+            43,
+            26,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "6d6ce69c1923deb0e567a6955c49e426df438b992c70d1fe6cf223efeae37ceb"
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "bounds": [
+            48,
+            26,
+            152,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "87c2f62c21511b396952af09165dd0ce314942f879334b70a2518a7edb8a13a9"
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "bounds": [
+            48,
+            26,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "4a0cfd6f223564fd294d2a12f1ee158f54f93a7f301de531fd04e82cfdf65c24"
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "bounds": [
+            48,
+            26,
+            158,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "2b85e648cf4d5a616ad60d5290a502b40b269acc2281df992ce661fc6f56f92b"
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "bounds": [
+            36,
+            26,
+            150,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "60ae2c37bfb98040b4a7e482bbaecc6d4ec270aa5be23f5d30759e75b92cd314"
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "bounds": [
+            44,
+            26,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "f23da7d94f7d31299ac72d4c9f12c93805efd938cd88948923dd250602c82b66"
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "bounds": [
+            38,
+            26,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "e83de651f926b92f7de9627ae6e9c5f7299ebf911188435bac034d9aa9c48934"
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "bounds": [
+            47,
+            26,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "8eadfba0153b351e7ebc312c2f7fb432c58fd5ccad45e5216592c121543d5358"
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "bounds": [
+            29,
+            26,
+            163,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "fc156ffa8c52998d9a6f60278f7336150d86c3d92274e081567ce573b6973f43"
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "bounds": [
+            31,
+            26,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "7b26bad78de8b30c129eeacd7bcc1ee85a751ed8df2985714f1a4a428211909b"
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "bounds": [
+            31,
+            26,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "73bc649e6aee95cb28a65aca4519760f02f2c05d22747548f9834f83675643f7"
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "bounds": [
+            31,
+            26,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "0a3d684053749a237ec82bda14a1bafe1fe958f653914942e9e3b97440e44371"
+        }
+      ]
+    },
+    {
+      "role": "fisher",
+      "source_sha256": "be1790c35902cea086e2bc0c4c9c3db8728091caeb75f372dec5ac7f8eaac57e",
+      "runtime_sha256": "020d0a75b15d9decba01cd61d4f901d913a587f1cf78b533330b6b2344eaf449",
+      "clipped_front_frames": [],
+      "frames": [
+        {
+          "row": 0,
+          "column": 0,
+          "bounds": [
+            27,
+            12,
+            165,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "a756c834eef6dcd67b53be78c65e564c917eb484ea8ac24aeed5a1074737b6e7"
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "bounds": [
+            31,
+            12,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "3eccd874c56c77b06b4bb8af3691f91004cf5ceb4358a2ef3cd7ec1a58c23f62"
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "bounds": [
+            31,
+            12,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "0bb61978eda098031b1d703de14d63077a6eed2e204ee52204a0e2bd126d43e8"
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "bounds": [
+            32,
+            12,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "18018cb2c475f06cae98ae8645d71aedb50402b74a4f95edbfe12a1d4f0f68e1"
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "bounds": [
+            43,
+            34,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "adeb20adc53855703b67e297d702f54db379f91330b51e19c668ffeb8b0833c6"
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "bounds": [
+            45,
+            34,
+            152,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "32811d2fe16f6cd5377c7aa53926ee3666b25c8d1495b2758ff2d483efa2ae23"
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "bounds": [
+            45,
+            34,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "0184769ce73eea7e3969d2ffc861e6f171d15859d53219f6d2bd70323054429b"
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "bounds": [
+            45,
+            34,
+            158,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "8b8d46216cb81bd032c1937e54d00d78aed0ec1e1834306301c00a7f070320d4"
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "bounds": [
+            36,
+            34,
+            150,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "b8d16b1c48c08c8aac02b12c64bf44df3b1edb9f42ed7da8f3dd6c425c0b43ee"
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "bounds": [
+            44,
+            34,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "7339a8fd9dba110f819bd577f596cde8fefab25f6eae36dfb32e16bc7a6b5621"
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "bounds": [
+            38,
+            34,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "f228bcab4a9fe73b2250c0f156d940e44bc7443183b2356dbb305db0bb3a0a7c"
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "bounds": [
+            45,
+            34,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "dfe1ddaf1d4184d7001f08f127fa90db856c17046457d1e9d67f2b3d9b445cd7"
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "bounds": [
+            29,
+            34,
+            163,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "53d4d11b74670e459777da493986542f38a12848370902d841ac89e9fefdfef3"
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "bounds": [
+            31,
+            34,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "30cd60f40d44c18ec5545c309d00df7e6252b399014f1d1d670b4e8b423cc2fc"
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "bounds": [
+            31,
+            34,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "9da93fc82a261d3ab0aa67cc880345135f208368ab4401d68ef7db1ac4b12be4"
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "bounds": [
+            31,
+            34,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "7c9feaea0c4a088d6313c63edff087374c7673c30d6af97a82f7bc3cda65844d"
+        }
+      ]
+    },
+    {
+      "role": "tourist",
+      "source_sha256": "2ebe5f7bf18febfbe11bb97d8b8adbac79949329a83f936959363a02d42b843f",
+      "runtime_sha256": "5c0af54d4fd6d43829492d41dea3fef1ea609fa9c8248dac568d97040eeba415",
+      "clipped_front_frames": [],
+      "frames": [
+        {
+          "row": 0,
+          "column": 0,
+          "bounds": [
+            27,
+            14,
+            165,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "858d5728e1ca254dd42627fcb4e1af38b6944d77062fa2e2a18b4f29dd958296"
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "bounds": [
+            31,
+            14,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "5ee2df2efac2499d1bbffa18dfaf350cecee0969c0bc624a9203371dc444ab1a"
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "bounds": [
+            31,
+            14,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "d7ff419b2486f90eb5decfc65bc6ce944fc3cc4fb8931dd9571b926cef51a4c9"
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "bounds": [
+            32,
+            14,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "91bb633cfd2b437410bb105262e3ebf76116058aed43f57892b5b7f09f81ff93"
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "bounds": [
+            43,
+            36,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "e017c15c924c7e0fe1c542c35c7287fc2786dbbd4e3808686af6623c59b988d0"
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "bounds": [
+            43,
+            36,
+            152,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "affd32f0221b4dce53374de5789931ac714ebcbed6cde10d55df942f59d5c1a7"
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "bounds": [
+            43,
+            36,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "2bfd05c4242c130408affd1da23c84263fcfad1af7bd0d2b6bd5e8aa06e788b8"
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "bounds": [
+            43,
+            36,
+            158,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "c473651e3f6bcf695f0564ff2eef2b623861f6cc9baad686a1072522a19f2be1"
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "bounds": [
+            36,
+            36,
+            150,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "af445303574b53015df674d38574f94c84a94a200a338d86783dbc0c46300104"
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "bounds": [
+            44,
+            36,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "aa8dec89194195bc7131f72d9838822140c693846816910157600ba4a3c7d621"
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "bounds": [
+            38,
+            36,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "08d2c197d2e07e9465f3fc4f63ecb7690437409998f28d1fa43aa905820abed9"
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "bounds": [
+            44,
+            36,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "c35a4d02708d4957aa94cd5774b066a15d0f927fd667e4e8b5ecc3c675446ffd"
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "bounds": [
+            29,
+            36,
+            163,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "836ff95df0edcb6ca5b59600ab5a52bb103466a34e56c95f27351c6c4406db1e"
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "bounds": [
+            31,
+            36,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "232d845d91afd08c7e8670059000cf17d6c83d2c6cee48e0e20437a3206c8846"
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "bounds": [
+            31,
+            36,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "f632987b998735a54e646d400cb3402a6c0386ec1485ac058ee50e5ac064e88c"
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "bounds": [
+            31,
+            36,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "3fb87a310bfe67143202a62bdfe320e3bb5ad7125e50dbf27dc3a4825284f033"
+        }
+      ]
+    },
+    {
+      "role": "jogger",
+      "source_sha256": "f10c2d76f901595b5941e645cb9ad2bdbed201e5cfc7df3af63d2d5711a9fa5e",
+      "runtime_sha256": "b0bfcfc7cf0b4ba2c87eb35cc3d2dccd3fd7525d23b90e24685348f6771b5550",
+      "clipped_front_frames": [],
+      "frames": [
+        {
+          "row": 0,
+          "column": 0,
+          "bounds": [
+            27,
+            36,
+            165,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "7166587162501ee9454366f5d9fd520da8b7dddbf014c4f6243d4f89793dd962"
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "bounds": [
+            31,
+            36,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "a566451960c10277834124e3535bf7aef448f989a678fe62b370a83ac8c684c4"
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "bounds": [
+            31,
+            36,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "a46e24eddcc9c4ad72dbe45d907a6fc857ac35637de27ace5833a44609fdfab6"
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "bounds": [
+            32,
+            36,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "c5991abd6e7546ccf5093bef517fd2799aeb32c629d4f38ed80a32233562a892"
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "bounds": [
+            43,
+            47,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "c361bc72fa98fd03edcf919e0a9821cdad0771f34118a307ac360ef1059a5767"
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "bounds": [
+            48,
+            47,
+            152,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "96c2a095a42db20361f77b0c49ea91ffa1d652b60bce2c41c96e4ba5db64111d"
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "bounds": [
+            48,
+            47,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "51fe2dfa438fcaee5c23031d11dc68d3b10a9f717b6b08b62fb8bfb73c9d14e8"
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "bounds": [
+            48,
+            47,
+            158,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "50454bedc204ee25f341230398b44919f94e199b83804cae429e208c2a0331b0"
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "bounds": [
+            36,
+            47,
+            150,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "5e55cef1f0884237123ad65fef018ff51fae8721fe3a6b437a2f2fb25aa8bfd2"
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "bounds": [
+            44,
+            47,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "dbaa9ca4baa0e2df6866234c0b7e8714ab3dc4559ba073452e195d4876adb82e"
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "bounds": [
+            38,
+            47,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "325880d9cccb90540091b9ae4300e60e5e65ffdc337a87820757793da279636a"
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "bounds": [
+            47,
+            47,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "2d9288eb0810f7639bc617f3f5baa29bdde540c105af65c14b46ece82d3351c3"
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "bounds": [
+            29,
+            47,
+            163,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "81e8b4c51f29fad137f19dbdc2e847b762612b4533e7177af02a1770da1c2758"
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "bounds": [
+            31,
+            47,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "2c5bc77a926bebcf8768584b9414cb1c06ea1051567e07ee3728a24698fb512e"
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "bounds": [
+            31,
+            47,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "fcbdc61d3307ae6ead12d1f4a51e37f224f59c0c2b7673e91e7f83bb3f556460"
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "bounds": [
+            31,
+            47,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "1ba8fd5ec540045ebc89ecd71c4eed696010bef62ad6227a073d4c0bade4865b"
+        }
+      ]
+    },
+    {
+      "role": "office_worker",
+      "source_sha256": "75169dd8a47a1d0c0a02fb92d19d28ca2f3218c5fcef87510243eb2aed6eec73",
+      "runtime_sha256": "278ce39f132756e6a068fe68b3825a5b21e3c2b4f436b75fa075acc504f2b584",
+      "clipped_front_frames": [],
+      "frames": [
+        {
+          "row": 0,
+          "column": 0,
+          "bounds": [
+            27,
+            3,
+            165,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "3be985953a41de94c8af6d943a2bec2555fcbc24547d2a88009b468f96ad5801"
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "bounds": [
+            31,
+            3,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "77b63af0e846f24e5c2e36abd29768ce81702b8d8b737861710f0064c60b93f5"
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "bounds": [
+            31,
+            3,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "18a2c8eb1955b0f35cb059eb748a7184ee6adcc0ce7d983186d8d449e966ba74"
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "bounds": [
+            32,
+            3,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "21fcc377a5b9d203776878cb89831e8712c05077c2afdede80665d5a7f499143"
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "bounds": [
+            43,
+            25,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "c79c319ce836462fbd9455d32740fa3ec818627485a17bfc0738902609971c20"
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "bounds": [
+            48,
+            25,
+            152,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "30762a4a26b74a2ea77d4e8602c6317a4ac6f0d0eaa8c2d404a32a03d503f7ec"
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "bounds": [
+            48,
+            25,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "95b8d5b16d76b9b9efd93b9a5eaa7bcb7a27a34e2dcafd405e12979d2edb0f9d"
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "bounds": [
+            48,
+            25,
+            158,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "346d6fa7c10d472c171eb26d6398dc171714bf0c0d0c8b7f6eb4df1cb8b00c75"
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "bounds": [
+            36,
+            25,
+            150,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "5829c7897ec4c7888fbcd5ef8e841b274423f3700e5cd1f3abf13c3be41507e2"
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "bounds": [
+            44,
+            25,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "cb2cf6940284800a58907008642095092e558a6a06ab926748d204663502e058"
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "bounds": [
+            38,
+            25,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "02cdc5d7bbd93c615694f8f6a5753ad24d014310866fe1034c639dd823d12d6b"
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "bounds": [
+            47,
+            25,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "770d9868ed45862e63e64c2ebf7be9a290105a2a66d937474f75f49cd7bfdd12"
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "bounds": [
+            29,
+            25,
+            163,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "b14f3333e16e8556df44cf64b9aaf867b68be5e91f3e84379a3e837d65ca4d10"
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "bounds": [
+            31,
+            25,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "5cc374c591709d81d8ee88a2ec020a11fdeaf30065b31af80612eb79f71e167c"
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "bounds": [
+            31,
+            25,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "40ac4f588bf841829462c5a6294e93d1137c2ebfef1ec7c53f55c48b6588233a"
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "bounds": [
+            31,
+            25,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "cdabba3a6e34c559fa5da23572f20bcdb2dd9e527d97e4c73f16c5edac5815d1"
+        }
+      ]
+    },
+    {
+      "role": "delivery",
+      "source_sha256": "c3604c49008dce57088c919a650e14e68fd0b7a1614f7a98aff06116756a7133",
+      "runtime_sha256": "b7636c97c2d7c7ca37577d3b91605076e01717cad2ae0d4959ca3b21d5d0fdc5",
+      "clipped_front_frames": [],
+      "frames": [
+        {
+          "row": 0,
+          "column": 0,
+          "bounds": [
+            27,
+            15,
+            165,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "3f60f3abcf6b991909552f6a7dfa2a7d9a2299aa3b7d6daf188340a6b3b8358a"
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "bounds": [
+            31,
+            18,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "ae40732995e463634952b04c98399592bb729b4d7f65083b0b471df452664f6b"
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "bounds": [
+            31,
+            15,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "cb968d4c1212f6a0e2dd55d7d1ca12b37c417e8673683838fb9848fe937e7ae8"
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "bounds": [
+            32,
+            22,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "27083e590a96a70b48026ca307c9edd3c8377f15c76fc218ecb46c22e180454e"
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "bounds": [
+            31,
+            24,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "d27e5936150617d5a9e20283582d81ef6627fedd35ebbd1a481ec179e925bcfa"
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "bounds": [
+            14,
+            23,
+            152,
+            225
+          ],
+          "removed_outer_fragment_pixels": 37,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "9a734b5e4bc43334575421a672ae41622fa94d83d463a80a07a11d983aaf4a92"
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "bounds": [
+            16,
+            22,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "2b3f3d253b1d6130fd25cfe9a5f64a75bef682e96d7f15a7c67aef4142a7d4e8"
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "bounds": [
+            34,
+            24,
+            158,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "d9cfd909c2e80f171dda6998895c2e5417e16da904a0b1254db4f66fb3d304b1"
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "bounds": [
+            36,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "bc4f54c6429be62b137ae900929f6588dc24df170ab5804fb7d3b4fe9eadd4f2"
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "bounds": [
+            14,
+            23,
+            178,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "dd75e029142f8292aeaed8379ea58d79f5b6ad46c6f10c9f618c35eab4021724"
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "bounds": [
+            16,
+            23,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "e941e8c34b81a147835dbb2822ac2598481dcf2ce119d6a867fcf5533d0475ac"
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "bounds": [
+            14,
+            23,
+            177,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "92d72a7b0e1c80a00281d0914faa3f8c930d75e947cd0c72b1e2cede9950b3d3"
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "bounds": [
+            29,
+            20,
+            163,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "3a2f5a3badc1a84eca3b6fde1f1022908ae6d927e70339ca516aee1995fe9513"
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "bounds": [
+            31,
+            20,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "29ce2a412a8bed8c27f22f5fb6d4a7da1fbd10fb37e681540efb1daa9c9615da"
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "bounds": [
+            31,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "e756cf7cd8acd88e2460357e62081e1231b1a96c464579c00c79ba449c9660e2"
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "bounds": [
+            31,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "098bdd981b15a09badebec4184494a2891f902592af54cfd95452c5f5f850658"
+        }
+      ]
+    },
+    {
+      "role": "janitor",
+      "source_sha256": "f7ed8bf53c724095177533aa6a5a13ca50b171930f108aa7bf65184ed5765028",
+      "runtime_sha256": "de500826785cc3ef2e7a03e24b3b7b1083ebf50a9a99082d3879009e33acc73c",
+      "clipped_front_frames": [],
+      "frames": [
+        {
+          "row": 0,
+          "column": 0,
+          "bounds": [
+            27,
+            15,
+            165,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "9fea7538cd567a3cfa8d5c630aa0e8e0594027dd2460ca9d3ee9ba0de83cfde7"
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "bounds": [
+            31,
+            18,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "d23389e69d80cae1306db43822765acae3fc8db5555bd5c5e0a977757ea3b2e3"
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "bounds": [
+            31,
+            15,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "725e862e367c93936a708378583721c1d4527776721973501e34a66d18f30d1b"
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "bounds": [
+            32,
+            22,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "74635549036f71aa1e40c0683c52ff7534f72a23d81bcf8a85d983a2450c9a3a"
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "bounds": [
+            31,
+            24,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "6a66287fa48e7f5072726de8bc55480fddf5e8f6338156741c8478d9454bc3ee"
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "bounds": [
+            14,
+            23,
+            152,
+            225
+          ],
+          "removed_outer_fragment_pixels": 37,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "b4ce86b0e9d44757e3db690d3e2326399892b26d03daa89d49ed384a418a194d"
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "bounds": [
+            16,
+            22,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "c8bb35ca11f09ba832b93d28f9a2e438f363d7500962ba5da044836a5bfc453e"
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "bounds": [
+            34,
+            24,
+            158,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "64b3f2a497af960e9de726059835344d20d57961266f005f3d6b91793b4f9100"
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "bounds": [
+            36,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "1ac74e7cc1f208d937b425c693a97ffb6451389b87d5162493a99fcbce270ce5"
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "bounds": [
+            14,
+            23,
+            178,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "bf37194de8200f8f5b5069c27b9388eec1aa1a0df5f606cfd5a4d98939499d39"
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "bounds": [
+            16,
+            23,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "e6f8ad4daec87ee35ac908e2aad6764416c7d906d1030799e4f269a84b495a51"
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "bounds": [
+            14,
+            23,
+            177,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "5ad3d1da802ccdcd794c4a2d5c14828fb4273343b185b8ce5a74c44f11832962"
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "bounds": [
+            29,
+            20,
+            163,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "ca5974bf4f4fc9a5c847c20cfe688da00ecd59397edfeee2cb97623189b4814e"
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "bounds": [
+            31,
+            20,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "abe9fe8fcc9213f2d08fbf0963749b41e0ec66190242d7760cc5aa65093e30a5"
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "bounds": [
+            31,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "e085732b18e0f5f8af4817fdd5cb1e028eaaaf88c62e8de137302255f8ed0a76"
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "bounds": [
+            31,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "9ca8020385b4b865af06389368bae23919333ce77680c1aa9ded7e8268afc17f"
+        }
+      ]
+    },
+    {
+      "role": "mail_clerk",
+      "source_sha256": "56d3ea98e9ff3dd0af4be24688391b896786bfe7fb634535a61bb156ecc39fe0",
+      "runtime_sha256": "73a3db4fb9fc2847f9d4f8ee1961d6e80708f0119f6b418673176576d31d7fa3",
+      "clipped_front_frames": [],
+      "frames": [
+        {
+          "row": 0,
+          "column": 0,
+          "bounds": [
+            27,
+            15,
+            165,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "53e3b2956113f6adf6f161f1d515a8f00bd166871fa002d1647de814dabf1d1a"
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "bounds": [
+            31,
+            18,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "d7ee0b3fa34702cc72e2217a37ab48fd0700f3cfccdca9ffb4ccb9308b5e9e19"
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "bounds": [
+            31,
+            15,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "076d1319b0f0e1bcf0a4ccacb1e1be803a431543dcab54ab34be8ac3da970e4d"
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "bounds": [
+            32,
+            22,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "35bbc997b92f23e9a0763cfe5f0e011e6f9f09d6f4f63f11e6219b1c5d647767"
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "bounds": [
+            31,
+            24,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "f2e935978b30f28c200a6720793630cbe0e7f457a85f8dd792d3e3b0700ed508"
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "bounds": [
+            14,
+            23,
+            152,
+            225
+          ],
+          "removed_outer_fragment_pixels": 37,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "da11b7802f6f48be55e216513ad89d6a8b4f5381af1e1a9392fd744ba6cb0637"
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "bounds": [
+            16,
+            22,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "16fcb6db4537160a2076e1121848068373d75f7d82b73ae1381af0d37f89c51c"
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "bounds": [
+            34,
+            24,
+            158,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "552c4a6d0fce9646d97c3ce2a651805eb02a34a344d87796f4271e5252f9ef51"
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "bounds": [
+            36,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "f9564484165107b14debbecc8e49a35d0959d9e8ded248f81c366e11585c71d2"
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "bounds": [
+            14,
+            23,
+            178,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "fd3159c35382cb21cd8565df6b30820bf646da1b162d5a29ef20e737573dd17c"
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "bounds": [
+            16,
+            23,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "667bcd42d090eed5a10983dec024114887360f2702138eaa9db40e58ca482d87"
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "bounds": [
+            14,
+            23,
+            177,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "91d7b8078eeb2385f41e29b98cc8060d6fbc62f56462545991495b87d7de3b40"
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "bounds": [
+            29,
+            20,
+            163,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "085a24425dfb75817399d10dde2fd93064ee2211b1b94f29445569fbafb06c89"
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "bounds": [
+            31,
+            20,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "ffab4685ef3db21cdcd24f08b644b3eb1a46408fc481e36f77e0c599c451c4ef"
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "bounds": [
+            31,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "9a52569c0c1b57a3afa3fdde78df0944c852ee47cd6468ec1b7752610773685a"
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "bounds": [
+            31,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "ec6ed21340109b47a2bbef9d7ac171969b5a86344d408e42e513a4f58f11f633"
+        }
+      ]
+    },
+    {
+      "role": "gardener",
+      "source_sha256": "e522461575ad9c2857a7668efcbd7102cd9a3fb5a9d31cbe9f006595d3a6d1af",
+      "runtime_sha256": "7656becff7bda2f959700474c2271c9986202bccb60a2cf87e08e95223204e34",
+      "clipped_front_frames": [],
+      "frames": [
+        {
+          "row": 0,
+          "column": 0,
+          "bounds": [
+            27,
+            14,
+            165,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "bb71a6c52eaa2827b680bb8e4915dd730a18d680069f2cbe9148eb352404a5b2"
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "bounds": [
+            31,
+            14,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "7d626f0b37cfd05659a038b3317ea03af4508d55d7152ea7a4471e9701065e10"
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "bounds": [
+            31,
+            14,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "f1c99f686b8e952e911934108b55f9b0f99dc9b802ec3d72c29645381d1ab7d0"
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "bounds": [
+            32,
+            14,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "d2cea9affa4691c0bf896f167cd5e4ec4fe1155cb4caa342f3b503dcda0339e8"
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "bounds": [
+            43,
+            36,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "7f7044b4cdf2e082df42601ff8c55da9c7c399071079789af20148e3fe19a49d"
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "bounds": [
+            43,
+            36,
+            152,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "227728b8ddfbdea72463c85de034ef6d02b8d1e975f5d2e68d036602579c2e6a"
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "bounds": [
+            43,
+            36,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "f09547ef7cb8ff256725fd6e5a5b00f0161035a0234ba8ecfe8e9a94be14f801"
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "bounds": [
+            43,
+            36,
+            158,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "ca956640d816a798dc12cf621b1a3a04504f0096c4555576d4f4515c929897f0"
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "bounds": [
+            36,
+            36,
+            150,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "8e44ac545e39b69d89b7d4a86cfc3148f538fa234cf6df5cc4fc21e7d6a32b4b"
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "bounds": [
+            44,
+            36,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "14d30763a3b8fd3d884091723e83061f54e98ac9d6da3501e904237a936dc6ff"
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "bounds": [
+            38,
+            36,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "becadc576130da073aa9f45993ecef65ec1db38f443c38f75230f296a5532c3c"
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "bounds": [
+            44,
+            36,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "b48e107a3b28ec9578d5c883c80353638e47deb641b15831d1e5be5003d1f5ba"
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "bounds": [
+            29,
+            36,
+            163,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "586c1df1b9d658845fd99cb2c2c588f43ccc50c340173b8611663f2eaaeebfc5"
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "bounds": [
+            31,
+            36,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "d1ea7ed7706da0f6b7deeaa422de29ca1e760468d4c539072bda68c25d192c90"
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "bounds": [
+            31,
+            36,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "c2869bc0fe40a0c86fbd3dee53376165b0ca9cf498afc7de1801a90389a13c20"
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "bounds": [
+            31,
+            36,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "78ca822d33ad4627c08631a5ba1a1b4dec1e8abb2cdc5df4bb33604e315da56c"
+        }
+      ]
+    },
+    {
+      "role": "musician",
+      "source_sha256": "a6a1a8878f9c9d290eaa3f40f5b79660fafd9561fcf85bfa13f667dab1f0134c",
+      "runtime_sha256": "2b85403c1d1c0db4984d554167cef516608364371722264cbea67b0ce08240c1",
+      "clipped_front_frames": [],
+      "frames": [
+        {
+          "row": 0,
+          "column": 0,
+          "bounds": [
+            27,
+            4,
+            165,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "324c976cdf26fe9af2af867d787ddcb327637c6151e57cac6507a23a49e3af6a"
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "bounds": [
+            31,
+            4,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "8a0bdc86e21f9f5eb3f76e56af59271d43af81e9e92a7a82b708e527f27d6272"
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "bounds": [
+            31,
+            4,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "77466090d510cb28d017377a63a369a7e0036e43d4f3e22511098190c7add704"
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "bounds": [
+            32,
+            4,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "0490811d4830a58ba338aa78114efe8c944da8c9daad75e124211772bc1116f2"
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "bounds": [
+            41,
+            26,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "415337a440b82131ac6d9f12e7498a8a23da6f614ed24691c9eaf2fb0f0f1d91"
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "bounds": [
+            41,
+            26,
+            152,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "e1fab4c6433171f12fef8efc35480b1e2dfe0feef2cec450ef8ef639ba7a105c"
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "bounds": [
+            41,
+            26,
+            152,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "82a36ebf54c4b699ae75b49b05d961fea9b788f249925a45104d32dc402f50e0"
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "bounds": [
+            41,
+            26,
+            158,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "7a22e48fe808ae42478d16bb1ff7c31925556ab24081951efd0d1d2f2596d1c8"
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "bounds": [
+            36,
+            26,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "f1d219c30c1e4e9fb6b2c31f6435400a38079995e7d7f4c6bb49f34285b22a9d"
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "bounds": [
+            40,
+            26,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "6632262b108c09098a00bd8abb1cc9d9f0f43a48007a2ff9a64335319f2d8c31"
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "bounds": [
+            38,
+            26,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "19d78ecb9852c4f5c6b04525b48ab1b4a443dd494d4903e645b83ab10a625e88"
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "bounds": [
+            40,
+            26,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "87ea855788b7b0f3df2609a11591b44a35a2258b870da48136733ed5592c1ba7"
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "bounds": [
+            29,
+            26,
+            163,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "8053a1e0d28551e856c971c00502897ef9b5147ff9ec9711f0f758299fbd2f2f"
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "bounds": [
+            31,
+            26,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "0530490f44c983f3307fcfdd631d5702228b93187133ce7c94c426d5abef51f1"
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "bounds": [
+            31,
+            26,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "44faec04c89849e16048b540ee5f67444246693eec5533a0721f3b0d479c75f5"
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "bounds": [
+            31,
+            26,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "fee822a7cea8048ad20c3152b95c1162a64518c05cb168dd74ccf44a53b8f6a0"
+        }
+      ]
+    },
+    {
+      "role": "artist",
+      "source_sha256": "56036b640ba0e71e406e7c6c0759fe87c76fe36318b00bf05008d5b48a079608",
+      "runtime_sha256": "87930d932692382c1851f3ea88deeb46768c0e1e7b979b36b24122c9680957e6",
+      "clipped_front_frames": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "frames": [
+        {
+          "row": 0,
+          "column": 0,
+          "bounds": [
+            27,
+            0,
+            165,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "b8d6f0380f5bf2bfaeb663352f919cffcd378913e318e233b67d81ff2cadb5cf"
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "bounds": [
+            31,
+            0,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "7bfad189c1131d40b8a0261499874f0d505acfbfcf4dd8ab175257dc6358513a"
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "bounds": [
+            31,
+            0,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "3e2ef649c710ec3238c65aef57cd69bad5efbf989454a6992a86d5241943b674"
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "bounds": [
+            32,
+            0,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "1bb05344211ee228280eb98b72499edabdbccfb736f2330d2a40a7192fc8462a"
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "bounds": [
+            43,
+            18,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "220e02353fbd8b83b611fa22c4cf15ce74d4f1f063190c8ddd935dac9ecd8ffc"
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "bounds": [
+            48,
+            18,
+            152,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "1e0bf88c62f2728cc34cdbafd4a4c5a9d34c0663734fc724df8be21ee6cb5798"
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "bounds": [
+            48,
+            18,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "3527b45ce705c0e5f6f81e9621068a57982e241bb90a4528f0e8b1f6fa2cb31e"
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "bounds": [
+            48,
+            18,
+            158,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "c984d24f71b822df1cb6f7f68476c0d61c1cdd85b25cb87f393a03e115d370fb"
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "bounds": [
+            36,
+            18,
+            150,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "4ec81058bd358d4b9a9e27ff6ef43101109c6da853d108b32ad62ceb7942e31c"
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "bounds": [
+            44,
+            18,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "7e5ed63254e676820bf78740134eed879a9985e4167852336bfd7ad57e256f0b"
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "bounds": [
+            38,
+            18,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "c9df5bd5dc33678d2aefd5c78ff2f8f17f24e3ed253c920eec22af6ba9ea8879"
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "bounds": [
+            47,
+            18,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "aca133f9292bb55f7df7831e1a7919f083a233716efbb55b3c5e57b5220b7a3c"
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "bounds": [
+            29,
+            18,
+            163,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "719230f84b875cc5c862cebea8140ab72eef7a0c0ce0b0d69ef5f45f89a4e38d"
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "bounds": [
+            31,
+            18,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "d6e99074d77dddfcef035c3a1e83bb954ee406ea83977999b75d9cfb31495852"
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "bounds": [
+            31,
+            18,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "317f70477408398f268bf23ff503fff3712a1eea8ed2b00c1e715628f3644218"
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "bounds": [
+            31,
+            18,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "1fd070dedcc5cd0aec37e5f589d473b5433c9d739070bf01d6df25a226938180"
+        }
+      ]
+    },
+    {
+      "role": "barista",
+      "source_sha256": "eb19f3016a4143e9075f1048d7253bbf808235e0e97d7b003c16377458b674c2",
+      "runtime_sha256": "9ea27fa44e2406c3749490184974218b34d38ece8f20cbc75d8165416c76486c",
+      "clipped_front_frames": [],
+      "frames": [
+        {
+          "row": 0,
+          "column": 0,
+          "bounds": [
+            27,
+            15,
+            165,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "1259c95057f2588d4b5dcbc3c3290681a4e10516f85f684641a61b7ddd225c6a"
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "bounds": [
+            31,
+            18,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "ac9b712d22efdddd5e9142bd9bc7feb24d846147ed35c7a4205144f0291c8e9a"
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "bounds": [
+            31,
+            15,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "4b93e1fa9d7f25276259b7f97c5e963f0e94c7807feec2d6e035445e2ec8e03a"
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "bounds": [
+            32,
+            22,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "bad44ca4a3ccd90f41b4e79f92d660b3f44bb7b670096bd43fbd96bfaf3d0d8b"
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "bounds": [
+            31,
+            24,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "634cb4f06283f0904a3c2352eca0ec0f3af3e6916952e68e426dbde5f5f49fc2"
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "bounds": [
+            14,
+            23,
+            152,
+            225
+          ],
+          "removed_outer_fragment_pixels": 37,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "32f54239fd30525b4bc0e5af92be6a51712542944b7e0ecf40838cf55e2aa7f5"
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "bounds": [
+            16,
+            22,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "d0c66c19833acc71c041f7dc0ca828b493ddfa2478baf443968197091fbc52b5"
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "bounds": [
+            34,
+            24,
+            158,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "914c8737d44fc0219ecfcf5d850156ce67efab53cafdc4b52d74aa5408086ec3"
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "bounds": [
+            36,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "45db8535fc44fa9313e44f55a9899e7125d3cabb2af4020d50ac3d3e1a6ed818"
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "bounds": [
+            14,
+            23,
+            178,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "bc87b5ea6c46a2fd87055def02d61ed0272dc3282fe1b022b6b93b450c226621"
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "bounds": [
+            16,
+            23,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "7b0f78e7ba41f534cba09b08375b4d0cc0c668a9d312c506520139d37185a9b4"
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "bounds": [
+            14,
+            23,
+            177,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "cda7eed3e47918fdc3355066da14e3f1302151c9a2fa96566851644f7f33ad6c"
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "bounds": [
+            29,
+            20,
+            163,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "3717a28959c7f3d45d4f07f1c183d917753b3d350335c1cec0d6b5e72b1d578b"
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "bounds": [
+            31,
+            20,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "0a7759444814380b9c119e5ae77a6151803f3e72b61df44e3f866b0b7ae8c987"
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "bounds": [
+            31,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "9226f85517027c616b401003efa1afceb9d6fe24d49457b1c618408915f78f01"
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "bounds": [
+            31,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "611936308c656ae996109b0300b7c0832a0b0d32b72b423fe3e2c9518b30d92b"
+        }
+      ]
+    },
+    {
+      "role": "store_clerk",
+      "source_sha256": "1c07cc4f5155127a735e747a4f0a50b2a03d8afef53829f124241833c6e39071",
+      "runtime_sha256": "363f92b7bacc1c82c59cc43b6dfdda8ab4889b8d8a4abf56c05c38e0e0bbe2a8",
+      "clipped_front_frames": [],
+      "frames": [
+        {
+          "row": 0,
+          "column": 0,
+          "bounds": [
+            27,
+            15,
+            165,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "1ee1b1f32d00f0ba4eb4cddac28d1fef092d393a534eb721d670e12dc68d53bd"
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "bounds": [
+            31,
+            18,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "9a673e7520a39a0c2391b49608cab2a747b586c8163f324c7e88eabd7dfabe54"
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "bounds": [
+            31,
+            15,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "74cad199c53522f9b7d17d68a53364d4420592053d4bcab037f8b67fa25eb410"
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "bounds": [
+            32,
+            22,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "bd9f6b12baa16117fd5a824b662cca25b134e1ee6a14624c6e7afe1e65f75c7b"
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "bounds": [
+            31,
+            24,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "e1489c7837dfa807a64ba64d876739d3dcc8190ec574a7ab29ae57f8875e39d6"
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "bounds": [
+            14,
+            23,
+            152,
+            225
+          ],
+          "removed_outer_fragment_pixels": 37,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "e61ef95a2b2cb0582bc618682900750b1481d0124828ff7f831cec795087826f"
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "bounds": [
+            16,
+            22,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "577f1f0f55766301754bc755b90f60f0edf2b19819e9432c7f01b01756f28ee9"
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "bounds": [
+            34,
+            24,
+            158,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "af6866749ffa33f8e99f4780c417c0300f38b7d5af34df9fd9261b2a15759b16"
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "bounds": [
+            36,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "76ec7c914dac2d246ef868b4e396c229172c55474ce0bc2994ed6e2381a95be7"
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "bounds": [
+            14,
+            23,
+            178,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "8e7f2ba4fff8e4fc3b401cbb82c24d6300cd87b62deb76e8b4c707811657f5bc"
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "bounds": [
+            16,
+            23,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "8d21984f4e041612e2e27804addee8f1f2cab95d1669256c95f1c26fc0f6b47e"
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "bounds": [
+            14,
+            23,
+            177,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "7bd748c400bc317954f5cfd58f85079502b02e216d8b795e4741795f91deecef"
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "bounds": [
+            29,
+            20,
+            163,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "d8ca2cde9a2d16bb84c6458b1f60b057d6997a9f0b9df58369d430712268baef"
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "bounds": [
+            31,
+            20,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "b598b3c7eaa49513f925f9db988f19a3eb57e76c71b89c8b8d21d27c6872986f"
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "bounds": [
+            31,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "b4eeb445c00dceb916b4828a309c1dd71db777eaca7755248d4526450c63ef9d"
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "bounds": [
+            31,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "5660c850bdffc7c5569830b5c8d9cc8fd46f808453ba2ec17b0fa1823ba8f484"
+        }
+      ]
+    },
+    {
+      "role": "waiter",
+      "source_sha256": "19562d68fc56e38d177ac6d2a0bc4176749c91e53fe0f989653428dcbf5b7220",
+      "runtime_sha256": "feff94f1f6a4cedd016833ece5b8557da86bb12ac0a2f847447477b0e0c7dc71",
+      "clipped_front_frames": [],
+      "frames": [
+        {
+          "row": 0,
+          "column": 0,
+          "bounds": [
+            27,
+            3,
+            165,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "7f2ffb892832e1565c25f22234bc6979930c5c5eb50a857c70fe4e5e75bc95f1"
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "bounds": [
+            31,
+            3,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "7dd89a318c0e66e92fc2866c5907e14076d6d4590b0721898b387aaaef5b0d5f"
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "bounds": [
+            31,
+            3,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "4231243818741e5f8f3aa2c3089cbfc93caa3cd45fa1a0f74fc9606f0913433d"
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "bounds": [
+            32,
+            3,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "33ccb90c9b9aa35c82b497632bc238be67442fb3130e4e0d2303840c7220fe59"
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "bounds": [
+            43,
+            25,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "38b4f8d27ff1c138b8563f8aba9eccfc2ec64d4a83c2466b226621821e0fe98b"
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "bounds": [
+            48,
+            25,
+            152,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "50bcbfd0d68ae12b9115926b453a437302e8367f6d1464dfde0e3afe007dbc00"
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "bounds": [
+            48,
+            25,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "a57f745fa0aed54b35ec88a7ad386027cf704f88b74114aeaa279f09b30b6e62"
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "bounds": [
+            48,
+            25,
+            158,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "e0f8d8efc4c7c2bb16f8b809668ff4d838aec7aeaec980ad5c7271a6eefe4f3e"
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "bounds": [
+            36,
+            25,
+            150,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "87127a8a5658fd7badb74178f4b30babf11a01c89692e2126cca5a68c45fc9c6"
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "bounds": [
+            44,
+            25,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "666deb35285c240d0a60da4bfbe6f9c3f6fd394cfe35ed4023d3ce1d11f745fc"
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "bounds": [
+            38,
+            25,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "c876c123254bac0c097d20a655970ab496e32f45a828d28ba9f2faeefb972af5"
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "bounds": [
+            47,
+            25,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "e626399c3ec731ade3736aa1ed258b8ff94570d7f3ac6bc6bd36b34522025c01"
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "bounds": [
+            29,
+            25,
+            163,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "f1622fbb93c49e56fd7acdff5743fed4c7e3ef8c9c5dcdabfa5b2f8fd2a9ade9"
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "bounds": [
+            31,
+            25,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "2bb47ad8f39ab3c1c2ac2186c7c11dcff11cb9e1d69593d9a02630244299c2ee"
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "bounds": [
+            31,
+            25,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "c3978df0d22f2e3982b1f875aff5af4f5594648b59ccc1b161806eaa81b2e58b"
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "bounds": [
+            31,
+            25,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "6ca47baaf87899755fd3669e33ff5db30b89444d3c29aa0f7884d0504456f4eb"
+        }
+      ]
+    },
+    {
+      "role": "coach",
+      "source_sha256": "a2dc50c11b35ba6bb3f6a18c9b9cd60f5d4ebbb09dfebb90c6420f047d66f03f",
+      "runtime_sha256": "9157414cb4975b4cb70e6be578625688772e1cd8f96e15e26dbcd2408a6627e1",
+      "clipped_front_frames": [],
+      "frames": [
+        {
+          "row": 0,
+          "column": 0,
+          "bounds": [
+            27,
+            15,
+            165,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "539a74a8331950a94c10b8a9847b9ecb20979e772f00b4602436e00984b7b6be"
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "bounds": [
+            31,
+            18,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "78a6b2f62c9f265ab2a608df75ab622dfdc34501dc40ab7167619a028ef6a574"
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "bounds": [
+            31,
+            15,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "99508aa0f9f875590121bdc94e95e2e8650a1c56336e075f77367a572fed740e"
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "bounds": [
+            32,
+            22,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "4bed41f6498baf6c103d028a6c48f00fa93acacbad46aabafdcd3b997437707a"
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "bounds": [
+            31,
+            24,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "311d3bd0b6b01174317110517f726d9255079c77087191d02c6950ac5b8903c8"
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "bounds": [
+            14,
+            23,
+            152,
+            225
+          ],
+          "removed_outer_fragment_pixels": 37,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "5923ad944d74d6dc622c5f67896be051d1240323c78f228ac4cbafeef5912f10"
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "bounds": [
+            16,
+            22,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "e9230f183d97ab4e3bc2c6f13ababafde2176e263ad64f7df852938148ac5acf"
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "bounds": [
+            34,
+            24,
+            158,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "98cb7b70be4542dd9d7e27a58108ddbe783dbb2d9db0a98f00b73c6799b89ebb"
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "bounds": [
+            36,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "b85130f63d3afa417907e1c18d126235dbbcf76b5ab4974eda9f4072c846b43b"
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "bounds": [
+            14,
+            23,
+            178,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "4c856d8411a004f0c8c1ef99fb49d61ff7593bbb2bbb36386261f61486d1bb7a"
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "bounds": [
+            16,
+            23,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "3dbf94a6d3bee78a30c7b4a5da5bdcf3c5171dba42a6163f07c5ea2eedbe4960"
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "bounds": [
+            14,
+            23,
+            177,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "8d303cc6a854305a181891a1b299f6c2cedca04f43f22b53a7ad5a65fb77add7"
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "bounds": [
+            29,
+            20,
+            163,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "3e08999cf4c8d7569db6b233f6f7f1109d95b836abe87fe645abf279c98ea7e6"
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "bounds": [
+            31,
+            20,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "26b2cd5ce7bbced3da392a9f2e083c1336cbaadd87d6a1592ec74cdefcbe986c"
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "bounds": [
+            31,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "554e18f9e327b884dcb0bc7c377f943086a34ccb0f3d146707009cb0be889d50"
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "bounds": [
+            31,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "052a1585efec136795ce705a0b56dd4fe0926c6b59906e8e0ac30b202a9553b8"
+        }
+      ]
+    },
+    {
+      "role": "hiker",
+      "source_sha256": "5fcacdf86f23eb909ab0de28c065e122ae8ede533302e6fee1bab088abc3f934",
+      "runtime_sha256": "bf138d0de5837fc6086fd916b826322c8d9528dc7a6d484da0a94e10d96c21e6",
+      "clipped_front_frames": [],
+      "frames": [
+        {
+          "row": 0,
+          "column": 0,
+          "bounds": [
+            27,
+            12,
+            165,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "97a932917b3985a1e00ba8b47f29ff6cadc13c8572d9b5670d0d34341fb55485"
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "bounds": [
+            31,
+            12,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "cfeb991a4bd87d4e439e821c726b2b48ff3e09b4427156f592a45ef5ca703c68"
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "bounds": [
+            31,
+            12,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "76ee18b6b457c9f510df908c291f2546d0c3437af13ad46272cc40839da19a85"
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "bounds": [
+            32,
+            12,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "89a27ee380fc23a8d841a3d9c9e79b98b4dd5611de839058e28e66c43ac3ad62"
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "bounds": [
+            43,
+            34,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "c48927d85c904ddd18bcee254cc75246731f4bff52a16c828bf8bffbc81e9c3d"
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "bounds": [
+            45,
+            34,
+            152,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "1de894103dff787ab8f466b8a0da304272f917f167b80b32ba49d84957aa6edb"
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "bounds": [
+            45,
+            34,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "dadfffdb2eba17043f00c72a5196d96037dadbbce397b5aee21b8192ac19d59f"
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "bounds": [
+            45,
+            34,
+            158,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "afa99afa0e66ce3f75c0213b4700a90c19f85b5bffe1fb50736a6729342385a2"
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "bounds": [
+            36,
+            34,
+            150,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "0280b1603df2bdc17bac75c3f7d02362b24f0e2c7c5b2f82ae6df60f2c694af5"
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "bounds": [
+            44,
+            34,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "c0ff3a7f5ce048801d4fcdd16ed3946d84cf2da1412b47fa0b1a9f4824e5fef3"
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "bounds": [
+            38,
+            34,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "8c523659446226d586f6c3f233e739adbd83bbd78891570814bd4a4fc89154fa"
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "bounds": [
+            45,
+            34,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "c3717d0e7655615b6c4b903dfdf2fdc890130427094248e87fc529d9b02823e3"
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "bounds": [
+            29,
+            34,
+            163,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "f770fa49e8eb0d4ff3f782f9d057f938fd9b73c3d63d35d52c3172694f645da5"
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "bounds": [
+            31,
+            34,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "5c92518552c4baf6664670d5f5acb582ce4dfd624cd1475c69b6cfae8a4ce997"
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "bounds": [
+            31,
+            34,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "b2d0402cb08953535fb63232f2a98fecb5f780c8404c3252dfc3dbbfbe72a791"
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "bounds": [
+            31,
+            34,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "7141799d78f83b38137aab2865864f485468affbb93a3a8cda9b6d7470a3572b"
+        }
+      ]
+    },
+    {
+      "role": "elder",
+      "source_sha256": "d92035b3192e018d8bcc540f1b99ca4f4835018d9ee2eda600bfe793558e6029",
+      "runtime_sha256": "a787b70b31eb3b200df0ab005de67d57835fcaed6bf1b64b863504af8528cb79",
+      "clipped_front_frames": [],
+      "frames": [
+        {
+          "row": 0,
+          "column": 0,
+          "bounds": [
+            27,
+            2,
+            165,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "57b7833ad8fd5cd88a6aca10ae74ec82ad5812ebb942f1468fcf1b8526e259fc"
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "bounds": [
+            31,
+            2,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "3f7745ad0e3bde7cb58fbe96a48c80edc6ad897a032c6c2028ebcd4c59baf7ed"
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "bounds": [
+            31,
+            2,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "a305a7356351653a0b99735b512dca63026281919e8eff0f16609e42b0769c7f"
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "bounds": [
+            32,
+            2,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "8ddcba9259ddf17a5fe9409b0e9e8337bef885feb754e6b71fbaf9b666b95be1"
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "bounds": [
+            43,
+            24,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "22c467163f1237015391e59887de3f7062b493aa124d6286597c152780f625b6"
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "bounds": [
+            47,
+            24,
+            152,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "7ac21797e35b4c229c6a29f41f22c48682ef418d7552e3abe975d034207a8a44"
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "bounds": [
+            47,
+            24,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "3339e96aa54e08ec560c777e6f75dfc33cbb76317360aeed071e8740dc160705"
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "bounds": [
+            47,
+            24,
+            158,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "effd951c7dd6e45c407063bc7dc2bd1dc6b3408650ccb385b2d53570f451ac42"
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "bounds": [
+            36,
+            24,
+            150,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "9623222722306ca6fb284d2ee12094f5bb2c1c98a031b3727acdd321d2283a89"
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "bounds": [
+            44,
+            24,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "1f5bcf2617859b050ff249b51782149829131c73f894e2272a21e4e8b0fd2619"
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "bounds": [
+            38,
+            24,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "866da2f021f67eafea428d3c91e9b67907db85b09be76b6624c18793a54c2398"
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "bounds": [
+            44,
+            24,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "bdcf91903d8517582a9ccd20ff7a847d3c99a2e1f382f9495615c62bee410168"
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "bounds": [
+            29,
+            24,
+            163,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "6bb5522972b4f10055f0406a7a0e0d91b6b808e3f6201c6cdd0dff268f004d45"
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "bounds": [
+            31,
+            24,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "eb23ee90760ae86fe26db6bf4b496fbd2ad47b2426b5462d226ab65d2cdf38fa"
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "bounds": [
+            31,
+            24,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "8dff695712f1c63f48b45ec3dddfa86b102a03199c2801c4073dec72225d1fb7"
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "bounds": [
+            31,
+            24,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "20a3a2c0a6ac770096d8c8a1335b9c823a6e24bfa887987c9129969f7a8f8752"
+        }
+      ]
+    },
+    {
+      "role": "kid",
+      "source_sha256": "118606fbd6f603ff524e769a039664a2826a5bec6488bf9aa0c222c5f187cb70",
+      "runtime_sha256": "90b662f28aa808dd63954b5545c51c0256a18135748ac654e5e16d1d5494303d",
+      "clipped_front_frames": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "frames": [
+        {
+          "row": 0,
+          "column": 0,
+          "bounds": [
+            27,
+            0,
+            165,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "e047f59e62ce26b7203465027b7771e37547849a87e8a54436bafb6ef59cbf0f"
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "bounds": [
+            31,
+            0,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "4591b9586ef71d95a5e33949f3b7e0b573e246b725920f622174e478fbeb6963"
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "bounds": [
+            31,
+            0,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "9b54bd050e8140182aa2f94d02aff791bc798d89a2656064feab11c92ea83b34"
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "bounds": [
+            32,
+            0,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "d1f6659875d76164dbfb0a3706895a6e1aa49f27e06498dc757ca2c4ee089115"
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "bounds": [
+            43,
+            13,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "a1ae83ef7bf15af629bb7faca656178215d32ef67589e52100175587f688faf6"
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "bounds": [
+            48,
+            13,
+            152,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "c1d2a7e973f25fecff6fd4175190f70fab73e8b808902cded0d40aad3e3cee4e"
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "bounds": [
+            48,
+            13,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "68efabac2e354da4b25907e6aeb351d7b7371ec4048bf84dfccc7deea36ed0bb"
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "bounds": [
+            48,
+            13,
+            158,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "d0647391f342fedef153d20b3cc860568bdbd001d04f5104d6fb5a5274409d24"
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "bounds": [
+            36,
+            13,
+            150,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "bed519dd07be263d26e6d15c306436f2d01cc9bf83470f5cb74381a3c30661d8"
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "bounds": [
+            44,
+            13,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "97f147c8c64e4c3ca9d9d6a364fb80cde147518f707990656a8e4a5984cf6664"
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "bounds": [
+            38,
+            13,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "52e6ea6a079814f1d4576f64b126454e71b244f83c6b1bcb0c5409c89d0c426c"
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "bounds": [
+            47,
+            13,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "c677cc1fafe37b7eadb6c5219be2e7b310c05765a7a60c9ca7d9e538011f6b21"
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "bounds": [
+            29,
+            13,
+            163,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "442d47ae2783b810f7fda1def7534231d2f58a416136f7cfd1560d2308304c1b"
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "bounds": [
+            31,
+            13,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "d56cbc9dce2b45c622447b0007fa1395b0f1015b9fa170c2cf0a94efc8c1d7f8"
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "bounds": [
+            31,
+            13,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "3c85ea9cfa3212e66c8202d936183fe283f144f95da25880ec8edb8d493206e7"
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "bounds": [
+            31,
+            13,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "8d74cc30225d62ed15172994aed3d92b5c6309a3d4ab93cb0deffd9c583e6a8a"
+        }
+      ]
+    },
+    {
+      "role": "beachgoer",
+      "source_sha256": "417a69237cf6ee04dee436f6beea27b501b92e27c3ca6581ecd193bad3028f8b",
+      "runtime_sha256": "2afb3acef58d0f1a9b29382f825edc17cf6cabf639455d82bdbad8d2458ed8f5",
+      "clipped_front_frames": [],
+      "frames": [
+        {
+          "row": 0,
+          "column": 0,
+          "bounds": [
+            27,
+            14,
+            165,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "edf44c3005e34a7f070cdd00b931b720759abc650a9b48acccebc9907d9b73dc"
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "bounds": [
+            31,
+            14,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "96da426446439bd607bcef1ffa157ec91cb9f1cab2db4571f68309151a928ce5"
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "bounds": [
+            31,
+            14,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "572b330a776871ea28992b6fc43c7a0ab2943ff8b2a7e151df6affbab6c6d3ea"
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "bounds": [
+            32,
+            14,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "ae300e7405cfd80e0d7c149398d4b4ff8d7823bbfd0cc91b72e94f7cb2c7e240"
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "bounds": [
+            43,
+            36,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "96342601c28b2bf27cdfc4b0a73b35bbde293ccdb565b2fbe74ef72ce382b2c2"
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "bounds": [
+            43,
+            36,
+            152,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "adfafc20f02d63c8ab2a7e9a87a71ce84f9489f3b3880c64f5912f606469dbfe"
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "bounds": [
+            43,
+            36,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "01dae7dafd5c38719199b26ef5cd057491916d835d1e98e7bc75aa911bc47f6c"
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "bounds": [
+            43,
+            36,
+            158,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "d7b5c36e5c5ab1190625d3ca647dee5fb50b08566d4e9d1cbff4d3d8824ca397"
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "bounds": [
+            36,
+            36,
+            150,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "9ba2b1f0faf7520ccf290ea24ba0fac117d216d8a57f2e6ba7bc0eb6bb9e2ec1"
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "bounds": [
+            44,
+            36,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "34bfdb0b975697e58c809af05ef9c49f87d61b8aecb39af05d46ddc893a5c012"
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "bounds": [
+            38,
+            36,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "6ede699e88a09bf1cdbdeea496c2b7112aa538838c4c29a69a7dac71449fa5c0"
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "bounds": [
+            44,
+            36,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "23498f78d90a9bbdf84f6f9dcc0bb0b50f0cf3a6ea5f90402fd41b49a4335ffc"
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "bounds": [
+            29,
+            36,
+            163,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "bbaccef9420636a453fad461d44135817a041ff72d59a48ed7916333dd73ef97"
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "bounds": [
+            31,
+            36,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "0874355ab23636f416ac652af540d73c013dd0ee58708af2cba3006becb5da20"
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "bounds": [
+            31,
+            36,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "dfe577882eb680b24f86a3868f7082e99576d43961e24bc3168b09378202f873"
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "bounds": [
+            31,
+            36,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "a6ab2c0297e02ef2f2b8d5230f66750f54be455e56c5eb96fb7cb1239ceaad36"
+        }
+      ]
+    },
+    {
+      "role": "dock_worker",
+      "source_sha256": "dc5d485e3171df7a95c4d062b9e4e848ed35f021a8e2c312f0f9ffe80c9194ab",
+      "runtime_sha256": "0cb0ca38077d91da2625c08d6a7c759dee20b7f3e1c1b1b786f25feed44c3020",
+      "clipped_front_frames": [],
+      "frames": [
+        {
+          "row": 0,
+          "column": 0,
+          "bounds": [
+            27,
+            15,
+            165,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "2df025cbb904904babf977e22a366d51897400289fbb792170776f52dc5b6d58"
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "bounds": [
+            31,
+            18,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "274cd5186db096e3be1ddb9dff2d8653916a049327e2a551a02131238142d008"
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "bounds": [
+            31,
+            15,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "e2afa2075becd912fce3cc2a938447e4dc03e8a95588a17e8a4eb21ee91beafa"
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "bounds": [
+            32,
+            22,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "d45878c7203ca00f0a5a6d590f1f7e02e479655b50caa75e94dcd600b3e3245f"
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "bounds": [
+            31,
+            24,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "46627035c2b685cd4d51626e78c9c849abfe18be07d397a1a9cd92d1d81b91b9"
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "bounds": [
+            14,
+            23,
+            152,
+            225
+          ],
+          "removed_outer_fragment_pixels": 37,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "595e57fc988b993c74b237841a58c0cb62e1936518c254c51f02265b72c390b6"
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "bounds": [
+            16,
+            22,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "03fb7c722ee215ab79a16fb7b5b74b0ef8fb2872379ed93cf34cbe97b99d49b9"
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "bounds": [
+            34,
+            24,
+            158,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "ff1943663647ea517f9189799a0e96e30d6a6f198dfd83c177b91e9535bef001"
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "bounds": [
+            36,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "c672e6f2926f8f2e23d25abeb36662fd1b82db473b6ab0248ed33244cd06f245"
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "bounds": [
+            14,
+            23,
+            178,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "b1fc74a7d9dc24a3bcd670d9665eaa75af775296d02bf4995327334492c783b4"
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "bounds": [
+            16,
+            23,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "0a3dcdaa2152414451c072c045d5785c42c308f98f0817cffcd80dee40cc911e"
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "bounds": [
+            14,
+            23,
+            177,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "24becf2c1511a52d2e9fff30362a02410ce145432c206999fa170aa7fa760710"
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "bounds": [
+            29,
+            20,
+            163,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "cbc83f0027866c4394de0fe3a5da5cef778c9783a8b4ec814bdf21fb077f4474"
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "bounds": [
+            31,
+            20,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "aa797aaecc67a7262562cb9cffc8d8bd7d2edb4f48219d14f5dc92ff4dc88785"
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "bounds": [
+            31,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "b66cabe47d985b3fa89398e9007ef557d7813e19622b72a295b5307aaa270de7"
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "bounds": [
+            31,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "9e2d36fd00bad439f24f19fbe80f9c0c7eb805d9ca1511ee42733810655e7aae"
+        }
+      ]
+    },
+    {
+      "role": "mechanic",
+      "source_sha256": "70b6e4a35306f48bd936456bc990628aa5d7bef7be50e32b636ccb85c36816cb",
+      "runtime_sha256": "2d4ce4dff857dfa33c89952d39f5aa0303677964d90a0cb772b410046bf00dd2",
+      "clipped_front_frames": [],
+      "frames": [
+        {
+          "row": 0,
+          "column": 0,
+          "bounds": [
+            27,
+            15,
+            165,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "69f0827dec7ca5732e7760ac32ff8b756b61a3695e5aa01982e496e23dd9541d"
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "bounds": [
+            31,
+            18,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "dd19f6eb6d5e2e239172017d2cbd11e7baa1ee922ff22abe8159aa0df6b2d8f2"
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "bounds": [
+            31,
+            15,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "fd684fb198a32e3769b906008b0b9ba1712f8d1370f9edf17b653bc12e463287"
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "bounds": [
+            32,
+            22,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "655c050efc2a7722e7fccd3e0cd5939b46ee45e2481508688b9c9840c38516c2"
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "bounds": [
+            31,
+            24,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "39b3abd408ff739bfe3772437d02c0214011ece100b3cb41bc36a045a753d6a9"
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "bounds": [
+            14,
+            23,
+            152,
+            225
+          ],
+          "removed_outer_fragment_pixels": 37,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "e6001063e5a2023f84c3658826226420f8aa6778cc7ebcda1f0194f4765a20c0"
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "bounds": [
+            16,
+            22,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "2be748dabdcf597ff9e33859630f744bfa58389782a741f24b490e4c86113baf"
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "bounds": [
+            34,
+            24,
+            158,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "30c406755d02728f024944177b0fa37de79249f3c6c49e0a44d278e44cb0e425"
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "bounds": [
+            36,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "5486ac981783b93c54e4e186b988cdd9e1d792656075bccbedfc664ba8a4a51c"
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "bounds": [
+            14,
+            23,
+            178,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "ae6ff46073ecd3120e5fc46d06e2713c27844c724d7f95667d04e1f459d74e67"
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "bounds": [
+            16,
+            23,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "9a1fdfc3fcc45fdd13843668b80b0265a22f939785c63ecaa922d8d47279a758"
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "bounds": [
+            14,
+            23,
+            177,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "47ef501730016fcfa0f694a136a46861379bc31e9fffa49a69eacf5a36d0df29"
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "bounds": [
+            29,
+            20,
+            163,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "4ce344c585ae8a173414b110235e100e4207337962d6507ca8e502d5e77da78b"
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "bounds": [
+            31,
+            20,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "94dc82c4fbf84fcd812db4c9be2ae64368981614459f76342d0121900f1337c1"
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "bounds": [
+            31,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "c01f6beff959d40990328895116233e56dfbc18f76c44c271fa7c5dcf0e75637"
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "bounds": [
+            31,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "124498c1989bd26c8eb70196b68ca4f5706ac445152fc070016436c7afc4daec"
+        }
+      ]
+    },
+    {
+      "role": "business",
+      "source_sha256": "89893dcb92207b44f3986bb6a4a9513bafeb6c532b048181e45b255ad8629d30",
+      "runtime_sha256": "458c86177df00251fa69f0b3cfd1ad6cbe42140f7def3312ade9a02743f5ef98",
+      "clipped_front_frames": [],
+      "frames": [
+        {
+          "row": 0,
+          "column": 0,
+          "bounds": [
+            27,
+            3,
+            165,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "745f36c04e5566a0691fe4182491c554bbbf5d59535ae96ff424d914da8b7469"
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "bounds": [
+            31,
+            3,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "1a32f5734dbb3d126f687449843834839872eb079200c384941d6f77d156a5a4"
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "bounds": [
+            31,
+            3,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "da9a0efda44f53d04d2f8599bdb1198fed9a1e4d0345932d6b4428d28dcd020f"
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "bounds": [
+            32,
+            3,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "2cb7e3e749b9f3b4717e904713328de378b7571bbaf2715c7990c1fa601da54b"
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "bounds": [
+            43,
+            25,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "b469ef158aee870fa66a26e290af90f6e6f43c5fb83bf8dfca27a55ce0c319c7"
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "bounds": [
+            48,
+            25,
+            152,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "5012f90545313c0b9ddfff033e835a5252a93c3ff62179c7ed0478e4c0f48ed0"
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "bounds": [
+            48,
+            25,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "ef3a6edcc3dc331aa31831827d527e598cb6841fac593a39d5b5ea36b43cbd8c"
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "bounds": [
+            48,
+            25,
+            158,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "e6a6ec9613eb07fe629f6687d9c0cf0d20b764cd00bf4a0d78454f9d2c6c142c"
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "bounds": [
+            36,
+            25,
+            150,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "c78bcf0c7b9f54a87f8075d944c1f151e37fdcd8703b8bfa7c798bf605409848"
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "bounds": [
+            44,
+            25,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "eeb0850efb7a69422222fd8f7b37565bf003f6fce65792daef844f6b8ce32719"
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "bounds": [
+            38,
+            25,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "56168cf61e1171c6e7e3a50a959581ee12cc26b4815a2884be1d579e5cc0fbd2"
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "bounds": [
+            47,
+            25,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "6b44411b5c9674d376233f8d13f3d96043996243a725b5fd4a90afbcafef9f87"
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "bounds": [
+            29,
+            25,
+            163,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "c164d5e07a854b9caf8a063431e1b5abeddaafe8b0a3fff9e5487edf4d683f34"
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "bounds": [
+            31,
+            25,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "4fcfbed1f9a8d03d775af80fe26c89a1693394e30697b179895b5dc5bb752840"
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "bounds": [
+            31,
+            25,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "8c1e0d4744de4ecb8c61a017b3519ecb4e78327fc17418bfbf027dfa10df7a1f"
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "bounds": [
+            31,
+            25,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "c249b0ec6d978c266dd1ce438f541ca8d7b04eb01dfd38a99c4b9d3c65b094ea"
+        }
+      ]
+    },
+    {
+      "role": "librarian",
+      "source_sha256": "1302adf1d3cb5549323054640af8440a5adf7c9508486e1213485359152a922c",
+      "runtime_sha256": "edbf8ac3d9a36d4b9cacaeb39edd693d190866b738d00c89782298a40ebe9db7",
+      "clipped_front_frames": [],
+      "frames": [
+        {
+          "row": 0,
+          "column": 0,
+          "bounds": [
+            27,
+            3,
+            165,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "143bab63599729d91e1be9ce989ebc01a74a3440ee61af0aa7fa2660bf6dd408"
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "bounds": [
+            31,
+            3,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "cf141ec9cf71ee1168a0ff710a346404e2e6df2f5a66288a72225cea56872213"
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "bounds": [
+            31,
+            3,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "1cd0fb3d70e73e01298096b5185ce85cd7a0edc09f3b6471cd2bc41532646710"
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "bounds": [
+            32,
+            3,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "f9b795b2a67f72d4df0f972f0ada78eea498b0af93882dc2b91dafc5c2e8f631"
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "bounds": [
+            43,
+            25,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "eaa04a00c60746ae7f6427268e150d5e5b4e73b61a8f150a6f455ea60224dc88"
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "bounds": [
+            48,
+            25,
+            152,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "d045f151bf16da1cec931e3b61fefc4ce3213938ab7c4eee9ded6259decfc2b3"
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "bounds": [
+            48,
+            25,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "12bba64f69c2bb27dc711792ce18fa7c8cee2cbdc3ce238acc1def6a9059a9d3"
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "bounds": [
+            48,
+            25,
+            158,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "8d014f59bf1b3e83559279801ebeadc677678061a2f7d6f92fe57b35d3cc5d78"
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "bounds": [
+            36,
+            25,
+            150,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "16bbea10f0479fc018836b3ef7b13c1f6f68b85c01f3fce1231519c621872255"
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "bounds": [
+            44,
+            25,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "bc0ac4b86e5bffa4b4ac78d21544924196336cd3db9bab94440b5eaafe779606"
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "bounds": [
+            38,
+            25,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "7b884b3fb118ee836a81f288dfaee75501937fc954fe289e761a55d7f6cbf716"
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "bounds": [
+            47,
+            25,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "9b201352455ca68ec0554deb3ba8128163b050327472b3ae764e672fd5e628a7"
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "bounds": [
+            29,
+            25,
+            163,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "4ee7ecc1cdb526752347a36426a3e20d6b7ff98697e8c3501cd1dd62c9647f33"
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "bounds": [
+            31,
+            25,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "89e4e4abe6e8085e10e0923cc53a04aa0b5f4f6f255e85a3caaaea0b817694c5"
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "bounds": [
+            31,
+            25,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "77002df9c28164152f0149e7adbd86ae2af1e434f54fb95d4f0954fb7f1b1745"
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "bounds": [
+            31,
+            25,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "395381bd6cbadd772fc73f1bad16e2dd2d470c23831f81764aeae08b1acba294"
+        }
+      ]
+    },
+    {
+      "role": "lifeguard",
+      "source_sha256": "7bca62eeedc3ac12cae48899e34a6eed78bad0ae14c56ebdde9d4b17170b60cc",
+      "runtime_sha256": "670438bb43bdfb4e3421bc01a7a04e488691d6c06885662c49f67eefb0e662d8",
+      "clipped_front_frames": [],
+      "frames": [
+        {
+          "row": 0,
+          "column": 0,
+          "bounds": [
+            27,
+            15,
+            165,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "c77497c3684f83a1b4e55d857ede6487baf4dbd071fede215a830a75e0e3b9f5"
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "bounds": [
+            31,
+            18,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "89e106f3390fd1e2c768cd61c6a06dee6ca5752b6fccdb6497e820b658507dc0"
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "bounds": [
+            31,
+            15,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "7280988166ccbe0975fa877b7aae814e3eda7915a9ee6a42d7a5aed33e25a1b3"
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "bounds": [
+            32,
+            22,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "e812cdb1b5e02df9aaaf80ca190b077de0dba01c56eec10a014dd11d6fdbec44"
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "bounds": [
+            31,
+            24,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "0301accd0196bfddf26029370bfedd1091435bb5098da0897e28b59c69c23632"
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "bounds": [
+            14,
+            23,
+            152,
+            225
+          ],
+          "removed_outer_fragment_pixels": 37,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "cdb1ca17868faecf8d9b0acc5b9918921e40bd4c234351237fb7b4607cd64101"
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "bounds": [
+            16,
+            22,
+            151,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "4e3243b71370e601e22f9894c371dbd348351e21a0bc59dd6af8751592cd61e5"
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "bounds": [
+            34,
+            24,
+            158,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "95848b4b5774bbd8a735822fe2813fcf1b095b7ced2120643b24c18d5aae28a8"
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "bounds": [
+            36,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "42e80f5568dfa6d7fdc12bc50201f9f6d206fd4fc3f04eb3270060f01ccb8762"
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "bounds": [
+            14,
+            23,
+            178,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "4e6e7560f769ab2286220b8ba28bcbf5ba23e39bded1cff320590e426068186c"
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "bounds": [
+            16,
+            23,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "6c7b3f97e1181db1f385ea6664f08d523735e385e53a414cd4f17984b4ffea75"
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "bounds": [
+            14,
+            23,
+            177,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "3deb1a613c35329a46394b4125ccb8e05175949a8a8fd753fee24a06c744145a"
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "bounds": [
+            29,
+            20,
+            163,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "46037668233e8d1526608b3b9abd5463093f85df6cd667aeac94921c69888f32"
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "bounds": [
+            31,
+            20,
+            160,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "0242dba598dc6bb31d9dd6cf5f374bcff0a0ae8a954c3761b55da4f74e150234"
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "bounds": [
+            31,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "c7067b9792c92d8347e57fa1b2cc26d4c0f508f79ed5018ba51354207645baad"
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "bounds": [
+            31,
+            20,
+            161,
+            225
+          ],
+          "removed_outer_fragment_pixels": 0,
+          "hand_and_leg_source_alpha_unchanged": true,
+          "hash": "e410afd43db6d294bc75546fd84a6815a0c6a8132ce639c11c6b350b455fec72"
+        }
+      ]
+    }
+  ]
+}

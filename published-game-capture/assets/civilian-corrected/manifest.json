@@ -1,0 +1,206 @@
+{
+  "frame_size": [
+    128,
+    160
+  ],
+  "anchor": [
+    64,
+    150
+  ],
+  "directions": [
+    "down",
+    "left",
+    "right",
+    "up"
+  ],
+  "source_frame_size": [
+    192,
+    240
+  ],
+  "source_anchor": [
+    96,
+    225
+  ],
+  "characters": {
+    "resident": {
+      "label": "Resident",
+      "walk_atlas": "atlases/resident_walk.png",
+      "playback_allowed": true,
+      "hold_reason": null
+    },
+    "student": {
+      "label": "Student",
+      "walk_atlas": "atlases/student_walk.png",
+      "playback_allowed": true,
+      "hold_reason": null
+    },
+    "shopper": {
+      "label": "Shopper",
+      "walk_atlas": "atlases/shopper_walk.png",
+      "playback_allowed": true,
+      "hold_reason": null
+    },
+    "vendor": {
+      "label": "Food Vendor",
+      "walk_atlas": "atlases/vendor_walk.png",
+      "playback_allowed": true,
+      "hold_reason": null
+    },
+    "chef": {
+      "label": "Chef",
+      "walk_atlas": "atlases/chef_walk.png",
+      "playback_allowed": false,
+      "hold_reason": "Front headwear is clipped at the supplied source image top edge."
+    },
+    "construction": {
+      "label": "Construction Worker",
+      "walk_atlas": "atlases/construction_walk.png",
+      "playback_allowed": false,
+      "hold_reason": "Front headwear is clipped at the supplied source image top edge."
+    },
+    "medic_civilian": {
+      "label": "Clinic Worker",
+      "walk_atlas": "atlases/medic_civilian_walk.png",
+      "playback_allowed": true,
+      "hold_reason": null
+    },
+    "fisher": {
+      "label": "Fisher",
+      "walk_atlas": "atlases/fisher_walk.png",
+      "playback_allowed": true,
+      "hold_reason": null
+    },
+    "tourist": {
+      "label": "Tourist",
+      "walk_atlas": "atlases/tourist_walk.png",
+      "playback_allowed": true,
+      "hold_reason": null
+    },
+    "jogger": {
+      "label": "Jogger",
+      "walk_atlas": "atlases/jogger_walk.png",
+      "playback_allowed": true,
+      "hold_reason": null
+    },
+    "office_worker": {
+      "label": "Office Worker",
+      "walk_atlas": "atlases/office_worker_walk.png",
+      "playback_allowed": true,
+      "hold_reason": null
+    },
+    "delivery": {
+      "label": "Delivery Worker",
+      "walk_atlas": "atlases/delivery_walk.png",
+      "playback_allowed": true,
+      "hold_reason": null
+    },
+    "janitor": {
+      "label": "Janitor",
+      "walk_atlas": "atlases/janitor_walk.png",
+      "playback_allowed": true,
+      "hold_reason": null
+    },
+    "mail_clerk": {
+      "label": "Mail Clerk",
+      "walk_atlas": "atlases/mail_clerk_walk.png",
+      "playback_allowed": true,
+      "hold_reason": null
+    },
+    "gardener": {
+      "label": "Gardener",
+      "walk_atlas": "atlases/gardener_walk.png",
+      "playback_allowed": true,
+      "hold_reason": null
+    },
+    "musician": {
+      "label": "Musician",
+      "walk_atlas": "atlases/musician_walk.png",
+      "playback_allowed": true,
+      "hold_reason": null
+    },
+    "artist": {
+      "label": "Artist",
+      "walk_atlas": "atlases/artist_walk.png",
+      "playback_allowed": false,
+      "hold_reason": "Front headwear is clipped at the supplied source image top edge."
+    },
+    "barista": {
+      "label": "Barista",
+      "walk_atlas": "atlases/barista_walk.png",
+      "playback_allowed": true,
+      "hold_reason": null
+    },
+    "store_clerk": {
+      "label": "Store Clerk",
+      "walk_atlas": "atlases/store_clerk_walk.png",
+      "playback_allowed": true,
+      "hold_reason": null
+    },
+    "waiter": {
+      "label": "Waiter",
+      "walk_atlas": "atlases/waiter_walk.png",
+      "playback_allowed": true,
+      "hold_reason": null
+    },
+    "coach": {
+      "label": "Coach",
+      "walk_atlas": "atlases/coach_walk.png",
+      "playback_allowed": true,
+      "hold_reason": null
+    },
+    "hiker": {
+      "label": "Hiker",
+      "walk_atlas": "atlases/hiker_walk.png",
+      "playback_allowed": true,
+      "hold_reason": null
+    },
+    "elder": {
+      "label": "Elder",
+      "walk_atlas": "atlases/elder_walk.png",
+      "playback_allowed": true,
+      "hold_reason": null
+    },
+    "kid": {
+      "label": "Kid",
+      "walk_atlas": "atlases/kid_walk.png",
+      "playback_allowed": false,
+      "hold_reason": "Front headwear is clipped at the supplied source image top edge."
+    },
+    "beachgoer": {
+      "label": "Beachgoer",
+      "walk_atlas": "atlases/beachgoer_walk.png",
+      "playback_allowed": true,
+      "hold_reason": null
+    },
+    "dock_worker": {
+      "label": "Dock Worker",
+      "walk_atlas": "atlases/dock_worker_walk.png",
+      "playback_allowed": true,
+      "hold_reason": null
+    },
+    "mechanic": {
+      "label": "Mechanic",
+      "walk_atlas": "atlases/mechanic_walk.png",
+      "playback_allowed": true,
+      "hold_reason": null
+    },
+    "business": {
+      "label": "Business Citizen",
+      "walk_atlas": "atlases/business_walk.png",
+      "playback_allowed": true,
+      "hold_reason": null
+    },
+    "librarian": {
+      "label": "Librarian",
+      "walk_atlas": "atlases/librarian_walk.png",
+      "playback_allowed": true,
+      "hold_reason": null
+    },
+    "lifeguard": {
+      "label": "Lifeguard",
+      "walk_atlas": "atlases/lifeguard_walk.png",
+      "playback_allowed": true,
+      "hold_reason": null
+    }
+  }
+}

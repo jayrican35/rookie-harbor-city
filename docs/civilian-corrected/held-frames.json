@@ -1,0 +1,42 @@
+{
+  "chef": {
+    "direction": "down",
+    "frame_indices": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "reason": "Opaque source hat pixels touch top edge; individual frame matches atlas."
+  },
+  "construction": {
+    "direction": "down",
+    "frame_indices": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "reason": "Opaque source hat pixels touch top edge; individual frame matches atlas."
+  },
+  "artist": {
+    "direction": "down",
+    "frame_indices": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "reason": "Opaque source hat pixels touch top edge; individual frame matches atlas."
+  },
+  "kid": {
+    "direction": "down",
+    "frame_indices": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "reason": "Opaque source hat pixels touch top edge; individual frame matches atlas."
+  }
+}

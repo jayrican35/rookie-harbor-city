@@ -4,12 +4,16 @@ import hashlib
 import json
 import re
 import shutil
+import argparse
 
 r = Path.cwd()
-art_ready = json.loads((r/'published-game-capture/assets/civilian-approved/review-status.json').read_text())['approvedForPlayback']
+parser=argparse.ArgumentParser();parser.add_argument('--candidate',action='store_true');args=parser.parse_args()
+asset_dir=r/'published-game-capture/assets/civilian-corrected'
+art_ready = json.loads((asset_dir/'review-status.json').read_text())['approvedForPlayback']
+pack=json.loads((asset_dir/'manifest.json').read_text())
 base = r / 'site/preview/marina-updated'
 before = r / 'site/preview/civilian-before'
-after = r / 'site/preview/civilian-updated'
+after = r / ('site/preview/civilian-candidate' if args.candidate else 'site/preview/civilian-updated')
 for target in [before, after]:
     if not target.exists():
         shutil.copytree(base, target)
@@ -27,13 +31,14 @@ for target in [before, after]:
     html = re.sub(r'game-v115\.bundle\.js\?v=[\da-f]+', 'game-v115.bundle.js?v='+digest, html)
     if target == after:
         shutil.copy2(r / 'published-game-capture/civilian-connected.js', target / 'civilian-connected.js')
-        shutil.copytree(r / 'published-game-capture/assets/civilian-approved', target / 'assets/civilian-approved', dirs_exist_ok=True)
+        shutil.copytree(asset_dir, target / 'assets/civilian-corrected', dirs_exist_ok=True)
         html = re.sub(r'<script data-civilian-preview>.*?</script>\s*<script src="\./civilian-connected\.js[^\"]*"></script>', '', html)
         digest = hashlib.sha256((target / 'civilian-connected.js').read_bytes()).hexdigest()[:12]
-        html = html.replace('</body>', '<script data-civilian-preview>window.ROOKIE_CONNECTED_CIVILIANS_ACTIVE='+str(art_ready).lower()+';</script><script src="./civilian-connected.js?v='+digest+'"></script></body>')
+        payload=json.dumps(pack,separators=(',',':')).replace('<','\\u003c')
+        html = html.replace('</body>', '<script data-civilian-preview>window.ROOKIE_CIVILIAN_PACK='+payload+';window.ROOKIE_CONNECTED_CIVILIANS_ACTIVE='+str(art_ready or args.candidate).lower()+';</script><script src="./civilian-connected.js?v='+digest+'"></script></body>')
     (target / 'index.html').write_text(html, encoding='utf-8')
-shutil.copy2(r / 'tools/civilian_preview_review.html', r / 'site/index.html')
-if not art_ready:
+if not args.candidate:shutil.copy2(r / 'tools/civilian_preview_review.html', r / 'site/index.html')
+if not art_ready and not args.candidate:
     target=r/'site/evidence/civilian-preview'
     target.mkdir(parents=True,exist_ok=True)
     shutil.copy2(r/'tools/civilian_art_hold.html',target/'index.html')

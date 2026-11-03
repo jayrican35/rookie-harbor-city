@@ -7,7 +7,7 @@ async function move(p,key,axis,target,greater){await p.keyboard.down(key);try{aw
  const browser=await chromium.launch({channel:'chrome',headless:true}),runs=[];
  try{for(const tag of ['before','updated'])for(const [width,height] of [[1280,800],[390,844]]){
   const p=await browser.newPage({viewport:{width,height},isMobile:width===390,hasTouch:width===390}),errors=[];p.on('pageerror',e=>errors.push(e.message));
-  await p.goto(`http://127.0.0.1:8767/preview/civilian-${tag}/?pilotQA=1`);
+  await p.goto(`http://127.0.0.1:8767/preview/${tag==='updated'?(process.env.CIVILIAN_AFTER_PREVIEW||'civilian-updated'):'civilian-before'}/?pilotQA=1`);
   await p.waitForFunction(()=>window.HARBOR?.seamlessCampusV115&&window.ROOKIE_JAY?.ready());
   await start(p,3750,4136,.8);await p.waitForFunction(()=>window.HARBOR.seamlessCampusV115.metrics().ambientDistrictsInitialized===9);
   fs.mkdirSync(`${out}/${tag}`,{recursive:true});
@@ -45,8 +45,8 @@ async function move(p,key,axis,target,greater){await p.keyboard.down(key);try{aw
  // Neither campaign nor Zombie uses the preview adapter or requests its atlases.
  const isolation=[];
  for(const tag of ['before','updated']){
-  const p=await browser.newPage(),requests=[];p.on('request',r=>{if(r.url().includes('/assets/civilian-approved/'))requests.push(r.url())});
-  await p.goto(`http://127.0.0.1:8767/preview/civilian-${tag}/?pilotQA=1`);await p.waitForFunction(()=>window.HARBOR?.outbreak);
+  const p=await browser.newPage(),requests=[];p.on('request',r=>{if(r.url().includes('/assets/civilian-corrected/'))requests.push(r.url())});
+  await p.goto(`http://127.0.0.1:8767/preview/${tag==='updated'?(process.env.CIVILIAN_AFTER_PREVIEW||'civilian-updated'):'civilian-before'}/?pilotQA=1`);await p.waitForFunction(()=>window.HARBOR?.outbreak);
   await p.locator('#familySelect .family-card').filter({hasText:'Jay'}).click();
   const s=await p.evaluate(()=>{const h=window.HARBOR;h.dismissTransient();h.outbreak.seed(9012026);return {started:h.academy.begin('zombie','explorer'),map:h.outbreakMap.build(),refused:h.seamlessCampusV115.openAt(3750,4136,1)===false,metrics:window.ROOKIE_CIVILIANS?.metrics()||null}});
   assert(s.started&&s.refused);assert.equal(requests.length,0);if(s.metrics)assert.equal(s.metrics.requested,0);isolation.push({tag,...s,requests});await p.close();

@@ -1,0 +1,15 @@
+{
+  "roles": 30,
+  "walk_frames": 480,
+  "atlas_files": 30,
+  "png_format": "RGBA",
+  "vendor_unchanged": true,
+  "atlas_frame_size": [
+    192,
+    240
+  ],
+  "all_frame_files_exist": true,
+  "all_frame_dimensions_verified": true,
+  "limitations": "29 costume adaptations from approved pilot, not individually hand-painted turnarounds. Headgear/garment polish still needs visual review; in-game testing not performed.",
+  "mode_protection": "No changes to game, repo, police assets, family assets or Zombie Outbreak."
+}

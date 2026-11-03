@@ -1,0 +1,1194 @@
+{
+  "pack": "ROOKIE Harbor City \u2014 Civilian NPC Walk Atlas Pack",
+  "edition": "working wardrobe and headgear variations",
+  "status": "review-ready; final art QA remains",
+  "frame": {
+    "width": 192,
+    "height": 240,
+    "anchor": [
+      96,
+      225
+    ],
+    "format": "RGBA PNG",
+    "rows": [
+      "down",
+      "left",
+      "right",
+      "up"
+    ],
+    "columns": 4,
+    "fps": 7
+  },
+  "roles": {
+    "resident": {
+      "name": "Resident",
+      "is_police": false,
+      "atlas": "atlases/resident_walk.png",
+      "frames": {
+        "down": [
+          "frames/resident/down_0.png",
+          "frames/resident/down_1.png",
+          "frames/resident/down_2.png",
+          "frames/resident/down_3.png"
+        ],
+        "left": [
+          "frames/resident/left_0.png",
+          "frames/resident/left_1.png",
+          "frames/resident/left_2.png",
+          "frames/resident/left_3.png"
+        ],
+        "right": [
+          "frames/resident/right_0.png",
+          "frames/resident/right_1.png",
+          "frames/resident/right_2.png",
+          "frames/resident/right_3.png"
+        ],
+        "up": [
+          "frames/resident/up_0.png",
+          "frames/resident/up_1.png",
+          "frames/resident/up_2.png",
+          "frames/resident/up_3.png"
+        ]
+      },
+      "preview_gif": "gifs/resident_walk.gif",
+      "routine_examples": [
+        "mailbox",
+        "rest",
+        "chat"
+      ],
+      "rare_habit": "Checks the same mailbox twice",
+      "art_note": "animated outfit adaptation from approved vendor pilot, with modular headwear"
+    },
+    "student": {
+      "name": "Student",
+      "is_police": false,
+      "atlas": "atlases/student_walk.png",
+      "frames": {
+        "down": [
+          "frames/student/down_0.png",
+          "frames/student/down_1.png",
+          "frames/student/down_2.png",
+          "frames/student/down_3.png"
+        ],
+        "left": [
+          "frames/student/left_0.png",
+          "frames/student/left_1.png",
+          "frames/student/left_2.png",
+          "frames/student/left_3.png"
+        ],
+        "right": [
+          "frames/student/right_0.png",
+          "frames/student/right_1.png",
+          "frames/student/right_2.png",
+          "frames/student/right_3.png"
+        ],
+        "up": [
+          "frames/student/up_0.png",
+          "frames/student/up_1.png",
+          "frames/student/up_2.png",
+          "frames/student/up_3.png"
+        ]
+      },
+      "preview_gif": "gifs/student_walk.gif",
+      "routine_examples": [
+        "commute",
+        "study",
+        "chat"
+      ],
+      "rare_habit": "Dances when nobody watches",
+      "art_note": "animated outfit adaptation from approved vendor pilot, with modular headwear"
+    },
+    "shopper": {
+      "name": "Shopper",
+      "is_police": false,
+      "atlas": "atlases/shopper_walk.png",
+      "frames": {
+        "down": [
+          "frames/shopper/down_0.png",
+          "frames/shopper/down_1.png",
+          "frames/shopper/down_2.png",
+          "frames/shopper/down_3.png"
+        ],
+        "left": [
+          "frames/shopper/left_0.png",
+          "frames/shopper/left_1.png",
+          "frames/shopper/left_2.png",
+          "frames/shopper/left_3.png"
+        ],
+        "right": [
+          "frames/shopper/right_0.png",
+          "frames/shopper/right_1.png",
+          "frames/shopper/right_2.png",
+          "frames/shopper/right_3.png"
+        ],
+        "up": [
+          "frames/shopper/up_0.png",
+          "frames/shopper/up_1.png",
+          "frames/shopper/up_2.png",
+          "frames/shopper/up_3.png"
+        ]
+      },
+      "preview_gif": "gifs/shopper_walk.gif",
+      "routine_examples": [
+        "browse",
+        "carry",
+        "rest"
+      ],
+      "rare_habit": "Keeps taking pictures of store signs",
+      "art_note": "animated outfit adaptation from approved vendor pilot, with modular headwear"
+    },
+    "vendor": {
+      "name": "Food Vendor",
+      "is_police": false,
+      "atlas": "atlases/vendor_walk.png",
+      "frames": {
+        "down": [
+          "frames/vendor/down_0.png",
+          "frames/vendor/down_1.png",
+          "frames/vendor/down_2.png",
+          "frames/vendor/down_3.png"
+        ],
+        "left": [
+          "frames/vendor/left_0.png",
+          "frames/vendor/left_1.png",
+          "frames/vendor/left_2.png",
+          "frames/vendor/left_3.png"
+        ],
+        "right": [
+          "frames/vendor/right_0.png",
+          "frames/vendor/right_1.png",
+          "frames/vendor/right_2.png",
+          "frames/vendor/right_3.png"
+        ],
+        "up": [
+          "frames/vendor/up_0.png",
+          "frames/vendor/up_1.png",
+          "frames/vendor/up_2.png",
+          "frames/vendor/up_3.png"
+        ]
+      },
+      "preview_gif": "gifs/vendor_walk.gif",
+      "routine_examples": [
+        "serve",
+        "rest",
+        "chat"
+      ],
+      "rare_habit": "Argues with a seagull over fries",
+      "art_note": "approved vendor pilot unchanged"
+    },
+    "chef": {
+      "name": "Chef",
+      "is_police": false,
+      "atlas": "atlases/chef_walk.png",
+      "frames": {
+        "down": [
+          "frames/chef/down_0.png",
+          "frames/chef/down_1.png",
+          "frames/chef/down_2.png",
+          "frames/chef/down_3.png"
+        ],
+        "left": [
+          "frames/chef/left_0.png",
+          "frames/chef/left_1.png",
+          "frames/chef/left_2.png",
+          "frames/chef/left_3.png"
+        ],
+        "right": [
+          "frames/chef/right_0.png",
+          "frames/chef/right_1.png",
+          "frames/chef/right_2.png",
+          "frames/chef/right_3.png"
+        ],
+        "up": [
+          "frames/chef/up_0.png",
+          "frames/chef/up_1.png",
+          "frames/chef/up_2.png",
+          "frames/chef/up_3.png"
+        ]
+      },
+      "preview_gif": "gifs/chef_walk.gif",
+      "routine_examples": [
+        "cook",
+        "deliver",
+        "rest"
+      ],
+      "rare_habit": "Tastes an invisible soup",
+      "art_note": "animated outfit adaptation from approved vendor pilot, with modular headwear"
+    },
+    "construction": {
+      "name": "Construction Worker",
+      "is_police": false,
+      "atlas": "atlases/construction_walk.png",
+      "frames": {
+        "down": [
+          "frames/construction/down_0.png",
+          "frames/construction/down_1.png",
+          "frames/construction/down_2.png",
+          "frames/construction/down_3.png"
+        ],
+        "left": [
+          "frames/construction/left_0.png",
+          "frames/construction/left_1.png",
+          "frames/construction/left_2.png",
+          "frames/construction/left_3.png"
+        ],
+        "right": [
+          "frames/construction/right_0.png",
+          "frames/construction/right_1.png",
+          "frames/construction/right_2.png",
+          "frames/construction/right_3.png"
+        ],
+        "up": [
+          "frames/construction/up_0.png",
+          "frames/construction/up_1.png",
+          "frames/construction/up_2.png",
+          "frames/construction/up_3.png"
+        ]
+      },
+      "preview_gif": "gifs/construction_walk.gif",
+      "routine_examples": [
+        "hammer",
+        "carry",
+        "rest"
+      ],
+      "rare_habit": "Measures the same cone repeatedly",
+      "art_note": "animated outfit adaptation from approved vendor pilot, with modular headwear"
+    },
+    "medic_civilian": {
+      "name": "Clinic Worker",
+      "is_police": false,
+      "atlas": "atlases/medic_civilian_walk.png",
+      "frames": {
+        "down": [
+          "frames/medic_civilian/down_0.png",
+          "frames/medic_civilian/down_1.png",
+          "frames/medic_civilian/down_2.png",
+          "frames/medic_civilian/down_3.png"
+        ],
+        "left": [
+          "frames/medic_civilian/left_0.png",
+          "frames/medic_civilian/left_1.png",
+          "frames/medic_civilian/left_2.png",
+          "frames/medic_civilian/left_3.png"
+        ],
+        "right": [
+          "frames/medic_civilian/right_0.png",
+          "frames/medic_civilian/right_1.png",
+          "frames/medic_civilian/right_2.png",
+          "frames/medic_civilian/right_3.png"
+        ],
+        "up": [
+          "frames/medic_civilian/up_0.png",
+          "frames/medic_civilian/up_1.png",
+          "frames/medic_civilian/up_2.png",
+          "frames/medic_civilian/up_3.png"
+        ]
+      },
+      "preview_gif": "gifs/medic_civilian_walk.gif",
+      "routine_examples": [
+        "commute",
+        "work",
+        "chat"
+      ],
+      "rare_habit": "Offers a bandage to a statue",
+      "art_note": "animated outfit adaptation from approved vendor pilot, with modular headwear"
+    },
+    "fisher": {
+      "name": "Fisher",
+      "is_police": false,
+      "atlas": "atlases/fisher_walk.png",
+      "frames": {
+        "down": [
+          "frames/fisher/down_0.png",
+          "frames/fisher/down_1.png",
+          "frames/fisher/down_2.png",
+          "frames/fisher/down_3.png"
+        ],
+        "left": [
+          "frames/fisher/left_0.png",
+          "frames/fisher/left_1.png",
+          "frames/fisher/left_2.png",
+          "frames/fisher/left_3.png"
+        ],
+        "right": [
+          "frames/fisher/right_0.png",
+          "frames/fisher/right_1.png",
+          "frames/fisher/right_2.png",
+          "frames/fisher/right_3.png"
+        ],
+        "up": [
+          "frames/fisher/up_0.png",
+          "frames/fisher/up_1.png",
+          "frames/fisher/up_2.png",
+          "frames/fisher/up_3.png"
+        ]
+      },
+      "preview_gif": "gifs/fisher_walk.gif",
+      "routine_examples": [
+        "fish",
+        "rest",
+        "chat"
+      ],
+      "rare_habit": "Reels in an old boot",
+      "art_note": "animated outfit adaptation from approved vendor pilot, with modular headwear"
+    },
+    "tourist": {
+      "name": "Tourist",
+      "is_police": false,
+      "atlas": "atlases/tourist_walk.png",
+      "frames": {
+        "down": [
+          "frames/tourist/down_0.png",
+          "frames/tourist/down_1.png",
+          "frames/tourist/down_2.png",
+          "frames/tourist/down_3.png"
+        ],
+        "left": [
+          "frames/tourist/left_0.png",
+          "frames/tourist/left_1.png",
+          "frames/tourist/left_2.png",
+          "frames/tourist/left_3.png"
+        ],
+        "right": [
+          "frames/tourist/right_0.png",
+          "frames/tourist/right_1.png",
+          "frames/tourist/right_2.png",
+          "frames/tourist/right_3.png"
+        ],
+        "up": [
+          "frames/tourist/up_0.png",
+          "frames/tourist/up_1.png",
+          "frames/tourist/up_2.png",
+          "frames/tourist/up_3.png"
+        ]
+      },
+      "preview_gif": "gifs/tourist_walk.gif",
+      "routine_examples": [
+        "photo",
+        "walk",
+        "chat"
+      ],
+      "rare_habit": "Photographs a trash can",
+      "art_note": "animated outfit adaptation from approved vendor pilot, with modular headwear"
+    },
+    "jogger": {
+      "name": "Jogger",
+      "is_police": false,
+      "atlas": "atlases/jogger_walk.png",
+      "frames": {
+        "down": [
+          "frames/jogger/down_0.png",
+          "frames/jogger/down_1.png",
+          "frames/jogger/down_2.png",
+          "frames/jogger/down_3.png"
+        ],
+        "left": [
+          "frames/jogger/left_0.png",
+          "frames/jogger/left_1.png",
+          "frames/jogger/left_2.png",
+          "frames/jogger/left_3.png"
+        ],
+        "right": [
+          "frames/jogger/right_0.png",
+          "frames/jogger/right_1.png",
+          "frames/jogger/right_2.png",
+          "frames/jogger/right_3.png"
+        ],
+        "up": [
+          "frames/jogger/up_0.png",
+          "frames/jogger/up_1.png",
+          "frames/jogger/up_2.png",
+          "frames/jogger/up_3.png"
+        ]
+      },
+      "preview_gif": "gifs/jogger_walk.gif",
+      "routine_examples": [
+        "run",
+        "stretch",
+        "rest"
+      ],
+      "rare_habit": "Sprints three steps then celebrates",
+      "art_note": "animated outfit adaptation from approved vendor pilot, with modular headwear"
+    },
+    "office_worker": {
+      "name": "Office Worker",
+      "is_police": false,
+      "atlas": "atlases/office_worker_walk.png",
+      "frames": {
+        "down": [
+          "frames/office_worker/down_0.png",
+          "frames/office_worker/down_1.png",
+          "frames/office_worker/down_2.png",
+          "frames/office_worker/down_3.png"
+        ],
+        "left": [
+          "frames/office_worker/left_0.png",
+          "frames/office_worker/left_1.png",
+          "frames/office_worker/left_2.png",
+          "frames/office_worker/left_3.png"
+        ],
+        "right": [
+          "frames/office_worker/right_0.png",
+          "frames/office_worker/right_1.png",
+          "frames/office_worker/right_2.png",
+          "frames/office_worker/right_3.png"
+        ],
+        "up": [
+          "frames/office_worker/up_0.png",
+          "frames/office_worker/up_1.png",
+          "frames/office_worker/up_2.png",
+          "frames/office_worker/up_3.png"
+        ]
+      },
+      "preview_gif": "gifs/office_worker_walk.gif",
+      "routine_examples": [
+        "commute",
+        "phone",
+        "rest"
+      ],
+      "rare_habit": "Practices a presentation to a tree",
+      "art_note": "animated outfit adaptation from approved vendor pilot, with modular headwear"
+    },
+    "delivery": {
+      "name": "Delivery Worker",
+      "is_police": false,
+      "atlas": "atlases/delivery_walk.png",
+      "frames": {
+        "down": [
+          "frames/delivery/down_0.png",
+          "frames/delivery/down_1.png",
+          "frames/delivery/down_2.png",
+          "frames/delivery/down_3.png"
+        ],
+        "left": [
+          "frames/delivery/left_0.png",
+          "frames/delivery/left_1.png",
+          "frames/delivery/left_2.png",
+          "frames/delivery/left_3.png"
+        ],
+        "right": [
+          "frames/delivery/right_0.png",
+          "frames/delivery/right_1.png",
+          "frames/delivery/right_2.png",
+          "frames/delivery/right_3.png"
+        ],
+        "up": [
+          "frames/delivery/up_0.png",
+          "frames/delivery/up_1.png",
+          "frames/delivery/up_2.png",
+          "frames/delivery/up_3.png"
+        ]
+      },
+      "preview_gif": "gifs/delivery_walk.gif",
+      "routine_examples": [
+        "carry",
+        "deliver",
+        "rest"
+      ],
+      "rare_habit": "Checks the same address twice",
+      "art_note": "animated outfit adaptation from approved vendor pilot, with modular headwear"
+    },
+    "janitor": {
+      "name": "Janitor",
+      "is_police": false,
+      "atlas": "atlases/janitor_walk.png",
+      "frames": {
+        "down": [
+          "frames/janitor/down_0.png",
+          "frames/janitor/down_1.png",
+          "frames/janitor/down_2.png",
+          "frames/janitor/down_3.png"
+        ],
+        "left": [
+          "frames/janitor/left_0.png",
+          "frames/janitor/left_1.png",
+          "frames/janitor/left_2.png",
+          "frames/janitor/left_3.png"
+        ],
+        "right": [
+          "frames/janitor/right_0.png",
+          "frames/janitor/right_1.png",
+          "frames/janitor/right_2.png",
+          "frames/janitor/right_3.png"
+        ],
+        "up": [
+          "frames/janitor/up_0.png",
+          "frames/janitor/up_1.png",
+          "frames/janitor/up_2.png",
+          "frames/janitor/up_3.png"
+        ]
+      },
+      "preview_gif": "gifs/janitor_walk.gif",
+      "routine_examples": [
+        "sweep",
+        "walk",
+        "rest"
+      ],
+      "rare_habit": "Chases one leaf across the plaza",
+      "art_note": "animated outfit adaptation from approved vendor pilot, with modular headwear"
+    },
+    "mail_clerk": {
+      "name": "Mail Clerk",
+      "is_police": false,
+      "atlas": "atlases/mail_clerk_walk.png",
+      "frames": {
+        "down": [
+          "frames/mail_clerk/down_0.png",
+          "frames/mail_clerk/down_1.png",
+          "frames/mail_clerk/down_2.png",
+          "frames/mail_clerk/down_3.png"
+        ],
+        "left": [
+          "frames/mail_clerk/left_0.png",
+          "frames/mail_clerk/left_1.png",
+          "frames/mail_clerk/left_2.png",
+          "frames/mail_clerk/left_3.png"
+        ],
+        "right": [
+          "frames/mail_clerk/right_0.png",
+          "frames/mail_clerk/right_1.png",
+          "frames/mail_clerk/right_2.png",
+          "frames/mail_clerk/right_3.png"
+        ],
+        "up": [
+          "frames/mail_clerk/up_0.png",
+          "frames/mail_clerk/up_1.png",
+          "frames/mail_clerk/up_2.png",
+          "frames/mail_clerk/up_3.png"
+        ]
+      },
+      "preview_gif": "gifs/mail_clerk_walk.gif",
+      "routine_examples": [
+        "deliver",
+        "walk",
+        "rest"
+      ],
+      "rare_habit": "Inspects a mysteriously empty letter",
+      "art_note": "animated outfit adaptation from approved vendor pilot, with modular headwear"
+    },
+    "gardener": {
+      "name": "Gardener",
+      "is_police": false,
+      "atlas": "atlases/gardener_walk.png",
+      "frames": {
+        "down": [
+          "frames/gardener/down_0.png",
+          "frames/gardener/down_1.png",
+          "frames/gardener/down_2.png",
+          "frames/gardener/down_3.png"
+        ],
+        "left": [
+          "frames/gardener/left_0.png",
+          "frames/gardener/left_1.png",
+          "frames/gardener/left_2.png",
+          "frames/gardener/left_3.png"
+        ],
+        "right": [
+          "frames/gardener/right_0.png",
+          "frames/gardener/right_1.png",
+          "frames/gardener/right_2.png",
+          "frames/gardener/right_3.png"
+        ],
+        "up": [
+          "frames/gardener/up_0.png",
+          "frames/gardener/up_1.png",
+          "frames/gardener/up_2.png",
+          "frames/gardener/up_3.png"
+        ]
+      },
+      "preview_gif": "gifs/gardener_walk.gif",
+      "routine_examples": [
+        "water",
+        "trim",
+        "rest"
+      ],
+      "rare_habit": "Talks to flowers",
+      "art_note": "animated outfit adaptation from approved vendor pilot, with modular headwear"
+    },
+    "musician": {
+      "name": "Musician",
+      "is_police": false,
+      "atlas": "atlases/musician_walk.png",
+      "frames": {
+        "down": [
+          "frames/musician/down_0.png",
+          "frames/musician/down_1.png",
+          "frames/musician/down_2.png",
+          "frames/musician/down_3.png"
+        ],
+        "left": [
+          "frames/musician/left_0.png",
+          "frames/musician/left_1.png",
+          "frames/musician/left_2.png",
+          "frames/musician/left_3.png"
+        ],
+        "right": [
+          "frames/musician/right_0.png",
+          "frames/musician/right_1.png",
+          "frames/musician/right_2.png",
+          "frames/musician/right_3.png"
+        ],
+        "up": [
+          "frames/musician/up_0.png",
+          "frames/musician/up_1.png",
+          "frames/musician/up_2.png",
+          "frames/musician/up_3.png"
+        ]
+      },
+      "preview_gif": "gifs/musician_walk.gif",
+      "routine_examples": [
+        "play",
+        "walk",
+        "chat"
+      ],
+      "rare_habit": "Starts a one-person parade",
+      "art_note": "animated outfit adaptation from approved vendor pilot, with modular headwear"
+    },
+    "artist": {
+      "name": "Artist",
+      "is_police": false,
+      "atlas": "atlases/artist_walk.png",
+      "frames": {
+        "down": [
+          "frames/artist/down_0.png",
+          "frames/artist/down_1.png",
+          "frames/artist/down_2.png",
+          "frames/artist/down_3.png"
+        ],
+        "left": [
+          "frames/artist/left_0.png",
+          "frames/artist/left_1.png",
+          "frames/artist/left_2.png",
+          "frames/artist/left_3.png"
+        ],
+        "right": [
+          "frames/artist/right_0.png",
+          "frames/artist/right_1.png",
+          "frames/artist/right_2.png",
+          "frames/artist/right_3.png"
+        ],
+        "up": [
+          "frames/artist/up_0.png",
+          "frames/artist/up_1.png",
+          "frames/artist/up_2.png",
+          "frames/artist/up_3.png"
+        ]
+      },
+      "preview_gif": "gifs/artist_walk.gif",
+      "routine_examples": [
+        "paint",
+        "rest",
+        "chat"
+      ],
+      "rare_habit": "Admires a blank canvas",
+      "art_note": "animated outfit adaptation from approved vendor pilot, with modular headwear"
+    },
+    "barista": {
+      "name": "Barista",
+      "is_police": false,
+      "atlas": "atlases/barista_walk.png",
+      "frames": {
+        "down": [
+          "frames/barista/down_0.png",
+          "frames/barista/down_1.png",
+          "frames/barista/down_2.png",
+          "frames/barista/down_3.png"
+        ],
+        "left": [
+          "frames/barista/left_0.png",
+          "frames/barista/left_1.png",
+          "frames/barista/left_2.png",
+          "frames/barista/left_3.png"
+        ],
+        "right": [
+          "frames/barista/right_0.png",
+          "frames/barista/right_1.png",
+          "frames/barista/right_2.png",
+          "frames/barista/right_3.png"
+        ],
+        "up": [
+          "frames/barista/up_0.png",
+          "frames/barista/up_1.png",
+          "frames/barista/up_2.png",
+          "frames/barista/up_3.png"
+        ]
+      },
+      "preview_gif": "gifs/barista_walk.gif",
+      "routine_examples": [
+        "serve",
+        "work",
+        "chat"
+      ],
+      "rare_habit": "Names every coffee bean",
+      "art_note": "animated outfit adaptation from approved vendor pilot, with modular headwear"
+    },
+    "store_clerk": {
+      "name": "Store Clerk",
+      "is_police": false,
+      "atlas": "atlases/store_clerk_walk.png",
+      "frames": {
+        "down": [
+          "frames/store_clerk/down_0.png",
+          "frames/store_clerk/down_1.png",
+          "frames/store_clerk/down_2.png",
+          "frames/store_clerk/down_3.png"
+        ],
+        "left": [
+          "frames/store_clerk/left_0.png",
+          "frames/store_clerk/left_1.png",
+          "frames/store_clerk/left_2.png",
+          "frames/store_clerk/left_3.png"
+        ],
+        "right": [
+          "frames/store_clerk/right_0.png",
+          "frames/store_clerk/right_1.png",
+          "frames/store_clerk/right_2.png",
+          "frames/store_clerk/right_3.png"
+        ],
+        "up": [
+          "frames/store_clerk/up_0.png",
+          "frames/store_clerk/up_1.png",
+          "frames/store_clerk/up_2.png",
+          "frames/store_clerk/up_3.png"
+        ]
+      },
+      "preview_gif": "gifs/store_clerk_walk.gif",
+      "routine_examples": [
+        "stock",
+        "work",
+        "chat"
+      ],
+      "rare_habit": "Rearranges one item endlessly",
+      "art_note": "animated outfit adaptation from approved vendor pilot, with modular headwear"
+    },
+    "waiter": {
+      "name": "Waiter",
+      "is_police": false,
+      "atlas": "atlases/waiter_walk.png",
+      "frames": {
+        "down": [
+          "frames/waiter/down_0.png",
+          "frames/waiter/down_1.png",
+          "frames/waiter/down_2.png",
+          "frames/waiter/down_3.png"
+        ],
+        "left": [
+          "frames/waiter/left_0.png",
+          "frames/waiter/left_1.png",
+          "frames/waiter/left_2.png",
+          "frames/waiter/left_3.png"
+        ],
+        "right": [
+          "frames/waiter/right_0.png",
+          "frames/waiter/right_1.png",
+          "frames/waiter/right_2.png",
+          "frames/waiter/right_3.png"
+        ],
+        "up": [
+          "frames/waiter/up_0.png",
+          "frames/waiter/up_1.png",
+          "frames/waiter/up_2.png",
+          "frames/waiter/up_3.png"
+        ]
+      },
+      "preview_gif": "gifs/waiter_walk.gif",
+      "routine_examples": [
+        "serve",
+        "walk",
+        "rest"
+      ],
+      "rare_habit": "Balances a tray with nothing on it",
+      "art_note": "animated outfit adaptation from approved vendor pilot, with modular headwear"
+    },
+    "coach": {
+      "name": "Coach",
+      "is_police": false,
+      "atlas": "atlases/coach_walk.png",
+      "frames": {
+        "down": [
+          "frames/coach/down_0.png",
+          "frames/coach/down_1.png",
+          "frames/coach/down_2.png",
+          "frames/coach/down_3.png"
+        ],
+        "left": [
+          "frames/coach/left_0.png",
+          "frames/coach/left_1.png",
+          "frames/coach/left_2.png",
+          "frames/coach/left_3.png"
+        ],
+        "right": [
+          "frames/coach/right_0.png",
+          "frames/coach/right_1.png",
+          "frames/coach/right_2.png",
+          "frames/coach/right_3.png"
+        ],
+        "up": [
+          "frames/coach/up_0.png",
+          "frames/coach/up_1.png",
+          "frames/coach/up_2.png",
+          "frames/coach/up_3.png"
+        ]
+      },
+      "preview_gif": "gifs/coach_walk.gif",
+      "routine_examples": [
+        "cheer",
+        "walk",
+        "rest"
+      ],
+      "rare_habit": "Whistles at the pigeons",
+      "art_note": "animated outfit adaptation from approved vendor pilot, with modular headwear"
+    },
+    "hiker": {
+      "name": "Hiker",
+      "is_police": false,
+      "atlas": "atlases/hiker_walk.png",
+      "frames": {
+        "down": [
+          "frames/hiker/down_0.png",
+          "frames/hiker/down_1.png",
+          "frames/hiker/down_2.png",
+          "frames/hiker/down_3.png"
+        ],
+        "left": [
+          "frames/hiker/left_0.png",
+          "frames/hiker/left_1.png",
+          "frames/hiker/left_2.png",
+          "frames/hiker/left_3.png"
+        ],
+        "right": [
+          "frames/hiker/right_0.png",
+          "frames/hiker/right_1.png",
+          "frames/hiker/right_2.png",
+          "frames/hiker/right_3.png"
+        ],
+        "up": [
+          "frames/hiker/up_0.png",
+          "frames/hiker/up_1.png",
+          "frames/hiker/up_2.png",
+          "frames/hiker/up_3.png"
+        ]
+      },
+      "preview_gif": "gifs/hiker_walk.gif",
+      "routine_examples": [
+        "walk",
+        "photo",
+        "rest"
+      ],
+      "rare_habit": "Studies a map upside down",
+      "art_note": "animated outfit adaptation from approved vendor pilot, with modular headwear"
+    },
+    "elder": {
+      "name": "Elder",
+      "is_police": false,
+      "atlas": "atlases/elder_walk.png",
+      "frames": {
+        "down": [
+          "frames/elder/down_0.png",
+          "frames/elder/down_1.png",
+          "frames/elder/down_2.png",
+          "frames/elder/down_3.png"
+        ],
+        "left": [
+          "frames/elder/left_0.png",
+          "frames/elder/left_1.png",
+          "frames/elder/left_2.png",
+          "frames/elder/left_3.png"
+        ],
+        "right": [
+          "frames/elder/right_0.png",
+          "frames/elder/right_1.png",
+          "frames/elder/right_2.png",
+          "frames/elder/right_3.png"
+        ],
+        "up": [
+          "frames/elder/up_0.png",
+          "frames/elder/up_1.png",
+          "frames/elder/up_2.png",
+          "frames/elder/up_3.png"
+        ]
+      },
+      "preview_gif": "gifs/elder_walk.gif",
+      "routine_examples": [
+        "stroll",
+        "sit",
+        "chat"
+      ],
+      "rare_habit": "Gives confusing but friendly advice",
+      "art_note": "animated outfit adaptation from approved vendor pilot, with modular headwear"
+    },
+    "kid": {
+      "name": "Kid",
+      "is_police": false,
+      "atlas": "atlases/kid_walk.png",
+      "frames": {
+        "down": [
+          "frames/kid/down_0.png",
+          "frames/kid/down_1.png",
+          "frames/kid/down_2.png",
+          "frames/kid/down_3.png"
+        ],
+        "left": [
+          "frames/kid/left_0.png",
+          "frames/kid/left_1.png",
+          "frames/kid/left_2.png",
+          "frames/kid/left_3.png"
+        ],
+        "right": [
+          "frames/kid/right_0.png",
+          "frames/kid/right_1.png",
+          "frames/kid/right_2.png",
+          "frames/kid/right_3.png"
+        ],
+        "up": [
+          "frames/kid/up_0.png",
+          "frames/kid/up_1.png",
+          "frames/kid/up_2.png",
+          "frames/kid/up_3.png"
+        ]
+      },
+      "preview_gif": "gifs/kid_walk.gif",
+      "routine_examples": [
+        "play",
+        "walk",
+        "rest"
+      ],
+      "rare_habit": "Tries to race their own shadow",
+      "art_note": "animated outfit adaptation from approved vendor pilot, with modular headwear"
+    },
+    "beachgoer": {
+      "name": "Beachgoer",
+      "is_police": false,
+      "atlas": "atlases/beachgoer_walk.png",
+      "frames": {
+        "down": [
+          "frames/beachgoer/down_0.png",
+          "frames/beachgoer/down_1.png",
+          "frames/beachgoer/down_2.png",
+          "frames/beachgoer/down_3.png"
+        ],
+        "left": [
+          "frames/beachgoer/left_0.png",
+          "frames/beachgoer/left_1.png",
+          "frames/beachgoer/left_2.png",
+          "frames/beachgoer/left_3.png"
+        ],
+        "right": [
+          "frames/beachgoer/right_0.png",
+          "frames/beachgoer/right_1.png",
+          "frames/beachgoer/right_2.png",
+          "frames/beachgoer/right_3.png"
+        ],
+        "up": [
+          "frames/beachgoer/up_0.png",
+          "frames/beachgoer/up_1.png",
+          "frames/beachgoer/up_2.png",
+          "frames/beachgoer/up_3.png"
+        ]
+      },
+      "preview_gif": "gifs/beachgoer_walk.gif",
+      "routine_examples": [
+        "photo",
+        "walk",
+        "rest"
+      ],
+      "rare_habit": "Waves at the ocean",
+      "art_note": "animated outfit adaptation from approved vendor pilot, with modular headwear"
+    },
+    "dock_worker": {
+      "name": "Dock Worker",
+      "is_police": false,
+      "atlas": "atlases/dock_worker_walk.png",
+      "frames": {
+        "down": [
+          "frames/dock_worker/down_0.png",
+          "frames/dock_worker/down_1.png",
+          "frames/dock_worker/down_2.png",
+          "frames/dock_worker/down_3.png"
+        ],
+        "left": [
+          "frames/dock_worker/left_0.png",
+          "frames/dock_worker/left_1.png",
+          "frames/dock_worker/left_2.png",
+          "frames/dock_worker/left_3.png"
+        ],
+        "right": [
+          "frames/dock_worker/right_0.png",
+          "frames/dock_worker/right_1.png",
+          "frames/dock_worker/right_2.png",
+          "frames/dock_worker/right_3.png"
+        ],
+        "up": [
+          "frames/dock_worker/up_0.png",
+          "frames/dock_worker/up_1.png",
+          "frames/dock_worker/up_2.png",
+          "frames/dock_worker/up_3.png"
+        ]
+      },
+      "preview_gif": "gifs/dock_worker_walk.gif",
+      "routine_examples": [
+        "carry",
+        "work",
+        "rest"
+      ],
+      "rare_habit": "Checks a rope that is already tied",
+      "art_note": "animated outfit adaptation from approved vendor pilot, with modular headwear"
+    },
+    "mechanic": {
+      "name": "Mechanic",
+      "is_police": false,
+      "atlas": "atlases/mechanic_walk.png",
+      "frames": {
+        "down": [
+          "frames/mechanic/down_0.png",
+          "frames/mechanic/down_1.png",
+          "frames/mechanic/down_2.png",
+          "frames/mechanic/down_3.png"
+        ],
+        "left": [
+          "frames/mechanic/left_0.png",
+          "frames/mechanic/left_1.png",
+          "frames/mechanic/left_2.png",
+          "frames/mechanic/left_3.png"
+        ],
+        "right": [
+          "frames/mechanic/right_0.png",
+          "frames/mechanic/right_1.png",
+          "frames/mechanic/right_2.png",
+          "frames/mechanic/right_3.png"
+        ],
+        "up": [
+          "frames/mechanic/up_0.png",
+          "frames/mechanic/up_1.png",
+          "frames/mechanic/up_2.png",
+          "frames/mechanic/up_3.png"
+        ]
+      },
+      "preview_gif": "gifs/mechanic_walk.gif",
+      "routine_examples": [
+        "repair",
+        "carry",
+        "rest"
+      ],
+      "rare_habit": "Polishes a perfectly clean wrench",
+      "art_note": "animated outfit adaptation from approved vendor pilot, with modular headwear"
+    },
+    "business": {
+      "name": "Business Citizen",
+      "is_police": false,
+      "atlas": "atlases/business_walk.png",
+      "frames": {
+        "down": [
+          "frames/business/down_0.png",
+          "frames/business/down_1.png",
+          "frames/business/down_2.png",
+          "frames/business/down_3.png"
+        ],
+        "left": [
+          "frames/business/left_0.png",
+          "frames/business/left_1.png",
+          "frames/business/left_2.png",
+          "frames/business/left_3.png"
+        ],
+        "right": [
+          "frames/business/right_0.png",
+          "frames/business/right_1.png",
+          "frames/business/right_2.png",
+          "frames/business/right_3.png"
+        ],
+        "up": [
+          "frames/business/up_0.png",
+          "frames/business/up_1.png",
+          "frames/business/up_2.png",
+          "frames/business/up_3.png"
+        ]
+      },
+      "preview_gif": "gifs/business_walk.gif",
+      "routine_examples": [
+        "phone",
+        "commute",
+        "rest"
+      ],
+      "rare_habit": "Briefcase squeaks whenever they stop",
+      "art_note": "animated outfit adaptation from approved vendor pilot, with modular headwear"
+    },
+    "librarian": {
+      "name": "Librarian",
+      "is_police": false,
+      "atlas": "atlases/librarian_walk.png",
+      "frames": {
+        "down": [
+          "frames/librarian/down_0.png",
+          "frames/librarian/down_1.png",
+          "frames/librarian/down_2.png",
+          "frames/librarian/down_3.png"
+        ],
+        "left": [
+          "frames/librarian/left_0.png",
+          "frames/librarian/left_1.png",
+          "frames/librarian/left_2.png",
+          "frames/librarian/left_3.png"
+        ],
+        "right": [
+          "frames/librarian/right_0.png",
+          "frames/librarian/right_1.png",
+          "frames/librarian/right_2.png",
+          "frames/librarian/right_3.png"
+        ],
+        "up": [
+          "frames/librarian/up_0.png",
+          "frames/librarian/up_1.png",
+          "frames/librarian/up_2.png",
+          "frames/librarian/up_3.png"
+        ]
+      },
+      "preview_gif": "gifs/librarian_walk.gif",
+      "routine_examples": [
+        "read",
+        "stack",
+        "rest"
+      ],
+      "rare_habit": "Shushes a ringing phone",
+      "art_note": "animated outfit adaptation from approved vendor pilot, with modular headwear"
+    },
+    "lifeguard": {
+      "name": "Lifeguard",
+      "is_police": false,
+      "atlas": "atlases/lifeguard_walk.png",
+      "frames": {
+        "down": [
+          "frames/lifeguard/down_0.png",
+          "frames/lifeguard/down_1.png",
+          "frames/lifeguard/down_2.png",
+          "frames/lifeguard/down_3.png"
+        ],
+        "left": [
+          "frames/lifeguard/left_0.png",
+          "frames/lifeguard/left_1.png",
+          "frames/lifeguard/left_2.png",
+          "frames/lifeguard/left_3.png"
+        ],
+        "right": [
+          "frames/lifeguard/right_0.png",
+          "frames/lifeguard/right_1.png",
+          "frames/lifeguard/right_2.png",
+          "frames/lifeguard/right_3.png"
+        ],
+        "up": [
+          "frames/lifeguard/up_0.png",
+          "frames/lifeguard/up_1.png",
+          "frames/lifeguard/up_2.png",
+          "frames/lifeguard/up_3.png"
+        ]
+      },
+      "preview_gif": "gifs/lifeguard_walk.gif",
+      "routine_examples": [
+        "patrol",
+        "scan",
+        "rest"
+      ],
+      "rare_habit": "Blows a whistle at drifting seaweed",
+      "art_note": "animated outfit adaptation from approved vendor pilot, with modular headwear"
+    }
+  }
+}

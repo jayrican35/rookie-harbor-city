@@ -1,10 +1,10 @@
 <!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Harbor City — supplied civilian atlas review</title>
 <style>body{margin:24px;background:#102238;color:#eee;font:16px system-ui}a{color:#f6cf80}button,select,input{font:inherit}header{position:sticky;top:0;padding:12px;background:#102238;z-index:1}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px}figure{margin:0;padding:8px;border:1px solid #576b81;border-radius:8px;text-align:center}canvas{width:128px;height:160px;image-rendering:pixelated;background:repeating-conic-gradient(#526071 0% 25%,#344251 0% 50%) 0/24px 24px}figcaption{padding:8px}img{max-width:100%;height:auto}.pair{display:flex;gap:16px}.pair figure{flex:1;min-width:0}td,th{padding:8px;text-align:left}@media(max-width:650px){.pair{display:block}}</style>
 <header><strong>30 supplied civilian outfits</strong> <select id="direction" aria-label="Facing direction"><option value="0">Down</option><option value="1">Left</option><option value="2">Right</option><option value="3">Up</option></select> <label><input id="play" type="checkbox" checked>Animate</label> <input id="frame" aria-label="Frame" type="range" min="0" max="3" value="0"> <a href="/">Play connected city</a> · <a href="results.json">Gameplay checks</a> · <a href="coverage.json">Actor coverage</a></header>
-<p>Exact PNGs from your uploaded walking-atlas ZIP. The live world keeps its existing population and routines: 32 civilian actors currently use 22 appropriate outfits; all 30 are available below. Police and main characters keep their existing artwork.</p>
+<p>Corrected walking artwork from your new ZIP. Checkerboard areas are transparent. Twenty-six outfits are enabled; four source hats remain clipped and are held below. Existing NPCs assigned to held outfits use their previous coherent artwork.</p>
 <div class="grid" id="roster"></div>
 <script>
-const root='/preview/civilian-updated/assets/civilian-approved/';
+const root='/preview/civilian-updated/assets/civilian-corrected/';
 window.atlasReviewReady=false;
 fetch(root+'manifest.json').then(r=>r.json()).then(m=>{
  const roles=m.characters||m.roles,cards=[],shown=new Set(),dir=document.querySelector('#direction'),play=document.querySelector('#play'),slider=document.querySelector('#frame');
@@ -13,6 +13,7 @@ fetch(root+'manifest.json').then(r=>r.json()).then(m=>{
   const node=document.createElement('figure'),cv=document.createElement('canvas');cv.width=128;cv.height=160;
   const label=document.createElement('figcaption');label.textContent=spec.label||role;
   const link=document.createElement('a');link.href=root+spec.walk_atlas;link.textContent='Atlas PNG';
+  if(spec.playback_allowed===false){const reason=document.createElement('p');reason.textContent='Held: '+spec.hold_reason;node.append(label,reason,link);document.querySelector('#roster').append(node);continue}
   node.append(cv,label,link);document.querySelector('#roster').append(node);
   cards.push({node,cv,g:cv.getContext('2d'),im:new Image(),url:root+spec.walk_atlas});observer.observe(node);
  }

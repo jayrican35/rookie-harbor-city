@@ -1,0 +1,101 @@
+name: Precinct 9 V132 — original exterior and officers
+on:
+  push:
+    branches: [feature/v132-precinct-exterior-cast]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-protection:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify old sprites, rendering integration and native regressions
+        run: |
+          set -euo pipefail
+          node --check published-game-capture/v132-precinct-heritage.js
+          node --check published-game-capture/v115-campus.js
+          node qa/check-v132-precinct.cjs
+          node qa/check-v131-precinct-import.cjs
+          node qa/check-v130-precinct.cjs
+          node qa/check-v128-quality.cjs
+          node qa/check-v127-citywide.cjs
+          node qa/check-world-roads.cjs
+          node qa/check-world-traffic.cjs
+          node qa/check-v115-campus.cjs
+      - name: Reject modifications outside precinct-only original-art painter
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin 166803ca2741d17e05b30453e646875399c5c074
+          git diff --name-only 166803ca2741d17e05b30453e646875399c5c074 HEAD | grep -Ev '^((published-game-capture/(v115-campus|v132-precinct-heritage)\.js)|(tools/build_v132_precinct_preview\.py)|(qa/(check-v132-precinct|capture-v132-precinct)\.cjs)|(\.github/workflows/v132-precinct-review\.yml)|(docs/PRECINCT9-V132-REVIEW\.md))$' >/tmp/precinct-outside || true
+          if [ -s /tmp/precinct-outside ]; then cat /tmp/precinct-outside; exit 1; fi
+          echo 'PASS production, game.js, Academy, Zombie, Marina, V128, existing PNG/WEBP assets and roads are byte-unchanged'
+  native-mobile-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install actual Chromium test runtime
+        run: |
+          python3 -m pip install -q pillow numpy
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Build V131 baseline and V132 candidate in separate working directories
+        run: |
+          set -euo pipefail
+          mkdir -p site/preview/precinct9-legacy-lab site/preview/precinct9-v132-lab
+          cp -a published-game-capture/. site/preview/precinct9-legacy-lab/
+          cp -a published-game-capture/. site/preview/precinct9-v132-lab/
+          python3 tools/build_v131_precinct_preview.py site/preview/precinct9-legacy-lab
+          python3 tools/build_v132_precinct_preview.py site/preview/precinct9-v132-lab
+          node --check site/preview/precinct9-v132-lab/game-v115.bundle.js
+          for f in game.js outbreak.css v116-marina.js v127-citywide-art.js v115-world.js; do
+            cmp -s site/preview/precinct9-legacy-lab/$f site/preview/precinct9-v132-lab/$f
+          done
+          grep -q v132-precinct-heritage.js site/preview/precinct9-v132-lab/index.html
+          echo 'PASS all original/Zombie/Marina/city game files preserved in both real builds'
+      - name: Browser run + genuine phone-size gameplay screenshots
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8765 --directory site >/tmp/v132-http.log 2>&1 &
+          sleep 2
+          node qa/capture-v132-precinct.cjs
+          python3 - <<'PY'
+          import html,json
+          from pathlib import Path
+          p=Path('site/preview/precinct9-v132-lab/evidence')
+          data=json.loads((p/'review-data.json').read_text())
+          ids=[s['id'] for s in data['scenes']]
+          ids+=['original-station-npc-'+str(i) for i in range(len(data['results'][0]['actors']))]
+          ids+=['interior-roof-fade']
+          cards=[]
+          for name in ids:
+              for side in ('before','after'):
+                  assert (p/(name+'-'+side+'.png')).is_file(),name
+              cards.append('<section><h2>'+html.escape(name.replace('-',' ').title())+'</h2><div class="comparison"><img loading="lazy" src="'+name+'-before.png" alt="V131"><img loading="lazy" src="'+name+'-after.png" alt="V132"></div></section>')
+          (p/'index.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROOKIE V132 Precinct 9 Review</title><style>body{background:#102539;color:#f7e7bb;font:16px system-ui;padding:14px}.comparison{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:900px}.comparison img{width:100%}h2{font-size:18px}section{margin-bottom:22px}</style><h1>V132 — Real mobile game: V131 before / V132 after</h1><p>Left is protected V131. Right uses original roof material and named precinct-cast sprites. Doors, NPC locations, collision, city and Zombie are unchanged. Visual quality requires human approval.</p>'+''.join(cards)+'</html>')
+          print('PASS',len(ids),'paired genuine mobile game captures')
+          PY
+      - name: Upload real-game comparison screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: precinct-v132-mobile-before-after
+          path: site/preview/precinct9-v132-lab/evidence/
+          if-no-files-found: warn
+      - name: Upload separate playable game candidate
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: precinct-v132-playable
+          path: site/preview/precinct9-v132-lab/
+          if-no-files-found: error

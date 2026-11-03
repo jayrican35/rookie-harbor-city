@@ -26,7 +26,9 @@ assert.equal(visited.size,segments.length,'Road network contains detached stubs:
 function pointOnRoad(x,y){return segments.some(s=>x>=s.x&&x<s.x+s.w&&y>=s.y&&y<s.y+s.h);}
 for(let x=-3099;x<9656;x+=31)assert(pointOnRoad(x,1784),'Main cross-city Harbor Avenue breaks at x='+x);
 for(let x=-1926;x<4388;x+=29)assert(pointOnRoad(x,3744),'Southbay and Maple route breaks at x='+x);
-for(let y=945;y<3870;y+=23)assert(pointOnRoad(5855,y),'Northgate-Downtown route breaks at y='+y);
+for(let y=945;y<3220;y+=23)assert(pointOnRoad(5855,y),'Northgate-Downtown to Marina approach breaks at y='+y);
+for(let y=1800;y<3758;y+=23)assert(pointOnRoad(80,y),'Maple eastern bypass breaks at y='+y);
+for(let x=4193;x<6686;x+=23)assert(pointOnRoad(x,948),'Midtown-Northgate avenue breaks at x='+x);
 for(let y=1848;y<2604;y+=19)assert(pointOnRoad(4932,y),'Actual Midtown east spine breaks at y='+y);
 for(let y=2477;y<3680;y+=19)assert(pointOnRoad(4050,y),'Midtown-to-Bayview feeder breaks at y='+y);
 for(let y=1848;y<3744;y+=19)assert(pointOnRoad(-1850,y),'Westfield southern ring breaks at y='+y);

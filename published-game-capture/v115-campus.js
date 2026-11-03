@@ -60,10 +60,61 @@
   // Recover native district streets omitted by the inter-district graph.
   // These are read-only authored asphalt rectangles, not new roads. Broad
   // parking pads and the protected waterfront are deliberately excluded.
+  // Normalize the duplicated Midtown avenue to the canonical curb lines.
+  // Its former 192px pad extended through the southern sidewalk and gave
+  // the material painter a second, offset lane centre.
+  if(connectedMidtown){
+    connectedMidtown.map={...connectedMidtown.map,ground:connectedMidtown.map.ground.map(r=>{
+      if(r.x===0&&r.y===494&&r.w===2256&&r.h===192)return {...r,y:461,h:127};
+      if(r.x===1392&&r.y===686&&r.w===168&&r.h===394)return {...r,y:588,h:492};
+      return r;
+    }).concat([{x:0,y:588,w:2256,h:98,c:'#b9bec4'}])};
+    // Restore street strips after the shared sidewalk band, not beneath it.
+    connectedMidtown.map.ground.push({x:1392,y:588,w:168,h:492,c:'#43474e'},
+      {x:2048,y:588,w:168,h:512,c:'#43474e'});
+  }
+  const connectedNorthgate=districtEntries.find(d=>d.id==='northgate');
+  if(connectedNorthgate)connectedNorthgate.map={...connectedNorthgate.map,ground:connectedNorthgate.map.ground.map(r=>
+    r.x===695&&r.y===843&&r.w===156&&r.h===257?{...r,x:665}:r)};
   const nativeRoadSurfaces=districtEntries.filter(d=>d.id!=='waterfront').flatMap(d=>(d.map.ground||[])
-    .filter(r=>['#3d4148','#45484f'].includes(String(r.c).toLowerCase())||String(r.c).toLowerCase()==='#43474e'&&Math.min(r.w,r.h)<=168&&Math.max(r.w,r.h)>=300&&Math.max(r.w,r.h)>=Math.min(r.w,r.h)*2)
+    .filter(r=>['#3d4148','#45484f'].includes(String(r.c).toLowerCase())||String(r.c).toLowerCase()==='#43474e'&&Math.min(r.w,r.h)<=168&&Math.max(r.w,r.h)>=380&&Math.max(r.w,r.h)>=Math.min(r.w,r.h)*2)
     .map((r,i)=>({id:'native:'+d.id+':'+i,x:d.x+r.x,y:d.y+r.y,w:r.w,h:r.h,native:true})));
   const crossings=roadNetwork.crossings;
+  const streetRelocations=[];
+  // Repair only identified lane intrusions, moving the visible object AND
+  // its collider in connected-map copies. Never make buildings passable.
+  for(const fix of [
+    {id:'midtown',box:[984,472,56,10],match:o=>o.t==='mtprop'&&o.img==='bench'&&o.x===980&&o.y===450},
+    {id:'midtown',box:[2012,474,30,10],match:o=>o.t==='rpgProp'&&o.role==='tires'&&o.x===2027},
+    {id:'midtown',box:[1653,470,34,10],match:o=>o.t==='rpgProp'&&o.role==='crates'&&o.x===1670&&o.y===480},
+    {id:'midtown',box:[1222,1474,16,12],match:o=>o.t==='landscapeV1'&&o.role==='tree'&&o.x===1230&&o.y===1484},
+    {id:'downtown',box:[1157,507,96,48],match:o=>o.t==='car'&&o.x===1157&&o.y===507},
+    {id:'industrial',box:[307,731,96,48],match:o=>o.t==='car'&&o.x===307&&o.y===731}
+  ]){
+    const d=districtEntries.find(d=>d.id===fix.id);if(!d)continue;
+    const m=d.map,o=m.decors.find(fix.match);
+    const [x,y,w,h]=fix.box,equals=s=>s.x===x&&s.y===y&&s.w===w&&s.h===h;
+    if(!o||!(m.pedSolids||m.solids).some(equals))throw Error('Street repair source changed: '+fix.id);
+    const solids=m.pedSolids||m.solids,roads=[...links,...nativeRoadSurfaces];
+    let move=null;
+    for(let radius=32;radius<=512&&!move;radius+=32)for(let dy=-radius;dy<=radius&&!move;dy+=32)for(let dx=-radius;dx<=radius;dx+=32){
+      if(Math.max(Math.abs(dx),Math.abs(dy))!==radius)continue;
+      const b={x:x+dx,y:y+dy,w,h},pad=18;
+      if(b.x<24||b.y<120||b.x+w>d.w-24||b.y+h>d.h-24)continue;
+      const hit=(a,c,p=0)=>a.x<c.x+c.w+p&&a.x+a.w>c.x-p&&a.y<c.y+c.h+p&&a.y+a.h>c.y-p;
+      if(roads.some(r=>hit({x:d.x+b.x,y:d.y+b.y,w,h},r,24)))continue;
+      if(solids.some(s=>!equals(s)&&hit(b,s,pad)))continue;
+      if(m.decors.some(s=>{if(!['worldBuilding','mchouse','mtbldg','dtBuilding','sbart'].includes(s.t))return false;
+        return hit(b,{x:s.dx??s.bx??s.x,y:s.dyTop??s.btop??s.y,w:s.dw??s.bw??s.w,h:s.dh??s.bh??s.h},24);}))continue;
+      if((m.spots||[]).some(s=>Math.hypot(b.x+w/2-s.x,b.y+h/2-s.y)<80))continue;
+      move={dx,dy};break;
+    }
+    if(!move)throw Error('No safe off-street placement: '+fix.id);
+    const shift=s=>equals(s)?{...s,x:s.x+move.dx,y:s.y+move.dy}:s;
+    d.map={...m,decors:m.decors.map(s=>s===o?{...s,x:s.x+move.dx,y:s.y+move.dy,...(Number.isFinite(s.dy)?{dy:s.dy+move.dy}:{})}:s),
+      pedSolids:m.pedSolids?.map(shift),solids:m.solids?.map(shift)};
+    streetRelocations.push({district:d.id,type:o.t,from:{x:d.x+x,y:d.y+y,w,h},to:{x:d.x+x+move.dx,y:d.y+y+move.dy,w,h}});
+  }
   const linkCollision = []; // Roads are traversable, never scene exits.
   const districtSolids=[];
   for(const d of districtEntries){
@@ -1283,6 +1334,7 @@
     links:()=>links.map(l=>({...l})),
     intersections:()=>crossings.map(c=>({...c})),
     roadTopologyVersion:roadNetwork.version,
+    streetRepairs:()=>JSON.parse(JSON.stringify(streetRelocations)),
     // Read-only query-gated telemetry. Existing camera, roof and player
     // state continue to be owned by the original connected game loop.
     entranceQA:()=>/[?&]pilotQA=1(?:&|$)/.test(window.location.search)?

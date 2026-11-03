@@ -28,11 +28,17 @@
     segments:Object.freeze([
       {id:'harbor-ave-west',x:-3100,y:1721,w:3250,h:127,kind:'arterial'},
       {id:'harbor-ave-east',x:2068,y:1721,w:733,h:127,kind:'arterial'},
-      {id:'maple-to-southbay',x:-650,y:1800,w:144,h:1958,kind:'collector'},
+      // Bypass the preserved Maple Court houses along the empty eastern edge.
+      {id:'maple-to-southbay',x:8,y:1800,w:144,h:1958,kind:'collector'},
       {id:'south-connector',x:-650,y:3680,w:3450,h:128,kind:'collector'},
       // Obsolete isolated Midtown dead-end replaced by the real Bayview feeder below.
-      {id:'northgate-downtown',x:5800,y:945,w:110,h:352,kind:'collector'},
-      {id:'downtown-waterfront',x:5720,y:2230,w:150,h:1640,kind:'collector'},
+      {id:'northgate-downtown',x:5751,y:945,w:156,h:352,kind:'collector'},
+      {id:'downtown-waterfront',x:5751,y:2230,w:156,h:990,kind:'collector'},
+      // Join both existing Midtown north stubs to Northgate's lower avenue.
+      {id:'midtown-north-collector',x:4192,y:870,w:895,h:156,kind:'collector',newRoad:true},
+      {id:'midtown-north-west',x:4192,y:1025,w:168,h:236,kind:'collector',newRoad:true},
+      {id:'midtown-north-east',x:4848,y:1025,w:168,h:236,kind:'collector',newRoad:true},
+      {id:'northgate-lower-avenue',x:5086,y:870,w:1600,h:156,kind:'collector',newRoad:true,underNative:true},
       {id:'bayview-link',x:4388,y:3680,w:55,h:128,kind:'collector'},
       // Harbor Avenue: a single actual asphalt corridor west -> precinct ->
       // Midtown -> Downtown -> Industrial. Existing district road tiles win.
@@ -57,7 +63,7 @@
       {id:'bayview-native-east-spine',x:3973,y:3220,w:156,h:462,kind:'collector',newRoad:true,underNative:true},
       // The Northgate and Downtown native roads already meet. Register their
       // through-line as topology; don't cover the original storefront paving.
-      {id:'northgate-through-link',x:5800,y:1296,w:110,h:935,kind:'collector',newRoad:true,underNative:true}
+      {id:'northgate-through-link',x:5751,y:1296,w:156,h:935,kind:'collector',newRoad:true,underNative:true}
     ].map(r=>Object.freeze(r))),
     // Road boundary points are pedestrian crossings and future AI graph nodes;
     // NOT teleports, mission triggers, or server-owned gameplay logic.
@@ -68,16 +74,18 @@
       {id:'midtown-downtown',x:5056,y:1784,axis:'h',type:'district-seam'},
       {id:'downtown-eastside',x:6556,y:1784,axis:'h',type:'district-seam'},
       {id:'eastside-industrial',x:8156,y:1784,axis:'h',type:'district-seam'},
-      {id:'maple-arterial',x:-578,y:1784,axis:'h',type:'intersection'},
-      {id:'maple-south-road',x:-578,y:3744,axis:'h',type:'intersection'},
-      {id:'northgate-downtown',x:5855,y:1283,axis:'v',type:'intersection'},
-      {id:'downtown-waterfront',x:5795,y:2283,axis:'v',type:'intersection'},
+      {id:'maple-arterial',x:80,y:1784,axis:'h',type:'intersection'},
+      {id:'maple-south-road',x:80,y:3744,axis:'h',type:'intersection'},
+      {id:'midtown-north-west-junction',x:4276,y:948,axis:'h',type:'intersection'},
+      {id:'midtown-north-east-junction',x:4932,y:948,axis:'h',type:'intersection'},
+      {id:'northgate-downtown',x:5829,y:1283,axis:'v',type:'intersection'},
+      {id:'downtown-waterfront',x:5829,y:2283,axis:'v',type:'intersection'},
       {id:'southbay-waterfront',x:4400,y:3744,axis:'v',type:'district-seam'},
       {id:'midtown-harbor-junction',x:4932,y:1784,axis:'h',type:'intersection'},
       {id:'midtown-lower-junction',x:4050,y:2540,axis:'h',type:'intersection'},
       {id:'midtown-southbay-junction',x:4050,y:3744,axis:'h',type:'intersection'},
       {id:'westfield-south-junction',x:-1850,y:3744,axis:'h',type:'intersection'},
-      {id:'northgate-harbor-junction',x:5855,y:1784,axis:'h',type:'intersection'}
+      {id:'northgate-harbor-junction',x:5829,y:1784,axis:'h',type:'intersection'}
     ].map(r=>Object.freeze(r))),
     landmarks:Object.freeze([
       {id:'precinct',label:'PRECINCT 9',x:948,y:1160},

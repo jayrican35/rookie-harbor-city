@@ -1,0 +1,12 @@
+{
+  "baseline": "957a4db",
+  "normalization": "CRLF to LF",
+  "unchanged": {
+    "published-game-capture/game.js": "fed646e5a213439b9ec269a80a2b7bb928d16d378b6a99714f10483d8e830d3f",
+    "published-game-capture/outbreak.css": "69b1d1ff50c6e6db60a0eb33100b4d25ea9d2b93b6e224222b40421f5aa9065b",
+    "published-game-capture/v116-marina.js": "0310b737849183ab59952a69bb140cacd217c1a5d071f78df9024651cee73f50",
+    "published-game-capture/v127-citywide-art.js": "b2bb3dbdef63241902167b45dc1c9cbc09a69b978b84acf09ef9b2d2d97d84cf",
+    "published-game-capture/v135-precinct-wallkit-test.js": "748b81269c510c28ed067d35c247a29887f0d5c7839460fcc638810fa0dc607a",
+    "published-game-capture/v131-precinct-legacy-bridge.js": "50e644766fffdccb70a505914caab2c4696950f2b9fc7901908fccc70e75d278"
+  }
+}

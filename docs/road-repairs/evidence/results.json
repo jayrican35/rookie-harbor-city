@@ -1,0 +1,290 @@
+{
+  "runs": [
+    {
+      "tag": "before",
+      "width": 1280,
+      "route": null,
+      "errors": [],
+      "performance": {
+        "frames": 54,
+        "paintP95Ms": 211.79999995231628,
+        "paintMaxMs": 479.90000009536743,
+        "samples": 54,
+        "ambientPedestrians": 16,
+        "ambientDistrictsInitialized": 9,
+        "streetCars": 18,
+        "stoppedCars": 0
+      }
+    },
+    {
+      "tag": "before",
+      "width": 390,
+      "route": null,
+      "errors": [],
+      "performance": {
+        "frames": 102,
+        "paintP95Ms": 10.5,
+        "paintMaxMs": 383.90000009536743,
+        "samples": 102,
+        "ambientPedestrians": 16,
+        "ambientDistrictsInitialized": 9,
+        "streetCars": 18,
+        "stoppedCars": 0
+      }
+    },
+    {
+      "tag": "after",
+      "width": 1280,
+      "route": {
+        "state": {
+          "cameraX": 3289.6646156098673,
+          "cameraY": 803.7729139145631,
+          "zoom": 0.65,
+          "follows": true,
+          "roofAlpha": 0.95,
+          "playerX": 4274.28000001352,
+          "playerY": 1376.9299999864427,
+          "dir": "down",
+          "room": null,
+          "crossings": 1
+        },
+        "repairs": [
+          {
+            "district": "midtown",
+            "type": "mtprop",
+            "from": {
+              "x": 3784,
+              "y": 1732,
+              "w": 56,
+              "h": 10
+            },
+            "to": {
+              "x": 3624,
+              "y": 1892,
+              "w": 56,
+              "h": 10
+            }
+          },
+          {
+            "district": "midtown",
+            "type": "rpgProp",
+            "from": {
+              "x": 4812,
+              "y": 1734,
+              "w": 30,
+              "h": 10
+            },
+            "to": {
+              "x": 4652,
+              "y": 1894,
+              "w": 30,
+              "h": 10
+            }
+          },
+          {
+            "district": "midtown",
+            "type": "rpgProp",
+            "from": {
+              "x": 4453,
+              "y": 1730,
+              "w": 34,
+              "h": 10
+            },
+            "to": {
+              "x": 4389,
+              "y": 1890,
+              "w": 34,
+              "h": 10
+            }
+          },
+          {
+            "district": "midtown",
+            "type": "landscapeV1",
+            "from": {
+              "x": 4022,
+              "y": 2734,
+              "w": 16,
+              "h": 12
+            },
+            "to": {
+              "x": 3926,
+              "y": 2638,
+              "w": 16,
+              "h": 12
+            }
+          },
+          {
+            "district": "downtown",
+            "type": "car",
+            "from": {
+              "x": 6213,
+              "y": 1790,
+              "w": 96,
+              "h": 48
+            },
+            "to": {
+              "x": 6053,
+              "y": 1886,
+              "w": 96,
+              "h": 48
+            }
+          },
+          {
+            "district": "industrial",
+            "type": "car",
+            "from": {
+              "x": 8463,
+              "y": 1734,
+              "w": 96,
+              "h": 48
+            },
+            "to": {
+              "x": 8303,
+              "y": 1574,
+              "w": 96,
+              "h": 48
+            }
+          }
+        ]
+      },
+      "errors": [],
+      "performance": {
+        "frames": 485,
+        "paintP95Ms": 14.5,
+        "paintMaxMs": 762.3999998569489,
+        "samples": 180,
+        "ambientPedestrians": 16,
+        "ambientDistrictsInitialized": 9,
+        "streetCars": 18,
+        "stoppedCars": 0
+      }
+    },
+    {
+      "tag": "after",
+      "width": 390,
+      "route": {
+        "state": {
+          "cameraX": 3974.2590002594516,
+          "cameraY": 702.6718734028642,
+          "zoom": 0.65,
+          "follows": true,
+          "roofAlpha": 0.95,
+          "playerX": 4274.259000013589,
+          "playerY": 1373.5069999864022,
+          "dir": "down",
+          "room": null,
+          "crossings": 1
+        },
+        "repairs": [
+          {
+            "district": "midtown",
+            "type": "mtprop",
+            "from": {
+              "x": 3784,
+              "y": 1732,
+              "w": 56,
+              "h": 10
+            },
+            "to": {
+              "x": 3624,
+              "y": 1892,
+              "w": 56,
+              "h": 10
+            }
+          },
+          {
+            "district": "midtown",
+            "type": "rpgProp",
+            "from": {
+              "x": 4812,
+              "y": 1734,
+              "w": 30,
+              "h": 10
+            },
+            "to": {
+              "x": 4652,
+              "y": 1894,
+              "w": 30,
+              "h": 10
+            }
+          },
+          {
+            "district": "midtown",
+            "type": "rpgProp",
+            "from": {
+              "x": 4453,
+              "y": 1730,
+              "w": 34,
+              "h": 10
+            },
+            "to": {
+              "x": 4389,
+              "y": 1890,
+              "w": 34,
+              "h": 10
+            }
+          },
+          {
+            "district": "midtown",
+            "type": "landscapeV1",
+            "from": {
+              "x": 4022,
+              "y": 2734,
+              "w": 16,
+              "h": 12
+            },
+            "to": {
+              "x": 3926,
+              "y": 2638,
+              "w": 16,
+              "h": 12
+            }
+          },
+          {
+            "district": "downtown",
+            "type": "car",
+            "from": {
+              "x": 6213,
+              "y": 1790,
+              "w": 96,
+              "h": 48
+            },
+            "to": {
+              "x": 6053,
+              "y": 1886,
+              "w": 96,
+              "h": 48
+            }
+          },
+          {
+            "district": "industrial",
+            "type": "car",
+            "from": {
+              "x": 8463,
+              "y": 1734,
+              "w": 96,
+              "h": 48
+            },
+            "to": {
+              "x": 8303,
+              "y": 1574,
+              "w": 96,
+              "h": 48
+            }
+          }
+        ]
+      },
+      "errors": [],
+      "performance": {
+        "frames": 683,
+        "paintP95Ms": 5.699999809265137,
+        "paintMaxMs": 540.6000001430511,
+        "samples": 180,
+        "ambientPedestrians": 16,
+        "ambientDistrictsInitialized": 9,
+        "streetCars": 18,
+        "stoppedCars": 0
+      }
+    }
+  ]
+}

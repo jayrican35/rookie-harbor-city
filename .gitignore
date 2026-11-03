@@ -21,3 +21,7 @@
 /vehicle-angle-evidence/
 /vehicle-angle-qa.log
 __pycache__/
+/roads-audit.json
+/roads-qa.log
+/road-repair-evidence/
+/road-repair-capture.log

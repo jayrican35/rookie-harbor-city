@@ -147,6 +147,25 @@ function room(g,r){
 function furniture(g,f){
   let im,x,y,w,h;
   const type=f.type;
+  if(window.ROOKIE_LOCKER_FURNITURE_ACTIVE&&interiorActive()){
+    const banks=H.lockerAccess?.banks||[],index=banks.indexOf(f);
+    if(type==='locker'&&index>=0){
+      const base=f.y+f.h+2;
+      wallKit().drawInteriorModule(g,index===1?'locker_open':'locker_closed',f.x,base-120,f.w,120);
+      if(index===0){
+        g.save();g.fillStyle='#d9ba4e';g.fillRect(f.x+f.w/2-14,base-106,28,16);
+        g.fillStyle='#13253a';g.font='700 10px sans-serif';g.textAlign='center';g.fillText('7',f.x+f.w/2,base-94);g.restore();
+      }stats.furniture++;return true;
+    }
+    const lockerRoom=H.cellblock?.map?.rooms?.find(r=>r.label==='LOCKER ROOM');
+    if(type==='hcChangingBench'&&lockerRoom&&f.x>=lockerRoom.x&&f.x<lockerRoom.x+lockerRoom.w&&f.y>=lockerRoom.y&&f.y<lockerRoom.y+lockerRoom.h){
+      const base=f.y+f.h;
+      wallKit().drawInteriorModule(g,'changing_bench',f.x,base-44,f.w,44);
+      if(f.x<1300)wallKit().drawInteriorModule(g,'locker_towels',f.x+24,base-36,20,13);
+      else if(f.x<1600)wallKit().drawInteriorModule(g,'locker_bag',f.x+52,base-39,28,16);
+      stats.furniture++;return true;
+    }
+  }
   if(type==='hcReceptionWing')return ready(source('reception'));
   if(type==='hcReception'){
     im=source('reception');

@@ -153,6 +153,81 @@
       },
       "source": "cap/plaster/navy trim from owner pack",
       "anchor": "top-left"
+    },
+    "locker_closed": {
+      "atlas": {
+        "x": 26,
+        "y": 104,
+        "w": 132,
+        "h": 120
+      },
+      "sourceCrop": [
+        550,
+        649,
+        681,
+        769
+      ],
+      "anchor": "bottom-center",
+      "role": "locker-room furniture"
+    },
+    "locker_open": {
+      "atlas": {
+        "x": 160,
+        "y": 104,
+        "w": 132,
+        "h": 120
+      },
+      "sourceCrop": "closed bank with owner open-door crop (744,652,778,763)",
+      "anchor": "bottom-center",
+      "role": "locker-room furniture"
+    },
+    "changing_bench": {
+      "atlas": {
+        "x": 294,
+        "y": 104,
+        "w": 108,
+        "h": 44
+      },
+      "sourceCrop": [
+        553,
+        792,
+        675,
+        841
+      ],
+      "anchor": "bottom-center",
+      "role": "locker-room furniture"
+    },
+    "locker_bag": {
+      "atlas": {
+        "x": 404,
+        "y": 104,
+        "w": 28,
+        "h": 16
+      },
+      "sourceCrop": [
+        918,
+        647,
+        971,
+        678
+      ],
+      "anchor": "bottom-center",
+      "role": "locker-room furniture"
+    },
+    "locker_towels": {
+      "atlas": {
+        "x": 434,
+        "y": 104,
+        "w": 20,
+        "h": 13
+      },
+      "sourceCrop": [
+        931,
+        686,
+        966,
+        709
+      ],
+      "anchor": "bottom-center",
+      "role": "locker-room furniture"
     }
   },
   "connections": {

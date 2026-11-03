@@ -1,0 +1,7 @@
+{
+  "approvedForPlayback": false,
+  "status": "needs-artwork-rebuild",
+  "reason": "Supplied composite poses have split costumes, incomplete gloves, doubled hats, floating props and opaque patches around limbs.",
+  "activeReplacement": "previous coherent civilian artwork",
+  "scope": "connected-preview-only"
+}

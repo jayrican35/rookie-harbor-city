@@ -1,10 +1,12 @@
 """Apply the civilian adapter to a copy of the current connected-world build."""
 from pathlib import Path
 import hashlib
+import json
 import re
 import shutil
 
 r = Path.cwd()
+art_ready = json.loads((r/'published-game-capture/assets/civilian-approved/review-status.json').read_text())['approvedForPlayback']
 base = r / 'site/preview/marina-updated'
 before = r / 'site/preview/civilian-before'
 after = r / 'site/preview/civilian-updated'
@@ -28,7 +30,11 @@ for target in [before, after]:
         shutil.copytree(r / 'published-game-capture/assets/civilian-approved', target / 'assets/civilian-approved', dirs_exist_ok=True)
         html = re.sub(r'<script data-civilian-preview>.*?</script>\s*<script src="\./civilian-connected\.js[^\"]*"></script>', '', html)
         digest = hashlib.sha256((target / 'civilian-connected.js').read_bytes()).hexdigest()[:12]
-        html = html.replace('</body>', '<script data-civilian-preview>window.ROOKIE_CONNECTED_CIVILIANS_ACTIVE=true;</script><script src="./civilian-connected.js?v='+digest+'"></script></body>')
+        html = html.replace('</body>', '<script data-civilian-preview>window.ROOKIE_CONNECTED_CIVILIANS_ACTIVE='+str(art_ready).lower()+';</script><script src="./civilian-connected.js?v='+digest+'"></script></body>')
     (target / 'index.html').write_text(html, encoding='utf-8')
 shutil.copy2(r / 'tools/civilian_preview_review.html', r / 'site/index.html')
+if not art_ready:
+    target=r/'site/evidence/civilian-preview'
+    target.mkdir(parents=True,exist_ok=True)
+    shutil.copy2(r/'tools/civilian_art_hold.html',target/'index.html')
 print('Updated local connected civilian preview; original campaign assets unchanged.')

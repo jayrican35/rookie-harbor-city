@@ -9,6 +9,14 @@ r=Path.cwd()
 src=r/'civilian-evidence'
 dst=r/'docs/civilian-preview/evidence'
 dst.mkdir(parents=True,exist_ok=True)
+status=json.loads((r/'published-game-capture/assets/civilian-approved/review-status.json').read_text())
+if not status['approvedForPlayback']:
+    shutil.copy2(r/'tools/civilian_art_hold.html',dst/'index.html')
+    target=r/'site/evidence/civilian-preview'
+    target.mkdir(parents=True,exist_ok=True)
+    shutil.copy2(r/'tools/civilian_art_hold.html',target/'index.html')
+    print('Artwork is withdrawn; published the repair status page instead of the damaged walk demo.')
+    raise SystemExit(0)
 for name in ['before','updated']:
     shutil.copytree(src/name,dst/name,dirs_exist_ok=True)
 for name in ['results.json','coverage.json']:

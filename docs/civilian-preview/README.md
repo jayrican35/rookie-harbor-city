@@ -1,5 +1,7 @@
 # Approved civilian artwork — connected preview
 
+**WITHDRAWN FROM PLAYBACK:** The supplied profile/back composites have incomplete hands, split costumes, doubled hats, floating props and opaque patches. Earlier grid/alpha/frame checks passed mechanically but did not establish acceptable visual quality. The connected preview now uses the previous coherent civilians; the new walk demo is disabled by `review-status.json`. Two built-in image-generation repair attempts were rejected by the service, so no rebuilt artwork is available yet. The report below is historical evidence of the initial integration, not current visual approval.
+
 The connected city now uses the exact yellow, goggle-wearing civilian artwork supplied in `HarborCity_All_30_Civilian_Walking_Atlases.zip`. All 30 RGBA walking atlases (480 frames), original role idles, manifest, and source quality notes are preserved. No replacement art was generated. The two older ZIPs contained different simplified artwork and were not imported.
 
 The supplied atlases contain 128×160 frames in down/left/right/up rows, four frames per direction, with a (64,153) foot anchor. Each production PNG is copied byte for byte and validated for dimensions, transparency, distinct cycle frames and per-frame bounds. The supplied side/back views are composited approximations of the approved artwork; those contours remain unchanged.

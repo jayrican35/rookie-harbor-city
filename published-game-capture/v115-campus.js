@@ -787,6 +787,7 @@
     if(campus.zoom<.10){overviewDistrictLabel(d);return;}
     g.save();g.translate(d.x,d.y);
     for(const o of d.map.decors||[]){
+      if(window.ROOKIE_V116_MARINA?.ownsDecor?.(d.id,o))continue;
       const x=o.x||0,y=o.y||0;
       if(window.ROOKIE_CITY_PERSPECTIVE_ACTIVE&&(districtBuildingTypes.has(o.t)||nativeDistrictProp(o)))continue;
       if(!nearViewport(d.x+x-130,d.y+y-170,(o.w||240)+260,(o.h||200)+260))continue;
@@ -974,6 +975,7 @@
     if(window.ROOKIE_CITY_PERSPECTIVE_ACTIVE&&campus.zoom>=.10)
       for(const d of districtEntries)if(nearViewport(d.x,d.y,d.w,d.h))
         for(const o of d.map.decors||[]){
+          if(marina?.ownsDecor?.(d.id,o))continue;
           const b=districtBuildingBox(o),native=b?null:nativeDistrictProp(o);
           if(native){
             if(nearViewport(d.x+native.x,d.y+native.y,native.w,native.h))entries.push({y:d.y+native.depth,nativeProp:{...native,district:d}});

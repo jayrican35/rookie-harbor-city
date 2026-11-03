@@ -1,0 +1,12 @@
+<!doctype html>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<title>Harbor City — Bayview waterfront</title>
+<style>body{margin:0;background:#102238;color:#eee;font:15px system-ui}header{display:flex;gap:12px;flex-wrap:wrap;align-items:center;padding:10px}h1{font-size:18px;margin:0}button,select,a{font:inherit;color:inherit}button,select{background:#24445b;padding:7px;border:1px solid #c2a46b}button[aria-pressed=true]{background:#dfc080;color:#102238}iframe{width:100%;height:calc(100dvh - 100px);min-height:500px;border:0;display:block}</style>
+<header><h1>Bayview waterfront</h1><button data-version="updated" aria-pressed="true">Explore waterfront</button><button data-version="before" aria-pressed="false">Before</button><select id="scene"><option value="3930,3990,.7">Bayview & Marina</option><option value="3500,4000,1.1">Bait & Tackle</option><option value="4370,3990,.8">Connecting promenade</option><option value="5150,3880,.7">Marina piers</option></select><a href="/evidence/marina-integration/">Screenshots & tests</a><a href="/roads-review/">Road review</a><small id="status">Loading…</small></header>
+<iframe title="Playable continuous Bayview waterfront"></iframe>
+<script>
+const frame=document.querySelector('iframe'),status=document.querySelector('#status');let generation=0;
+function camera(){const a=frame.contentWindow.HARBOR?.seamlessCampusV115;if(!a)return;const[x,y,z]=document.querySelector('#scene').value.split(',').map(Number);a.qaCamera(x,y,z);frame.contentWindow.focus();}
+function load(tag){const id=++generation;document.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.version===tag)));frame.onload=()=>{function ready(n){if(id!==generation)return;const a=frame.contentWindow.HARBOR?.seamlessCampusV115;if(a&&a.openAt(3700,4108,.7)){camera();status.textContent='WASD / arrows or touch · walk through the shop door';return;}if(n)setTimeout(()=>ready(n-1),100);}ready(150);};frame.src='/preview/marina-'+tag+'/?pilotQA=1';}
+document.querySelectorAll('button').forEach(b=>b.onclick=()=>load(b.dataset.version));document.querySelector('#scene').onchange=camera;load('updated');
+</script>

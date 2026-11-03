@@ -36,7 +36,7 @@ test('other side of piling',5191,3959,true);
 test('pier open central aisle',5150,3920,false);
 test('open water',5000,3920,true);
 test('marina café doorway approach',4551,3382,false);
-test('outside original world remains unobstructed',3000,4400,false);
+test('outside Bayview and marina remains unobstructed',2600,4400,false);
 const before={...m.metrics()};
 assert.equal(before.postColliders,18);
 assert(before.sceneryColliders>50);

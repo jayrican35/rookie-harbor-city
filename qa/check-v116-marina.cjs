@@ -18,12 +18,12 @@ const proto={complete:true,naturalWidth:256};
 const mock={window:{},Image:function(){return {...proto}},document:{readyState:'loading',addEventListener(){}},performance:{now:()=>0},location:{search:''},Math,Map,Set,Object,Number,Array,JSON,console};
 vm.runInNewContext(s,mock,{filename:'v116-marina.js'});
 const m=mock.window.ROOKIE_V116_MARINA;assert(m,'V116 module not exposed');
-assert.equal(m.worldId,'harbor-main');assert.equal(m.actors.length,9);assert(m.interactions.length>=9);assert.equal(m.interiors.length,4);
+assert.equal(m.worldId,'harbor-main');assert.equal(m.actors.length,12);assert(m.interactions.length>=12);assert.equal(m.interiors.length,4);
 assert.equal(m.blocksProp(5150,3710,12),false,'Promenade must be walkable');
 assert.equal(m.blocksProp(4470,3290,12),true,'Shop wall must be solid while its doorway stays open');
 assert.equal(m.blocksProp(5145,3920,12),false,'Existing pier must remain walkable');
 assert.equal(m.blocksProp(5000,3920,12),true,'Open water must block movement');
-assert.equal(m.blocksProp(3000,4400,12),false,'World outside marina unchanged');
+assert.equal(m.blocksProp(2600,4400,12),false,'World outside Bayview and marina unchanged');
 assert.equal(m.setTestEnabled(false),false,'No release runtime debug toggle');
 assert.equal(m.metrics().multiplayerTransport,'none');
 console.log('PASS V116: original marina pier coordinates, 11 raster sprites, integrated actors, world collision and scope-safe renderer');
@@ -64,6 +64,12 @@ for(const id of ['waterfront','southbay']){
 const finalStart=engine.indexOf('Object.keys(MAPS).forEach(function(id){');
 const finalEnd=engine.indexOf('/* ==================== PEDESTRIANS',finalStart);
 vm.runInNewContext(engine.slice(finalStart,finalEnd),geo);
+// Include the production Southbay sprite/footprint refinement, which runs
+// after the original MAPS finalizer in the real game.
+geo.asset=()=>({});geo.drawDecor=()=>{};
+const bayArtStart=engine.indexOf('var SB={}, metrics='),bayArtEnd=engine.indexOf('// Ensure geography still offers safe pedestrian routes',bayArtStart);
+assert(bayArtStart>0&&bayArtEnd>bayArtStart);
+vm.runInNewContext('(function(){'+engine.slice(bayArtStart,bayArtEnd)+'})();',geo);
 function blockedInWorld(x,y,r=12){
  if(m.blocksScenery(x,y,r))return true; // Static walkability: moving NPCs have dynamic, not permanent, obstacles.
  for(const [id,ox,oy] of [['waterfront',4400,3220],['southbay',2800,3220]]){

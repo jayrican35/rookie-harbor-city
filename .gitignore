@@ -25,3 +25,5 @@ __pycache__/
 /roads-qa.log
 /road-repair-evidence/
 /road-repair-capture.log
+/marina-integration-evidence/
+/marina-integration-qa.log

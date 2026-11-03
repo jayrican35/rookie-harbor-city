@@ -20,10 +20,10 @@ function atlas(g,name,x,y,w,h){
  const im=drawable(name);if(!im)return false;
  g.imageSmoothingEnabled=false;g.drawImage(im,x,y,w,h);stats.materialsDrawn++;return true;
 }
-function material(g,name,view,ox=0,oy=0,opacity=1){
+function material(g,name,view,ox=0,oy=0,opacity=1,bounds=W){
  const im=drawable(name);if(!im)return false;
- const xmin=Math.max(W.x,view.x-2),xmax=Math.min(W.x+W.w,view.x+view.w+2);
- const ymin=Math.max(W.y,view.y-2),ymax=Math.min(W.y+W.h,view.y+view.h+2);
+ const xmin=Math.max(bounds.x,view.x-2),xmax=Math.min(bounds.x+bounds.w,view.x+view.w+2);
+ const ymin=Math.max(bounds.y,view.y-2),ymax=Math.min(bounds.y+bounds.h,view.y+view.h+2);
  if(xmin>=xmax||ymin>=ymax)return false;
  g.save();g.globalAlpha*=opacity;g.imageSmoothingEnabled=false;
  const bx=W.x+ox,by=W.y+oy;
@@ -33,44 +33,44 @@ function material(g,name,view,ox=0,oy=0,opacity=1){
  }
  g.restore();return true;
 }
-function water(g,opt,t){
- if(!opt||!intersects(W,opt.view))return;
+function water(g,opt,t,bounds=W){
+ if(!opt||!intersects(bounds,opt.view))return;
  const view=opt.view,time=reduced?0:t;
  stats.waterFrames++;
- g.save();g.beginPath();g.rect(W.x,W.y,W.w,W.h);g.clip();
+ g.save();g.beginPath();g.rect(bounds.x,bounds.y,bounds.w,bounds.h);g.clip();
  // The *texture itself* carries authored wave facets and tonal shape; no
  // separate random horizontal stroke renderer or camera-relative movement.
- g.fillStyle='#063454';g.fillRect(W.x,W.y,W.w,W.h);
- material(g,'water-body',view);
+ g.fillStyle='#063454';g.fillRect(bounds.x,bounds.y,bounds.w,bounds.h);
+ material(g,'water-body',view,0,0,1,bounds);
  // Depth material: turquoise near shore, high contrast navy farther out.
- const depth=g.createLinearGradient(0,3800,0,4656);
+ const depth=g.createLinearGradient(0,bounds.y,0,bounds.y+bounds.h);
  depth.addColorStop(0,'rgba(9,211,189,.21)');
  depth.addColorStop(.20,'rgba(11,165,170,.12)');
  depth.addColorStop(.61,'rgba(3,43,93,.12)');
  depth.addColorStop(1,'rgba(2,15,53,.50)');
- g.fillStyle=depth;g.fillRect(W.x,W.y,W.w,W.h);
+ g.fillStyle=depth;g.fillRect(bounds.x,bounds.y,bounds.w,bounds.h);
  // Underwater plants and stones appear through shallows, fading into depth.
  if(drawable('water-reef')){
-  g.save();g.beginPath();g.rect(W.x,3800,W.w,360);g.clip();
-  material(g,'water-reef',view,0,0,.53);g.restore();
+  g.save();g.beginPath();g.rect(bounds.x,bounds.y,bounds.w,360);g.clip();
+  material(g,'water-reef',view,0,0,.53,bounds);g.restore();
  }
  // Layered looped authored caustic curves; slow optical parallax, never
  // horizontally-scrolling lines. All coordinates anchored to harbor-main.
  const sx=Math.round(Math.sin(time*.0003)*22);
  const sy=Math.round(Math.cos(time*.00024)*15);
  // Sparse refracted sunlight, no hard-edged ice-crack network.
- material(g,'water-caustics',view,sx,sy,.44);
- material(g,'water-caustics',view,-sy*2,-sx*2,.12);
- waterGlints(g,view,time);
+ material(g,'water-caustics',view,sx,sy,.44,bounds);
+ material(g,'water-caustics',view,-sy*2,-sx*2,.12,bounds);
+ waterGlints(g,view,time,bounds);
  // Stone seawall casts a clear nearshore underwater shade.
- g.fillStyle='rgba(2,24,49,.49)';g.fillRect(4400,3800,1500,21);
+ g.fillStyle='rgba(2,24,49,.49)';g.fillRect(bounds.x,bounds.y,bounds.w,21);
  g.restore();
 }
 // Authored 4-frame sunlight sparkles are camera-culled, stable in world space.
-function waterGlints(g,view,t){
+function waterGlints(g,view,t,bounds=W){
  const im=drawable('water-glints');if(!im)return;
- const xa=Math.max(W.x,view.x-100),xb=Math.min(W.x+W.w,view.x+view.w+100);
- const ya=Math.max(W.y,view.y-100),yb=Math.min(W.y+W.h,view.y+view.h+100);
+ const xa=Math.max(bounds.x,view.x-100),xb=Math.min(bounds.x+bounds.w,view.x+view.w+100);
+ const ya=Math.max(bounds.y,view.y-100),yb=Math.min(bounds.y+bounds.h,view.y+view.h+100);
  if(xb<=xa||yb<=ya)return;
  g.save();g.imageSmoothingEnabled=false;
  for(let iy=Math.floor((ya-W.y)/135);W.y+iy*135<yb;iy++){
@@ -128,33 +128,33 @@ function boat(g,b,t){
  if(drawable('foam-frames'))foam(g,cx,cy+18,b.w*1.45,t+500,.36);
  g.restore();
 }
-function dock(g,px,view){
+function dock(g,px,view,geometry={top:3800,width:90,height:300}){
  const im=drawable('dock-wood');if(!im)return false;
- const top=3800,deckHeight=300,deckWidth=90;
+ const top=geometry.top,deckHeight=geometry.height,deckWidth=geometry.width;
  if(!intersects({x:px-14,y:top,w:118,h:deckHeight+12},view))return true;
  g.save();g.imageSmoothingEnabled=false;
  // V122: dark *understructure* sits on water OUTSIDE the solid walkable deck,
  // not on top of timber. Tight side shadows and a clear lower face create height.
  g.fillStyle='rgba(2,23,42,.36)';g.fillRect(px-13,top+8,12,deckHeight+3);
- g.fillStyle='rgba(2,19,37,.43)';g.fillRect(px+90,top+8,14,deckHeight+3);
+ g.fillStyle='rgba(2,19,37,.43)';g.fillRect(px+deckWidth,top+8,14,deckHeight+3);
  g.fillStyle='#76503b';g.fillRect(px-4,top+6,4,deckHeight-1);
- g.fillStyle='#513524';g.fillRect(px+90,top+6,4,deckHeight-1);
+ g.fillStyle='#513524';g.fillRect(px+deckWidth,top+6,4,deckHeight-1);
  // Only the actual deck surface receives the atlas. V121 atlas is 90×192,
  // unlike old 90×128: use intrinsic height to avoid visible repeated cuts.
  g.save();g.beginPath();g.rect(px,top,deckWidth,deckHeight);g.clip();
  const texH=im.naturalHeight||128;
  for(let y=top;y<top+deckHeight;y+=texH){
   const h=Math.min(texH,top+deckHeight-y);
-  g.drawImage(im,0,0,90,h,px,y,90,h);stats.dockTiles++;
+  g.drawImage(im,0,0,90,h,px,y,deckWidth,h);stats.dockTiles++;
  }
  // Sunlit edge trim belongs on the actual deck top, not the water.
  g.fillStyle='rgba(255,223,155,.23)';g.fillRect(px+4,top,2,deckHeight);
- g.fillStyle='rgba(37,23,28,.27)';g.fillRect(px+86,top,3,deckHeight);
+ g.fillStyle='rgba(37,23,28,.27)';g.fillRect(px+deckWidth-4,top,3,deckHeight);
  g.restore();
  // Raised planked end-cap: clearly visible thickness above the sea.
- g.fillStyle='#754b30';g.fillRect(px,top+deckHeight,90,8);
- g.fillStyle='#e5b574';g.fillRect(px,top+deckHeight-2,90,3);
- g.fillStyle='#3c2c28';g.fillRect(px+1,top+deckHeight+6,88,2);
+ g.fillStyle='#754b30';g.fillRect(px,top+deckHeight,deckWidth,8);
+ g.fillStyle='#e5b574';g.fillRect(px,top+deckHeight-2,deckWidth,3);
+ g.fillStyle='#3c2c28';g.fillRect(px+1,top+deckHeight+6,deckWidth-2,2);
  g.restore();return true;
 }
 function post(g,x,y){

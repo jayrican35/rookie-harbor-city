@@ -84,7 +84,7 @@ function paint(state,t){
  root.querySelector('.v116-identity small').textContent=['kaleb','gigi','lingling'].includes(id)?'ACADEMY SIMULATION':'ON DUTY';
  for(const b of root.querySelectorAll('[data-profile]'))b.classList.toggle('selected',b.dataset.profile===id);}
  const g=context,marina=window.ROOKIE_V116_MARINA,metrics=marina.metrics();
- const inMarina=marina.inMarina(state.x,state.y),city=window.ROOKIE_V127_CITY;
+ const inMarina=state.x>=4400&&state.x<5900&&state.y>=3220&&state.y<4220,city=window.ROOKIE_V127_CITY;
  const district=city?.location(state.x,state.y)||'HARBOR CITY';
  const label=root.querySelector('.v116-identity i');
  if(label&&label.textContent!==district)label.textContent=district;

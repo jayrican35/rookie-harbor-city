@@ -6,8 +6,8 @@ const marina=fs.readFileSync(path.join(root,'published-game-capture/v116-marina.
 const generator=fs.readFileSync(path.join(root,'tools/generate_v121_marina_art.py'),'utf8');
 assert(renderer.includes("const ROOT='./assets/v121-marina/'"));
 assert(renderer.includes("'water-glints'"));
-assert(renderer.includes("material(g,'water-caustics',view,sx,sy,.44)"));
-assert(renderer.includes('waterGlints(g,view,time)'));
+assert(renderer.includes("material(g,'water-caustics',view,sx,sy,.44,bounds)"));
+assert(renderer.includes('waterGlints(g,view,time,bounds)'));
 assert(renderer.includes('Golden reflections are sparse broken *sparkles*'));
 assert(!renderer.includes('const width=34*(1-k/15)'),'No recurring horizontal reflection bars');
 assert(renderer.includes('const frame=reduced?0:Math.floor(t/230+seed%31)%4'));

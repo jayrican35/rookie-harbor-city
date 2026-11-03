@@ -20,8 +20,8 @@ assert(actors.includes('marina.drawPierPost(g,entry.pierPost)'));
 assert(actors.includes('drawOfficer({x:campus.x,y:campus.y'));
 assert(art.includes('const texH=im.naturalHeight||128'),'No repeating seam due to hardcoded tile height');
 assert(art.includes("g.rect(px,top,deckWidth,deckHeight);g.clip()"),'Clip planks to dry deck surface');
-assert(art.includes('px+90,top+8,14,deckHeight+3'),'Shadow must sit OUTSIDE deck surface');
-assert(art.includes('g.fillRect(px,top+deckHeight,90,8)'),'Deck end face must show thickness');
+assert(art.includes('px+deckWidth,top+8,14,deckHeight+3'),'Shadow must sit OUTSIDE deck surface');
+assert(art.includes('g.fillRect(px,top+deckHeight,deckWidth,8)'),'Deck end face must show thickness');
 const commands=[], ctx={window:{matchMedia:()=>({matches:false})},Image:class {
  constructor(){this.complete=true;this.naturalWidth=90;this.naturalHeight=192;this.decoding='async';}
  set src(v){this._src=v;}get src(){return this._src;}

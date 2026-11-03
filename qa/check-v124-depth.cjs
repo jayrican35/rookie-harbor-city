@@ -29,7 +29,8 @@ assert(low.length>=10,'Benches, planters, bins and kiosk must use the actual act
 assert(s.includes("'bench','garden','trash','kiosk'].includes(o.type))continue"),'No background furniture draw under actors');
 assert.equal(lamps.length,5);
 assert(trees.length>=10);
-assert.equal(roofs.length,4);
+assert.equal(roofs.length,3,'Three original Marina roofs remain; bait shop occupies Bayview existing building');
+assert(m.depthProps({x:3300,y:3800,w:400,h:400}).some(p=>p.kind==='roof'&&p.building.kind==='bait'));
 const lamp=lamps.find(p=>p.object.x===5060);
 assert(lamp&&lamp.depthY===5060*0+3655+85-3);
 assert(3760>lamp.depthY,'Jay in front draws AFTER lamp');

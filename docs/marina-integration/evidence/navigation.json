@@ -1,0 +1,60 @@
+{
+  "versions": [
+    {
+      "tag": "before",
+      "mapHash": "b428dcd4f3243573ab461f146566cd7ea5f8731c12dfdb0264d15f324789bda0"
+    },
+    {
+      "tag": "updated",
+      "mapHash": "b428dcd4f3243573ab461f146566cd7ea5f8731c12dfdb0264d15f324789bda0",
+      "navigation": {
+        "radius": 12,
+        "spacing": 2,
+        "samples": 1188,
+        "hits": [],
+        "roomReachableCells": 1167,
+        "fittings": [
+          {
+            "id": "marina:bait:tackle-rack",
+            "solid": true,
+            "reachable": true
+          },
+          {
+            "id": "marina:bait:counter",
+            "solid": true,
+            "reachable": true
+          },
+          {
+            "id": "marina:bait:rods",
+            "solid": true,
+            "reachable": true
+          },
+          {
+            "id": "marina:bait:cooler",
+            "solid": true,
+            "reachable": true
+          },
+          {
+            "id": "marina:bait:display",
+            "solid": true,
+            "reachable": true
+          },
+          {
+            "id": "marina:bait:stock",
+            "solid": true,
+            "reachable": true
+          },
+          {
+            "id": "marina:bait:seat",
+            "solid": true,
+            "reachable": true
+          }
+        ],
+        "waterBlocked": true,
+        "doorClear": true,
+        "wallBlocked": true,
+        "assets": 41
+      }
+    }
+  ]
+}

@@ -258,6 +258,7 @@ function coastY(x){
  return 4220+Math.sin(x*.0018)*25;
 }
 function coastalWater(x,y){
+ if(x>=2800&&x<4400)return false; // Bayview's authored shore and pier are owned by Marina.
  if(x>=4400&&x<5900)return false; // Native V116 coastline / piers own this.
  if(y<3780||y>WORLD.maxY)return false;
  return y>=coastY(x)+18;
@@ -270,6 +271,7 @@ function coastline(g,opt){
  const sx=Math.max(WORLD.minX,Math.floor(view.x/32)*32),ex=Math.min(WORLD.maxX,view.x+view.w+32);
  const ey=Math.min(WORLD.maxY,view.y+view.h+32),sy=Math.max(3780,view.y);
  for(let x=sx;x<ex;x+=32){
+   if(x>=2800&&x<4400)continue; // No sloping coast across Bayview houses / dock.
    if(x>=4400&&x<5900)continue;
    const shoreline=coastY(x),top=Math.max(sy,Math.floor(shoreline/32)*32);
    if(top>=ey)continue;
@@ -595,6 +597,8 @@ function map(g,x,y){
  // The already-authored marina water is represented with the same geographic
  // footprint, without trying to render a second full game scene in the minimap.
  g.fillStyle='#12688b';g.fillRect(4400,3800,1500,420);
+ g.fillRect(2800,4174,1600,506);
+ g.fillStyle='#cda26c';g.fillRect(3560,4174,60,120);
  for(let px of [4655,5105,5555].values()){g.fillStyle='#cda26c';g.fillRect(px,3800,90,300);}
  g.restore();
 }

@@ -18,4 +18,6 @@
 /interior-wall-pilot-qa.log
 /locker-room-evidence/
 /locker-room-qa.log
+/vehicle-angle-evidence/
+/vehicle-angle-qa.log
 __pycache__/

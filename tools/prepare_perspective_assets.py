@@ -5,7 +5,9 @@ import json
 
 repo=Path(__file__).resolve().parent.parent
 folder=repo/'published-game-capture/assets/perspective-pilot'
-source=Image.open(folder/'vehicles-source.png').convert('RGBA')
+source_path=folder/'vehicles-source-raised.png'
+if not source_path.exists():source_path=folder/'vehicles-source.png'
+source=Image.open(source_path).convert('RGBA')
 atlas=Image.new('RGBA',(512,512));frames={};packed=0
 palette=['557e9a','a66852','7d8b76','c5a975','597b7c','ac7671',
          '5a5a52','7a3b3b','8a97a5','3b5a7a']
@@ -45,6 +47,6 @@ for row,family in enumerate(['police','sedan','van']):
    frames[family+'.'+color+direction]={'x':x,'y':y,'w':64,'h':64,'bounds':list(art.getbbox()),'sourceCell':list(cell),'sourceBounds':list(bounds)}
 atlas.save(folder/'vehicles-atlas.png')
 (folder/'manifest.json').write_text(json.dumps({'id':'precinct-perspective-pilot','atlas':'vehicles-atlas.png',
- 'tileSize':32,'frameSize':64,'camera':'fixed elevated north-facing 3/4 JRPG view',
+ 'tileSize':32,'frameSize':64,'source':source_path.name,'camera':'fixed raised north-facing 3/4 JRPG view; broad roof and hood planes',
  'bounds':{'x':387,'y':1124,'w':1923,'h':724},'frames':frames},indent=2),encoding='utf-8')
 print('Packed twelve directional designs plus original civilian paint variants')

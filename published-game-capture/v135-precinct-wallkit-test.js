@@ -367,7 +367,7 @@ function drawPilotVehicle(g,car){
  const length=car.length??(car.kind==='delivery'?104:86),width=car.width??38;
  // Uniform sprite scaling preserves 3/4 proportions. The ground contact
  // shadow is the original collision footprint; bodywork rises above it.
- const scale=Math.min((horizontal?length:width)/sw,(horizontal?width+18:length+12)/sh);
+ const scale=Math.min((horizontal?length:width)/sw,(horizontal?Math.max(width+18,length*.74):length+12)/sh);
  const w=sw*scale,h=sh*scale,bottom=car.y+(horizontal?width/2:length*.35);
  g.save();g.imageSmoothingEnabled=false;g.fillStyle='rgba(7,18,30,.22)';g.beginPath();
  g.ellipse(car.x+2,car.y+2,horizontal?length/2:width/2,horizontal?width/2:length/2,0,0,Math.PI*2);g.fill();

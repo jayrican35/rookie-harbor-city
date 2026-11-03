@@ -53,6 +53,8 @@
       // Southbay's horizontal road is already authored at y=3681..3807.
       // Logical graph edge only: NEVER paint duplicate asphalt on finished art.
       {id:'southbay-loop',x:2800,y:3680,w:1589,h:128,kind:'collector',newRoad:true,underNative:true},
+      {id:'bayview-quay-access',x:3700,y:3807,w:96,h:297,kind:'collector',newRoad:true},
+      {id:'bayview-shop-frontage',x:3700,y:4028,w:540,h:76,kind:'collector',newRoad:true},
       // Source map inspection: Midtown's REAL lower avenue is at world
       // y=2476..2604 and its east spine at world x=4848..5016.
       {id:'midtown-east-spine',x:4848,y:1847,w:168,h:758,kind:'collector',newRoad:true,underNative:true},

@@ -9,6 +9,13 @@ const BASE='./assets/v116-marina/';
 const WORLD='harbor-main';
 const TERRAIN={x:4352,y:3220,w:1792,h:1436,cell:32,chunk:256};
 const PIER_X=Object.freeze([4655,5105,5555]);
+const POST_OFFSETS=Object.freeze([-6,96]);
+const ARRIVAL_DECKS=Object.freeze([
+ {x:4240,y:3810,w:160,h:470},{x:4400,y:3780,w:100,h:500},
+ {x:4140,y:4174,w:360,h:106}
+]);
+const onArrivalDeck=(x,y,r=0)=>[[-r,-r],[r,-r],[-r,r],[r,r]].every(([dx,dy])=>
+ ARRIVAL_DECKS.some(b=>x+dx>=b.x&&x+dx<=b.x+b.w&&y+dy>=b.y&&y+dy<=b.y+b.h));
 const images=Object.create(null),imageFiles=[
  'marina-reference-atlas.webp','marina-tiles.png','marina-detail-tiles.png','marina-cafe.png','bait-and-tackle.png','marina-office.png',
  'boat-service.png','marina-kiosk.png','boat-motor.png','boat-sail.png',
@@ -16,7 +23,7 @@ const images=Object.create(null),imageFiles=[
 const sourceFiles=['shade_tree','palm','bench','lamp','flower_planter','trash_bin','bollard','fence_horizontal'];
 for(const file of imageFiles){const im=new Image();im.decoding='async';images[file]=im;im.src=BASE+file;}
 for(const file of sourceFiles){const im=new Image();im.decoding='async';images[file+'.webp']=im;im.src='./assets/exterior/'+file+'.webp';}
-const packNames=['shop','rods','lures','cooler','net','barrel','crates','life-ring','fish-sign','flowers','shop-lamp','rope','chalkboard','dock-cleat','dock-ring','dock-rope','rowboat','fishing-boat','sailboat','planks'];
+const packNames=['shop','rods','lures','cooler','net','barrel','crates','life-ring','fish-sign','flowers','shop-lamp','rope','chalkboard','dock-cleat','dock-ring','dock-rope','rowboat','fishing-boat','sailboat','planks','gateway'];
 for(const name of packNames){const im=new Image();im.decoding='async';images['pack:'+name]=im;im.src='./assets/marina-integration/'+name+'.png';}
 const img=(key)=>{const im=images[key];return im&&im.complete&&im.naturalWidth>0?im:null;};
 // Alpha-bound sprites from the reference-guided atlas; no scene-sized backdrop.
@@ -36,45 +43,39 @@ const objects=Object.freeze([
  {id:'marina:shed-b',type:'building',image:'boat-service.png',x:5020,y:3400,w:220,h:150,solid:false},
  // Two additional coastal storefronts on existing grass, clear of mission doors.
  {id:'marina:cafe',type:'building',image:'marina-cafe.png',x:4460,y:3227,w:183,h:125,solid:true},
- // Reuse Bayview's existing marina-office footprint instead of adding a shell.
- {id:'marina:bait',type:'building',image:'pack:shop',x:3350,y:4074-300*878/1335,w:300,h:300*878/1335,solid:true},
+ // Approved replacement of the two Bayview corner homes; one bait shop.
+ {id:'marina:bait',type:'building',image:'pack:shop',x:3805,y:3820,w:300,h:200,solid:true},
+ {id:'marina:gateway',type:'gateway',image:'pack:gateway',x:4270,y:3828,w:184,h:174,feet:[[4,154,14,20],[166,154,14,20]]},
  {id:'marina:information',type:'kiosk',image:'marina-kiosk.png',x:5670,y:3540,w:88,h:96,solid:true},
  {id:'marina:shade-west',type:'tree',image:'shade_tree.webp',x:4400,y:3294,w:100,h:110},
  {id:'marina:shade-mid',type:'tree',image:'shade_tree.webp',x:4900,y:3280,w:145,h:154},
  {id:'marina:shade-east',type:'tree',image:'shade_tree.webp',x:5280,y:3286,w:145,h:154},
  ...[[4435,3440],[4840,3415],[5290,3410],[5710,3300],[5800,3410],[5660,3400],[4880,3500],[5320,3295],[4795,3270],[5490,3225],[5580,3227],[5680,3230],[5800,3260]].map(([x,y],i)=>({id:'marina:grove-'+i,type:'tree',image:'shade_tree.webp',x,y,w:142+(i%2)*18,h:150+(i%2)*18})),
- {id:'marina:palm-a',type:'palm',image:'palm.webp',x:4490,y:3615,w:90,h:91},
- {id:'marina:palm-b',type:'palm',image:'palm.webp',x:4805,y:3622,w:90,h:91},
- {id:'marina:palm-c',type:'palm',image:'palm.webp',x:5290,y:3610,w:90,h:91},
- {id:'marina:palm-d',type:'palm',image:'palm.webp',x:5635,y:3617,w:90,h:91},
- {id:'marina:bench-a',type:'bench',image:'bench.webp',x:4520,y:3690,w:90,h:27},
- {id:'marina:bench-b',type:'bench',image:'bench.webp',x:4920,y:3690,w:90,h:27},
- {id:'marina:bench-c',type:'bench',image:'bench.webp',x:5320,y:3690,w:90,h:27},
- ...[[4510,3715],[4880,3715],[5310,3715],[5650,3715]].map(([x,y],i)=>({id:'marina:flowers-'+i,type:'garden',image:'flower_planter.webp',x,y,w:72,h:35})),
- ...[4460,4760,5060,5360,5660].map((x,i)=>({id:'marina:lamp-'+i,type:'lamp',image:'lamp.webp',x,y:3655,w:27,h:85})),
- ...[4500,4900,5290,5680].map((x,i)=>({id:'marina:bin-'+i,type:'trash',image:'trash_bin.webp',x,y:3748,w:20,h:28})),
- ...[2920,3230,3740,4160].flatMap((x,i)=>[
-  {id:'bay:flowers-'+i,type:'garden',image:'pack:flowers',x,y:4060,w:60,h:25},
-  {id:'bay:lamp-'+i,type:'lamp',image:'lamp.webp',x:x-33,y:4070,w:24,h:84}
+ ...[4440,4805,5205,5635].map((x,i)=>({id:'marina:palm-'+i,type:'palm',image:'palm.webp',x,y:3579,w:90,h:91})),
+ ...[4520,4920,5320].map((x,i)=>({id:'marina:bench-'+i,type:'bench',image:'bench.webp',x,y:3650,w:90,h:27})),
+ ...[4640,5205,5500,5780].map((x,i)=>({id:'marina:flowers-'+i,type:'garden',image:'flower_planter.webp',x,y:3655,w:72,h:35})),
+ ...[4460,4760,5060,5360,5660].map((x,i)=>({id:'marina:lamp-'+i,type:'lamp',image:'lamp.webp',x,y:3595,w:27,h:85})),
+ ...[4500,4860,5290,5680].map((x,i)=>({id:'marina:bin-'+i,type:'trash',image:'trash_bin.webp',x,y:3675,w:20,h:28})),
+ ...[[2920,4060],[3230,4060],[4250,4010],[4408,4090]].map(([x,y],i)=>({id:'bay:flowers-'+i,type:'garden',image:'pack:flowers',x,y,w:60,h:25})),
+ ...[[2960,4008],[3420,4008],[4450,3820]].map(([x,y],i)=>({id:'bay:lamp-'+i,type:'lamp',image:'lamp.webp',x,y,w:24,h:84})),
+ ...[[3162,3994],[4175,3925]].flatMap(([x,y],i)=>[
+  {id:'bay:palm-'+i,type:'palm',image:'palm.webp',x,y,w:84,h:91},
+  {id:'bay:palm-planter-'+i,type:'garden',image:'pack:flowers',x:x+10,y:y+66,w:65,h:27}
  ]),
- ...[3162,3692].flatMap((x,i)=>[
-  {id:'bay:palm-'+i,type:'palm',image:'palm.webp',x,y:3994,w:84,h:91},
-  {id:'bay:palm-planter-'+i,type:'garden',image:'pack:flowers',x:x+10,y:4060,w:65,h:27}
- ]),
- {id:'bay:shop-sign',type:'marine',image:'pack:chalkboard',x:3656,y:4068,w:24,h:38,foot:[3,28,18,9]},
- {id:'bay:shop-net',type:'marine',image:'pack:net',x:3320,y:4038,w:27,h:25,foot:[0,19,27,6]},
+ ...[[3000,4080],[3400,4080],[4240,4070],[4404,4150]].map(([x,y],i)=>({id:'bay:bench-'+i,type:'bench',image:'bench.webp',x,y,w:80,h:27})),
+ {id:'bay:shop-sign',type:'marine',image:'pack:chalkboard',x:4110,y:3972,w:24,h:38,foot:[3,28,18,9]},
  ...[4655,5105,5555,3560].flatMap((x,i)=>[
-  {id:'dock:cleat-'+i,type:'marine',image:'pack:dock-cleat',x:x+5,y:i===3?4250:3990,w:15,h:12,foot:[1,5,13,6]},
-  {id:'dock:rope-'+i,type:'marine',image:'pack:rope',x:x+(i===3?43:73),y:i===3?4210:3900,w:14,h:12,foot:[1,5,12,6]}
+  {id:'dock:cleat-'+i,type:'marine',image:'pack:dock-cleat',x:x-14,y:i===3?4250:3990,w:12,h:12,foot:[0,5,12,6]},
+  {id:'dock:rope-'+i,type:'marine',image:'pack:rope',x:x+(i===3?62:92),y:i===3?4210:3900,w:14,h:12,foot:[1,5,12,6]}
  ]),
- {id:'bay:safety',type:'marine',image:'pack:dock-ring',x:3528,y:4129,w:22,h:37,foot:[6,28,10,8]}
+ {id:'bay:safety',type:'marine',image:'pack:dock-ring',x:3540,y:4050,w:22,h:37,foot:[6,28,10,8]}
 ]);
 // Building shells now share the existing world: walls, open doorway, furnishings.
 // Coordinates derive from the approved exterior objects; no second scene/map.
 const interiors=[];
 function defineInterior(id,label,kind,doorFraction=.5){
  const exterior=objects.find(o=>o.id===id),floor={x:exterior.x+10,y:exterior.y+18,w:exterior.w-20,h:exterior.h-24,label,fill:kind==='workshop'?'#999b94':'#c9ad83'};
- const door={x:Math.round(exterior.x+exterior.w*doorFraction),y:floor.y+floor.h,w:kind==='workshop'?64:44};
+ const door={x:Math.round(exterior.x+exterior.w*doorFraction),y:floor.y+floor.h,w:kind==='workshop'||kind==='bait'?64:44};
  const b={id,label,kind,exterior,floor,door,roof:1,inside:false,furniture:[],walls:[]};
  const left=door.x-door.w/2,right=door.x+door.w/2;
  b.walls=[{x:floor.x,y:floor.y,w:floor.w,h:6},{x:floor.x,y:floor.y,w:6,h:floor.h},
@@ -126,7 +127,20 @@ defineInterior('marina:bait','Marina Bait & Tackle','bait',.60);
 defineInterior('marina:shed-b','Boat Service Workshop','workshop');
 // The source district's old full-building solids are excluded only by exact
 // footprint match in the connected-world collision loop. All other solids stay.
-function ownsSolid(rect){return enabled&&(!rect.id||rect.id==='waterfront'||rect.id==='southbay')&&interiors.some(b=>{
+const replacedSolids=[
+ ...[[3775,238,1068/1112],[4062,250,995/1202]].map(([x,w,ratio])=>({district:'southbay',x:x+12,y:4074-w*ratio+28,w:w-24,h:w*ratio-36})),
+ ...[4520,4920,5320].map(x=>({district:'waterfront',x,y:3690,w:90,h:20})),
+ ...[3000,3400,3900].map(x=>({district:'southbay',x,y:4120,w:90,h:20})),
+ {district:'southbay',x:3620,y:4174,w:780,h:146},
+ {district:'southbay',x:3620,y:4168,w:780,h:6},
+ {district:'waterfront',x:4400,y:3806,w:255,h:414},
+ {district:'waterfront',x:4400,y:4100,w:1500,h:120},
+ {district:'southbay',x:4292,y:4074,w:16,h:14}
+];
+function ownsSolid(rect){
+ if(!enabled||rect.id&&!['waterfront','southbay'].includes(rect.id))return false;
+ if(replacedSolids.some(b=>(!rect.id||rect.id===b.district)&&['x','y','w','h'].every(k=>Math.abs(rect[k]-b[k])<.01)))return true;
+ return interiors.some(b=>{
  const e=b.exterior;
  if(b.kind==='bait'&&Math.abs(rect.x-e.x-12)<.01&&Math.abs(rect.y-e.y-28)<.01&&Math.abs(rect.w-e.w+24)<.01&&Math.abs(rect.h-e.h+36)<.01)return true;
  // The live classic renderer also supplies centered, alpha-trimmed building
@@ -151,6 +165,7 @@ const interiorSolids=Object.freeze(solidBoxes.concat(interiors.flatMap(b=>b.wall
 // V123: precise feet-level collision instead of blocking the full sprite image.
 const promenadeSolids=Object.freeze(objects.flatMap(o=>{
  let inset=null;
+ if(o.feet)return o.feet.map(([dx,dy,w,h])=>({id:o.id,x:o.x+dx,y:o.y+dy,w,h}));
  if(o.foot){const [dx,dy,w,h]=o.foot;return [{id:o.id,x:o.x+dx,y:o.y+dy,w,h}];}
  switch(o.type){
  case 'tree':inset=[o.w*.38,o.h-25,o.w*.24,19];break;
@@ -165,7 +180,7 @@ const promenadeSolids=Object.freeze(objects.flatMap(o=>{
  return [{id:o.id,x:o.x+dx,y:o.y+dy,w,h}];
 }));
 const pilingSolids=Object.freeze(PIER_X.flatMap(px=>[3820,3945,4090].flatMap(py=>
- [px+3,px+86].map(x=>({id:'piling:'+x+':'+py,x:x-7,y:py+9,w:14,h:22})))));
+ POST_OFFSETS.map(dx=>px+dx).map(x=>({id:'piling:'+x+':'+py,x:x-7,y:py+9,w:14,h:22})))));
 // Fence gates are cut from both visible rails and solid footprints.
 const fenceBases=[[4400,285],[4790,285],[5190,295],[5590,310]];
 const fenceGates=interiors.map(b=>[b.door.x-b.door.w/2-18,b.door.x+b.door.w/2+18]).concat([[5438,5518]]);
@@ -182,7 +197,8 @@ const fenceSpans=Object.freeze(fenceBases.flatMap(([x,w])=>{
 const marinaFenceSolids=Object.freeze(fenceSpans.map(([x,w])=>
  ({id:'garden-fence',x,y:3606,w,h:32})));
 const signLegSolids=Object.freeze([5395,5576].map(x=>({id:'waterfront-sign-leg',x:x-3,y:3603,w:15,h:40})));
-const outdoorSolids=Object.freeze([...promenadeSolids,...pilingSolids,...marinaFenceSolids,...signLegSolids]);
+const outdoorSolids=Object.freeze([...promenadeSolids,...pilingSolids,...marinaFenceSolids,...signLegSolids,
+ {id:'bay:retained-quay-railing',x:3620,y:4168,w:520,h:6}]);
 
 function drawInteriorFloor(g,b){
  const f=b.floor;g.save();g.beginPath();g.rect(f.x,f.y,f.w,f.h);g.clip();
@@ -226,17 +242,17 @@ function drawInteriorFurniture(g,f){
 
 }
 const actors=[
- {id:'v116:bay-visitor',name:'Bayview visitor',npcStyle:3,x:3250,y:4150,route:[[3250,4150],[3300,4150]],speed:18,phase:1,dialogue:'The boardwalk leads around the seawall to the marina. Take your time.'},
- {id:'v116:bay-fisher',name:'Bayview angler',npcStyle:1,x:3573,y:4280,route:[[3573,4280]],speed:0,phase:0,dialogue:'Fresh bait from the blue-roofed shop. Now all I need is patience.'},
- {id:'v116:fisher',name:'Fisherman',npcStyle:1,x:5142,y:3876,route:[[5142,3876],[5142,3944]],speed:11,phase:0,dialogue:'I almost caught a legendary fish. It was THIS big! ...Maybe.'},
- {id:'v116:worker',name:'Marina worker',npcStyle:2,x:5400,y:3758,route:[[5400,3758],[5480,3758],[5515,3758],[5400,3758]],speed:27,phase:1,dialogue:'The gulls stole another sandwich. I think they have a schedule.'},
- {id:'v116:visitor',name:'Visitor',npcStyle:3,x:4932,y:3764,route:[[4932,3764],[5010,3764],[4932,3764]],speed:15,phase:2,dialogue:'I have photographed the same boat eleven times. Art is patience.'},
+ {id:'v116:bay-visitor',name:'Bayview visitor',npcStyle:3,x:3270,y:4045,route:[[3270,4045],[3310,4045]],speed:18,phase:1,dialogue:'The boardwalk leads around the seawall to the marina. Take your time.'},
+ {id:'v116:bay-fisher',name:'Bayview angler',npcStyle:1,x:4478,y:4230,route:[[4478,4230]],speed:0,phase:0,dialogue:'Fresh bait from the blue-roofed shop. Now all I need is patience.'},
+ {id:'v116:fisher',name:'Fisherman',npcStyle:1,x:5117,y:4000,route:[[5117,4000],[5117,4040]],speed:11,phase:0,dialogue:'I almost caught a legendary fish. It was THIS big! ...Maybe.'},
+ {id:'v116:worker',name:'Marina worker',npcStyle:2,x:5400,y:3710,route:[[5400,3710],[5480,3710],[5515,3710],[5400,3710]],speed:27,phase:1,dialogue:'The gulls stole another sandwich. I think they have a schedule.'},
+ {id:'v116:visitor',name:'Visitor',npcStyle:3,x:4932,y:3710,route:[[4932,3710],[5010,3710],[4932,3710]],speed:15,phase:2,dialogue:'I have photographed the same boat eleven times. Art is patience.'},
  {id:'v116:customer',name:'Café customer',npcStyle:4,x:4558,y:3420,route:[[4558,3420]],speed:0,phase:0,dialogue:'Coffee and sea air. Best shift break ever.'},
- {id:'v116:stroller',name:'Pedestrian',npcStyle:5,x:5570,y:3758,route:[[5570,3758],[5480,3758],[5390,3758],[5570,3758]],speed:30,phase:3,dialogue:'Watch out for the seagull. It has a suspicious résumé.'}
+ {id:'v116:stroller',name:'Pedestrian',npcStyle:5,x:5570,y:3710,route:[[5570,3710],[5480,3710],[5400,3710],[5570,3710]],speed:30,phase:3,dialogue:'Watch out for the seagull. It has a suspicious résumé.'}
 ].map(a=>({...a,step:0,routeClock:a.phase*2}));
 const interactions=[
  {id:'v116:cafe',label:'Marina Café',x:4551,y:3390,text:'The café smells like cinnamon and sea salt. Someone named a muffin “The Great Wave.”'},
- {id:'v116:bait',label:'Marina Bait & Tackle',x:3530,y:4094,text:'Fresh bait, rods and tide advice. Please collect your fishing line.'},
+ {id:'v116:bait',label:'Marina Bait & Tackle',x:3985,y:4044,text:'Fresh bait, rods and tide advice. Please collect your fishing line.'},
  {id:'v116:office',label:'Marina Office',x:4730,y:3578,text:'The harbor notice board shows tides, weather, and a missing fishing hat.'},
  {id:'v116:kiosk',label:'Waterfront information',x:5710,y:3670,text:'Southbay Marina: three piers, a café, boat shed, and exceptionally confident seagulls.'},
  ...actors.map(a=>({id:a.id,label:a.name,x:a.x,y:a.y,text:a.dialogue}))
@@ -250,8 +266,9 @@ for(const b of interiors){
  for(const f of b.furniture)if(f.text)interactions.push({id:'v116:'+f.id,label:b.label+' · '+f.id.split(':').at(-1).replaceAll('-',' '),x:f.x+f.w/2,y:f.y+f.h+13,text:f.text,building:b.id});
 }
 const baitShop=interiors.find(b=>b.kind==='bait');
-const customer={id:'v116:bait-customer',name:'Local customer',npcStyle:4,x:baitShop.door.x,y:4098,
- route:[[baitShop.door.x,4098],[baitShop.door.x,4030],[3504,4030],[3504,3970],[3504,4030],[baitShop.door.x,4030],[baitShop.door.x,4098]],
+const cx=baitShop.door.x-14,cy=baitShop.door.y;
+const customer={id:'v116:bait-customer',name:'Local customer',npcStyle:4,x:cx,y:cy+28,
+ route:[[cx,cy+28],[cx,cy-38],[cx-8,cy-38],[cx-8,cy-98],[cx-8,cy-38],[cx,cy-38],[cx,cy+28]],
  speed:14,phase:0,step:0,dialogue:'A little tackle shopping before the morning tide.'};
 actors.push(customer);interactions.push({id:customer.id,label:customer.name,x:customer.x,y:customer.y,text:customer.dialogue});
 const boats=[
@@ -264,8 +281,11 @@ const boats=[
  {id:'pack:rowboat',x:3637,y:4200,w:44,h:66,p:2.1}
 ];
 function ownsDecor(district,o){
+ if(district==='southbay'&&['flowerbed','planter'].includes(o.t)&&o.x>=975&&o.x<=1442&&[808,811].includes(o.y))return true;
+ if(district==='southbay'&&o.t==='tree'&&o.x===1500&&o.y===860)return true;
+ if(district==='southbay'&&o.y===900&&['bench','lamp'].includes(o.t))return true;
  return district==='southbay'&&o.t==='sbart'&&[
-  'southbay-addon/marina_office.webp','southbay/pier_segment.webp','southbay/motorboat.webp',
+  'southbay/house_12_peach.webp','southbay/house_8_cream.webp','southbay/pier_segment.webp','southbay/motorboat.webp',
   'southbay-addon/motorboat_blue.webp','southbay-addon/rowboat.webp','southbay-addon/seawall_segment.webp',
   'southbay-addon/coastal_rocks.webp'].includes(o.path);
 }
@@ -316,9 +336,8 @@ function measure(ms){frameCount++;frameCost+=ms;maxCost=Math.max(maxCost,ms);if(
 function begin(g,opt,t){
  if(!enabled||!opt||opt.zoom<.095)return;
  const a=performance.now(),view=opt.view;
- drawBayfront(g,opt,t);
  const region={x:TERRAIN.x,y:TERRAIN.y,w:TERRAIN.w,h:TERRAIN.h};
- if(!visible(region,view,0)){measure(performance.now()-a);return;}
+ if(!visible(region,view,0)){drawBayfront(g,opt,t);measure(performance.now()-a);return;}
  const premium=window.ROOKIE_V120_ART;
  if(premium)premium.water(g,opt,t);
  const x0=Math.max(TERRAIN.x,TERRAIN.x+Math.floor((Math.max(TERRAIN.x,view.x)-TERRAIN.x)/256)*256);
@@ -407,6 +426,7 @@ function begin(g,opt,t){
   // painting behind Jay and letting him visually stand on top of a bench.
   if(['palm','tree','lamp','bench','garden','trash','kiosk'].includes(o.type))continue;
   if(o.type==='marine')continue;
+  if(o.type==='gateway')continue;
   const interior=interiors.find(b=>b.id===o.id);
   if(interior){if(interior.kind!=='bait'||interior.roof<.995)drawInteriorFloor(g,interior);continue;}
   g.imageSmoothingEnabled=false;paintSprite(g,o.image,o.x,o.y,o.w,o.h);objectsDrawn++;
@@ -456,33 +476,33 @@ function begin(g,opt,t){
   g.globalAlpha=1;
  }
  }
+ drawBayfront(g,opt,t);
  measure(performance.now()-a);
 }
 function drawBayfront(g,opt,t){
  const view=opt.view,bay={x:2800,y:4174,w:1600,h:482};
- if(!visible({x:2800,y:3800,w:1600,h:856},view,0))return;
+ if(!visible({x:2800,y:3780,w:1700,h:876},view,0))return;
  const premium=window.ROOKIE_V120_ART;
  premium?.water(g,opt,t,bay);
  // The old Bayview shore is retained. A 64px quay follows its east edge
  // north to the original Marina promenade, joining both shoreline levels.
  const paving=img('marina-detail-tiles.png');
- for(const r of [{x:2800,y:4100,w:1600,h:74},{x:4336,y:3780,w:64,h:394}]){
+ for(const r of [{x:2800,y:4104,w:1440,h:70},{x:3941,y:4014,w:88,h:14}]){
   if(!visible(r,view,0))continue;
   g.save();g.beginPath();g.rect(r.x,r.y,r.w,r.h);g.clip();
   g.fillStyle='#bba38c';g.fillRect(r.x,r.y,r.w,r.h);
   if(paving)for(let y=r.y;y<r.y+r.h;y+=32)for(let x=r.x;x<r.x+r.w;x+=32)g.drawImage(paving,0,0,32,32,x,y,32,32);
   g.restore();
  }
- const wood=img('pack:planks');if(wood&&visible({x:2800,y:4140,w:1600,h:34},view,0)){
-  g.save();g.beginPath();g.rect(2800,4140,1600,34);g.clip();
-  for(let x=2800;x<4400;x+=78)g.drawImage(wood,x,4140,78,39);g.restore();
+ const wood=img('pack:planks');if(wood&&visible({x:2800,y:4104,w:1440,h:70},view,0)){
+  g.save();g.beginPath();g.rect(2800,4104,1440,70);g.clip();
+  for(let y=Math.floor(4104/39)*39;y<4174;y+=39)for(let x=Math.floor(2800/78)*78;x<4240;x+=78)g.drawImage(wood,x,y,78,39);g.restore();
  }
  // Seawall faces agree with the original 60px pier opening.
- for(const [x,w] of [[2800,760],[3620,716]]){g.fillStyle='#485d65';g.fillRect(x,4170,w,13);g.fillStyle='#d8c4a3';g.fillRect(x,4170,w,4);}
- g.fillStyle='#536471';g.fillRect(4394,3806,6,368);g.fillStyle='#d8c4a3';g.fillRect(4394,3806,3,368);
+ for(const [x,w] of [[2800,760],[3620,520]]){g.fillStyle='#485d65';g.fillRect(x,4170,w,13);g.fillStyle='#d8c4a3';g.fillRect(x,4170,w,4);}
  premium?.dock(g,3560,view,{top:4174,width:60,height:120});
  g.strokeStyle='#c9ab71';g.lineWidth=2;
- for(const [start,end] of [[2800,3560],[3620,4336]]){
+ for(const [start,end] of [[2800,3560],[3620,4140]]){
   g.beginPath();g.moveTo(start,4158);
   for(let x=start+20;x<=end;x+=20)g.lineTo(x,4158+Math.sin((x-start)*Math.PI/160)*4);
   g.stroke();
@@ -490,6 +510,15 @@ function drawBayfront(g,opt,t){
  for(const o of boats.filter(o=>o.x<4400))if(visible(o,view)){
   const dy=Math.sin(t*.00145+o.p)*3;premium?.boat(g,o,t);paintSprite(g,o.id,o.x,o.y+dy,o.w,o.h);
  }
+ for(const deck of ARRIVAL_DECKS)if(visible(deck,view,0)){
+  g.save();g.beginPath();g.rect(deck.x,deck.y,deck.w,deck.h);g.clip();
+  g.fillStyle='#a77445';g.fillRect(deck.x,deck.y,deck.w,deck.h);
+  if(wood)for(let y=Math.floor(deck.y/39)*39;y<deck.y+deck.h;y+=39)for(let x=Math.floor(deck.x/78)*78;x<deck.x+deck.w;x+=78)g.drawImage(wood,x,y,78,39);
+  g.restore();
+ }
+ // Thick over-water deck faces remain outside the navigable top surface.
+ g.fillStyle='#65452f';g.fillRect(4140,4280,360,9);g.fillRect(4500,3800,7,480);
+ g.fillStyle='#d9ae6a';g.fillRect(4140,4278,360,3);g.fillRect(4497,3800,3,480);
  const shop=interiors.find(b=>b.kind==='bait');if(shop.roof<.995&&visible(shop.exterior,view,0))drawInteriorFloor(g,shop);
 }
 function drawNpc(g,a,t){
@@ -509,14 +538,16 @@ function drawNpc(g,a,t){
 function pierOccluders(view){
  if(!enabled)return [];
  const posts=[];
- for(const px of PIER_X)for(const py of [3820,3945,4090])for(const x of [px+3,px+86]){
+ for(const px of PIER_X)for(const py of [3820,3945,4090])for(const x of POST_OFFSETS.map(dx=>px+dx)){
   const rect={x:x-22,y:py-46,w:44,h:92};
   if(view&&!visible(rect,view,0))continue;
   posts.push({x,y:py,depthY:py+31,rect});
  }
  for(const [x,py] of [
   ...[4178,4234,4280].flatMap(y=>[[3554,y],[3626,y]]),
-  ...[2860,3020,3180,3340,3500,3660,3820,3980,4140,4300].map(x=>[x,4158])
+  ...[2860,3180,3500,3820,4100].map(x=>[x,4158]),
+  ...[3870,4030,4190,4260].map(y=>[4506,y]),
+  ...[4170,4330,4490].map(x=>[x,4286])
  ]){
   const rect={x:x-16,y:py-31,w:32,h:64};
   if(visible(rect,view,0))posts.push({x,y:py,depthY:py+21,rect,scale:.67});
@@ -546,7 +577,7 @@ function depthProps(view){
  for(const b of interiors)if(b.roof>.001&&visible(b.exterior,view,60))
    all.push({kind:'roof',building:b,depthY:b.door.y-2});
  for(const o of objects){
-  if(!['palm','tree','lamp','bench','garden','trash','kiosk','marine'].includes(o.type)||!visible(o,view,40))continue;
+  if(!['palm','tree','lamp','bench','garden','trash','kiosk','marine','gateway'].includes(o.type)||!visible(o,view,40))continue;
   all.push({kind:'tall',object:o,depthY:o.y+o.h-3});
  }
  return all;
@@ -603,6 +634,7 @@ function foreground(g,opt,t){
  measure(performance.now()-a);
 }
 function waterBlocked(x,y,r=12){
+ if(enabled&&onArrivalDeck(x,y,r))return false;
  if(enabled&&x>=2800&&x<4400&&y>=4174&&y<=4656)return !(x>=3560+r&&x<=3620-r&&y<=4294-r);
  if(!enabled||x<4400||x>5900||y<3806||y>4656)return false;
  // Match original native waterfront walkability: all water except 3 native piers,
@@ -654,7 +686,7 @@ function metrics(){const sorted=samples.slice().sort((a,b)=>a-b);return Object.f
  maxPaintMs:+maxCost.toFixed(3),drawnChunks:cacheDraws,drawnObjects:objectsDrawn,waterFrames,
  sceneryColliders:outdoorSolids.length,postColliders:pilingSolids.length,
  campaignEngineModified:false,zombieOutbreakModified:false,multiplayerTransport:'none'});}
-const api={inMarina:(x,y)=>enabled&&x>2800&&x<5900&&y>3220&&y<4320,version:'116-marina-1',worldId:WORLD,region:Object.freeze(TERRAIN),piers:PIER_X,objects,actors,interactions,boats,ownsDecor,
+const api={inMarina:(x,y)=>enabled&&x>2800&&x<5900&&y>3220&&y<4320,version:'116-marina-1',worldId:WORLD,region:Object.freeze(TERRAIN),piers:PIER_X,objects,actors,interactions,boats,ownsDecor,arrivalDecks:ARRIVAL_DECKS,
  background:begin,foreground,depthProps,drawDepthProp,stepNPCs,drawNpc,blocksProp,blocksScenery,metrics,
  pierOccluders,drawPierPost,
  interiors,interiorAt,updateInteriors,ownsSolid,drawInteriorFurniture,

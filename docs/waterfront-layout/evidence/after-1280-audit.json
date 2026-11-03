@@ -1,0 +1,219 @@
+{
+  "samples": 2344,
+  "hits": [],
+  "cornerDecor": [
+    {
+      "t": "bench",
+      "x": 1100,
+      "y": 900,
+      "w": 90,
+      "h": 20
+    },
+    {
+      "t": "tree",
+      "x": 1500,
+      "y": 860
+    },
+    {
+      "t": "lamp",
+      "x": 1200,
+      "y": 900
+    },
+    {
+      "t": "flowerbed",
+      "x": 998,
+      "y": 808,
+      "w": 58,
+      "h": 14
+    },
+    {
+      "t": "flowerbed",
+      "x": 1124,
+      "y": 808,
+      "w": 58,
+      "h": 14
+    },
+    {
+      "t": "planter",
+      "x": 1056,
+      "y": 811
+    },
+    {
+      "t": "planter",
+      "x": 1114,
+      "y": 811
+    },
+    {
+      "t": "flowerbed",
+      "x": 1258,
+      "y": 808,
+      "w": 58,
+      "h": 14
+    },
+    {
+      "t": "flowerbed",
+      "x": 1384,
+      "y": 808,
+      "w": 58,
+      "h": 14
+    },
+    {
+      "t": "planter",
+      "x": 1316,
+      "y": 811
+    },
+    {
+      "t": "planter",
+      "x": 1374,
+      "y": 811
+    },
+    {
+      "t": "sbart",
+      "path": "southbay-addon/rowboat.webp",
+      "x": 1390,
+      "y": 987.0099337748344,
+      "w": 46,
+      "h": 92.99006622516556,
+      "dy": 0,
+      "bottom": 1080
+    },
+    {
+      "t": "sbart",
+      "path": "southbay-addon/seawall_segment.webp",
+      "x": 920,
+      "y": 952.3765162542455,
+      "w": 100,
+      "h": 15.623483745754488,
+      "dy": 0,
+      "bottom": 968
+    },
+    {
+      "t": "sbart",
+      "path": "southbay-addon/seawall_segment.webp",
+      "x": 1020,
+      "y": 952.3765162542455,
+      "w": 100,
+      "h": 15.623483745754488,
+      "dy": 0,
+      "bottom": 968
+    },
+    {
+      "t": "sbart",
+      "path": "southbay-addon/seawall_segment.webp",
+      "x": 1120,
+      "y": 952.3765162542455,
+      "w": 100,
+      "h": 15.623483745754488,
+      "dy": 0,
+      "bottom": 968
+    },
+    {
+      "t": "sbart",
+      "path": "southbay-addon/seawall_segment.webp",
+      "x": 1220,
+      "y": 952.3765162542455,
+      "w": 100,
+      "h": 15.623483745754488,
+      "dy": 0,
+      "bottom": 968
+    },
+    {
+      "t": "sbart",
+      "path": "southbay-addon/seawall_segment.webp",
+      "x": 1320,
+      "y": 952.3765162542455,
+      "w": 100,
+      "h": 15.623483745754488,
+      "dy": 0,
+      "bottom": 968
+    },
+    {
+      "t": "sbart",
+      "path": "southbay-addon/seawall_segment.webp",
+      "x": 1420,
+      "y": 952.3765162542455,
+      "w": 100,
+      "h": 15.623483745754488,
+      "dy": 0,
+      "bottom": 968
+    },
+    {
+      "t": "sbart",
+      "path": "southbay-addon/seawall_segment.webp",
+      "x": 1520,
+      "y": 955.5012130033964,
+      "w": 80,
+      "h": 12.49878699660359,
+      "dy": 0,
+      "bottom": 968
+    },
+    {
+      "t": "sbart",
+      "path": "southbay-addon/coastal_rocks.webp",
+      "x": 1460,
+      "y": 1024.169034090909,
+      "w": 130,
+      "h": 65.8309659090909,
+      "dy": 0,
+      "bottom": 1090
+    }
+  ],
+  "actors": [
+    {
+      "id": "v116:bay-visitor",
+      "blocked": false
+    },
+    {
+      "id": "v116:bay-fisher",
+      "blocked": false
+    },
+    {
+      "id": "v116:fisher",
+      "blocked": false
+    },
+    {
+      "id": "v116:worker",
+      "blocked": false
+    },
+    {
+      "id": "v116:visitor",
+      "blocked": false
+    },
+    {
+      "id": "v116:customer",
+      "blocked": false
+    },
+    {
+      "id": "v116:stroller",
+      "blocked": false
+    },
+    {
+      "id": "v116:cafe-staff",
+      "blocked": false
+    },
+    {
+      "id": "v116:office-staff",
+      "blocked": false
+    },
+    {
+      "id": "v116:bait-staff",
+      "blocked": false
+    },
+    {
+      "id": "v116:workshop-staff",
+      "blocked": false
+    },
+    {
+      "id": "v116:bait-customer",
+      "blocked": false
+    }
+  ],
+  "water": true,
+  "deck": false,
+  "shop": {
+    "x": 3985,
+    "y": 4014,
+    "w": 64
+  },
+  "mapHash": "b428dcd4f3243573ab461f146566cd7ea5f8731c12dfdb0264d15f324789bda0"
+}

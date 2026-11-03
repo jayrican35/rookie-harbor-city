@@ -39,11 +39,13 @@ specs = {
     'fishing-boat': ('dock', (756, 883, 902, 1070)),
     'sailboat': ('dock', (918, 842, 1079, 1069)),
     'planks': ('shop', (1018, 494, 1173, 572)),
+    'gateway': ('concept', (866, 621, 974, 727)),
 }
 sheets = {'shop': Image.open(refs / 'marina_bait_tackle_tileset.png').convert('RGBA'),
-          'dock': Image.open(refs / 'southbay_marina_pixel_asset_atlas.png').convert('RGBA')}
+          'dock': Image.open(refs / 'southbay_marina_pixel_asset_atlas.png').convert('RGBA'),
+          'concept': Image.open(refs / 'Bayview Waterfront Pixel-Art Concept Board.png').convert('RGBA')}
 
-def cut_background(im):
+def cut_background(im, concept=False):
     # Flood only sheet-coloured pixels reachable from the crop boundary.
     # This retains opaque dark outlines and interior shadows.
     pixels = im.load()
@@ -59,8 +61,8 @@ def cut_background(im):
         red, green, blue, alpha = pixels[x, y]
         # Sheet background is muted navy; the artwork is saturated blue,
         # gold, wood, or has sufficiently different luminance.
-        if alpha == 0 or (17 <= red <= 58 and 20 <= green <= 61 and 28 <= blue <= 78
-                          and max(red, green, blue)-min(red, green, blue) < 27):
+        background = (red < 35 and green < 65 and blue < 95) if concept else (17 <= red <= 58 and 20 <= green <= 61 and 28 <= blue <= 78 and max(red, green, blue)-min(red, green, blue) < 27)
+        if alpha == 0 or background:
             pixels[x, y] = (0, 0, 0, 0)
             queue.extend([(x-1,y),(x+1,y),(x,y-1),(x,y+1)])
     return im.crop(im.getbbox())
@@ -87,13 +89,13 @@ def largest_sprite(im):
     return im.crop(im.getbbox())
 
 manifest = {}
-preview = Image.new('RGB', (1000, 850), '#7b927e')
+preview = Image.new('RGB', (1000, ((len(specs)+4)//5)*210), '#7b927e')
 draw = ImageDraw.Draw(preview)
 for index, (name, (sheet, box)) in enumerate(specs.items()):
     sprite = sheets[sheet].crop(box)
     if name != 'planks':
-        sprite = cut_background(sprite)
-    if name in ['fishing-boat', 'sailboat', 'rowboat', 'chalkboard']:
+        sprite = cut_background(sprite, concept=sheet == 'concept')
+    if name in ['fishing-boat', 'sailboat', 'rowboat', 'chalkboard', 'gateway']:
         sprite = largest_sprite(sprite)
     sprite.save(out / (name + '.png'))
     manifest[name] = {'sheet': sheet, 'crop': box, 'size': sprite.size}

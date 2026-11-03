@@ -550,6 +550,7 @@ function depthProps(view,districts){
   if(d.id==='waterfront')continue; // V116 has its own authored depth / props.
   if(!visible(d,view,165))continue;
   for(const o of d.map.decors||[]){
+   if(window.ROOKIE_V116_MARINA?.ownsDecor?.(d.id,o))continue;
    if(!handlesDecor(o))continue;
    const b=propGeometry(o,d);if(visible(b,view,24))entries.push({object:o,district:d,box:b,depthY:b.depthY});
   }

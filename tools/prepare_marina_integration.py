@@ -11,13 +11,17 @@ after = r / 'site/preview/marina-updated'
 for target in [before, after]:
     if not target.exists():
         shutil.copytree(base, target)
+layout_before = r / 'site/preview/waterfront-layout-before'
+if not layout_before.exists():
+    shutil.copytree(after, layout_before)
 bundle = (after / 'game-v115.bundle.js').read_text(encoding='utf-8')
-name = 'v115-campus.js'
-old = (after / name).read_text(encoding='utf-8')
-new = (r / 'published-game-capture' / name).read_text(encoding='utf-8')
-assert bundle.count(old) == 1
-(after / 'game-v115.bundle.js').write_text(bundle.replace(old, new), encoding='utf-8')
-(after / name).write_text(new, encoding='utf-8')
+for name in ['v115-world.js', 'v115-campus.js']:
+    old = (after / name).read_text(encoding='utf-8')
+    new = (r / 'published-game-capture' / name).read_text(encoding='utf-8')
+    assert bundle.count(old) == 1
+    bundle = bundle.replace(old, new)
+    (after / name).write_text(new, encoding='utf-8')
+(after / 'game-v115.bundle.js').write_text(bundle, encoding='utf-8')
 for name in ['v116-marina.js', 'v116-marina-hud.js', 'v120-marina-art.js', 'v127-citywide-art.js']:
     shutil.copy2(r / 'published-game-capture' / name, after / name)
 shutil.copytree(r / 'published-game-capture/assets/marina-integration', after / 'assets/marina-integration', dirs_exist_ok=True)

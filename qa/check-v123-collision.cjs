@@ -22,11 +22,11 @@ const test=(label,x,y,want,r=12)=>{
  assert.equal(actual,want,label+': got '+actual+' at '+x+','+y+' radius '+r);
 };
 test('unobstructed waterfront crossing',5200,3758,false);
-test('wooden bench base',4565,3710,true);
-test('flower planter',4530,3744,true);
-test('lamp stand base',4474,3732,true);
-test('trash bin base',4510,3768,true);
-test('palm trunk/base',4535,3693,true);
+test('relocated wooden bench base',4565,3670,true);
+test('relocated flower planter',4660,3684,true);
+test('relocated lamp stand base',4474,3672,true);
+test('relocated trash bin base',4510,3695,true);
+test('relocated palm trunk/base',4485,3655,true);
 test('garden fence',4620,3624,true);
 test('visible shop entrance gate',4506,3624,false);
 test('bait shop fence gate',5478,3624,false);

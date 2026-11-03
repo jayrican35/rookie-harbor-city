@@ -1,0 +1,54 @@
+{
+  "runs": [
+    {
+      "tag": "before",
+      "width": 1280,
+      "height": 800,
+      "errors": [],
+      "mapHash": "b428dcd4f3243573ab461f146566cd7ea5f8731c12dfdb0264d15f324789bda0",
+      "samples": 2344,
+      "hits": 532,
+      "routes": []
+    },
+    {
+      "tag": "before",
+      "width": 390,
+      "height": 844,
+      "errors": [],
+      "mapHash": "b428dcd4f3243573ab461f146566cd7ea5f8731c12dfdb0264d15f324789bda0",
+      "samples": 2344,
+      "hits": 532,
+      "routes": []
+    },
+    {
+      "tag": "after",
+      "width": 1280,
+      "height": 800,
+      "errors": [],
+      "mapHash": "b428dcd4f3243573ab461f146566cd7ea5f8731c12dfdb0264d15f324789bda0",
+      "samples": 2344,
+      "hits": 0,
+      "routes": [
+        "Bayview boardwalk through gateway to full Marina promenade",
+        "Straight center walk and return: pier 4655",
+        "Straight center walk and return: pier 5105",
+        "Straight center walk and return: pier 5555",
+        "Straight Bayview pier walk and return",
+        "Connected shop access street to arrival deck",
+        "Relocated shop seamless entry and exit"
+      ]
+    },
+    {
+      "tag": "after",
+      "width": 390,
+      "height": 844,
+      "errors": [],
+      "mapHash": "b428dcd4f3243573ab461f146566cd7ea5f8731c12dfdb0264d15f324789bda0",
+      "samples": 2344,
+      "hits": 0,
+      "routes": [
+        "Mobile pointer movement"
+      ]
+    }
+  ]
+}

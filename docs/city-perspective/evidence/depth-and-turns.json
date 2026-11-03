@@ -1,0 +1,190 @@
+{
+  "checks": [
+    {
+      "id": "westfield",
+      "type": "worldBuilding",
+      "side": "behind",
+      "point": {
+        "x": -2920,
+        "y": 1432
+      },
+      "depth": 1580,
+      "order": {
+        "jay": 67,
+        "building": 68
+      }
+    },
+    {
+      "id": "westfield",
+      "type": "worldBuilding",
+      "side": "front",
+      "point": {
+        "x": -2944,
+        "y": 1592
+      },
+      "depth": 1580,
+      "order": {
+        "jay": 123,
+        "building": 122
+      }
+    },
+    {
+      "id": "residential",
+      "type": "mchouse",
+      "side": "behind",
+      "point": {
+        "x": -1260.1465445462113,
+        "y": 1279.963363863447
+      },
+      "depth": 1616,
+      "order": {
+        "jay": 110,
+        "building": 111
+      }
+    },
+    {
+      "id": "residential",
+      "type": "mchouse",
+      "side": "front",
+      "point": {
+        "x": -1260.1465445462113,
+        "y": 1652
+      },
+      "depth": 1616,
+      "order": {
+        "jay": 115,
+        "building": 114
+      }
+    },
+    {
+      "id": "midtown",
+      "type": "mtbldg",
+      "side": "behind",
+      "point": {
+        "x": 3016,
+        "y": 1401.8186813186812
+      },
+      "depth": 1686,
+      "order": {
+        "jay": 76,
+        "building": 77
+      }
+    },
+    {
+      "id": "midtown",
+      "type": "mtbldg",
+      "side": "front",
+      "point": {
+        "x": 3016,
+        "y": 1722
+      },
+      "depth": 1686,
+      "order": {
+        "jay": 111,
+        "building": 110
+      }
+    },
+    {
+      "id": "downtown",
+      "type": "dtBuilding",
+      "side": "behind",
+      "point": {
+        "x": 5296,
+        "y": 1312.9532967032967
+      },
+      "depth": 1633,
+      "order": {
+        "jay": 98,
+        "building": 99
+      }
+    },
+    {
+      "id": "downtown",
+      "type": "dtBuilding",
+      "side": "front",
+      "point": {
+        "x": 5296,
+        "y": 1669
+      },
+      "depth": 1633,
+      "order": {
+        "jay": 77,
+        "building": 76
+      }
+    },
+    {
+      "id": "southbay",
+      "type": "sbart",
+      "side": "behind",
+      "point": {
+        "x": 3047,
+        "y": 3274.6575729068672
+      },
+      "depth": 3625,
+      "order": {
+        "jay": 65,
+        "building": 66
+      }
+    },
+    {
+      "id": "southbay",
+      "type": "sbart",
+      "side": "front",
+      "point": {
+        "x": 3047,
+        "y": 3661
+      },
+      "depth": 3625,
+      "order": {
+        "jay": 91,
+        "building": 90
+      }
+    }
+  ],
+  "turns": [
+    {
+      "dir": "down",
+      "x": 9380,
+      "vehicles": {
+        "active": true,
+        "citywide": true,
+        "loaded": true,
+        "error": null,
+        "bounds": null,
+        "frames": 52,
+        "draws": 699,
+        "byFamily": {
+          "sedan": 466,
+          "police": 233
+        },
+        "byDirection": {
+          "right": 453,
+          "left": 233,
+          "down": 13
+        }
+      }
+    },
+    {
+      "dir": "up",
+      "x": -2850,
+      "vehicles": {
+        "active": true,
+        "citywide": true,
+        "loaded": true,
+        "error": null,
+        "bounds": null,
+        "frames": 52,
+        "draws": 534,
+        "byFamily": {
+          "police": 267,
+          "sedan": 267
+        },
+        "byDirection": {
+          "right": 267,
+          "left": 246,
+          "up": 21
+        }
+      }
+    }
+  ]
+}

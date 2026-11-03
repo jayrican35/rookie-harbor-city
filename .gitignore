@@ -8,4 +8,8 @@
 /perspective-evidence/
 /perspective-build.log
 /perspective-qa.log
+/city-perspective-evidence/
+/city-perspective-build.log
+/city-perspective-qa.log
+/city-perspective-depth.log
 __pycache__/

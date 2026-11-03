@@ -1,0 +1,98 @@
+{
+  "origin": "https://rookie-harbor-city-jay-20261014.satinyboot35.chatgpt.site/",
+  "results": [
+    {
+      "path": "southbay/bayview_inn.webp",
+      "status": "recovered",
+      "bytes": 1287180,
+      "sha256": "780cb662fc11b7efae205efd49e486aab7123c50cbedc0ebe8c501633681a24b"
+    },
+    {
+      "path": "southbay/house_8_cream.webp",
+      "status": "recovered",
+      "bytes": 1136366,
+      "sha256": "3f716100ccc8ada0ae662cdc252f19367e2709d2936087e2b9fd5646e37db163"
+    },
+    {
+      "path": "southbay/boat_shed.webp",
+      "status": "recovered",
+      "bytes": 1067140,
+      "sha256": "f2e5f4d392527d908060a51630126d0033650167a9c22c7b94ee19c7c7801297"
+    },
+    {
+      "path": "southbay/house_12_peach.webp",
+      "status": "recovered",
+      "bytes": 949718,
+      "sha256": "c03ae811908a88ed2555f5b38081d82d15c8752f2cfc67617404b9ee96dce21d"
+    },
+    {
+      "path": "southbay/motorboat.webp",
+      "status": "recovered",
+      "bytes": 1136330,
+      "sha256": "750696b9440c007f7424c0858333fdec864c5e7fa33802c2528f535295540bd8"
+    },
+    {
+      "path": "southbay/cafe.webp",
+      "status": "recovered",
+      "bytes": 1141312,
+      "sha256": "64d01c3ec0010af91c2814e5b70ff3b27cc4440d1fa2bf190d2b2c579feaf0c7"
+    },
+    {
+      "path": "southbay/pier_segment.webp",
+      "status": "existing",
+      "sha256": "61e1e3d8cd2dc9e53082b4102c8251f20a426358801afe362b9c3a57882f9950"
+    },
+    {
+      "path": "southbay-addon/cafe_patio_two_chairs.webp",
+      "status": "recovered",
+      "bytes": 744216,
+      "sha256": "633ed46caf5818f2c3c806f355b1372e60010e1b4f4f62d25ebf67e11b37b102"
+    },
+    {
+      "path": "southbay-addon/coastal_rocks.webp",
+      "status": "existing",
+      "sha256": "be53a7e26da21154297a55731fc30ca40b206747dd1d60857c7445716c7b7311"
+    },
+    {
+      "path": "southbay-addon/marina_office.webp",
+      "status": "recovered",
+      "bytes": 1470874,
+      "sha256": "b9a808d668e23d44290ae52401d78aa6c2699999b222b212e971ca5625330b3b"
+    },
+    {
+      "path": "southbay-addon/rowboat.webp",
+      "status": "recovered",
+      "bytes": 852388,
+      "sha256": "6d5910ee97c62113efa46db59402606d2263032589330909f8b7c137f04f3163"
+    },
+    {
+      "path": "southbay-addon/tree_canopy_cluster.webp",
+      "status": "recovered",
+      "bytes": 1845964,
+      "sha256": "0d672de64af9d393e562f0fd86249976a1acb46f9a7985839c276aa36dc8fb08"
+    },
+    {
+      "path": "southbay-addon/seawall_segment.webp",
+      "status": "recovered",
+      "bytes": 1004328,
+      "sha256": "4ac8ecd2c99e68981ba3974c15815a2f8a55c12f5c419d25b548eef4bea3b442"
+    },
+    {
+      "path": "southbay-addon/motorboat_blue.webp",
+      "status": "existing",
+      "sha256": "c6629ceb62aa2729952957801c7661b34adc77a15d28f0bc88ec0b6f7fdff77f"
+    },
+    {
+      "path": "southbay-addon/seafood_shop.webp",
+      "status": "recovered",
+      "bytes": 1133392,
+      "sha256": "f85bdd82c8c1a989eb4e399e85bdab27af2bef8719e5fa7d5803f0761c72a706"
+    },
+    {
+      "path": "southbay-addon/surfboard.webp",
+      "status": "recovered",
+      "bytes": 680564,
+      "sha256": "62b4a2d55848ca9134da7be1ce86e011a8e2b1a2a089ce411aebc67483370598"
+    }
+  ]
+}

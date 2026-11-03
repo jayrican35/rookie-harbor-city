@@ -581,6 +581,18 @@
     g.restore();
   }
   const districtImages=new Map();
+  function connectedNativeImage(path,existing){
+    if(existing?.complete&&existing.naturalWidth)return existing;
+    if(!districtImages.has(path)){
+      const im=new Image();im.decoding='async';im.src='./assets/'+path;districtImages.set(path,im);
+    }
+    return districtImages.get(path);
+  }
+  function connectedHouseImage(key){
+    const files={h8:'house_8_cream.webp',h5:'house_8_cream.webp',h12:'house_12_peach.webp',
+      h13:'house_12_peach.webp',h16:'house_16_sage.webp',h9:'house_16_sage.webp',mailbox:'mailbox.webp'};
+    return files[key]?connectedNativeImage('maple-court/'+files[key],window.__MC?.img?.[key]):null;
+  }
   function sprite(name){
     // Original Midtown decor IDs are abbreviated; use actual recovered WebP names.
     const names={conv:'convenience_store',cafe:'cafe',suds:'laundromat',
@@ -603,6 +615,36 @@
     else drawTree(x,y,r);
   }
   function paintedBuilding(d,districtId){
+    if(window.ROOKIE_CITY_PERSPECTIVE_ACTIVE){
+      const b=districtBuildingBox(d),meta=d.worldBuilding;
+      if(b){
+        let im=null,crop=null;
+        if(d.t==='mchouse')im=connectedHouseImage(d.img);
+        else if(meta?.house){im=connectedHouseImage(meta.art.slice(3));crop=meta.rect;}
+        else if(d.t==='sbart'){
+          im=connectedNativeImage(d.path,H.assets?.[d.path]);const r=connectedSouthbayBodies[d.path];
+          if(r)crop=[r[0],r[1],r[2]-r[0],r[3]-r[1]];
+        }else if(d.t==='dtBuilding'||d.t==='worldBuilding'||d.rpg)
+          im=H.rpg?.image(meta?.art||d.art||d.img,b.w,b.h);
+        if(im&&(im.width||im.naturalWidth)&&(!('complete' in im)||im.complete)){
+          g.save();g.imageSmoothingEnabled=false;
+          if(crop)g.drawImage(im,...crop,b.x,b.y,b.w,b.h);
+          else g.drawImage(im,b.x,b.y,b.w,b.h);
+          const label=d.label||meta?.label||(d.t==='mchouse'?d.num:null);
+          if(label&&campus.zoom>.42){
+            const width=Math.min(b.w-12,Math.max(34,String(label).length*6+12));
+            const x=(d.doorX??d.cx??(b.x+b.w/2)),y=(d.dy??b.y+b.h)-22;
+            g.fillStyle='#173443';g.fillRect(x-width/2,y,width,17);
+            g.fillStyle='#f3e4b9';g.font='bold 10px sans-serif';g.textAlign='center';
+            g.fillText(String(label),x,y+12,width-6);
+          }g.restore();return;
+        }
+        // Only an unavailable source image uses the established painted shell.
+        if(d.t!=='mtbldg'){
+          window.ROOKIE_V127_CITY?.building(g,{...b,kind:d.t==='mchouse'||meta?.house?'house':d.t,district:districtId},campus.zoom);return;
+        }
+      }
+    }
     const bx=d.t==='mtbldg'?(d.bx||d.x):(d.x||0),
       by=d.t==='mtbldg'?(d.btop||d.y):(d.y||0),
       bw=d.t==='mtbldg'?(d.bw||d.w):(d.w||200),
@@ -613,7 +655,7 @@
       if(im){g.drawImage(im,bx,by,bw,bh);return;}}
     // Prefer recovered original storefront sprites; a richer painted fallback
     // is used only when the source sprite is unavailable in this preview.
-    if(window.ROOKIE_V115_SHOWCASE &&
+    if(!window.ROOKIE_CITY_PERSPECTIVE_ACTIVE&&window.ROOKIE_V115_SHOWCASE &&
        window.ROOKIE_V115_SHOWCASE.buildingFallback(g,d,campus.zoom))return;
     // V127: source sprite first; new shared architecture in place of older
     // simple color rectangles, with exactly the original wall footprint.
@@ -626,6 +668,44 @@
     g.fillStyle='rgba(18,34,55,.5)';g.fillRect(bx+18,by+Math.max(25,bh*.7),Math.max(18,bw-36),Math.max(4,bh*.18));
     if(campus.zoom>.27){g.font='700 18px Barlow Condensed,sans-serif';g.textAlign='center';
       g.fillStyle='#fff2c3';g.fillText(String(d.name||d.label||'HARBOR CITY').slice(0,32),bx+bw/2,by+bh-8);}
+  }
+  const districtBuildingTypes=new Set(['bldg','house','shed','lighthouse','mtbldg','mchouse','worldBuilding','dtBuilding','sbart']);
+  function districtBuildingBox(o){
+    if(!districtBuildingTypes.has(o.t))return null;
+    const b=o.t==='mtbldg'?{x:o.bx??o.x,y:o.btop??o.y,w:o.bw??o.dw,h:o.bh??o.dh}:
+      o.t==='mchouse'?{x:o.dx??o.x,y:o.dyTop??o.y,w:o.dw??o.w,h:o.dh??o.h}:
+      {x:o.x,y:o.y,w:o.w||200,h:o.h||155};
+    return [b.x,b.y,b.w,b.h].every(Number.isFinite)?b:null;
+  }
+  // Exact alpha-body bounds already used by the original Southbay painter.
+  const connectedSouthbayBodies=/* SOUTH_BAY_NATIVE_CROPS */ {"southbay/bayview_inn.webp":[131,91,1194,1070],"southbay/house_8_cream.webp":[100,56,1302,1051],"southbay/boat_shed.webp":[199,77,1114,1069],"southbay/house_12_peach.webp":[104,44,1216,1112],"southbay/motorboat.webp":[213,34,812,1502],"southbay/cafe.webp":[278,136,1259,843],"southbay/pier_segment.webp":[233,144,793,1390],"southbay-addon/cafe_patio_two_chairs.webp":[158,67,1144,1103],"southbay-addon/coastal_rocks.webp":[89,159,1497,872],"southbay-addon/marina_office.webp":[102,48,1437,926],"southbay-addon/rowboat.webp":[293,42,897,1263],"southbay-addon/tree_canopy_cluster.webp":[75,72,1206,1162],"southbay-addon/seawall_segment.webp":[56,208,2117,530],"southbay-addon/motorboat_blue.webp":[361,60,867,1230],"southbay-addon/seafood_shop.webp":[86,88,1146,1164],"southbay-addon/surfboard.webp":[339,56,686,1456]};
+  function nativeDistrictProp(o){
+    const t=o.t,x=o.x||0,y=o.y||0;
+    if(t==='mcprop'||t==='mtprop'){
+      const im=window.__EXT?.img?.[o.img];
+      return im?.complete&&im.naturalWidth?{im,x,y,w:im.naturalWidth,h:im.naturalHeight,depth:o.dy??y+im.naturalHeight}:null;
+    }
+    if(t==='mcmailbox'){
+      const im=connectedHouseImage('mailbox');
+      return im?.complete&&im.naturalWidth?{im,x:o.dx,y:o.dyTop,w:o.dw,h:o.dh,crop:[o.sx,o.sy,o.sw,o.sh],depth:o.dy??y}:null;
+    }
+    if(t==='mcfence'){
+      const im=window.__EXT?.img?.fenceH;
+      return im?.complete&&im.naturalWidth?{im,x,y,w:o.w,h:32,repeat:true,depth:o.dy??y+32}:null;
+    }
+    if(t==='landscapeV1'){
+      const spec=H.landscape?.spec?.[o.role];if(!spec)return null;
+      const key='landscape-v1/'+spec.file;
+      if(!districtImages.has(key)){const im=new Image();im.src='./assets/'+key;districtImages.set(key,im);}
+      const im=districtImages.get(key),r=spec.rect,h=Math.round(o.w*r[3]/r[2]);
+      return im?.complete&&im.naturalWidth?{im,x:x-o.w/2,y:y-h,w:o.w,h,crop:r,depth:o.dy??y}:null;
+    }
+    const role=t==='rpgProp'||t==='dtProp'?o.role:({hydrant:'hydrant',trash:'bin'}[t]);
+    if(role){
+      const r=H.rpg?.spec?.regions?.[role]?.rect,w=o.w||(role==='hydrant'?18:24);
+      if(!r)return null;const h=w*r[3]/r[2],im=H.rpg.image(role,w,h);
+      return im?{im,x:x-w/2,y:y-h,w,h,depth:o.dy??y}:null;
+    }return null;
   }
   const OVERVIEW_SHORT_NAMES=Object.freeze({
     westfield:'WEST',residential:'MAPLE',midtown:'MIDTOWN',
@@ -653,8 +733,10 @@
     g.save();g.translate(d.x,d.y);
     for(const o of d.map.decors||[]){
       const x=o.x||0,y=o.y||0;
+      if(window.ROOKIE_CITY_PERSPECTIVE_ACTIVE&&(districtBuildingTypes.has(o.t)||nativeDistrictProp(o)))continue;
       if(!nearViewport(d.x+x-130,d.y+y-170,(o.w||240)+260,(o.h||200)+260))continue;
-      if(['bldg','house','shed','lighthouse','mtbldg'].includes(o.t)){if(!window.ROOKIE_V116_MARINA?.ownsSolid?.({x:d.x+x,y:d.y+y,w:o.w,h:o.h}))paintedBuilding(o,d.id);continue;}
+      if(['bldg','house','shed','lighthouse','mtbldg'].includes(o.t)){if(!window.ROOKIE_CITY_PERSPECTIVE_ACTIVE&&!window.ROOKIE_V116_MARINA?.ownsSolid?.({x:d.x+x,y:d.y+y,w:o.w,h:o.h}))paintedBuilding(o,d.id);continue;}
+      if(window.ROOKIE_CITY_PERSPECTIVE_ACTIVE&&o.t==='car')continue;
       // Native world decoration sprites now depth-sort with Jay, not underfoot.
       if(window.ROOKIE_V127_CITY?.handlesDecor(o))continue;
       if(o.t==='tree'||o.t==='bigtree'||o.t==='palm'){districtTree(x,y,o.t==='bigtree'?38:26);continue;}
@@ -827,6 +909,24 @@
     const marina=window.ROOKIE_V116_MARINA;
     // One depth queue: existing actors and new furnishing geometry share it.
     const entries=npcActors.filter(npc=>visible(npc)&&(!marina?.interiorActorVisible||marina.interiorActorVisible(npc))).map(npc=>({y:npc.y,actor:npc}));
+    // Approved city pass: existing district silhouettes join the SAME queue
+    // as actors. No new geometry, projection, camera or building instances.
+    if(window.ROOKIE_CITY_PERSPECTIVE_ACTIVE&&campus.zoom>=.10)
+      for(const d of districtEntries)if(nearViewport(d.x,d.y,d.w,d.h))
+        for(const o of d.map.decors||[]){
+          const b=districtBuildingBox(o),native=b?null:nativeDistrictProp(o);
+          if(native){
+            if(nearViewport(d.x+native.x,d.y+native.y,native.w,native.h))entries.push({y:d.y+native.depth,nativeProp:{...native,district:d}});
+            continue;
+          }
+          const building=!!b;if(!building&&o.t!=='car')continue;
+          const {x,y,w,h}=b||{x:o.x||0,y:o.y||0,w:o.w||70,h:o.h||36};
+          if(!nearViewport(d.x+x-8,d.y+y-8,w+24,h+24))continue;
+          if(building){
+            if(!marina?.ownsSolid?.({x:d.x+x,y:d.y+y,w,h}))
+              entries.push({y:d.y+(o.dy??y+h),districtBuilding:{object:o,district:d}});
+          }else entries.push({y:d.y+y+(o.h||36)/2,parkedVehicle:{object:o,district:d}});
+        }
     for(const prop of window.ROOKIE_V134_PRECINCT?.communityProps?.(view)||[])
       entries.push({y:prop.y,communityProp:prop});
     // Bounded V133 precinct staff share the existing depth queue and classic
@@ -861,6 +961,29 @@
     entries.push({y:GARAGE.y-1,precinctShell:'garage'});
     entries.push({y:campus.y,player:true});entries.sort((a,b)=>a.y-b.y);
     for(const entry of entries){
+      if(entry.nativeProp){
+        const p=entry.nativeProp,x=p.district.x+p.x,y=p.district.y+p.y;
+        g.save();g.imageSmoothingEnabled=false;
+        if(p.repeat){g.beginPath();g.rect(x,y,p.w,p.h);g.clip();for(let xx=x-25;xx<x+p.w;xx+=48)g.drawImage(p.im,xx,y);}
+        else if(p.crop)g.drawImage(p.im,...p.crop,x,y,p.w,p.h);
+        else g.drawImage(p.im,x,y,p.w,p.h);
+        g.restore();continue;
+      }
+      if(entry.districtBuilding){
+        const {object:o,district:d}=entry.districtBuilding;
+        g.save();g.translate(d.x,d.y);paintedBuilding(o,d.id);g.restore();continue;
+      }
+      if(entry.parkedVehicle){
+        const {object:o,district:d}=entry.parkedVehicle,w=o.w||70,h=o.h||36;
+        const dir=['up','down','left','right'].includes(o.dir)?o.dir:(w>=h?'right':'down');
+        const horizontal=dir==='right'||dir==='left';
+        const car={x:d.x+(o.x||0)+w/2,y:d.y+(o.y||0)+h/2,dir,
+          kind:o.police?'patrol':o.kind==='delivery'?'delivery':'civilian',color:o.c,
+          length:horizontal?w:h,width:horizontal?h:w};
+        if(!window.ROOKIE_V135_WALL_KIT?.drawPilotVehicle(g,car)){
+          g.fillStyle=o.c||'#587aa1';g.fillRect(d.x+(o.x||0),d.y+(o.y||0),w,h);
+        }continue;
+      }
       if(entry.communityProp){window.ROOKIE_V134_PRECINCT.drawCommunityProp(g,entry.communityProp);continue;}
       if(entry.precinctShell){
         // Use the EXISTING roof texture, façade cache and camera transform.
@@ -1133,6 +1256,10 @@
   const api={version:'115-phase2-seamless-precinct-prototype',worldId:WORLD_ID,areaId:AREA_ID,
     width:W-MIN_X,height:HGT,chunkSize:CHUNK,entrances:Object.freeze({front:FRONT,garage:GARAGE}),
     districts:()=>districtEntries.map(d=>({id:d.id,x:d.x,y:d.y,w:d.w,h:d.h,instanceId:d.instanceId})),
+    perspectiveQA:()=>/[?&]pilotQA=1(?:&|$)/.test(window.location.search)?JSON.parse(JSON.stringify(districtEntries.map(d=>({
+      id:d.id,x:d.x,y:d.y,w:d.w,h:d.h,decors:d.map.decors,
+      solids:d.map.pedSolids||d.map.solids||[],ground:d.map.ground
+    })))):null,
     links:()=>links.map(l=>({...l})),
     intersections:()=>crossings.map(c=>({...c})),
     roadTopologyVersion:roadNetwork.version,

@@ -1,0 +1,38 @@
+[
+  {
+    "tag": "before",
+    "width": 1280,
+    "collisionSamples": 1560,
+    "maximumSettledPaintP95Ms": 11.7,
+    "maximumSettledPaintMs": 14.7,
+    "maximumColdPaintMs": 1271.6,
+    "errors": []
+  },
+  {
+    "tag": "before",
+    "width": 390,
+    "collisionSamples": 1560,
+    "maximumSettledPaintP95Ms": 5.2,
+    "maximumSettledPaintMs": 7.1,
+    "maximumColdPaintMs": 584.3,
+    "errors": []
+  },
+  {
+    "tag": "after",
+    "width": 1280,
+    "collisionSamples": 1560,
+    "maximumSettledPaintP95Ms": 13.2,
+    "maximumSettledPaintMs": 17,
+    "maximumColdPaintMs": 688.4,
+    "errors": []
+  },
+  {
+    "tag": "after",
+    "width": 390,
+    "collisionSamples": 1560,
+    "maximumSettledPaintP95Ms": 6.8,
+    "maximumSettledPaintMs": 7.4,
+    "maximumColdPaintMs": 481,
+    "errors": []
+  }
+]

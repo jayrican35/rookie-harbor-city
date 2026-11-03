@@ -20,7 +20,7 @@ function context2D(){
  save(){},restore(){},translate(){},scale(){},setTransform(){},beginPath(){},arc(){},ellipse(){},rect(){},
  moveTo(){},lineTo(){},fill(){},stroke(){},closePath(){},measureText:()=>({width:75}),
  createLinearGradient:()=>({addColorStop(){}}),createRadialGradient:()=>({addColorStop(){}}),
- setLineDash(){}};
+ setLineDash(){},clip(){}};
  return base;
 }
 const ctx=context2D();

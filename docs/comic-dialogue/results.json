@@ -1,0 +1,94 @@
+{
+  "errors": [],
+  "stages": {
+    "civilian-1280": {
+      "x": 493,
+      "y": 108,
+      "w": 354,
+      "h": 212.34375,
+      "iw": 1280,
+      "ih": 850,
+      "font": "18px",
+      "overflow": false,
+      "full": "A long sentence with accents café, emoji 🐟 and careful spacing. A long sentence with accents café, emoji 🐟 and careful spacing. A long sentence with accents café, emoji 🐟 and careful spacing.",
+      "pages": "A long sentence with accents café, emoji 🐟 and careful spacing. A long sentence with accents café, emoji 🐟 and careful spacing. A long sentence with accents café, emoji 🐟 and careful spacing.",
+      "actor": "connected",
+      "style": "normal",
+      "tail": "block",
+      "visible": "visible",
+      "paginationAdvances": 14,
+      "keyboardMovementBlocked": true,
+      "tapOrKeyboardAdvance": true
+    },
+    "civilian-390": {
+      "x": 28,
+      "y": 111,
+      "w": 354,
+      "h": 206,
+      "iw": 390,
+      "ih": 844,
+      "font": "18px",
+      "overflow": false,
+      "full": "A long sentence with accents café, emoji 🐟 and careful spacing. A long sentence with accents café, emoji 🐟 and careful spacing. A long sentence with accents café, emoji 🐟 and careful spacing.",
+      "pages": "A long sentence with accents café, emoji 🐟 and careful spacing. A long sentence with accents café, emoji 🐟 and careful spacing. A long sentence with accents café, emoji 🐟 and careful spacing.",
+      "actor": "connected",
+      "style": "normal",
+      "tail": "block",
+      "visible": "visible",
+      "paginationAdvances": 20,
+      "keyboardMovementBlocked": true,
+      "tapOrKeyboardAdvance": true
+    },
+    "comedy": [
+      {
+        "speaker": "Chicken",
+        "text": "I DEMAND RESPECT!"
+      },
+      {
+        "speaker": "Banana",
+        "text": "You're dressed like lunch."
+      },
+      {
+        "speaker": "Chicken",
+        "text": "OFFICER! ARREST THIS FRUIT!"
+      }
+    ],
+    "reactions": {
+      "singleInstance": true,
+      "playerCanMove": true,
+      "expires": true
+    },
+    "migration": {
+      "nativeChoiceCallbackCount": 1,
+      "allStyles": true,
+      "roofOcclusion": true,
+      "classicFallback": true,
+      "reducedMotion": true
+    }
+  },
+  "story": {
+    "branch": "What happened?",
+    "briefed": true,
+    "fridgeClue": true,
+    "nativeAdvances": 12
+  },
+  "performance": {
+    "fps": 60.027285129604344,
+    "paint": {
+      "frames": 239,
+      "paintP95Ms": 6.100000000093132,
+      "paintMaxMs": 7.600000000093132,
+      "samples": 180,
+      "ambientPedestrians": 17,
+      "ambientDistrictsInitialized": 9,
+      "streetCars": 28,
+      "stoppedCars": 4
+    },
+    "activeBalloon": true
+  },
+  "zombie": {
+    "guard": true,
+    "mapSHA256": "d7d3b856703f52913d323c3ee5217c108303480883155939f212b3240278156f"
+  },
+  "legacyFallback": true
+}

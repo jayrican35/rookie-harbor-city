@@ -1,0 +1,27 @@
+/* Scoped to opt-in presentation: Zombie and legacy rendering retain native UI. */
+#dlgPanel.hc-speech.comic-balloon{padding:28px 34px 20px!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;isolation:isolate;overflow:visible!important;transform-origin:50% 90%!important;}
+.comic-shell{position:absolute;inset:0;width:100%;height:100%;z-index:-1;overflow:visible;pointer-events:none}
+.comic-tail{position:absolute;z-index:-2;overflow:visible;pointer-events:none}
+#dlgPanel.comic-balloon #hcSpeechTail{display:none!important}
+#dlgPanel.hc-speech.comic-balloon #dlgSpeaker{font:800 12px/1.3 'Trebuchet MS',sans-serif!important;letter-spacing:.07em!important;border:0!important;color:#5d4a31!important;margin:0 0 8px!important;padding:0!important;}
+#dlgPanel.hc-speech.comic-balloon #dlgText{font:700 18px/1.4 'Trebuchet MS',sans-serif!important;color:#18283b!important;}
+#dlgPanel.hc-speech.comic-balloon #dlgActions button{font:700 16px/1.3 'Trebuchet MS',sans-serif!important;border:2px solid #263649!important;border-radius:15px 12px 17px 11px!important;background:#ffeab0!important;min-height:44px!important;}
+#dlgPanel.hc-speech.comic-balloon #dlgActions #dlgNext,#dlgPanel.hc-speech.comic-balloon #dlgActions #dlgContinue{border:0!important;background:transparent!important;}
+#dlgPanel.hc-speech.comic-balloon #hcSpeechPage{background:transparent!important;color:#715a23!important;border:0!important;box-shadow:none!important;padding:0!important;}
+#dlgPanel.comic-balloon #dlgDismiss{right:22px!important;top:14px!important;}
+#dlgPanel.comic-balloon[data-comic-style=whisper] #dlgText{font-size:16px!important;font-style:italic!important;}
+#dlgPanel.comic-balloon[data-comic-style=angry] #dlgSpeaker{color:#933e29!important;}
+.comic-pop{animation:comic-pop .23s ease-out!important}
+.comic-pop[data-comic-style=angry],.comic-pop[data-comic-style=excited]{animation:comic-energy .28s ease-out!important}
+.comic-pop[data-comic-style=thought]{animation:comic-thought .25s ease-out!important}
+#hcAmbientSpeech.comic-reaction{isolation:isolate;background:transparent;border:0;border-radius:0;box-shadow:none;padding:18px 24px;max-width:180px;font:800 22px/1.3 'Trebuchet MS',sans-serif;pointer-events:none;}
+#hcAmbientSpeech.comic-reaction:after{display:none}
+.comic-dismiss{position:fixed;isolation:isolate;pointer-events:none;animation:comic-dismiss .12s ease-in forwards;z-index:65}
+@keyframes comic-pop{0%{transform:scale(.78,.72);opacity:0}65%{transform:scale(1.035,1.06);opacity:1}100%{transform:scale(1)}}
+@keyframes comic-energy{0%{transform:scale(.8,.75);opacity:0}45%{transform:scale(1.04,1.06) rotate(-1deg);opacity:1}70%{transform:scale(.99,1.01) rotate(1deg)}100%{transform:scale(1)}}
+@keyframes comic-thought{from{opacity:0;translate:0 5px}to{opacity:1;translate:0 0}}
+@keyframes comic-dismiss{to{opacity:0;transform:scale(.88)}}
+@media(prefers-reduced-motion:reduce){#dlgPanel.comic-balloon,.comic-reaction,.comic-dismiss{animation:none!important;transition:none!important}.comic-dismiss{display:none}}
+
+#dlgPanel.hc-speech.comic-balloon:focus{outline:none!important}
+body.comic-dialogue-enabled #csCaption.show{background:#fff9e9!important;color:#18283b!important;border:4px solid #18283b!important;border-radius:47% 43% 44% 40% / 20% 25% 20% 23%!important;box-shadow:4px 5px 0 #15253955!important;padding:22px 32px!important;font:700 18px/1.4 'Trebuchet MS',sans-serif!important;text-shadow:none!important;}

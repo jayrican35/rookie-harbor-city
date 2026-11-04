@@ -262,6 +262,14 @@
     northgate:'Those trees make this part of town peaceful.',
     southbay:'The waterfront looks beautiful this afternoon.'
   };
+  // First comic presentation pilot: one civilian, existing art/routine and remark.
+  // No quest, save, collision or named-character data is replaced.
+  if(typeof window!=='undefined'&&window.ROOKIE_COMIC?.enabled()){
+    const a={id:'ambient:precinct:visitor',name:'Precinct visitor',npcStyle:3,x:1240,y:1355,
+      dir:'right',moving:false,distance:0,speed:22,route:[[1240,1355],[1335,1355]]};
+    const sp={id:a.id,label:'Talk to precinct visitor',x:a.x,y:a.y,text:ambientSpeech.residential,ambientActor:a};
+    a.interaction=sp;ambientRoutes.push(a);npcActors.push(a);worldSpots.push(sp);
+  }
   let ambientInit=0;
   function safeStreetSegment(x1,y1,x2,y2){
     const length=Math.hypot(x2-x1,y2-y1);
@@ -514,6 +522,7 @@
     if(marina)marina.stepNPCs(dt);
     stepAmbientPedestrians(dt);
     stepStreetTraffic(dt);
+    if(window.ROOKIE_COMIC?.modalActive()){clearInput();campus.moved=false;return;}
     if(cruiser?.step(dt))return;
     let {dx,dy}=direction();
     const shared=window.ROOKIE_JAY,run=!!shared?.requestRun()||!!(campus.runHeld&&shared?.eligible());
@@ -1173,6 +1182,7 @@
     // disappears behind the wall. Interior actors remain behind the facade
     // until the SAME original roof cutaway reveals the rooms.
     cruiser?.bayMark(g);
+    window.ROOKIE_COMIC?.drawProps(g);
     drawEntityHighlights(t);
     // The V115 showcase also drew roof vents; V132 owns that layer now.
     // Avoid double glazing/vents over the ported legacy material and signs.
@@ -1199,11 +1209,13 @@
     modal.querySelector('#v115CampusCoords').textContent='World '+Math.round(campus.x)+', '+Math.round(campus.y)+'  · '+idOf(campus.x,campus.y)+'  · '+Math.round(campus.zoom*100)+'%';
     if(window.ROOKIE_V116_HUD)window.ROOKIE_V116_HUD.paint({x:campus.x,y:campus.y},t);
     const act=modal.querySelector('#v115CampusInteract');
-    const near=campus.near,actor=near&&marina?.actors?.some(a=>a.id===near.id);
+    const near=campus.near,actor=near&&(near.ambientActor||marina?.actors?.some(a=>a.id===near.id));
     const vehicleAction=cruiser?.active()||cruiser?.near();
-    const caption=vehicleAction?(cruiser.active()?'Exit':'Drive'):near?(actor?'Talk':'Inspect'):'Action';
+    window.ROOKIE_COMIC?.frame({host:modal,canvas:cv,view,actors:npcActors,player:{x:campus.x,y:campus.y},driving:!!cruiser?.active(),visible:a=>a.x>=view.x-30&&a.x<=view.x+view.w+30&&a.y>=view.y&&a.y<=view.y+view.h+60&&(!interiorRoom(a.x,a.y)||roofAlpha()<.5)&&(!marina?.interiorActorVisible||marina.interiorActorVisible(a))},t);
+    const comicActive=window.ROOKIE_COMIC?.modalActive(),comicNear=!cruiser?.active()&&window.ROOKIE_COMIC?.nearComedy(campus.x,campus.y);
+    const caption=comicActive?'Continue':comicNear?'Talk':vehicleAction?(cruiser.active()?'Exit':'Drive'):near?(actor?'Talk':'Inspect'):'Action';
     if(act.textContent!==caption)act.textContent=caption;
-    act.disabled=!(near||vehicleAction);
+    act.disabled=!(comicActive||comicNear||near||vehicleAction);
     if(paintStart!==null){campus.paintCount++;campus.paintCosts.push(performance.now()-paintStart);if(campus.paintCosts.length>180)campus.paintCosts.shift();}
   }
   function loop(timestamp){
@@ -1235,6 +1247,7 @@
   }
   function close(){
     if(!campus.open)return;if(cruiser&&cruiser.suspend()===false)return;campus.open=false;cancelAnimationFrame(campus.frame);clearInput();
+    window.ROOKIE_COMIC?.close();
     window.ROOKIE_V116_HUD?.close();
     modal.hidden=true;document.body.classList.remove('v115-campus-open','v116-play-mode');
   }
@@ -1248,8 +1261,12 @@
     else {pickZoom(Math.min(tw/(W-MIN_X),th/(HGT-MIN_Y))*.96);campus.follow=false;campus.camX=(MIN_X+W-tw/campus.zoom)/2;campus.camY=(HGT-th/campus.zoom)/2;}
   });
   modal.querySelector('#v115CampusInteract').addEventListener('click',()=>{
+    const comic=window.ROOKIE_COMIC;
+    if(comic?.modalActive()){comic.advance();return;}
+    if(comic?.nearComedy(campus.x,campus.y)&&comic.comedy())return;
     if(cruiser?.interact())return;
     const sp=campus.near;
+    if(comic?.converse(sp,npcActors))return;
     const marina=window.ROOKIE_V116_MARINA;
     if(sp?.ambientActor){
       const dialogue=modal.querySelector('#v116Dialogue');
@@ -1285,7 +1302,7 @@
     base.classList.remove('active');
   };
   pad.addEventListener('pointerdown',e=>{
-    if(pointer!==null||window.ROOKIE_V116_HUD?.blocked())return;
+    if(pointer!==null||window.ROOKIE_V116_HUD?.blocked()||window.ROOKIE_COMIC?.modalActive())return;
     e.preventDefault();e.stopPropagation();pointer=e.pointerId;
     pad.setPointerCapture?.(pointer);
     const r=pad.getBoundingClientRect();
@@ -1316,6 +1333,9 @@
   function captureKey(e,down){
     if(!campus.open)return;
     const k=e.key.toLowerCase();
+    if(window.ROOKIE_COMIC?.modalActive()){
+      clearInput();if(['w','a','s','d','arrowleft','arrowright','escape'].includes(k)){e.preventDefault();e.stopImmediatePropagation();if(k==='escape'&&down)H.comicDialogue.close();}return;
+    }
     if(window.ROOKIE_V116_HUD?.blocked()){
       clearInput();if(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d','e','m','i','escape'].includes(k)){e.preventDefault();e.stopImmediatePropagation();}
       if(k==='escape'&&down)window.ROOKIE_V116_HUD.close();return;

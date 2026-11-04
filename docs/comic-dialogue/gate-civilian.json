@@ -1,0 +1,43 @@
+{
+  "errors": [],
+  "stages": {
+    "civilian-1280": {
+      "x": 493,
+      "y": 108,
+      "w": 354,
+      "h": 212.34375,
+      "iw": 1280,
+      "ih": 850,
+      "font": "18px",
+      "overflow": false,
+      "full": "A long sentence with accents café, emoji 🐟 and careful spacing. A long sentence with accents café, emoji 🐟 and careful spacing. A long sentence with accents café, emoji 🐟 and careful spacing.",
+      "pages": "A long sentence with accents café, emoji 🐟 and careful spacing. A long sentence with accents café, emoji 🐟 and careful spacing. A long sentence with accents café, emoji 🐟 and careful spacing.",
+      "actor": "connected",
+      "style": "normal",
+      "tail": "block",
+      "visible": "visible",
+      "paginationAdvances": 14,
+      "keyboardMovementBlocked": true,
+      "tapOrKeyboardAdvance": true
+    },
+    "civilian-390": {
+      "x": 28,
+      "y": 214,
+      "w": 354,
+      "h": 206,
+      "iw": 390,
+      "ih": 844,
+      "font": "18px",
+      "overflow": false,
+      "full": "A long sentence with accents café, emoji 🐟 and careful spacing. A long sentence with accents café, emoji 🐟 and careful spacing. A long sentence with accents café, emoji 🐟 and careful spacing.",
+      "pages": "A long sentence with accents café, emoji 🐟 and careful spacing. A long sentence with accents café, emoji 🐟 and careful spacing. A long sentence with accents café, emoji 🐟 and careful spacing.",
+      "actor": "connected",
+      "style": "normal",
+      "tail": "block",
+      "visible": "visible",
+      "paginationAdvances": 20,
+      "keyboardMovementBlocked": true,
+      "tapOrKeyboardAdvance": true
+    }
+  }
+}

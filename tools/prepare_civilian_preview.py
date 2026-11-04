@@ -6,6 +6,7 @@ import re
 import shutil
 import argparse
 from connected_driving import refine_controller
+from comic_dialogue import apply_comic_hooks
 
 r = Path.cwd()
 parser=argparse.ArgumentParser();parser.add_argument('--candidate',action='store_true');args=parser.parse_args()
@@ -50,6 +51,7 @@ for target in [before, after]:
         previous=prior.read_text(encoding='utf-8')
         assert bundle.count(previous)==1
         bundle=bundle.replace(previous+'\n','')
+    bundle=apply_comic_hooks(bundle,engine)
     assert bundle.count(old) == 1
     (target / name).write_text(new, encoding='utf-8')
     (target / 'game-v115.bundle.js').write_text(bundle.replace(old, cruiser+'\n'+new), encoding='utf-8')
@@ -58,6 +60,14 @@ for target in [before, after]:
     shutil.copy2(r/'published-game-capture/cruiser-visuals.js',target/'cruiser-visuals.js')
     shutil.copy2(r/'published-game-capture/connected-traffic.js',target/'connected-traffic.js')
     html = (target / 'index.html').read_text(encoding='utf-8')
+    for ext in ['js','css']:
+        name='comic-dialogue.'+ext
+        shutil.copy2(r/'published-game-capture'/name,target/name)
+        if ext=='js':html=re.sub(r'<script src="\./comic-dialogue\.js[^"]*"></script>\s*','',html)
+        html=re.sub(r'<link[^>]*href="\./comic-dialogue\.css[^"]*"[^>]*>\s*','',html)
+        digest=hashlib.sha256((target/name).read_bytes()).hexdigest()[:12]
+        element=('<script src="./'+name+'?v='+digest+'"></script>') if ext=='js' else ('<link rel="stylesheet" href="./'+name+'?v='+digest+'">')
+        html=html.replace('</head>',element+'</head>')
     digest = hashlib.sha256((target / 'game-v115.bundle.js').read_bytes()).hexdigest()[:12]
     html = re.sub(r'game-v115\.bundle\.js\?v=[\da-f]+', 'game-v115.bundle.js?v='+digest, html)
     html=re.sub(r'<script src="\./cruiser-visuals\.js[^\"]*"></script>\s*','',html)
@@ -74,7 +84,10 @@ for target in [before, after]:
         payload=json.dumps(pack,separators=(',',':')).replace('<','\\u003c')
         html = html.replace('</body>', '<script data-civilian-preview>window.ROOKIE_CIVILIAN_PACK='+payload+';window.ROOKIE_CONNECTED_CIVILIANS_ACTIVE='+str(art_ready or args.candidate).lower()+';</script><script src="./civilian-connected.js?v='+digest+'"></script></body>')
     (target / 'index.html').write_text(html, encoding='utf-8')
-if not args.candidate:shutil.copy2(r / 'tools/civilian_preview_review.html', r / 'site/index.html')
+if not args.candidate:
+    shutil.copy2(r / 'tools/civilian_preview_review.html', r / 'site/index.html')
+    evidence=r/'docs/comic-dialogue'
+    if evidence.exists():shutil.copytree(evidence,r/'site/evidence/comic-dialogue',dirs_exist_ok=True)
 if not art_ready and not args.candidate:
     target=r/'site/evidence/civilian-preview'
     target.mkdir(parents=True,exist_ok=True)

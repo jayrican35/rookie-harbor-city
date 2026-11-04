@@ -1,0 +1,692 @@
+{
+  "viewer": {
+    "allDirections": true,
+    "cw": true,
+    "ccw": true,
+    "pause": true,
+    "lights": true
+  },
+  "clockwise": {
+    "label": "clockwise",
+    "reverse": false,
+    "seen": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "before": {
+      "x": 1920,
+      "y": 1380,
+      "angle": 0,
+      "id": "precinct-unit-9",
+      "map": "harbor-main",
+      "speed": 0,
+      "engine": true,
+      "lightMode": "off",
+      "wheelPhase": 0,
+      "driving": true,
+      "collisions": 0,
+      "saveError": false,
+      "assetReady": true,
+      "count": 1,
+      "visual": {
+        "index": 0,
+        "draws": 2,
+        "frameChanges": 0,
+        "effectCount": 0,
+        "lastDraw": {
+          "index": 0,
+          "angle": 0,
+          "visualAngle": 0,
+          "residual": 0,
+          "anchor": [
+            1920,
+            1380
+          ],
+          "imageOrigin": [
+            1920,
+            1380
+          ],
+          "bodySway": 0,
+          "lightMode": "off",
+          "activeLight": "off",
+          "shadow": {
+            "center": [
+              1922,
+              1384
+            ],
+            "radii": [
+              49,
+              25
+            ],
+            "angle": 0
+          }
+        }
+      },
+      "art": {
+        "status": "ready",
+        "error": null,
+        "reviewed": true,
+        "directionCount": 16
+      }
+    },
+    "after": {
+      "x": 1870.086998323737,
+      "y": 1419.9675599015163,
+      "angle": 17.23096234083319,
+      "id": "precinct-unit-9",
+      "map": "harbor-main",
+      "speed": 0,
+      "engine": true,
+      "lightMode": "off",
+      "wheelPhase": 56.72533318964366,
+      "driving": true,
+      "collisions": 0,
+      "saveError": false,
+      "assetReady": true,
+      "count": 1,
+      "visual": {
+        "index": 12,
+        "draws": 539,
+        "frameChanges": 44,
+        "effectCount": 0,
+        "lastDraw": {
+          "index": 12,
+          "angle": 17.23096234083319,
+          "visualAngle": 17.229780682630892,
+          "residual": -0.00881620418033469,
+          "anchor": [
+            1870.086998323737,
+            1419.9675599015163
+          ],
+          "imageOrigin": [
+            1870,
+            1420
+          ],
+          "bodySway": 0.13384842228767313,
+          "lightMode": "off",
+          "activeLight": "off",
+          "shadow": {
+            "center": [
+              1872.086998323737,
+              1423.9675599015163
+            ],
+            "radii": [
+              49,
+              25
+            ],
+            "angle": 17.23096234083319
+          }
+        }
+      },
+      "art": {
+        "status": "ready",
+        "error": null,
+        "reviewed": true,
+        "directionCount": 16
+      }
+    }
+  },
+  "counterclockwise": {
+    "label": "counterclockwise",
+    "reverse": false,
+    "seen": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "before": {
+      "x": 1920,
+      "y": 1445,
+      "angle": 0,
+      "id": "precinct-unit-9",
+      "map": "harbor-main",
+      "speed": 0,
+      "engine": true,
+      "lightMode": "off",
+      "wheelPhase": 0,
+      "driving": true,
+      "collisions": 0,
+      "saveError": false,
+      "assetReady": true,
+      "count": 1,
+      "visual": {
+        "index": 0,
+        "draws": 11,
+        "frameChanges": 0,
+        "effectCount": 0,
+        "lastDraw": {
+          "index": 0,
+          "angle": 0,
+          "visualAngle": 0,
+          "residual": 0,
+          "anchor": [
+            1920,
+            1445
+          ],
+          "imageOrigin": [
+            1920,
+            1445
+          ],
+          "bodySway": 0,
+          "lightMode": "off",
+          "activeLight": "off",
+          "shadow": {
+            "center": [
+              1922,
+              1449
+            ],
+            "radii": [
+              49,
+              25
+            ],
+            "angle": 0
+          }
+        }
+      },
+      "art": {
+        "status": "ready",
+        "error": null,
+        "reviewed": true,
+        "directionCount": 16
+      }
+    },
+    "after": {
+      "x": 1872.685677271619,
+      "y": 1414.6005682120378,
+      "angle": -17.29994453293879,
+      "id": "precinct-unit-9",
+      "map": "harbor-main",
+      "speed": 0,
+      "engine": true,
+      "lightMode": "off",
+      "wheelPhase": 57.00637770726184,
+      "driving": true,
+      "collisions": 0,
+      "saveError": false,
+      "assetReady": true,
+      "count": 1,
+      "visual": {
+        "index": 4,
+        "draws": 560,
+        "frameChanges": 44,
+        "effectCount": 4,
+        "lastDraw": {
+          "index": 4,
+          "angle": -17.29994453293879,
+          "visualAngle": -17.2987655994657,
+          "residual": -0.003601080849930308,
+          "anchor": [
+            1872.685677271619,
+            1414.6005682120378
+          ],
+          "imageOrigin": [
+            1872.5,
+            1414.5
+          ],
+          "bodySway": 0.02588337448383867,
+          "lightMode": "off",
+          "activeLight": "off",
+          "shadow": {
+            "center": [
+              1874.685677271619,
+              1418.6005682120378
+            ],
+            "radii": [
+              49,
+              25
+            ],
+            "angle": -17.29994453293879
+          }
+        }
+      },
+      "art": {
+        "status": "ready",
+        "error": null,
+        "reviewed": true,
+        "directionCount": 16
+      }
+    }
+  },
+  "reverse": {
+    "label": "reverse",
+    "reverse": true,
+    "seen": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "before": {
+      "x": 1920,
+      "y": 1380,
+      "angle": 0,
+      "id": "precinct-unit-9",
+      "map": "harbor-main",
+      "speed": 0,
+      "engine": true,
+      "lightMode": "off",
+      "wheelPhase": 0,
+      "driving": true,
+      "collisions": 0,
+      "saveError": false,
+      "assetReady": true,
+      "count": 1,
+      "visual": {
+        "index": 0,
+        "draws": 10,
+        "frameChanges": 0,
+        "effectCount": 0,
+        "lastDraw": {
+          "index": 0,
+          "angle": 0,
+          "visualAngle": 0,
+          "residual": 0,
+          "anchor": [
+            1920,
+            1380
+          ],
+          "imageOrigin": [
+            1920,
+            1380
+          ],
+          "bodySway": 0,
+          "lightMode": "off",
+          "activeLight": "off",
+          "shadow": {
+            "center": [
+              1922,
+              1384
+            ],
+            "radii": [
+              49,
+              25
+            ],
+            "angle": 0
+          }
+        }
+      },
+      "art": {
+        "status": "ready",
+        "error": null,
+        "reviewed": true,
+        "directionCount": 16
+      }
+    },
+    "after": {
+      "x": 1967.3180262286457,
+      "y": 1398.9683336530813,
+      "angle": -17.282851508684296,
+      "id": "precinct-unit-9",
+      "map": "harbor-main",
+      "speed": 0,
+      "engine": true,
+      "lightMode": "off",
+      "wheelPhase": -56.3381752537551,
+      "driving": true,
+      "collisions": 0,
+      "saveError": false,
+      "assetReady": true,
+      "count": 1,
+      "visual": {
+        "index": 4,
+        "draws": 575,
+        "frameChanges": 44,
+        "effectCount": 4,
+        "lastDraw": {
+          "index": 4,
+          "angle": -17.282851508684296,
+          "visualAngle": -17.282850576890162,
+          "residual": -0.0007363767863341862,
+          "anchor": [
+            1967.3180262286457,
+            1398.9683336530813
+          ],
+          "imageOrigin": [
+            1967.5,
+            1399
+          ],
+          "bodySway": 0.08189821826486174,
+          "lightMode": "off",
+          "activeLight": "off",
+          "shadow": {
+            "center": [
+              1969.3180262286457,
+              1402.9683336530813
+            ],
+            "radii": [
+              49,
+              25
+            ],
+            "angle": -17.282851508684296
+          }
+        }
+      },
+      "art": {
+        "status": "ready",
+        "error": null,
+        "reviewed": true,
+        "directionCount": 16
+      }
+    }
+  },
+  "reverseParking": {
+    "x": 1760,
+    "y": 1570.955521133334,
+    "angle": 1.5707963267948966,
+    "id": "precinct-unit-9",
+    "map": "harbor-main",
+    "speed": -0.32600000000051854,
+    "engine": true,
+    "lightMode": "off",
+    "wheelPhase": -6.7187807036666785,
+    "driving": true,
+    "collisions": 0,
+    "saveError": false,
+    "assetReady": true,
+    "count": 1,
+    "visual": {
+      "index": 4,
+      "draws": 98,
+      "frameChanges": 0,
+      "effectCount": 2,
+      "lastDraw": {
+        "index": 4,
+        "angle": 1.5707963267948966,
+        "visualAngle": 1.5707963267948966,
+        "residual": 0,
+        "anchor": [
+          1760,
+          1570.955521133334
+        ],
+        "imageOrigin": [
+          1760,
+          1571
+        ],
+        "bodySway": 0.08848280322277302,
+        "lightMode": "off",
+        "activeLight": "off",
+        "shadow": {
+          "center": [
+            1762,
+            1574.955521133334
+          ],
+          "radii": [
+            49,
+            25
+          ],
+          "angle": 1.5707963267948966
+        }
+      }
+    },
+    "art": {
+      "status": "ready",
+      "error": null,
+      "reviewed": true,
+      "directionCount": 16
+    }
+  },
+  "handbrake": {
+    "x": 1018.6851714927808,
+    "y": 2907.010195612521,
+    "angle": 2.348435926611818,
+    "id": "precinct-unit-9",
+    "map": "harbor-main",
+    "speed": 50.91530251062852,
+    "engine": true,
+    "lightMode": "off",
+    "wheelPhase": 10.959706525795815,
+    "driving": true,
+    "collisions": 0,
+    "saveError": false,
+    "assetReady": true,
+    "count": 1,
+    "visual": {
+      "index": 6,
+      "draws": 89,
+      "frameChanges": 6,
+      "effectCount": 12,
+      "lastDraw": {
+        "index": 6,
+        "angle": 2.348435926611818,
+        "visualAngle": 2.2954044569916645,
+        "residual": -0.010942205976122459,
+        "anchor": [
+          1018.6851714927808,
+          2907.010195612521
+        ],
+        "imageOrigin": [
+          1018.5,
+          2907.5
+        ],
+        "bodySway": 0.42553088293845437,
+        "lightMode": "off",
+        "activeLight": "off",
+        "shadow": {
+          "center": [
+            1020.6851714927808,
+            2911.010195612521
+          ],
+          "radii": [
+            49,
+            25
+          ],
+          "angle": 2.348435926611818
+        }
+      }
+    },
+    "art": {
+      "status": "ready",
+      "error": null,
+      "reviewed": true,
+      "directionCount": 16
+    }
+  },
+  "downtown-corner": {
+    "x": 5874.210070316338,
+    "y": 1552.2452714576757,
+    "angle": -0.6609263267949003,
+    "id": "precinct-unit-9",
+    "map": "harbor-main",
+    "speed": 0.20074391195855634,
+    "engine": true,
+    "lightMode": "off",
+    "wheelPhase": 8.961131057664032,
+    "driving": true,
+    "collisions": 0,
+    "saveError": false,
+    "assetReady": true,
+    "count": 1,
+    "visual": {
+      "index": 14,
+      "draws": 84,
+      "frameChanges": 2,
+      "effectCount": 8,
+      "lastDraw": {
+        "index": 14,
+        "angle": -0.6609263267949003,
+        "visualAngle": -0.660952477816186,
+        "residual": 0.022400223404627304,
+        "anchor": [
+          5874.210070316338,
+          1552.2452714576757
+        ],
+        "imageOrigin": [
+          5874,
+          1552.5
+        ],
+        "bodySway": 0.16012913481036822,
+        "lightMode": "off",
+        "activeLight": "off",
+        "shadow": {
+          "center": [
+            5876.210070316338,
+            1556.2452714576757
+          ],
+          "radii": [
+            49,
+            25
+          ],
+          "angle": -0.6609263267949003
+        }
+      }
+    },
+    "art": {
+      "status": "ready",
+      "error": null,
+      "reviewed": true,
+      "directionCount": 16
+    }
+  },
+  "marina-road": {
+    "x": 3780.1024969097157,
+    "y": 3788.5220099838048,
+    "angle": 0.9428249999999988,
+    "id": "precinct-unit-9",
+    "map": "harbor-main",
+    "speed": 0,
+    "engine": true,
+    "lightMode": "off",
+    "wheelPhase": 8.33569697362744,
+    "driving": true,
+    "collisions": 0,
+    "saveError": false,
+    "assetReady": true,
+    "count": 1,
+    "visual": {
+      "index": 2,
+      "draws": 76,
+      "frameChanges": 2,
+      "effectCount": 8,
+      "lastDraw": {
+        "index": 2,
+        "angle": 0.9428249999999988,
+        "visualAngle": 0.9428087405243498,
+        "residual": 0.028333903882842276,
+        "anchor": [
+          3780.1024969097157,
+          3788.5220099838048
+        ],
+        "imageOrigin": [
+          3780,
+          3788.5
+        ],
+        "bodySway": 0.1281072100285291,
+        "lightMode": "off",
+        "activeLight": "off",
+        "shadow": {
+          "center": [
+            3782.1024969097157,
+            3792.5220099838048
+          ],
+          "radii": [
+            49,
+            25
+          ],
+          "angle": 0.9428249999999988
+        }
+      }
+    },
+    "art": {
+      "status": "ready",
+      "error": null,
+      "reviewed": true,
+      "directionCount": 16
+    }
+  },
+  "errors": [],
+  "mobile": {
+    "x": 1920,
+    "y": 1380,
+    "angle": 0,
+    "id": "precinct-unit-9",
+    "map": "harbor-main",
+    "speed": 0,
+    "engine": true,
+    "lightMode": "alternating",
+    "wheelPhase": 0,
+    "driving": true,
+    "collisions": 0,
+    "saveError": false,
+    "assetReady": true,
+    "count": 1,
+    "visual": {
+      "index": 0,
+      "draws": 37,
+      "frameChanges": 0,
+      "effectCount": 0,
+      "lastDraw": {
+        "index": 0,
+        "angle": 0,
+        "visualAngle": 0,
+        "residual": 0,
+        "anchor": [
+          1920,
+          1380
+        ],
+        "imageOrigin": [
+          1920,
+          1380
+        ],
+        "bodySway": 0,
+        "lightMode": "alternating",
+        "activeLight": "red",
+        "shadow": {
+          "center": [
+            1922,
+            1384
+          ],
+          "radii": [
+            49,
+            25
+          ],
+          "angle": 0
+        }
+      }
+    },
+    "art": {
+      "status": "ready",
+      "error": null,
+      "reviewed": true,
+      "directionCount": 16
+    }
+  }
+}

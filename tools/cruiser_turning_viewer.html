@@ -1,0 +1,45 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Unit 9 · directional artwork inspector</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0d1c2e;color:#f8edce;font:15px system-ui}main{max-width:1080px;margin:auto;padding:20px}h1{font-size:25px;margin:0 0 8px}p{line-height:1.5}a{color:#f6d083}.layout{display:grid;grid-template-columns:1fr 290px;gap:18px}.stage{border:1px solid #8b9aa8;border-radius:16px;overflow:hidden;background:#23374b}canvas{display:block;width:100%;height:470px}aside{background:#182c40;border:1px solid #536b7b;border-radius:16px;padding:16px}button,select,input{font:inherit}button,select{background:#24485d;color:#ffebbb;border:1px solid #d8bd7e;border-radius:8px;padding:8px}button:hover{background:#346078}label{display:block;margin:15px 0 5px}input[type=range]{width:100%}.buttons{display:flex;gap:8px;flex-wrap:wrap}output{display:block;font:13px ui-monospace,monospace;background:#102238;padding:14px;line-height:1.6;white-space:pre-wrap}.note{font-size:13px;color:#baccd5}img{max-width:100%;border-radius:12px;margin-top:15px}input[type=checkbox]{margin-right:7px}@media(max-width:700px){.layout{grid-template-columns:1fr}canvas{height:350px}main{padding:12px}}
+</style><main>
+<h1>Unit 9 · 16-angle turning inspector</h1>
+<p>Same cruiser, same renderer as the connected game. Inspect the anchor, shadow, light bar and the 337.5° → 0° seam.</p>
+<p><a href="/">Play Harbor City</a> · <a id="atlas" download>Transparent atlas</a> · <a id="manifest">JSON manifest</a> · <a href="TEST_REPORT.md">Test report</a></p>
+<div class="layout"><section class="stage"><canvas id="turntable" aria-label="Animated police cruiser on transparent checkerboard"></canvas><output id="readout">Loading cruiser art…</output></section>
+<aside><div class="buttons"><button id="cw">↻ Clockwise</button><button id="ccw">↺ Counterclockwise</button><button id="pause">Pause</button></div>
+<label for="direction">Individual direction</label><select id="direction"></select>
+<label for="speed">Rotation speed <span id="speedLabel">45°/s</span></label><input id="speed" type="range" min="0" max="180" value="45">
+<label for="lights">Emergency lights</label><select id="lights"><option value="off">Off</option><option value="red">Red active</option><option value="blue">Blue active</option><option value="alternating">Alternating red / blue</option></select>
+<label for="zoom">Inspection zoom</label><input id="zoom" type="range" min="1" max="4" step=".25" value="2.5">
+<label><input id="subframe" type="checkbox" checked>Sub-frame alignment (≤2.2°)</label>
+<label><input id="anchor" type="checkbox" checked>Show ground anchor / footprint</label>
+<p class="note">Physics heading stays continuous. Pose changes use a 0.7° boundary tolerance. No body crossfade, stretching, or mirrored directions. This inspector does not move the in-game vehicle or write a save.</p></aside></div>
+<h2>Angle reference</h2><img id="reference" alt="All sixteen transparent cruiser poses with ground-anchor marks">
+</main><script src="/preview/civilian-updated/cruiser-visuals.js"></script><script>
+'use strict';
+const V=window.ROOKIE_CRUISER_VISUAL,root='/preview/civilian-updated/assets/police-driving/turning/';
+const cv=document.querySelector('canvas'),g=cv.getContext('2d'),by=id=>document.getElementById(id);
+let state=V.create(),angle=0,sign=1,paused=false,last=0,ready=false;
+const car={x:0,y:0,angle:0,speed:0,lightMode:'off'};
+for(let i=0;i<16;i++){const op=document.createElement('option');op.value=i;op.textContent=String(i).padStart(2,'0')+' · '+(i*22.5)+'°';by('direction').appendChild(op);}
+by('atlas').href=root+'cruiser-16-atlas.png';by('manifest').href=root+'manifest.json';by('reference').src=root+'angle-reference.png';
+by('cw').onclick=()=>{sign=1;paused=false;by('pause').textContent='Pause';};by('ccw').onclick=()=>{sign=-1;paused=false;by('pause').textContent='Pause';};
+by('pause').onclick=()=>{paused=!paused;by('pause').textContent=paused?'Resume':'Pause';};
+by('direction').onchange=()=>{angle=Number(by('direction').value)*Math.PI/8;state=V.create();paused=true;by('pause').textContent='Resume';};
+by('speed').oninput=()=>by('speedLabel').textContent=by('speed').value+'°/s';
+V.load(root).then(ok=>{ready=ok;if(!ok)by('readout').textContent=V.status().error;});
+function paint(t){const dt=last?Math.min(.05,(t-last)/1000):1/60;last=t;
+ const r=cv.getBoundingClientRect(),dpr=Math.min(1.5,devicePixelRatio||1);if(cv.width!==Math.round(r.width*dpr)||cv.height!==Math.round(r.height*dpr)){cv.width=Math.round(r.width*dpr);cv.height=Math.round(r.height*dpr);}
+ g.setTransform(dpr,0,0,dpr,0,0);for(let y=0;y<r.height;y+=24)for(let x=0;x<r.width;x+=24){g.fillStyle=(x/24+y/24)%2?'#304154':'#425467';g.fillRect(x,y,24,24);}
+ if(!paused)angle+=sign*Number(by('speed').value)*Math.PI/180*dt;car.angle=angle;car.lightMode=by('lights').value;
+ V.update(state,car,dt);const zoom=Number(by('zoom').value);g.translate(r.width/2,r.height/2+20);g.scale(zoom,zoom);
+ if(by('anchor').checked){g.save();g.rotate(car.angle);g.strokeStyle='#80e6c255';g.lineWidth=1/zoom;g.strokeRect(-48,-24,96,48);g.restore();g.strokeStyle='#7affc8';g.lineWidth=1/zoom;g.beginPath();g.moveTo(-65,0);g.lineTo(65,0);g.moveTo(0,-65);g.lineTo(0,65);g.stroke();}
+ if(ready)V.draw(g,state,car,{candidate:true,subframe:by('subframe').checked});
+ const s=V.inspect(state),degree=((angle*180/Math.PI)%360+360)%360;
+ if(ready){by('readout').textContent='Heading '+degree.toFixed(1)+'° · pose '+String(s.index).padStart(2,'0')+' ('+(s.index*22.5)+'°)\nGround anchor (0, 0) · shadow 96 × 48 footprint\nLights: '+car.lightMode+' · active: '+s.lastDraw?.activeLight+'\nAtlas: '+(V.status().reviewed?'reviewed':'candidate — visual review in progress');if(document.activeElement!==by('direction'))by('direction').value=s.index;}
+ requestAnimationFrame(paint);
+}
+requestAnimationFrame(paint);
+window.cruiserInspector={sample:()=>({angle,paused,sign,visual:V.inspect(state),assets:V.status()}),inspect:i=>{by('direction').value=i;by('direction').dispatchEvent(new Event('change'));}};
+</script></html>

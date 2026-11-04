@@ -1,0 +1,279 @@
+{
+  "mobile": {
+    "moving": {
+      "x": 1760,
+      "y": 1587.688460895074,
+      "angle": 1.5707963267948966,
+      "id": "precinct-unit-9",
+      "map": "harbor-main",
+      "speed": 81.66113900930446,
+      "engine": true,
+      "lightMode": "off",
+      "wheelPhase": 1.673519176081255,
+      "driving": true,
+      "collisions": 0,
+      "saveError": false,
+      "assetReady": true,
+      "count": 1,
+      "visual": {
+        "index": 4,
+        "draws": 43,
+        "frameChanges": 0,
+        "effectCount": 0,
+        "lastDraw": {
+          "index": 4,
+          "angle": 1.5707963267948966,
+          "visualAngle": 1.5707963267948966,
+          "residual": 0,
+          "anchor": [
+            1760,
+            1587.688460895074
+          ],
+          "imageOrigin": [
+            1760,
+            1587.5
+          ],
+          "bodySway": 0,
+          "lightMode": "off",
+          "activeLight": "off",
+          "shadow": {
+            "center": [
+              1762,
+              1591.688460895074
+            ],
+            "radii": [
+              49,
+              25
+            ],
+            "angle": 1.5707963267948966
+          }
+        }
+      },
+      "art": {
+        "status": "ready",
+        "error": null,
+        "reviewed": true,
+        "directionCount": 16
+      }
+    },
+    "parked": {
+      "x": 1760,
+      "y": 1581.5547855659931,
+      "angle": 1.5707963267948966,
+      "id": "precinct-unit-9",
+      "map": "harbor-main",
+      "speed": 0,
+      "engine": false,
+      "lightMode": "red",
+      "wheelPhase": 1.1521567731092401,
+      "driving": false,
+      "collisions": 0,
+      "saveError": false,
+      "assetReady": true,
+      "count": 1,
+      "visual": {
+        "index": 4,
+        "draws": 221,
+        "frameChanges": 0,
+        "effectCount": 2,
+        "lastDraw": {
+          "index": 4,
+          "angle": 1.5707963267948966,
+          "visualAngle": 1.5707963267948966,
+          "residual": 0,
+          "anchor": [
+            1760,
+            1581.5547855659931
+          ],
+          "imageOrigin": [
+            1760,
+            1581.5
+          ],
+          "bodySway": 0.00009727759429033404,
+          "lightMode": "red",
+          "activeLight": "red",
+          "shadow": {
+            "center": [
+              1762,
+              1585.5547855659931
+            ],
+            "radii": [
+              49,
+              25
+            ],
+            "angle": 1.5707963267948966
+          }
+        }
+      },
+      "art": {
+        "status": "ready",
+        "error": null,
+        "reviewed": true,
+        "directionCount": 16
+      }
+    },
+    "reloaded": {
+      "x": 1760,
+      "y": 1581.5547855659931,
+      "angle": 1.5707963267948966,
+      "id": "precinct-unit-9",
+      "map": "harbor-main",
+      "speed": 0,
+      "engine": false,
+      "lightMode": "red",
+      "driving": false,
+      "collisions": 0,
+      "saveError": false,
+      "assetReady": true,
+      "count": 1,
+      "visual": {
+        "index": 4,
+        "draws": 0,
+        "frameChanges": 0,
+        "effectCount": 0,
+        "lastDraw": null
+      },
+      "art": {
+        "status": "loading",
+        "error": null,
+        "reviewed": false,
+        "directionCount": 0
+      }
+    }
+  },
+  "profileIsolation": {
+    "rosa": {
+      "x": 1760,
+      "y": 1568,
+      "angle": 1.5707963267948966,
+      "id": "precinct-unit-9",
+      "map": "harbor-main",
+      "speed": 0,
+      "engine": false,
+      "lightMode": "off",
+      "driving": false,
+      "collisions": 0,
+      "saveError": false,
+      "assetReady": true,
+      "count": 1,
+      "visual": {
+        "index": 4,
+        "draws": 0,
+        "frameChanges": 0,
+        "effectCount": 0,
+        "lastDraw": null
+      },
+      "art": {
+        "status": "loading",
+        "error": null,
+        "reviewed": false,
+        "directionCount": 0
+      }
+    },
+    "jay": {
+      "x": 1760,
+      "y": 1581.5547855659931,
+      "angle": 1.5707963267948966,
+      "id": "precinct-unit-9",
+      "map": "harbor-main",
+      "speed": 0,
+      "engine": false,
+      "lightMode": "red",
+      "driving": false,
+      "collisions": 0,
+      "saveError": false,
+      "assetReady": true,
+      "count": 1,
+      "visual": {
+        "index": 4,
+        "draws": 1,
+        "frameChanges": 0,
+        "effectCount": 0,
+        "lastDraw": {
+          "index": 4,
+          "angle": 1.5707963267948966,
+          "visualAngle": 1.5707963267948966,
+          "residual": 0,
+          "anchor": [
+            1760,
+            1581.5547855659931
+          ],
+          "imageOrigin": [
+            1760,
+            1581.5
+          ],
+          "bodySway": 0,
+          "lightMode": "red",
+          "activeLight": "red",
+          "shadow": {
+            "center": [
+              1762,
+              1585.5547855659931
+            ],
+            "radii": [
+              49,
+              25
+            ],
+            "angle": 1.5707963267948966
+          }
+        }
+      },
+      "art": {
+        "status": "ready",
+        "error": null,
+        "reviewed": true,
+        "directionCount": 16
+      }
+    },
+    "imported": {
+      "x": 1760,
+      "y": 1581.5547855659931,
+      "angle": 1.5707963267948966,
+      "id": "precinct-unit-9",
+      "map": "harbor-main",
+      "speed": 0,
+      "engine": false,
+      "lightMode": "red",
+      "driving": false,
+      "collisions": 0,
+      "saveError": false,
+      "assetReady": true,
+      "count": 1,
+      "visual": {
+        "index": null,
+        "draws": 0,
+        "frameChanges": 0,
+        "effectCount": 0,
+        "lastDraw": null
+      },
+      "art": {
+        "status": "ready",
+        "error": null,
+        "reviewed": true,
+        "directionCount": 16
+      }
+    }
+  },
+  "clearance": {
+    "spawn": false,
+    "aisle": false,
+    "drive": false,
+    "wall": true,
+    "post": true
+  },
+  "errors": [],
+  "previewStorageOnly": true,
+  "zombie": {
+    "started": true,
+    "refused": true,
+    "assetRequests": 0,
+    "mapSHA256": "d7d3b856703f52913d323c3ee5217c108303480883155939f212b3240278156f"
+  },
+  "protectedFiles": {
+    "published-game-capture/game.js": "fed646e5a213439b9ec269a80a2b7bb928d16d378b6a99714f10483d8e830d3f",
+    "published-game-capture/outbreak.css": "69b1d1ff50c6e6db60a0eb33100b4d25ea9d2b93b6e224222b40421f5aa9065b",
+    "published-game-capture/v115-world.js": "07e152c0280f72bf2e002f72c548d5ac402d2be670f6e781fb8a876c0efa3699",
+    "published-game-capture/v116-marina.js": "eb0005fd0e1c4a52ab7719271d93b0c59e2870cc5186ccc4efd719ef4335a210",
+    "published-game-capture/v117-jay.js": "aaec1a78cf81303a3a9825a3f7982786cce9f66731b2b6affb435db0324af834"
+  }
+}

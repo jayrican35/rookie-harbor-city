@@ -39,7 +39,7 @@ for target in [before, after]:
         schema='''  /* connected cruiser save extension */
   var unit=s.connectedCruiser;
   if(unit&&unit.id==='precinct-unit-9'&&Number.isFinite(unit.x)&&Number.isFinite(unit.y)&&Number.isFinite(unit.angle)&&unit.x>=-3100&&unit.x<=9656&&unit.y>=0&&unit.y<=4680)
-    f.connectedCruiser={id:unit.id,x:unit.x,y:unit.y,angle:unit.angle};
+    f.connectedCruiser={id:unit.id,x:unit.x,y:unit.y,angle:unit.angle,lightMode:['off','red','blue','alternating'].includes(unit.lightMode)?unit.lightMode:'off'};
 '''
         token='  state = f;'
         assert bundle.count(token)==1
@@ -54,9 +54,13 @@ for target in [before, after]:
     (target / 'game-v115.bundle.js').write_text(bundle.replace(old, cruiser+'\n'+new), encoding='utf-8')
     (target/'precinct-cruiser.compiled.js').write_text(cruiser,encoding='utf-8')
     shutil.copytree(r/'published-game-capture/assets/police-driving',target/'assets/police-driving',dirs_exist_ok=True)
+    shutil.copy2(r/'published-game-capture/cruiser-visuals.js',target/'cruiser-visuals.js')
     html = (target / 'index.html').read_text(encoding='utf-8')
     digest = hashlib.sha256((target / 'game-v115.bundle.js').read_bytes()).hexdigest()[:12]
     html = re.sub(r'game-v115\.bundle\.js\?v=[\da-f]+', 'game-v115.bundle.js?v='+digest, html)
+    html=re.sub(r'<script src="\./cruiser-visuals\.js[^\"]*"></script>\s*','',html)
+    visual_digest=hashlib.sha256((target/'cruiser-visuals.js').read_bytes()).hexdigest()[:12]
+    html=re.sub(r'(<script src="\./game-v115\.bundle\.js[^\"]*"></script>)',lambda m:'<script src="./cruiser-visuals.js?v='+visual_digest+'"></script>\n'+m.group(1),html)
     if target == after:
         shutil.copy2(r / 'published-game-capture/civilian-connected.js', target / 'civilian-connected.js')
         shutil.copytree(asset_dir, target / 'assets/civilian-corrected', dirs_exist_ok=True)

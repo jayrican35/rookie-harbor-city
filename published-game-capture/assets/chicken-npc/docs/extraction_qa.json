@@ -1,0 +1,175 @@
+{
+  "frames": [
+    {
+      "frame": "sprites/frames/chicken_down_00.png",
+      "foreground_pixels": 3046,
+      "bbox": [
+        29,
+        29,
+        83,
+        109
+      ]
+    },
+    {
+      "frame": "sprites/frames/chicken_down_01.png",
+      "foreground_pixels": 3018,
+      "bbox": [
+        29,
+        29,
+        82,
+        109
+      ]
+    },
+    {
+      "frame": "sprites/frames/chicken_down_02.png",
+      "foreground_pixels": 3043,
+      "bbox": [
+        29,
+        29,
+        82,
+        109
+      ]
+    },
+    {
+      "frame": "sprites/frames/chicken_down_03.png",
+      "foreground_pixels": 3037,
+      "bbox": [
+        29,
+        29,
+        83,
+        109
+      ]
+    },
+    {
+      "frame": "sprites/frames/chicken_left_00.png",
+      "foreground_pixels": 2673,
+      "bbox": [
+        28,
+        34,
+        83,
+        109
+      ]
+    },
+    {
+      "frame": "sprites/frames/chicken_left_01.png",
+      "foreground_pixels": 2624,
+      "bbox": [
+        28,
+        34,
+        83,
+        109
+      ]
+    },
+    {
+      "frame": "sprites/frames/chicken_left_02.png",
+      "foreground_pixels": 2708,
+      "bbox": [
+        28,
+        33,
+        84,
+        109
+      ]
+    },
+    {
+      "frame": "sprites/frames/chicken_left_03.png",
+      "foreground_pixels": 2706,
+      "bbox": [
+        28,
+        33,
+        84,
+        109
+      ]
+    },
+    {
+      "frame": "sprites/frames/chicken_right_00.png",
+      "foreground_pixels": 2816,
+      "bbox": [
+        28,
+        33,
+        84,
+        109
+      ]
+    },
+    {
+      "frame": "sprites/frames/chicken_right_01.png",
+      "foreground_pixels": 2807,
+      "bbox": [
+        28,
+        33,
+        83,
+        109
+      ]
+    },
+    {
+      "frame": "sprites/frames/chicken_right_02.png",
+      "foreground_pixels": 2808,
+      "bbox": [
+        29,
+        32,
+        83,
+        109
+      ]
+    },
+    {
+      "frame": "sprites/frames/chicken_right_03.png",
+      "foreground_pixels": 2812,
+      "bbox": [
+        28,
+        32,
+        84,
+        109
+      ]
+    },
+    {
+      "frame": "sprites/frames/chicken_up_00.png",
+      "foreground_pixels": 2916,
+      "bbox": [
+        28,
+        34,
+        84,
+        109
+      ]
+    },
+    {
+      "frame": "sprites/frames/chicken_up_01.png",
+      "foreground_pixels": 2826,
+      "bbox": [
+        29,
+        36,
+        83,
+        109
+      ]
+    },
+    {
+      "frame": "sprites/frames/chicken_up_02.png",
+      "foreground_pixels": 2875,
+      "bbox": [
+        28,
+        35,
+        83,
+        109
+      ]
+    },
+    {
+      "frame": "sprites/frames/chicken_up_03.png",
+      "foreground_pixels": 2943,
+      "bbox": [
+        28,
+        33,
+        84,
+        109
+      ]
+    }
+  ],
+  "all_have_alpha": true,
+  "dimensions": {
+    "walk": [
+      448,
+      480
+    ],
+    "argue": [
+      640,
+      160
+    ]
+  }
+}

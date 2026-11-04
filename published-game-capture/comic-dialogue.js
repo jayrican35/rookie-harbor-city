@@ -36,6 +36,7 @@
   if(connected()&&panel.parentElement!==context.host){originalHome={parent:panel.parentNode,next:panel.nextSibling};context.host.appendChild(panel);}
   panel.classList.add('comic-balloon');document.body.classList.add('comic-dialogue-enabled');
   const type=meta?.stylesByText?.[active.full]||meta?.styles?.[active.speaker]||meta?.style||(/!{2,}|^[A-Z\s!?.]{8,}$/.test(active.full)?'excited':'normal');style(panel,type);
+  const portrait=window.ROOKIE_CHICKEN?.portrait(active,type);let pic=panel.querySelector('.comic-npc-portrait');if(portrait){if(!pic){pic=document.createElement('img');pic.className='comic-npc-portrait';pic.alt='';pic.width=pic.height=44;panel.querySelector('#dlgSpeaker').prepend(pic);}if(pic.getAttribute('src')!==portrait)pic.src=portrait;}else pic?.remove();
   if(decorated!==active){decorated=active;lastTail='';panel.classList.remove('comic-pop');void panel.offsetWidth;panel.classList.add('comic-pop');}
  }
  function obstacles(focus){const faces=connected()?[context.player,...context.actors.filter(a=>context.visible(a)&&Math.hypot(a.x-focus.x,a.y-focus.y)<160)].map(a=>{const p=screen({x:a.x,y:a.y,head:a.head||58,connected:true});return{x:p.x-16,y:p.y-p.head,w:32,h:28,weight:12}}):[];return faces.concat(['#v116MarinaHUD .v116-identity','#v116MarinaHUD .v116-minimap','#v125HudMenu','#v115CampusPad','#v115CampusInteract','#v125CampusSprint','#walkJoystick','#btnInteract','#zoomControls'].flatMap(s=>{const n=document.querySelector(s);if(!n)return[];const r=n.getBoundingClientRect();return r.width&&r.height?[{x:r.x-5,y:r.y-5,w:r.width+10,h:r.height+10,weight:8}]:[];}));}
@@ -58,7 +59,8 @@
   meta=null;decorated=null;cameraKey='';if(panel)panel.style.visibility='';}
  function converse(sp,actors){if(!connected())return false;if(modalActive()){advance();return true;}if(context.driving)return false;const a=sp?.ambientActor||actors?.find(a=>a.id===sp?.id);if(!a||!sp.text)return false;meta={actors:[a],style:'normal'};window.HARBOR.comicDialogue.lines([[a.name,sp.text]]);return true;}
  function advance(){const h=window.HARBOR;if(!h?.speech.current())return;if(!h.speech.advancePage()){const n=document.getElementById('dlgNext')||document.getElementById('dlgContinue');n?.click();}}
- function comedy(){if(!connected()||modalActive()||context.driving||stage==='civilian')return false;meta={actors:mascots,styles:{Chicken:'angry',Banana:'normal'},stylesByText:{'OFFICER! ARREST THIS FRUIT!':'excited'}};window.HARBOR.comicDialogue.lines([['Chicken','I DEMAND RESPECT!'],['Banana',"You're dressed like lunch."],['Chicken','OFFICER! ARREST THIS FRUIT!']],()=>{meta=null;});return true;}
+ function comedyActors(){const a=window.ROOKIE_CHICKEN?.actor();return a?[a,mascots[1]]:mascots;}
+ function comedy(){if(!connected()||modalActive()||context.driving||stage==='civilian')return false;meta={actors:comedyActors(),styles:{Chicken:'angry',Banana:'normal'},stylesByText:{'OFFICER! ARREST THIS FRUIT!':'excited'}};window.HARBOR.comicDialogue.lines([['Chicken','I DEMAND RESPECT!'],['Banana',"You're dressed like lunch."],['Chicken','OFFICER! ARREST THIS FRUIT!']],()=>{meta=null;});return true;}
  function reaction(a,text,mood='thought'){if(!connected()||modalActive()||context.driving||!context.visible(a))return false;a.comicMood=mood;return window.HARBOR.speech.say({ref:a,kind:'connected'},text,3,true);}
  function frame(ctx,t){context=ctx;if(!enabled()||t-lastFrame<30)return;lastFrame=t;const h=window.HARBOR;h?.speech?.layout();afterLayout(h?.speech?.current(),h?.speech?.ambient());
   if(stage==='civilian'||stage==='comedy'||modalActive()||context.driving||window.ROOKIE_V116_HUD?.blocked()||t-lastAmbient<14000||h?.speech?.ambient())return;
@@ -66,7 +68,7 @@
   if(!a)return;const role=window.ROOKIE_CIVILIANS?.roleFor(a)||a.name.toLowerCase(),options=/fish|angler/.test(role)?['🐟','thought']:/music/.test(role)?['♫ ♪','laughter']:/tourist|visitor/.test(role)?['!','surprise']:ambientSerial%3===0?['?','confusion']:ambientSerial%3===1?['Zzz…','thought']:['Ha!','laughter'];
   if(reaction(a,...options)){lastAmbient=t;cooldowns.set(a,t);ambientSerial++;}
  }
- function drawProps(g){if(!enabled()||stage==='civilian')return;const living=window.HARBOR?.livingCity;for(const a of mascots){const im=living?.art?.[a.asset];if(im?.complete&&im.naturalWidth){g.drawImage(im,a.x-im.naturalWidth,a.y-im.naturalHeight*2,im.naturalWidth*2,im.naturalHeight*2);}}}
+ function drawProps(g){if(!enabled()||stage==='civilian')return;const living=window.HARBOR?.livingCity;for(const a of mascots){if(a.asset==='chicken'&&window.ROOKIE_CHICKEN?.actor())continue;const im=living?.art?.[a.asset];if(im?.complete&&im.naturalWidth){g.drawImage(im,a.x-im.naturalWidth,a.y-im.naturalHeight*2,im.naturalWidth*2,im.naturalHeight*2);}}}
  function close(){window.HARBOR?.comicDialogue?.close();const panel=document.getElementById('dlgPanel');if(originalHome&&panel){originalHome.parent.insertBefore(panel,originalHome.next?.isConnected?originalHome.next:null);originalHome=null;}const small=document.getElementById('hcAmbientSpeech');if(small){small.style.display='none';document.body.appendChild(small);}context=null;meta=null;}
  window.ROOKIE_COMIC=Object.freeze({enabled,modalActive,settings,viewport,screen,resolve,present,point,decorate,afterLayout,dismiss,converse,advance,comedy,reaction,frame,drawProps,close,
   blocks:a=>connected()?obstacles(a?.ref||context.player):null,
@@ -74,6 +76,6 @@
   ambientAllowed:()=>connected()&&!context.driving&&!window.ROOKIE_V116_HUD?.blocked(),
   font:()=>enabled()?'700 18px "Trebuchet MS", sans-serif':null,inset:()=>enabled()?68:32,
   preview:(type,actor)=>{if(!query.has('pilotQA')||!enabled())return false;meta={actors:actor?[actor]:[],style:type};window.HARBOR.comicDialogue.lines([[actor?.name||'Presentation test','A little personality goes a long way!']]);return true;},
-  nearComedy:(x,y)=>enabled()&&stage!=='civilian'&&Math.hypot(x-732,y-1376)<80,
+  nearComedy:(x,y)=>enabled()&&stage!=='civilian'&&Math.hypot(x-(window.ROOKIE_CHICKEN?.actor()?.x??732),y-(window.ROOKIE_CHICKEN?.actor()?.y??1376))<80,
   qa:()=>query.has('pilotQA')?{stage,connected:connected(),active:modalActive(),mascots:mascots.map(a=>({...a})),styles:Object.keys(shapes),ambientSerial}:null});
 })();

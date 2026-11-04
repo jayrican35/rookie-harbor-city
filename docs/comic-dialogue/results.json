@@ -2,7 +2,7 @@
   "errors": [],
   "stages": {
     "civilian-1280": {
-      "x": 493,
+      "x": 496,
       "y": 108,
       "w": 354,
       "h": 212.34375,
@@ -73,13 +73,13 @@
     "nativeAdvances": 12
   },
   "performance": {
-    "fps": 60.027285129604344,
+    "fps": 60.027285129604365,
     "paint": {
-      "frames": 239,
-      "paintP95Ms": 6.100000000093132,
-      "paintMaxMs": 7.600000000093132,
+      "frames": 232,
+      "paintP95Ms": 4.3999999994412065,
+      "paintMaxMs": 5.7999999998137355,
       "samples": 180,
-      "ambientPedestrians": 17,
+      "ambientPedestrians": 18,
       "ambientDistrictsInitialized": 9,
       "streetCars": 28,
       "stoppedCars": 4

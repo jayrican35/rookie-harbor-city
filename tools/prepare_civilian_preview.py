@@ -60,6 +60,15 @@ for target in [before, after]:
     shutil.copy2(r/'published-game-capture/cruiser-visuals.js',target/'cruiser-visuals.js')
     shutil.copy2(r/'published-game-capture/connected-traffic.js',target/'connected-traffic.js')
     html = (target / 'index.html').read_text(encoding='utf-8')
+    chicken=r/'published-game-capture/assets/chicken-npc'
+    if chicken.exists():
+        shutil.copytree(chicken,target/'assets/chicken-npc',dirs_exist_ok=True)
+        shutil.copy2(r/'published-game-capture/chicken-npc.js',target/'chicken-npc.js')
+        html=re.sub(r'<script data-chicken-pack>.*?</script>\s*<script src="\./chicken-npc\.js[^"]*"></script>\s*','',html)
+        chicken_pack=json.loads((chicken/'chicken_manifest.json').read_text(encoding='utf-8'))
+        payload=json.dumps(chicken_pack,separators=(',',':')).replace('<','\\u003c')
+        digest=hashlib.sha256((target/'chicken-npc.js').read_bytes()).hexdigest()[:12]
+        html=html.replace('</head>','<script data-chicken-pack>window.ROOKIE_CHICKEN_PACK='+payload+';</script><script src="./chicken-npc.js?v='+digest+'"></script></head>')
     for ext in ['js','css']:
         name='comic-dialogue.'+ext
         shutil.copy2(r/'published-game-capture'/name,target/name)
@@ -88,6 +97,8 @@ if not args.candidate:
     shutil.copy2(r / 'tools/civilian_preview_review.html', r / 'site/index.html')
     evidence=r/'docs/comic-dialogue'
     if evidence.exists():shutil.copytree(evidence,r/'site/evidence/comic-dialogue',dirs_exist_ok=True)
+    evidence=r/'docs/chicken-npc'
+    if evidence.exists():shutil.copytree(evidence,r/'site/evidence/chicken-npc',dirs_exist_ok=True)
 if not art_ready and not args.candidate:
     target=r/'site/evidence/civilian-preview'
     target.mkdir(parents=True,exist_ok=True)

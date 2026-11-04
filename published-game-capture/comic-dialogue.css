@@ -25,3 +25,5 @@
 
 #dlgPanel.hc-speech.comic-balloon:focus{outline:none!important}
 body.comic-dialogue-enabled #csCaption.show{background:#fff9e9!important;color:#18283b!important;border:4px solid #18283b!important;border-radius:47% 43% 44% 40% / 20% 25% 20% 23%!important;box-shadow:4px 5px 0 #15253955!important;padding:22px 32px!important;font:700 18px/1.4 'Trebuchet MS',sans-serif!important;text-shadow:none!important;}
+
+#dlgPanel.comic-balloon .comic-npc-portrait{width:44px;height:44px;object-fit:cover;display:inline-block;vertical-align:middle;margin-right:8px;border:2px solid #18283b;border-radius:12px;image-rendering:pixelated;}

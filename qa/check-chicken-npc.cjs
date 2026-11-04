@@ -1,0 +1,29 @@
+'use strict';
+const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=require('node:fs'),cp=require('node:child_process'),crypto=require('node:crypto');
+const dir='docs/chicken-npc';fs.mkdirSync(dir,{recursive:true});
+(async()=>{const b=await chromium.launch({channel:'chrome',headless:true}),report={errors:[],directions:{},mobile:{},protected:{}};
+try{
+ async function open(width=1280,height=850){const ctx=await b.newContext({viewport:{width,height},isMobile:width<500,hasTouch:width<500}),p=await ctx.newPage();p.on('pageerror',e=>report.errors.push(e.message));await p.goto('http://127.0.0.1:8767/preview/civilian-updated/?pilotQA=1');await p.waitForFunction(()=>window.ROOKIE_JAY?.ready());await p.evaluate(()=>{HARBOR.profiles.choose('jay');HARBOR.dismissTransient();HARBOR.comicDialogue.close();HARBOR.speech.setSpeed(0);HARBOR.seamlessCampusV115.openAt(680,1380,1.5)});await p.waitForFunction(()=>ROOKIE_CHICKEN.qa().draws>0);return p;}
+ const p=await open();assert.equal(await p.evaluate(()=>HARBOR.seamlessCampusV115.civilianQA().actors.filter(a=>a.id==='npc_chicken').length),1);
+ // Advance the existing simulation; inspect real live poses, never move the actor by a QA setter.
+ for(let i=0;i<28;i++){
+  await p.evaluate(()=>HARBOR.seamlessCampusV115.trafficAdvanceQA(.5));await p.waitForTimeout(45);const q=await p.evaluate(()=>ROOKIE_CHICKEN.qa()),pose=q.lastPose;
+  assert.equal(pose.kind,'walk');assert(Math.abs(pose.foot[0]-pose.x)<1e-8&&Math.abs(pose.foot[1]-pose.y)<1e-8,'Manifest feet anchor remains fixed');
+  assert(!await p.evaluate(a=>HARBOR.seamlessCampusV115.test.blocked(a.x,a.y,13),q.actor));
+  if(!report.directions[pose.dir]){await p.screenshot({path:dir+'/walk-'+pose.dir+'.png'});report.directions[pose.dir]=pose;}
+ }
+ assert.deepEqual(Object.keys(report.directions).sort(),['down','left','right','up']);
+ for(const z of [.55,1.7,2.5]){await p.evaluate(z=>{const a=ROOKIE_CHICKEN.qa().actor;HARBOR.seamlessCampusV115.qaCamera(a.x,a.y,z)},z);await p.waitForTimeout(80);const pose=await p.evaluate(()=>ROOKIE_CHICKEN.qa().lastPose);assert.deepEqual(pose.worldFrame,[84,90]);}
+ await p.evaluate(()=>{const a=ROOKIE_CHICKEN.qa().actor;HARBOR.seamlessCampusV115.openAt(a.x-45,a.y+12,1.5)});await p.waitForTimeout(100);await p.locator('#v115CampusInteract').click();await p.waitForTimeout(300);
+ assert.equal(await p.evaluate(()=>HARBOR.speech.current().speaker),'Chicken');assert.equal(await p.evaluate(()=>ROOKIE_CHICKEN.qa().lastPose.kind),'argue');
+ assert(await p.locator('.comic-npc-portrait').evaluate(n=>n.complete&&n.naturalWidth===160));await p.screenshot({path:dir+'/chicken-dialogue.png'});
+ const pause=await p.evaluate(()=>ROOKIE_CHICKEN.qa().actor);await p.evaluate(()=>HARBOR.seamlessCampusV115.trafficAdvanceQA(2));assert.equal((await p.evaluate(()=>ROOKIE_CHICKEN.qa().actor)).distance,pause.distance);
+ for(let i=0;i<3;i++){await p.evaluate(()=>ROOKIE_COMIC.advance());await p.waitForTimeout(70);}assert(!await p.evaluate(()=>HARBOR.speech.current()));await p.evaluate(()=>HARBOR.seamlessCampusV115.trafficAdvanceQA(1));assert((await p.evaluate(()=>ROOKIE_CHICKEN.qa().actor)).distance>pause.distance);
+ const a=await p.evaluate(()=>ROOKIE_CHICKEN.qa().actor);await p.evaluate(()=>HARBOR.seamlessCampusV115.close());await p.evaluate(a=>HARBOR.seamlessCampusV115.openAt(a.x+25,a.y+15,1),a);await p.waitForTimeout(100);assert.equal(await p.evaluate(()=>HARBOR.seamlessCampusV115.civilianQA().actors.filter(a=>a.id==='npc_chicken').length),1);
+ report.desktop=await p.evaluate(()=>ROOKIE_CHICKEN.qa());assert.equal(report.desktop.errors,0);await p.context().close();
+ const m=await open(390,844);await m.locator('#v115CampusInteract').tap();await m.waitForTimeout(300);const r=await m.locator('#dlgPanel').boundingBox();assert(r.x>=6&&r.y>=6&&r.x+r.width<=384&&r.y+r.height<=838);await m.screenshot({path:dir+'/mobile-chicken.png'});await m.locator('#dlgText').tap();assert.equal(await m.evaluate(()=>HARBOR.speech.current().speaker),'Banana');report.mobile={bounds:r,tapAdvances:true};await m.context().close();
+ // No imported Chicken art is requested by Zombie or the separate Academy.
+ const z=await b.newPage(),requests=[];z.on('request',r=>{if(r.url().includes('/assets/chicken-npc/'))requests.push(r.url())});await z.goto('http://127.0.0.1:8767/preview/civilian-updated/?pilotQA=1');await z.waitForFunction(()=>window.ROOKIE_JAY?.ready());const zm=await z.evaluate(()=>{HARBOR.profiles.choose('jay');HARBOR.dismissTransient();HARBOR.comicDialogue.close();HARBOR.outbreak.seed(9012026);return{started:HARBOR.academy.begin('zombie','explorer'),map:HARBOR.outbreakMap.build(),refused:HARBOR.seamlessCampusV115.openAt(750,1390,1)===false}});assert(zm.started&&zm.refused);assert.equal(requests.length,0);const sha=crypto.createHash('sha256').update(JSON.stringify(zm.map)).digest('hex');assert.equal(sha,JSON.parse(fs.readFileSync('docs/precinct-cruiser/safety.json')).zombie.mapSHA256);report.zombie={guard:true,assetRequests:requests.length,mapSHA256:sha};await z.close();
+ for(const name of ['game.js','outbreak.css','v116-marina.js','civilian-connected.js','precinct-cruiser.js','connected-traffic.js']){const path='published-game-capture/'+name,now=fs.readFileSync(path,'utf8').replace(/\r\n/g,'\n'),old=cp.execFileSync('git',['show','7ee7e99:'+path],{encoding:'utf8',maxBuffer:10*1024*1024}).replace(/\r\n/g,'\n');assert.equal(now,old);report.protected[path]=true;}
+ assert.deepEqual(report.errors,[]);fs.writeFileSync(dir+'/results.json',JSON.stringify(report,null,2));console.log('PASS Chicken: four real walking directions, stable feet/zoom, existing collision and depth queue, argue/portrait dialogue, pause/resume, one instance, mobile taps and untouched Zombie');
+}finally{await b.close()}})().catch(e=>{console.error(e);process.exitCode=1});

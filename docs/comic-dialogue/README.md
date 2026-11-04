@@ -10,7 +10,7 @@ Eight cached SVG silhouettes provide normal, excited, angry, whisper, thought, s
 
 Connected civilians now use the native dialogue controls instead of the old single-line output. Unsupported non-character inspection messages retain that output. Unknown/offscreen story speakers use the existing compact viewport fallback. Long narrative cards retain the existing chunking and pagination. Cinematic captions receive the same cream-and-ink presentation without changing cinematic timing.
 
-The first precinct pilot adds one civilian using an existing civilian atlas, pedestrian routine and existing remark. The optional Chicken/Banana exchange reuses the existing rubber-chicken and banana prop images, rather than inventing replacement character art. It starts through **Talk** near the props, never automatically. Ambient thoughts use the existing single speech instance, with a 14-second global gap, a 60-second actor cooldown, distance/visibility checks and suppression during driving, conversations or HUD panels.
+The first precinct pilot adds one civilian using an existing civilian atlas, pedestrian routine and existing remark. The optional Chicken/Banana exchange now uses the owner-supplied Chicken NPC pack and the existing banana prop. See ../chicken-npc/README.md for the later Chicken import; the original rubber-chicken stand-in is suppressed in the connected preview. It starts through **Talk** near the props, never automatically. Ambient thoughts use the existing single speech instance, with a 14-second global gap, a 60-second actor cooldown, distance/visibility checks and suppression during driving, conversations or HUD panels.
 
 ## Local review
 

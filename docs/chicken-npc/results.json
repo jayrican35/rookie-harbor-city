@@ -1,0 +1,152 @@
+{
+  "errors": [],
+  "directions": {
+    "right": {
+      "kind": "walk",
+      "dir": "right",
+      "row": 2,
+      "frame": 0,
+      "scale": 0.75,
+      "x": 722,
+      "y": 1376,
+      "foot": [
+        722,
+        1376
+      ],
+      "worldFrame": [
+        84,
+        90
+      ]
+    },
+    "up": {
+      "kind": "walk",
+      "dir": "up",
+      "row": 3,
+      "frame": 3,
+      "scale": 0.75,
+      "x": 769.1866332698693,
+      "y": 1364.0034672610777,
+      "foot": [
+        769.1866332698693,
+        1364.0034672610777
+      ],
+      "worldFrame": [
+        84,
+        90
+      ]
+    },
+    "left": {
+      "kind": "walk",
+      "dir": "left",
+      "row": 1,
+      "frame": 2,
+      "scale": 0.75,
+      "x": 765.983981607494,
+      "y": 1312.931658188715,
+      "foot": [
+        765.983981607494,
+        1312.931658188715
+      ],
+      "worldFrame": [
+        84,
+        90
+      ]
+    },
+    "down": {
+      "kind": "walk",
+      "dir": "down",
+      "row": 0,
+      "frame": 1,
+      "scale": 0.75,
+      "x": 721.2288887885668,
+      "y": 1323.52620043226,
+      "foot": [
+        721.2288887885668,
+        1323.52620043226
+      ],
+      "worldFrame": [
+        84,
+        90
+      ]
+    }
+  },
+  "mobile": {
+    "bounds": {
+      "x": 28,
+      "y": 145,
+      "width": 354,
+      "height": 166.1875
+    },
+    "tapAdvances": true
+  },
+  "protected": {
+    "published-game-capture/game.js": true,
+    "published-game-capture/outbreak.css": true,
+    "published-game-capture/v116-marina.js": true,
+    "published-game-capture/civilian-connected.js": true,
+    "published-game-capture/precinct-cruiser.js": true,
+    "published-game-capture/connected-traffic.js": true
+  },
+  "desktop": {
+    "id": "npc_chicken",
+    "draws": 244,
+    "errors": 0,
+    "lastPose": {
+      "kind": "walk",
+      "dir": "up",
+      "row": 3,
+      "frame": 3,
+      "scale": 0.75,
+      "x": 769.8303257667304,
+      "y": 1322.977132077357,
+      "foot": [
+        769.8303257667304,
+        1322.977132077357
+      ],
+      "worldFrame": [
+        84,
+        90
+      ]
+    },
+    "seenDirections": [
+      "right",
+      "up",
+      "left",
+      "down"
+    ],
+    "requested": 2,
+    "loaded": 2,
+    "decodedBytes": 1269760,
+    "actor": {
+      "id": "npc_chicken",
+      "x": 769.8303257667304,
+      "y": 1322.977132077357,
+      "dir": "up",
+      "moving": true,
+      "distance": 547.9729999999993,
+      "route": [
+        [
+          720,
+          1376
+        ],
+        [
+          770,
+          1376
+        ],
+        [
+          770,
+          1312
+        ],
+        [
+          720,
+          1312
+        ]
+      ]
+    }
+  },
+  "zombie": {
+    "guard": true,
+    "assetRequests": 0,
+    "mapSHA256": "d7d3b856703f52913d323c3ee5217c108303480883155939f212b3240278156f"
+  }
+}

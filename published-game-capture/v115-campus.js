@@ -270,6 +270,11 @@
     const sp={id:a.id,label:'Talk to precinct visitor',x:a.x,y:a.y,text:ambientSpeech.residential,ambientActor:a};
     a.interaction=sp;ambientRoutes.push(a);npcActors.push(a);worldSpots.push(sp);
   }
+  if(typeof window!=='undefined'&&window.ROOKIE_CHICKEN){
+    const a=window.ROOKIE_CHICKEN.createActor();
+    const sp={id:a.id,label:'Talk to Chicken',x:a.x,y:a.y,text:'I DEMAND RESPECT!',ambientActor:a};
+    a.interaction=sp;ambientRoutes.push(a);npcActors.push(a);worldSpots.push(sp);
+  }
   let ambientInit=0;
   function safeStreetSegment(x1,y1,x2,y2){
     const length=Math.hypot(x2-x1,y2-y1);
@@ -316,13 +321,14 @@
     // initialization hitch on midrange mobile phones.
     if(ambientInit<districtEntries.length)prepareDistrictPedestrians(districtEntries[ambientInit++]);
     for(const a of ambientRoutes){
+      if(a.id==='npc_chicken'&&window.ROOKIE_CHICKEN?.talking()){a.moving=false;continue;}
       // Waypoint zero is the return leg, not an unset target.
       const target=a.route[a.targetIndex??1],vx=target[0]-a.x,vy=target[1]-a.y;
       const remain=Math.hypot(vx,vy),step=Math.min(remain,a.speed*Math.min(.05,Math.max(0,dt)));
-      if(remain<1.5){a.targetIndex=(a.targetIndex??1)===1?0:1;a.moving=false;continue;}
+      if(remain<1.5){a.targetIndex=a.route.length>2?((a.targetIndex??1)+1)%a.route.length:(a.targetIndex??1)===1?0:1;a.moving=false;continue;}
       const nx=a.x+vx/remain*step,ny=a.y+vy/remain*step;
       // Collision remains authoritative and catches late-loaded scenery.
-      if(blocked(nx,ny,13)){a.targetIndex=(a.targetIndex??1)===1?0:1;a.moving=false;continue;}
+      if(blocked(nx,ny,13)){a.targetIndex=a.route.length>2?((a.targetIndex??1)+1)%a.route.length:(a.targetIndex??1)===1?0:1;a.moving=false;continue;}
       a.dir=Math.abs(vx)>=Math.abs(vy)?(vx>0?'right':'left'):(vy>0?'down':'up');
       a.x=nx;a.y=ny;a.distance+=step;a.moving=step>.03;
       a.interaction.x=a.x;a.interaction.y=a.y;
@@ -1105,6 +1111,7 @@
       if(entry.player){drawOfficer({x:campus.x,y:campus.y,color:'#2b467a'},true,t);continue;}
       if(entry.furniture){marina.drawInteriorFurniture(g,entry.furniture);continue;}
       const npc=entry.actor;
+      if(window.ROOKIE_CHICKEN?.draw(g,npc,t))continue;
       if(window.ROOKIE_CIVILIANS?.draw(g,npc))continue;
       if(marina&&(npc.npcStyle!==undefined||marina.inMarina(npc.x,npc.y))){if(marina.active())marina.drawNpc(g,npc.npcStyle!==undefined?npc:{...npc,npcStyle:1},t);}
       else if(!window.ROOKIE_V132_PRECINCT?.npc(g,{...npc,showLabel:campus.zoom>.54&&!npc.hideName}))drawOfficer(npc,false,t);

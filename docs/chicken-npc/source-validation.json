@@ -1,0 +1,224 @@
+{
+  "sourceZIP": "ROOKIE_Chicken_NPC_Import_Pack.zip",
+  "zipSHA256": "4fc17f49878fb28232f7231a83d2cffacaccdb5b93ebae4d40a8e77f5534420b",
+  "sourceFilesByteIdentical": true,
+  "files": {
+    "README_FIRST.md": "e35299f9deb3464bf1ae159a502813e40bd8c066a4855ae48613f437da53f5a1",
+    "preview.html": "d02e28d65e0df1d3e02f42993324f1c1535d6813e65cdb86c9f17c7717394571",
+    "chicken_manifest.json": "ddb870f81eeced172835d57f499b2e39d2994fc9747f459ebb980d9c4f74adfb",
+    "portraits/chicken_confused.png": "50ea4cf82499194839f652e75650a50d4f230365e1cb56c9ba9edbea40c694cf",
+    "portraits/chicken_talking.png": "fc35f1d8cdd980153dd07c67985946d260bc7493533d5f1ebc0cdf30c449406f",
+    "portraits/chicken_surprised.png": "9b36cca8921bcd01e79fae79401b48765c2f7159eb3d6a07466b98841b608f0c",
+    "portraits/chicken_laughing.png": "c2a2967ded6f3a098d9a691ba7e082f513809a9c65ed73218106111cff24870b",
+    "portraits/chicken_neutral.png": "f673f37e4b840392ffc9453307f2b50ff19bb0aca6871e950b68b171f28bbcf2",
+    "portraits/chicken_angry.png": "1b1fc7d8754f75b6b3054ae511e3f8f2db9f6928b69e3e2e7b911f5de8b9767c",
+    "portraits/chicken_sad.png": "eb3342e8b7901e8b86ef8253864759e0e9242ae60e651d86a3d6508e9fa5b824",
+    "portraits/chicken_determined.png": "5dac59fb06932b5c70071c2ced81f97133b5f6cc269c5c90f73ce774ec2b8abd",
+    "reference/chicken_concept_board.png": "b45e83bb9f67c83e25d89ebeb4872c3c7196893844bfe6d72f2c333477c3523e",
+    "sprites/frames/chicken_argue_03.png": "bc7d3ca899fb5d0575e20e201a5d904d06cf06ef1204d2638df28b400702f15a",
+    "sprites/frames/chicken_left_02.png": "a869a33283ffcc709d5908cb5282f5bfd6b918513f535fb26b2a1023ef566f4e",
+    "sprites/frames/chicken_right_03.png": "728f8584b4ab5389d83ff3aeb4c053b4800854470b8db79818f841e79c6e66bd",
+    "sprites/frames/chicken_left_03.png": "42d08d0342e426bc655160ae917523b3571476e8da4d236cacdadf3f2463479f",
+    "sprites/frames/chicken_right_02.png": "a5277b13a870fffb3b33dd3d78b222beeb343a0a051c93f32cc4a4b044e768f7",
+    "sprites/frames/chicken_up_01.png": "3085e8c30af6fa97e98f896d7eb16ceafa86685578b3aefe4980471391f772e1",
+    "sprites/frames/chicken_right_00.png": "d66fd3c4b4716ae93216c3e6be13937dac4b1b405108e4d21baf6a21a6fc2357",
+    "sprites/frames/chicken_argue_02.png": "013466b5e9b1ebe890e779a102f1cdd5a190d194897ac5d6b2aea98017ee77b3",
+    "sprites/frames/chicken_argue_01.png": "566aea4bcb1b3f1e52a6efc7f8dcb4d9ed186361a1a2d2f3586554ccd04bab2c",
+    "sprites/frames/chicken_down_02.png": "d0a94aa85e9fd4e65533eb0aaad15ffad45a3d510ff9e8745a904842fa8ff5e2",
+    "sprites/frames/chicken_up_03.png": "1d6822d7e2dc72fa1a9a6ef082ff027e500687daee2c29cc6970b75c69b8f013",
+    "sprites/frames/chicken_left_00.png": "60f965f4a306e894b742bb857931c06d1e3890427345bfe813ac350347c422a7",
+    "sprites/frames/chicken_down_03.png": "d61f7daaf3fb10523a3d88e0f16890091da476ded9a136ada26fbd5eb1109b1d",
+    "sprites/frames/chicken_down_00.png": "2b9743da4b0f09b28e9d0f60a53f3494c6438116eeeecb8f3b2812a927e5dae5",
+    "sprites/frames/chicken_left_01.png": "af0004367533e58d0b1bccaec3cb3432968e8bdc5308f6ca1376019cb9a5763f",
+    "sprites/frames/chicken_up_02.png": "d2c266caafc45893e523d94a7c9d478527ee4db47750671ddc2d0500eeb77fab",
+    "sprites/frames/chicken_right_01.png": "f5b2faf22088ba6478e17e4f3e00d8338d921e5d2359a67bf48add3d01734dca",
+    "sprites/frames/chicken_argue_00.png": "244856ef01c8c9ffe484d1528e5f9f908807c821cf13f617db299d4366cd2112",
+    "sprites/frames/chicken_up_00.png": "b69f7dfaff136457f3b207e2b9733ec727d8bcc2a7b3987643fe51d4668f28d1",
+    "sprites/frames/chicken_down_01.png": "da7653748ca3ab355815ad4b3a3bf843060631b3f3ca42c42ae4c709108d63ae",
+    "sprites/atlas/chicken_walk_4x4.png": "dfdb50854ec98be4f58095a364e34008284d700d0f9e00d6e5d84b910d14cae2",
+    "sprites/atlas/chicken_argue_4x1.png": "03d6375f6ee184d9e3ff9df996821d2fdab3e86e53727d612dcba1e33ec7959b",
+    "previews/chicken_walk_checker.png": "ed1b0655b7be122886db71490f00bb53a5e0473e352877dd57a094066d59a649",
+    "previews/chicken_argue_checker.png": "31692a840def125dfa6ca663b9fad90caf09f93e6d4555e8b1640f99aee983c3",
+    "docs/CODEX_IMPORT.md": "9b8bf1d26b5529ddb04161981ddedb6287f9bac8c6d3512f33e3e5fe1810ba68",
+    "docs/extraction_qa.json": "56636808614547e8d56178c8d6c093c22203b5150218dd51948b16255995f0c8"
+  },
+  "walkFrames": [
+    {
+      "direction": "down",
+      "frame": 0,
+      "alphaBounds": [
+        29,
+        29,
+        83,
+        109
+      ],
+      "cellComplete": true
+    },
+    {
+      "direction": "down",
+      "frame": 1,
+      "alphaBounds": [
+        29,
+        29,
+        82,
+        109
+      ],
+      "cellComplete": true
+    },
+    {
+      "direction": "down",
+      "frame": 2,
+      "alphaBounds": [
+        29,
+        29,
+        82,
+        109
+      ],
+      "cellComplete": true
+    },
+    {
+      "direction": "down",
+      "frame": 3,
+      "alphaBounds": [
+        29,
+        29,
+        83,
+        109
+      ],
+      "cellComplete": true
+    },
+    {
+      "direction": "left",
+      "frame": 0,
+      "alphaBounds": [
+        28,
+        34,
+        83,
+        109
+      ],
+      "cellComplete": true
+    },
+    {
+      "direction": "left",
+      "frame": 1,
+      "alphaBounds": [
+        28,
+        34,
+        83,
+        109
+      ],
+      "cellComplete": true
+    },
+    {
+      "direction": "left",
+      "frame": 2,
+      "alphaBounds": [
+        28,
+        33,
+        84,
+        109
+      ],
+      "cellComplete": true
+    },
+    {
+      "direction": "left",
+      "frame": 3,
+      "alphaBounds": [
+        28,
+        33,
+        84,
+        109
+      ],
+      "cellComplete": true
+    },
+    {
+      "direction": "right",
+      "frame": 0,
+      "alphaBounds": [
+        28,
+        33,
+        84,
+        109
+      ],
+      "cellComplete": true
+    },
+    {
+      "direction": "right",
+      "frame": 1,
+      "alphaBounds": [
+        28,
+        33,
+        83,
+        109
+      ],
+      "cellComplete": true
+    },
+    {
+      "direction": "right",
+      "frame": 2,
+      "alphaBounds": [
+        29,
+        32,
+        83,
+        109
+      ],
+      "cellComplete": true
+    },
+    {
+      "direction": "right",
+      "frame": 3,
+      "alphaBounds": [
+        28,
+        32,
+        84,
+        109
+      ],
+      "cellComplete": true
+    },
+    {
+      "direction": "up",
+      "frame": 0,
+      "alphaBounds": [
+        28,
+        34,
+        84,
+        109
+      ],
+      "cellComplete": true
+    },
+    {
+      "direction": "up",
+      "frame": 1,
+      "alphaBounds": [
+        29,
+        36,
+        83,
+        109
+      ],
+      "cellComplete": true
+    },
+    {
+      "direction": "up",
+      "frame": 2,
+      "alphaBounds": [
+        28,
+        35,
+        83,
+        109
+      ],
+      "cellComplete": true
+    },
+    {
+      "direction": "up",
+      "frame": 3,
+      "alphaBounds": [
+        28,
+        33,
+        84,
+        109
+      ],
+      "cellComplete": true
+    }
+  ],
+  "portraitFormat": "RGB; original illustrated backgrounds deliberately preserved"
+}

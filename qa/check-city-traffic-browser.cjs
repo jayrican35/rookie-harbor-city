@@ -1,0 +1,28 @@
+'use strict';
+const {chromium}=require('playwright'),fs=require('node:fs'),assert=require('node:assert/strict');
+const out='docs/driving-repair';
+(async()=>{const b=await chromium.launch({channel:'chrome',headless:true});try{
+ const p=await b.newPage({viewport:{width:1280,height:850}}),errors=[];p.on('pageerror',e=>errors.push(e.message));
+ await p.goto('http://127.0.0.1:8767/preview/civilian-updated/?pilotQA=1');await p.waitForFunction(()=>window.ROOKIE_JAY?.ready());await p.evaluate(()=>{const h=window.HARBOR;h.profiles.choose('jay');h.seamlessCampusV115.openAt(1705,1568,.75)});await p.waitForFunction(()=>window.HARBOR.seamlessCampusV115.trafficQA()?.length===28);await p.waitForTimeout(500);
+ const connectivity=await p.evaluate(()=>{const a=window.HARBOR.seamlessCampusV115,g=a.trafficGraphQA(),live=new Set(g.legs.map(l=>l.id));let changed=true;
+  while(changed){changed=false;for(const id of live)if(!g.legs[id].next.some(t=>live.has(g.turns[t].to))){live.delete(id);changed=true;}}
+  const region=id=>{const l=g.legs[id],p=window.ROOKIE_CITY_TRAFFIC.pose(l.path,l.path.length/2);return a.districtAt(p.x,p.y).replace('precinct-campus','precinct');};
+  return [...live].filter(id=>{const l=g.legs[id],p=window.ROOKIE_CITY_TRAFFIC.pose(l.path,l.path.length/2);return p.x>400&&p.x<2300&&p.y>1700&&p.y<1850}).map(id=>{const seen=new Set([id]),todo=[id];while(todo.length){const l=g.legs[todo.pop()];for(const t of l.next){const j=g.turns[t].to;if(live.has(j)&&!seen.has(j)){seen.add(j);todo.push(j);}}}return {fromLeg:id,reachableLegs:seen.size,regions:[...new Set([...seen].map(region))].sort()};});
+ });
+ fs.writeFileSync(out+'/connectivity.json',JSON.stringify(connectivity,null,2));assert(connectivity.length>=2);for(const c of connectivity)for(const region of ['precinct','downtown','residential','southbay','industrial','westfield','midtown','northgate','eastside'])assert(c.regions.includes(region),'Precinct routes must connect to '+region);
+ const simulation=await p.evaluate(()=>{const a=window.HARBOR.seamlessCampusV115,T=window.ROOKIE_CITY_TRAFFIC,g=a.trafficGraphQA(),ids=a.trafficQA().map(c=>c.id),seen=new Set(),crossed=new Set(),e=a.entranceQA(),r=document.getElementById('v115CampusCanvas').getBoundingClientRect(),outside=p=>p.x<e.cameraX-250||p.y<e.cameraY-250||p.x>e.cameraX+r.width/e.zoom+250||p.y>e.cameraY+r.height/e.zoom+250;let checks=0,maxStep=0,hiddenReentries=0;
+  for(let tick=0;tick<18000;tick++){
+   const before=tick%10===0?a.trafficQA():null;a.trafficAdvanceQA(1/30);
+   if(before){const cars=a.trafficQA();if(cars.length!==ids.length)throw Error('Duplicate/despawned fleet');
+    for(let i=0;i<cars.length;i++){const c=cars[i];seen.add(c.leg);const delta=Math.hypot(c.x-before[i].x,c.y-before[i].y);if(delta>8){if(!outside(c)||!outside(before[i]))throw Error('Visible vehicle snapped');hiddenReentries++;}else {maxStep=Math.max(maxStep,delta);const from=a.districtAt(before[i].x,before[i].y),to=a.districtAt(c.x,c.y);if(from!==to)crossed.add(from+'>'+to);}for(const q of T.corners(c,c.length,38))if(!g.roads.some(r=>q.x>=r.x-.5&&q.x<=r.x+r.w+.5&&q.y>=r.y-.5&&q.y<=r.y+r.h+.5))throw Error('Vehicle footprint left asphalt '+c.id);for(let j=i+1;j<cars.length;j++){checks++;if(T.overlap(c,cars[j]))throw Error('Body overlap '+c.id+' '+cars[j].id);}}
+   }
+  }
+  return {seconds:600,checks,maxStep,hiddenReentries,physicalDistrictCrossings:[...crossed],visitedLegs:seen.size,metrics:a.trafficGraphQA().metrics,cars:a.trafficQA()};
+ });
+ fs.writeFileSync(out+'/city-simulation.json',JSON.stringify(simulation,null,2));assert(simulation.maxStep<8);assert(simulation.physicalDistrictCrossings.length>=6,'Actual moving cars cross district seams, excluding off-screen reentry');assert(simulation.metrics.maxWait<45,'No permanent frozen city queues');assert(simulation.metrics.distinctTransitions>25);assert(simulation.metrics.turnKinds.includes('left')&&simulation.metrics.turnKinds.includes('right'));assert(simulation.metrics.districts.includes('industrial')&&simulation.metrics.districts.includes('southbay'));
+ const before=await p.evaluate(()=>window.HARBOR.seamlessCampusV115.trafficQA());await p.waitForTimeout(6000);const after=await p.evaluate(()=>window.HARBOR.seamlessCampusV115.trafficQA());const moved=after.filter((c,i)=>Math.hypot(c.x-before[i].x,c.y-before[i].y)>10).length;assert(moved>5,'Live existing RAF advances cars across the city');
+ for(const [name,x,y,z] of [['precinct-road',1800,1784,.65],['downtown-intersection',5829,1784,.7],['midtown-streets',4530,2150,.5],['southbay-roads',3830,3744,.7],['industrial-road',8850,1784,.6]]){await p.evaluate(v=>{const a=window.HARBOR.seamlessCampusV115,region=v.name.includes('industrial')?'industrial':v.name.includes('southbay')?'southbay':v.name.includes('downtown')?'downtown':v.name.includes('midtown')?'midtown':null,c=region&&a.trafficQA().find(c=>a.districtAt(c.x,c.y)===region);a.qaCamera(c?.x??v.x,c?.y??v.y,v.z)},{name,x,y,z});await p.waitForTimeout(650);await p.screenshot({path:out+'/'+name+'.png'});}
+ fs.writeFileSync(out+'/city-graph.json',JSON.stringify(await p.evaluate(()=>({graph:window.HARBOR.seamlessCampusV115.trafficGraphQA(),cars:window.HARBOR.seamlessCampusV115.trafficQA()}))));
+ assert.equal(errors.length,0);fs.writeFileSync(out+'/live-browser.json',JSON.stringify({movedOverSixSeconds:moved,errors,metrics:await p.evaluate(()=>window.HARBOR.seamlessCampusV115.trafficGraphQA().metrics)},null,2));
+ console.log('PASS actual browser city routes',JSON.stringify({seconds:600,checks:simulation.checks,visitedLegs:simulation.visitedLegs,moved,metrics:{...simulation.metrics,rejected:simulation.metrics.rejected.length}},null,2));
+}finally{await b.close()}})().catch(e=>{console.error(e);process.exitCode=1});

@@ -5,6 +5,7 @@ import json
 import re
 import shutil
 import argparse
+from connected_driving import refine_controller
 
 r = Path.cwd()
 parser=argparse.ArgumentParser();parser.add_argument('--candidate',action='store_true');args=parser.parse_args()
@@ -14,7 +15,7 @@ pack=json.loads((asset_dir/'manifest.json').read_text())
 # Bind the existing canonical controller to connected-world dependencies.
 engine=(r/'published-game-capture/game.js').read_text(encoding='utf-8')
 start=engine.index('var carReboundTime=0;');end=engine.index('function updateDriveUI()',start)
-controller=engine[start:end]
+controller=refine_controller(engine[start:end])
 factory='''function(car,keys,window,carCollidesAt,saveThrottled,feedback){
 const driveKeys={},CAR_MAX=265,CAR_REV=-92,document={getElementById:()=>null},AC=null,traffic=[];
 const syncPlayerToCar=()=>{},checkCarExits=()=>{},perfCollision=feedback,tone=()=>{},toast=()=>{};
@@ -55,10 +56,14 @@ for target in [before, after]:
     (target/'precinct-cruiser.compiled.js').write_text(cruiser,encoding='utf-8')
     shutil.copytree(r/'published-game-capture/assets/police-driving',target/'assets/police-driving',dirs_exist_ok=True)
     shutil.copy2(r/'published-game-capture/cruiser-visuals.js',target/'cruiser-visuals.js')
+    shutil.copy2(r/'published-game-capture/connected-traffic.js',target/'connected-traffic.js')
     html = (target / 'index.html').read_text(encoding='utf-8')
     digest = hashlib.sha256((target / 'game-v115.bundle.js').read_bytes()).hexdigest()[:12]
     html = re.sub(r'game-v115\.bundle\.js\?v=[\da-f]+', 'game-v115.bundle.js?v='+digest, html)
     html=re.sub(r'<script src="\./cruiser-visuals\.js[^\"]*"></script>\s*','',html)
+    html=re.sub(r'<script src="\./connected-traffic\.js[^\"]*"></script>\s*','',html)
+    traffic_digest=hashlib.sha256((target/'connected-traffic.js').read_bytes()).hexdigest()[:12]
+    html=html.replace('</head>','<script src="./connected-traffic.js?v='+traffic_digest+'"></script></head>')
     visual_digest=hashlib.sha256((target/'cruiser-visuals.js').read_bytes()).hexdigest()[:12]
     html=re.sub(r'(<script src="\./game-v115\.bundle\.js[^\"]*"></script>)',lambda m:'<script src="./cruiser-visuals.js?v='+visual_digest+'"></script>\n'+m.group(1),html)
     if target == after:

@@ -1,0 +1,131 @@
+{
+  "turning": {
+    "x": 1974.5789733994545,
+    "y": 1402.9570428887926,
+    "angle": 0.7150992251669339,
+    "id": "precinct-unit-9",
+    "map": "harbor-main",
+    "speed": 139.43412149191568,
+    "engine": true,
+    "lightMode": "off",
+    "wheelPhase": 5.144064170228931,
+    "driving": true,
+    "collisions": 0,
+    "saveError": false,
+    "assetReady": true,
+    "count": 1,
+    "visual": {
+      "index": 2,
+      "draws": 58,
+      "frameChanges": 2,
+      "effectCount": 0,
+      "lastDraw": {
+        "index": 2,
+        "angle": 0.7150992251669339,
+        "visualAngle": 0.6823146539134706,
+        "residual": -0.018555031707115987,
+        "anchor": [
+          1974.5789733994545,
+          1402.9570428887926
+        ],
+        "imageOrigin": [
+          1974.5,
+          1403
+        ],
+        "bodySway": 0.21600073828702687,
+        "lightMode": "off",
+        "activeLight": "off",
+        "shadow": {
+          "center": [
+            1976.5789733994545,
+            1406.9570428887926
+          ],
+          "radii": [
+            49,
+            25
+          ],
+          "angle": 0.7150992251669339
+        }
+      }
+    },
+    "art": {
+      "status": "ready",
+      "error": null,
+      "reviewed": true,
+      "directionCount": 16
+    }
+  },
+  "stopped": {
+    "car": {
+      "x": 1997.6186405081633,
+      "y": 1426.2523001915063,
+      "angle": 0.8252833331380313,
+      "id": "precinct-unit-9",
+      "map": "harbor-main",
+      "speed": 0,
+      "engine": true,
+      "lightMode": "off",
+      "wheelPhase": 7.93028906711833,
+      "driving": true,
+      "collisions": 0,
+      "saveError": false,
+      "assetReady": true,
+      "count": 1,
+      "visual": {
+        "index": 2,
+        "draws": 111,
+        "frameChanges": 2,
+        "effectCount": 6,
+        "lastDraw": {
+          "index": 2,
+          "angle": 0.8252833331380313,
+          "visualAngle": 0.8252833326175599,
+          "residual": 0.007179330459620096,
+          "anchor": [
+            1997.6186405081633,
+            1426.2523001915063
+          ],
+          "imageOrigin": [
+            1997.5,
+            1426.5
+          ],
+          "bodySway": 0.0005345038347229085,
+          "lightMode": "off",
+          "activeLight": "off",
+          "shadow": {
+            "center": [
+              1999.6186405081633,
+              1430.2523001915063
+            ],
+            "radii": [
+              49,
+              25
+            ],
+            "angle": 0.8252833331380313
+          }
+        }
+      },
+      "art": {
+        "status": "ready",
+        "error": null,
+        "reviewed": true,
+        "directionCount": 16
+      }
+    },
+    "camera": {
+      "cameraX": 1780.9055682394085,
+      "cameraY": 957.3157297458597,
+      "zoom": 0.9,
+      "follows": true,
+      "roofAlpha": 0.773753617009467,
+      "playerX": 1997.6186405081633,
+      "playerY": 1426.2523001915063,
+      "dir": "up",
+      "room": null,
+      "crossings": 1
+    }
+  },
+  "errors": [],
+  "realMultiTouch": true,
+  "physicalHandset": false
+}

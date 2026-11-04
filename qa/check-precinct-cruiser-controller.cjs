@@ -2,7 +2,7 @@
 const fs=require('node:fs'),assert=require('node:assert/strict');
 const engine=fs.readFileSync('published-game-capture/game.js','utf8'),compiled=fs.readFileSync('site/preview/civilian-updated/precinct-cruiser.compiled.js','utf8');
 const start=engine.indexOf('var carReboundTime=0;'),end=engine.indexOf('function updateDriveUI()',start),canonical=engine.slice(start,end);
-assert(compiled.includes(canonical),'Reuse the exact original controller source');
+const impact=canonical.slice(canonical.indexOf('      /* Stage C:'),canonical.indexOf('  syncPlayerToCar();'));assert(compiled.includes(impact),'Reuse the exact original impact/rebound pipeline');
 assert(!/requestAnimationFrame|setInterval|setTimeout/.test(compiled),'One existing simulation clock');
 const expression=compiled.match(/const controllerFactory=([\s\S]*?);\r?\nfunction valid/)[1];
 const factory=Function('carCorners','return ('+expression+')')(()=>[]);
@@ -15,4 +15,4 @@ for(const hz of [30,60,120]){
  proxy.__carSpace=false;keys.down=true;for(let i=0;i<hz;i++)update(1/hz,i/hz);assert(car.speed<0&&car.speed>=-92,'Canonical brake/reverse retained');
  keys.down=false;keys.left=true;const a=car.angle;for(let i=0;i<hz/4;i++)update(1/hz,i/hz);assert(car.angle>a,'Steering reverses correctly while backing');
 }
-console.log('PASS exact canonical controller binding, collision/rebound, STOP, reverse and reverse steering at 30/60/120 Hz; no extra simulation loop');
+console.log('PASS refined connected binding with canonical impacts, collision/rebound, STOP, reverse and reverse steering at 30/60/120 Hz; no extra simulation loop');

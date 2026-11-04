@@ -13,12 +13,17 @@ for(const name of ['game.js','outbreak.css','v115-campus.js','v115-world.js','v1
   assert(s.includes(start),'Static collision index present');
   expected=expected.slice(0,originalStart)+s.slice(s.indexOf(start),s.indexOf(end))+expected.slice(originalEnd);
   cp.execFileSync(process.execPath,['qa/check-connected-collision-index.cjs']);
+  const trafficA='  const streetTraffic=[];',trafficB='  function drawStreetTraffic(';
+  expected=expected.slice(0,expected.indexOf(trafficA))+s.slice(s.indexOf(trafficA),s.indexOf(trafficB))+expected.slice(expected.indexOf(trafficB));
+  const extras=s.split('\n').filter(line=>line.startsWith('    trafficGraphQA:')||line.startsWith('    trafficAdvanceQA:')).join('\n');
+  expected=expected.replace(/(    trafficQA:[^\n]*\n)/,'$1'+extras+'\n');
+
  }
  assert.equal(s,expected,'Protected source outside the equivalence-tested collision candidate index '+name);protectedFiles[p]=crypto.createHash('sha256').update(s).digest('hex');
 }
 const raw='published-game-capture/assets/police-driving/cruiser-16-source.png',bytes=fs.readFileSync(raw),original=cp.execFileSync('git',['show',baseline+':'+raw],{maxBuffer:16*1024*1024});assert(bytes.equals(original),'Original fallback/source artwork is preserved');protectedFiles[raw]=crypto.createHash('sha256').update(bytes).digest('hex');
 const bridge='published-game-capture/precinct-cruiser.js',s=read(bridge),before=old(bridge);
-for(const [a,b] of [[' function collides(',' function show('],[' function interact(',' for(const b of controls.'],['  blocksWalker:','  suspend:']]){
+for(const [a,b] of [[' function collides(',' function show('],[' function interact(',' for(const b of controls.']]){
  assert.equal(s.slice(s.indexOf(a),s.indexOf(b,s.indexOf(a))),before.slice(before.indexOf(a),before.indexOf(b,before.indexOf(a))),'Existing collision, entry/exit and traffic yielding retained');
 }
 (async()=>{const b=await chromium.launch({channel:'chrome',headless:true}),runs=[];try{
@@ -33,5 +38,5 @@ for(const [a,b] of [[' function collides(',' function show('],[' function intera
  const zombie=await p.evaluate(()=>{const h=window.HARBOR;h.dismissTransient();h.outbreak.seed(9012026);return {started:h.academy.begin('zombie','explorer'),refused:h.seamlessCampusV115.openAt(1705,1568,1)===false,map:h.outbreakMap.build(),visual:window.ROOKIE_CRUISER_VISUAL.status()};});assert(zombie.started&&zombie.refused);assert.equal(requests.length,0);assert.equal(zombie.visual.status,'idle');
  const expected=JSON.parse(fs.readFileSync('docs/precinct-cruiser/safety.json','utf8')).zombie.mapSHA256;assert.equal(crypto.createHash('sha256').update(JSON.stringify(zombie.map)).digest('hex'),expected,'Seeded Zombie map remains identical');
  fs.writeFileSync(out+'/isolation.json',JSON.stringify({baseline,protectedFiles,runs,zombie:{started:true,refused:true,assetRequests:0,visualStatus:zombie.visual.status,mapSHA256:expected}},null,2));
- console.log('PASS protected controller/world/traffic/cast/mode sources, exact collision-index equivalence, original entry/exit; default 16-pose renderer, legacy fallback, equal parked position and untouched seeded Zombie map');
+ console.log('PASS protected canonical controller/world/cast/mode sources, exact collision-index equivalence, original entry/exit; default 16-pose renderer, legacy fallback, equal parked position and untouched seeded Zombie map');
  }finally{await b.close()}})().catch(e=>{console.error(e);process.exitCode=1});

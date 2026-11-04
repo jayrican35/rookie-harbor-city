@@ -2,7 +2,7 @@
 const {chromium}=require('playwright'),fs=require('node:fs'),cp=require('node:child_process'),assert=require('node:assert/strict');
 const clean=s=>s.replace(/\r\n/g,'\n');
 const campus=clean(fs.readFileSync('published-game-capture/v115-campus.js','utf8'));
-const old=clean(cp.execFileSync('git',['show','3984435:published-game-capture/v115-campus.js'],{encoding:'utf8'}));
+const old=clean(cp.execFileSync('git',['show',(process.env.ROOKIE_PERF_BASELINE||'3984435')+':published-game-capture/v115-campus.js'],{encoding:'utf8'}));
 const compiled=clean(fs.readFileSync('site/preview/civilian-updated/game-v115.bundle.js','utf8'));
 assert(compiled.includes(campus));
 (async()=>{const b=await chromium.launch({channel:'chrome',headless:true}),runs=[];try{
@@ -14,5 +14,5 @@ for(const rate of [1,4])for(const baseline of [true,false]){
  const timing=await p.evaluate(()=>new Promise(resolve=>{let first=0,last=0;const times=[];requestAnimationFrame(function tick(t){if(!first)first=t;if(last)times.push(t-last);last=t;if(t-first<4500)return requestAnimationFrame(tick);times.sort((a,b)=>a-b);resolve({fps:Math.round(times.length*10000/(t-first))/10,p50Ms:times[Math.floor(times.length*.5)],p95Ms:times[Math.floor(times.length*.95)],over34:times.filter(x=>x>34).length,frames:times.length})})}));
  runs.push({baseline,rate,...timing});await p.close();
 }
-fs.writeFileSync('cruiser-turning-evidence/frame-comparison.json',JSON.stringify({note:'Uninstrumented actual driving; identical art, view, keys. Baseline campus served from local commit 3984435 in an isolated browser route. Headless Chrome; not a handset benchmark.',runs},null,2));console.log(runs);
+fs.writeFileSync('cruiser-turning-evidence/frame-comparison.json',JSON.stringify({baseline:process.env.ROOKIE_PERF_BASELINE||'3984435',note:'Uninstrumented actual driving; identical art, view, keys. Baseline campus served from the selected local commit in an isolated browser route. Headless Chrome; not a handset benchmark.',runs},null,2));console.log(runs);
 }finally{await b.close()}})().catch(e=>{console.error(e);process.exitCode=1});

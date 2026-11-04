@@ -85,7 +85,7 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput}){
  return Object.freeze({step,draw,bayMark,key,near,interact,reset,
   active:()=>driving,position:()=>{ensure();return {x:car.x,y:car.y};},
   blocksWalker:(x,y,r)=>{ensure();return !driving&&obbHitsRect(car.x,car.y,car.angle,{x:x-r,y:y-r,w:r*2,h:r*2});},
-  overlapsTraffic:tc=>{ensure();const h=tc.dir==='left'||tc.dir==='right',w=h?(tc.kind==='delivery'?104:86):38,l=h?38:(tc.kind==='delivery'?104:86);return obbHitsRect(car.x,car.y,car.angle,{x:tc.x-w/2,y:tc.y-l/2,w,h:l});},
+  overlapsTraffic:tc=>{ensure();if(Math.abs(car.x-tc.x)>180||Math.abs(car.y-tc.y)>180)return false;if(Number.isFinite(tc.angle)&&window.ROOKIE_CITY_TRAFFIC)return window.ROOKIE_CITY_TRAFFIC.overlap({x:car.x,y:car.y,angle:car.angle,length:96,width:48},tc);const h=tc.dir==='left'||tc.dir==='right',w=h?(tc.kind==='delivery'?104:86):38,l=h?38:(tc.kind==='delivery'?104:86);return obbHitsRect(car.x,car.y,car.angle,{x:tc.x-w/2,y:tc.y-l/2,w,h:l});},
   yields:tc=>{ensure();const dx=car.x-tc.x,lateral=Math.abs(Math.sin(car.angle))*48+Math.abs(Math.cos(car.angle))*24+19;return Math.abs(car.y-tc.y)<lateral&&Math.abs(dx)<165&&(tc.dir==='left'?dx<0:dx>0);},
   suspend:()=>{ensure();if(driving){car.speed=0;car.engine=false;interact();if(driving)return false;}reset();persist();return true;},
   snapshot:()=>{ensure();return {...car,driving,collisions,saveError,assetReady:image.complete&&image.naturalWidth>0,count:1,visual:visual?V.inspect(visual):null,art:V?.status()};},

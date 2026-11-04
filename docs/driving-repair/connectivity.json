@@ -1,0 +1,32 @@
+[
+  {
+    "fromLeg": 6,
+    "reachableLegs": 62,
+    "regions": [
+      "downtown",
+      "eastside",
+      "industrial",
+      "midtown",
+      "northgate",
+      "precinct",
+      "residential",
+      "southbay",
+      "westfield"
+    ]
+  },
+  {
+    "fromLeg": 7,
+    "reachableLegs": 62,
+    "regions": [
+      "downtown",
+      "eastside",
+      "industrial",
+      "midtown",
+      "northgate",
+      "precinct",
+      "residential",
+      "southbay",
+      "westfield"
+    ]
+  }
+]

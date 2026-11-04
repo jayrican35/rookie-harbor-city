@@ -206,7 +206,7 @@
       }
     return false;
   }
-  function blocked(x,y,r=12,ignoreCruiser=false,vehicle=false){
+  function blocked(x,y,r=12,ignoreCruiser=false,vehicle=false,ignoreTraffic=false){
     // Broad rejection first: ownership only matters for an intersecting box.
     // The ownership result and precise circle collision rules are unchanged.
     if(vehicle&&indexedSolidHit(vehicleSolidIndex,x,y,r))return true;
@@ -228,7 +228,7 @@
     // World Completion: authored-feeling new groves are physical at their trunk
     // feet, and use the SAME player radius and native collision response.
     if(window.ROOKIE_V127_CITY?.scenicBlocked(x,y,r,districtEntries))return true;
-    if(trafficBlocked(x,y,r))return true;
+    if(!ignoreTraffic&&trafficBlocked(x,y,r))return true;
     // The blank northeast corner of the irregular station footprint is not
     // usable interior. Existing station west/east/south wall gaps stay real.
     return false;
@@ -331,62 +331,29 @@
   // Harbor Avenue road graph. Existing main-campaign driving is untouched.
   // Cars share this simulation clock and depth queue, with zero new RAF loops.
   const streetTraffic=[];
-  let streetTrafficInitialized=false;
-  const avenueStart=-2850,avenueEnd=9380;
-  const avenueTop=1754,avenueBottom=1815;
-  const avenueLength=avenueEnd-avenueStart,trafficLoop=2*avenueLength+2*(avenueBottom-avenueTop);
-  const trafficColors=['#557e9a','#a66852','#7d8b76','#c5a975','#597b7c','#ac7671'];
-  function streetPose(distance){
-    let p=((distance%trafficLoop)+trafficLoop)%trafficLoop;
-    if(p<avenueLength)return {x:avenueStart+p,y:avenueTop,dir:'right'};
-    p-=avenueLength;
-    if(p<avenueBottom-avenueTop)return {x:avenueEnd,y:avenueTop+p,dir:'down'};
-    p-=avenueBottom-avenueTop;
-    if(p<avenueLength)return {x:avenueEnd-p,y:avenueBottom,dir:'left'};
-    p-=avenueLength;
-    return {x:avenueStart,y:avenueBottom-p,dir:'up'};
-  }
+  let streetTrafficInitialized=false,trafficRouter=null,trafficActors=[],trafficPlayer=null;
   function initializeStreetTraffic(){
     if(streetTrafficInitialized)return;
     streetTrafficInitialized=true;
-    // Verify the authored lane is truly linked from the western borough
-    // through the precinct to the east. Otherwise, fail closed, no fake cars.
-    const required=['harbor-ave-west','harbor-precinct-link','harbor-ave-east','harbor-east-through'];
-    if(!required.every(id=>links.some(r=>r.id===id)))return;
-    for(let i=0;i<18;i++){
-      const phase=trafficLoop*i/18+390*(i%3),kind=i%9===0?'patrol':i%5===0?'delivery':'civilian';
-      const tc={id:'street:'+i,progress:phase,speed:98+i%5*12,
-        color:trafficColors[i%trafficColors.length],kind,...streetPose(phase)};
-      // A saved Unit 9 may already occupy this road position on reload.
-      if(cruiser?.overlapsTraffic(tc)){tc.progress=(phase-160+trafficLoop)%trafficLoop;Object.assign(tc,streetPose(tc.progress));}
-      streetTraffic.push(tc);
-    }
+    if(/[?&]pilotQA=1(?:&|$)/.test(window.location?.search||'')&&/[?&]traffic=off(?:&|$)/.test(window.location?.search||''))return;
+    const navigation=window.ROOKIE_CITY_TRAFFIC;if(!navigation)return;
+    trafficRouter=navigation.create({roads:[...links,...nativeRoadSurfaces],anchors:crossings,fleet:streetTraffic,
+      blocked:(x,y,r)=>blocked(x,y,r,true,true,true),districtAt:(x,y)=>districtAt(x,y)?.id||'precinct',
+      actors:()=>trafficActors,player:()=>trafficPlayer,cruiser:()=>cruiser,
+      view:()=>({x:campus.camX,y:campus.camY,w:tw/campus.zoom,h:th/campus.zoom})});
   }
   function stepStreetTraffic(dt){
     initializeStreetTraffic();
-    const seconds=Math.max(0,Math.min(.05,dt||0));
-    // Follow the next car on the same closed route, including its wrap seam.
-    // Different cruise speeds must form queues rather than pass through bodies.
-    const ordered=streetTraffic.slice().sort((a,b)=>a.progress-b.progress);
-    const moves=new Map();
-    for(let i=0;i<ordered.length;i++){
-      const car=ordered[i],leader=ordered[(i+1)%ordered.length];
-      const gap=(leader.progress-car.progress+trafficLoop)%trafficLoop;
-      const nearJay=!cruiser?.active()&&Math.abs(car.x-campus.x)<145&&Math.abs(car.y-campus.y)<62;
-      const yielding=nearJay||cruiser?.yields(car);
-      const desired=yielding?0:car.speed*seconds;
-      // 142 units covers the longest van body plus a visible following gap.
-      const travel=Math.min(desired,Math.max(0,gap-142));
-      moves.set(car,travel);car.stopped=yielding||travel<desired-.001;
-    }
-    for(const car of streetTraffic){
-      car.progress=(car.progress+moves.get(car))%trafficLoop;
-      Object.assign(car,streetPose(car.progress));
-    }
+    trafficActors=npcActors.concat(window.ROOKIE_V133_PRECINCT?.actors?.(performance.now())||[]);
+    trafficPlayer={x:campus.x,y:campus.y,driving:!!cruiser?.active()};
+    trafficRouter?.step(dt);
   }
   function trafficBlocked(x,y,r=12){
     for(const car of streetTraffic){
-      if(Math.abs(x-car.x)<43+r&&Math.abs(y-car.y)<19+r)return true;
+      const dx=x-car.x,dy=y-car.y;if(Math.abs(dx)>car.length/2+19+r||Math.abs(dy)>car.length/2+19+r)continue;
+      const c=car.cos,s=car.sin;
+      const lx=dx*c+dy*s,ly=-dx*s+dy*c,ex=Math.max(0,Math.abs(lx)-car.length/2),ey=Math.max(0,Math.abs(ly)-19);
+      if(ex*ex+ey*ey<r*r)return true;
     }
     return false;
   }
@@ -1402,6 +1369,8 @@
     sidewalkRepairs:()=>JSON.parse(JSON.stringify(retiredSidewalkBarriers)),
     cruiserQA:()=>/[?&]pilotQA=1(?:&|$)/.test(window.location.search)?cruiser:null,
     trafficQA:()=>/[?&]pilotQA=1(?:&|$)/.test(window.location.search)?streetTraffic.map(c=>({...c})):null,
+    trafficGraphQA:()=>/[?&]pilotQA=1(?:&|$)/.test(window.location.search)&&trafficRouter?{metrics:trafficRouter.metrics(),roads:trafficRouter.graph.roads,legs:trafficRouter.graph.legs,turns:trafficRouter.graph.turns,nodes:trafficRouter.graph.nodes}:null,
+    trafficAdvanceQA:seconds=>{if(!/[?&]pilotQA=1(?:&|$)/.test(window.location.search))return false;for(let i=0;i<Math.min(60,Math.max(0,seconds))*30;i++){stepAmbientPedestrians(1/30);window.ROOKIE_V116_MARINA?.stepNPCs(1/30);stepStreetTraffic(1/30);}return true;},
     civilianQA:()=>/[?&]pilotQA=1(?:&|$)/.test(window.location.search)?{
       actors:npcActors.map(n=>({id:n.id,name:n.name,role:window.ROOKIE_CIVILIANS?.roleFor(n)||null,
         protected:!!window.ROOKIE_CIVILIANS?.protectedActor(n),speed:n.speed||0,route:n.route?.map(p=>p.slice())||null,

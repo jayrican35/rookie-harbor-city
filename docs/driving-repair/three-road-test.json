@@ -1,0 +1,29 @@
+{
+  "threeRoads": true,
+  "intersections": 2,
+  "seconds": 600,
+  "bodyChecks": 81000,
+  "maxStep": 4.2000000000000455,
+  "visitedLegs": 14,
+  "cars": 10,
+  "legs": 14,
+  "liveLegs": 14,
+  "turns": 38,
+  "rejected": [],
+  "distinctTransitions": 38,
+  "turnKinds": [
+    "left",
+    "uturn",
+    "straight",
+    "right"
+  ],
+  "districts": [
+    "downtown"
+  ],
+  "recoveries": 30,
+  "reroutes": 154,
+  "offscreenReentries": 0,
+  "reservations": 2,
+  "clock": 600.0000000001116,
+  "maxWait": 10.166666666666641
+}

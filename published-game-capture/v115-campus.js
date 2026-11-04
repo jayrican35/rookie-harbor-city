@@ -275,6 +275,11 @@
     const sp={id:a.id,label:'Talk to Chicken',x:a.x,y:a.y,text:'I DEMAND RESPECT!',ambientActor:a};
     a.interaction=sp;ambientRoutes.push(a);npcActors.push(a);worldSpots.push(sp);
   }
+  if(typeof window!=='undefined'&&window.ROOKIE_BANANA){
+    const a=window.ROOKIE_BANANA.createActor();
+    const sp={id:a.id,label:'Talk to Banana',x:a.x,y:a.y,text:"You're dressed like lunch.",ambientActor:a};
+    a.interaction=sp;ambientRoutes.push(a);npcActors.push(a);worldSpots.push(sp);
+  }
   let ambientInit=0;
   function safeStreetSegment(x1,y1,x2,y2){
     const length=Math.hypot(x2-x1,y2-y1);
@@ -322,6 +327,7 @@
     if(ambientInit<districtEntries.length)prepareDistrictPedestrians(districtEntries[ambientInit++]);
     for(const a of ambientRoutes){
       if(a.id==='npc_chicken'&&window.ROOKIE_CHICKEN?.talking()){a.moving=false;continue;}
+      if(a.id==='npc_banana'&&window.ROOKIE_BANANA?.talking()){a.moving=false;continue;}
       // Waypoint zero is the return leg, not an unset target.
       const target=a.route[a.targetIndex??1],vx=target[0]-a.x,vy=target[1]-a.y;
       const remain=Math.hypot(vx,vy),step=Math.min(remain,a.speed*Math.min(.05,Math.max(0,dt)));
@@ -1112,6 +1118,7 @@
       if(entry.furniture){marina.drawInteriorFurniture(g,entry.furniture);continue;}
       const npc=entry.actor;
       if(window.ROOKIE_CHICKEN?.draw(g,npc,t))continue;
+      if(window.ROOKIE_BANANA?.draw(g,npc,t))continue;
       if(window.ROOKIE_CIVILIANS?.draw(g,npc))continue;
       if(marina&&(npc.npcStyle!==undefined||marina.inMarina(npc.x,npc.y))){if(marina.active())marina.drawNpc(g,npc.npcStyle!==undefined?npc:{...npc,npcStyle:1},t);}
       else if(!window.ROOKIE_V132_PRECINCT?.npc(g,{...npc,showLabel:campus.zoom>.54&&!npc.hideName}))drawOfficer(npc,false,t);

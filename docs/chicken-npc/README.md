@@ -53,7 +53,7 @@ Playwright must be available on `NODE_PATH`, as in the repository's other browse
 
 This is a working local pilot using the supplied artwork. The source pack explicitly describes extracted prototype art: slight silhouette/pose differences and occasional edge specks remain visible at large zoom. Those original pixels were preserved, not represented as hand-cleaned final animation. The argument sheet has one supplied facing direction; no incorrect mirrored expression was invented. Portrait backgrounds are not transparent. No further NPC pack was generated from this source.
 
-The older banana prop remains the other speaker pending a separate Banana NPC asset. Normal gameplay remains playable, and the existing exchange is manually started rather than automatically interrupting the player.
+The later Banana import now replaces the older banana prop with its owner-supplied NPC; see ../banana-npc/README.md. Chicken’s original art, route and renderer remain unchanged. Normal gameplay remains playable, and the existing exchange is manually started rather than automatically interrupting the player.
 
 All work stays local. No push, deployment, remote merge, PR or version-number change was performed for this import. Pre-existing untracked driving notes/tests were left alone.
 

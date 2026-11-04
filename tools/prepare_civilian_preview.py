@@ -69,6 +69,15 @@ for target in [before, after]:
         payload=json.dumps(chicken_pack,separators=(',',':')).replace('<','\\u003c')
         digest=hashlib.sha256((target/'chicken-npc.js').read_bytes()).hexdigest()[:12]
         html=html.replace('</head>','<script data-chicken-pack>window.ROOKIE_CHICKEN_PACK='+payload+';</script><script src="./chicken-npc.js?v='+digest+'"></script></head>')
+    banana=r/'published-game-capture/assets/banana-npc'
+    if banana.exists():
+        shutil.copytree(banana,target/'assets/banana-npc',dirs_exist_ok=True)
+        shutil.copy2(r/'published-game-capture/banana-npc.js',target/'banana-npc.js')
+        html=re.sub(r'<script data-banana-pack>.*?</script>\s*<script src="\./banana-npc\.js[^"]*"></script>\s*','',html)
+        banana_pack=json.loads((banana/'banana_manifest.json').read_text(encoding='utf-8'))
+        payload=json.dumps(banana_pack,separators=(',',':')).replace('<','\\u003c')
+        digest=hashlib.sha256((target/'banana-npc.js').read_bytes()).hexdigest()[:12]
+        html=html.replace('</head>','<script data-banana-pack>window.ROOKIE_BANANA_PACK='+payload+';</script><script src="./banana-npc.js?v='+digest+'"></script></head>')
     for ext in ['js','css']:
         name='comic-dialogue.'+ext
         shutil.copy2(r/'published-game-capture'/name,target/name)
@@ -99,6 +108,8 @@ if not args.candidate:
     if evidence.exists():shutil.copytree(evidence,r/'site/evidence/comic-dialogue',dirs_exist_ok=True)
     evidence=r/'docs/chicken-npc'
     if evidence.exists():shutil.copytree(evidence,r/'site/evidence/chicken-npc',dirs_exist_ok=True)
+    evidence=r/'docs/banana-npc'
+    if evidence.exists():shutil.copytree(evidence,r/'site/evidence/banana-npc',dirs_exist_ok=True)
 if not art_ready and not args.candidate:
     target=r/'site/evidence/civilian-preview'
     target.mkdir(parents=True,exist_ok=True)

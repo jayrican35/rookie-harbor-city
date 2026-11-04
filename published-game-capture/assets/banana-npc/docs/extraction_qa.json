@@ -1,0 +1,305 @@
+{
+  "frames": [
+    {
+      "frame": "sprites/frames/banana_down_00.png",
+      "bbox": [
+        31,
+        32,
+        80,
+        110
+      ],
+      "alpha_pixels": 2698
+    },
+    {
+      "frame": "sprites/frames/banana_down_01.png",
+      "bbox": [
+        32,
+        31,
+        80,
+        110
+      ],
+      "alpha_pixels": 2688
+    },
+    {
+      "frame": "sprites/frames/banana_down_02.png",
+      "bbox": [
+        32,
+        31,
+        80,
+        110
+      ],
+      "alpha_pixels": 2659
+    },
+    {
+      "frame": "sprites/frames/banana_down_03.png",
+      "bbox": [
+        31,
+        31,
+        81,
+        110
+      ],
+      "alpha_pixels": 2724
+    },
+    {
+      "frame": "sprites/frames/banana_left_00.png",
+      "bbox": [
+        35,
+        30,
+        77,
+        110
+      ],
+      "alpha_pixels": 2412
+    },
+    {
+      "frame": "sprites/frames/banana_left_01.png",
+      "bbox": [
+        36,
+        29,
+        76,
+        110
+      ],
+      "alpha_pixels": 2284
+    },
+    {
+      "frame": "sprites/frames/banana_left_02.png",
+      "bbox": [
+        34,
+        29,
+        77,
+        110
+      ],
+      "alpha_pixels": 2393
+    },
+    {
+      "frame": "sprites/frames/banana_left_03.png",
+      "bbox": [
+        36,
+        29,
+        75,
+        110
+      ],
+      "alpha_pixels": 2231
+    },
+    {
+      "frame": "sprites/frames/banana_right_00.png",
+      "bbox": [
+        33,
+        31,
+        79,
+        110
+      ],
+      "alpha_pixels": 2448
+    },
+    {
+      "frame": "sprites/frames/banana_right_01.png",
+      "bbox": [
+        31,
+        31,
+        81,
+        110
+      ],
+      "alpha_pixels": 2445
+    },
+    {
+      "frame": "sprites/frames/banana_right_02.png",
+      "bbox": [
+        33,
+        31,
+        79,
+        110
+      ],
+      "alpha_pixels": 2404
+    },
+    {
+      "frame": "sprites/frames/banana_right_03.png",
+      "bbox": [
+        30,
+        31,
+        82,
+        110
+      ],
+      "alpha_pixels": 2505
+    },
+    {
+      "frame": "sprites/frames/banana_up_00.png",
+      "bbox": [
+        31,
+        26,
+        81,
+        110
+      ],
+      "alpha_pixels": 2762
+    },
+    {
+      "frame": "sprites/frames/banana_up_01.png",
+      "bbox": [
+        29,
+        26,
+        82,
+        110
+      ],
+      "alpha_pixels": 2816
+    },
+    {
+      "frame": "sprites/frames/banana_up_02.png",
+      "bbox": [
+        29,
+        26,
+        83,
+        110
+      ],
+      "alpha_pixels": 2758
+    },
+    {
+      "frame": "sprites/frames/banana_up_03.png",
+      "bbox": [
+        28,
+        26,
+        83,
+        110
+      ],
+      "alpha_pixels": 2759
+    },
+    {
+      "frame": "sprites/frames/banana_idle_00.png",
+      "bbox": [
+        26,
+        8,
+        86,
+        110
+      ],
+      "alpha_pixels": 3989
+    },
+    {
+      "frame": "sprites/frames/banana_idle_01.png",
+      "bbox": [
+        25,
+        8,
+        86,
+        110
+      ],
+      "alpha_pixels": 4056
+    },
+    {
+      "frame": "sprites/frames/banana_idle_02.png",
+      "bbox": [
+        26,
+        8,
+        86,
+        110
+      ],
+      "alpha_pixels": 4057
+    },
+    {
+      "frame": "sprites/frames/banana_idle_03.png",
+      "bbox": [
+        26,
+        8,
+        86,
+        110
+      ],
+      "alpha_pixels": 4055
+    },
+    {
+      "frame": "sprites/frames/banana_talk_00.png",
+      "bbox": [
+        22,
+        8,
+        90,
+        110
+      ],
+      "alpha_pixels": 4240
+    },
+    {
+      "frame": "sprites/frames/banana_talk_01.png",
+      "bbox": [
+        23,
+        8,
+        89,
+        110
+      ],
+      "alpha_pixels": 4335
+    },
+    {
+      "frame": "sprites/frames/banana_talk_02.png",
+      "bbox": [
+        31,
+        8,
+        81,
+        110
+      ],
+      "alpha_pixels": 3858
+    },
+    {
+      "frame": "sprites/frames/banana_talk_03.png",
+      "bbox": [
+        35,
+        8,
+        77,
+        110
+      ],
+      "alpha_pixels": 3291
+    },
+    {
+      "frame": "sprites/frames/banana_argue_00.png",
+      "bbox": [
+        33,
+        22,
+        127,
+        155
+      ],
+      "alpha_pixels": 7628
+    },
+    {
+      "frame": "sprites/frames/banana_argue_01.png",
+      "bbox": [
+        41,
+        22,
+        119,
+        155
+      ],
+      "alpha_pixels": 6577
+    },
+    {
+      "frame": "sprites/frames/banana_argue_02.png",
+      "bbox": [
+        46,
+        21,
+        114,
+        155
+      ],
+      "alpha_pixels": 6289
+    },
+    {
+      "frame": "sprites/frames/banana_argue_03.png",
+      "bbox": [
+        19,
+        21,
+        140,
+        155
+      ],
+      "alpha_pixels": 8253
+    }
+  ],
+  "all_have_alpha": true,
+  "dimensions": {
+    "walk": [
+      448,
+      480
+    ],
+    "idle": [
+      448,
+      120
+    ],
+    "talk": [
+      448,
+      120
+    ],
+    "argue": [
+      640,
+      160
+    ]
+  },
+  "reference_pack": "ROOKIE_Chicken_NPC_Import_Pack.zip",
+  "notice": "Structural and transparency QA, not full visual/gameplay acceptance"
+}

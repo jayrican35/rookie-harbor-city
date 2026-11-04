@@ -13,7 +13,8 @@ IMAGES = [
 ]
 DOCS.mkdir(parents=True, exist_ok=True)
 SITE.mkdir(parents=True, exist_ok=True)
-for name in IMAGES + ['gameplay.json', 'isolation.json']:
+for name in IMAGES + ['gameplay.json', 'isolation.json', 'collision-index.json',
+                      'frame-comparison.json', 'performance-before.json', 'performance-indexed.json']:
     shutil.copy2(ROOT / 'cruiser-turning-evidence' / name, DOCS / name)
 shutil.copy2(ROOT / 'cruiser-evidence/safety.json', DOCS / 'save-mobile.json')
 for source in DOCS.iterdir():

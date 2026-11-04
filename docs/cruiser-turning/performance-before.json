@@ -1,0 +1,118 @@
+{
+  "throttle": 4,
+  "frames": 42,
+  "fps": 6.866110838646395,
+  "p50": 116.70000000000073,
+  "p95": 316.7000000000007,
+  "over34": 42,
+  "work": {
+    "draws": {
+      "v115CampusCanvas": 21939,
+      "(offscreen)": 1514
+    },
+    "writes": 9,
+    "writeMs": 5.700000047683716
+  },
+  "topSelfMs": [
+    {
+      "fn": "(program) :-1",
+      "ms": 3659.517
+    },
+    {
+      "fn": "ownsSolid v116-marina.js?v=03eee5ae1bcc:139",
+      "ms": 770.141
+    },
+    {
+      "fn": "blocked game-v115.bundle.js?v=6f3f517f7081:45734",
+      "ms": 664.142
+    },
+    {
+      "fn": "fillText :-1",
+      "ms": 460.22
+    },
+    {
+      "fn": "circleHitsRect game-v115.bundle.js?v=6f3f517f7081:45730",
+      "ms": 361.41
+    },
+    {
+      "fn": "drawImage :-1",
+      "ms": 313.171
+    },
+    {
+      "fn": "fillRect :-1",
+      "ms": 263.531
+    },
+    {
+      "fn": "(garbage collector) :-1",
+      "ms": 244.168
+    },
+    {
+      "fn": "districtAt game-v115.bundle.js?v=6f3f517f7081:45596",
+      "ms": 121.439
+    },
+    {
+      "fn": "collides game-v115.bundle.js?v=6f3f517f7081:45480",
+      "ms": 117.844
+    },
+    {
+      "fn": "scenicBlocked v127-citywide-art.js?v=52ba8a385ee6:525",
+      "ms": 107.159
+    },
+    {
+      "fn": "paint game-v115.bundle.js?v=6f3f517f7081:46672",
+      "ms": 103.066
+    },
+    {
+      "fn": "save :-1",
+      "ms": 80.023
+    },
+    {
+      "fn": "proto.<computed> :2",
+      "ms": 78.978
+    },
+    {
+      "fn": "restore :-1",
+      "ms": 59.559
+    },
+    {
+      "fn": "inDistrict game-v115.bundle.js?v=6f3f517f7081:45595",
+      "ms": 56.982
+    },
+    {
+      "fn": "actors game-v115.bundle.js?v=6f3f517f7081:45976",
+      "ms": 53.621
+    },
+    {
+      "fn": "scopedRoom v131-precinct-legacy-bridge.js?v=f16a0605a2c1:282",
+      "ms": 51.095
+    },
+    {
+      "fn": "drawRoadNetwork v135-precinct-wallkit-test.js?v=b69c3845468f:292",
+      "ms": 48.202
+    },
+    {
+      "fn": "drawEntityHighlights game-v115.bundle.js?v=6f3f517f7081:46543",
+      "ms": 45.385
+    },
+    {
+      "fn": "stats v135-precinct-wallkit-test.js?v=b69c3845468f:403",
+      "ms": 45.099
+    },
+    {
+      "fn": "strip v115-showcase.js?v=28d1be15a300:73",
+      "ms": 43.154
+    },
+    {
+      "fn": "blocksScenery v116-marina.js?v=03eee5ae1bcc:649",
+      "ms": 35.833
+    },
+    {
+      "fn": "step game-v115.bundle.js?v=6f3f517f7081:45511",
+      "ms": 35.617
+    },
+    {
+      "fn": " v131-precinct-legacy-bridge.js?v=f16a0605a2c1:329",
+      "ms": 32.867
+    }
+  ]
+}

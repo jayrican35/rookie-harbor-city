@@ -36,7 +36,6 @@
       "speed": 0,
       "engine": true,
       "lightMode": "off",
-      "wheelPhase": 0,
       "driving": true,
       "collisions": 0,
       "saveError": false,
@@ -44,7 +43,7 @@
       "count": 1,
       "visual": {
         "index": 0,
-        "draws": 2,
+        "draws": 1,
         "frameChanges": 0,
         "effectCount": 0,
         "lastDraw": {
@@ -84,15 +83,15 @@
       }
     },
     "after": {
-      "x": 1870.086998323737,
-      "y": 1419.9675599015163,
-      "angle": 17.23096234083319,
+      "x": 1875.9489557313493,
+      "y": 1415.0412069933022,
+      "angle": 17.269556711891465,
       "id": "precinct-unit-9",
       "map": "harbor-main",
       "speed": 0,
       "engine": true,
       "lightMode": "off",
-      "wheelPhase": 56.72533318964366,
+      "wheelPhase": 56.18121123028782,
       "driving": true,
       "collisions": 0,
       "saveError": false,
@@ -100,35 +99,35 @@
       "count": 1,
       "visual": {
         "index": 12,
-        "draws": 539,
+        "draws": 504,
         "frameChanges": 44,
         "effectCount": 0,
         "lastDraw": {
           "index": 12,
-          "angle": 17.23096234083319,
-          "visualAngle": 17.229780682630892,
-          "residual": -0.00881620418033469,
+          "angle": 17.269556711891465,
+          "visualAngle": 17.26807851973483,
+          "residual": -0.0019225935016261345,
           "anchor": [
-            1870.086998323737,
-            1419.9675599015163
+            1875.9489557313493,
+            1415.0412069933022
           ],
           "imageOrigin": [
-            1870,
-            1420
+            1876,
+            1415
           ],
-          "bodySway": 0.13384842228767313,
+          "bodySway": 0.12595990037092467,
           "lightMode": "off",
           "activeLight": "off",
           "shadow": {
             "center": [
-              1872.086998323737,
-              1423.9675599015163
+              1877.9489557313493,
+              1419.0412069933022
             ],
             "radii": [
               49,
               25
             ],
-            "angle": 17.23096234083319
+            "angle": 17.269556711891465
           }
         }
       },
@@ -178,7 +177,7 @@
       "count": 1,
       "visual": {
         "index": 0,
-        "draws": 11,
+        "draws": 9,
         "frameChanges": 0,
         "effectCount": 0,
         "lastDraw": {
@@ -218,15 +217,15 @@
       }
     },
     "after": {
-      "x": 1872.685677271619,
-      "y": 1414.6005682120378,
-      "angle": -17.29994453293879,
+      "x": 1872.9084781747747,
+      "y": 1416.040654613465,
+      "angle": -17.33235083973782,
       "id": "precinct-unit-9",
       "map": "harbor-main",
       "speed": 0,
       "engine": true,
       "lightMode": "off",
-      "wheelPhase": 57.00637770726184,
+      "wheelPhase": 57.185542958011325,
       "driving": true,
       "collisions": 0,
       "saveError": false,
@@ -234,35 +233,35 @@
       "count": 1,
       "visual": {
         "index": 4,
-        "draws": 560,
+        "draws": 523,
         "frameChanges": 44,
-        "effectCount": 4,
+        "effectCount": 0,
         "lastDraw": {
           "index": 4,
-          "angle": -17.29994453293879,
-          "visualAngle": -17.2987655994657,
-          "residual": -0.003601080849930308,
+          "angle": -17.33235083973782,
+          "visualAngle": -17.331495866805227,
+          "residual": -0.009492528971045867,
           "anchor": [
-            1872.685677271619,
-            1414.6005682120378
+            1872.9084781747747,
+            1416.040654613465
           ],
           "imageOrigin": [
-            1872.5,
-            1414.5
+            1873,
+            1416
           ],
-          "bodySway": 0.02588337448383867,
+          "bodySway": 0.019885798053501998,
           "lightMode": "off",
           "activeLight": "off",
           "shadow": {
             "center": [
-              1874.685677271619,
-              1418.6005682120378
+              1874.9084781747747,
+              1420.040654613465
             ],
             "radii": [
               49,
               25
             ],
-            "angle": -17.29994453293879
+            "angle": -17.33235083973782
           }
         }
       },
@@ -312,7 +311,7 @@
       "count": 1,
       "visual": {
         "index": 0,
-        "draws": 10,
+        "draws": 9,
         "frameChanges": 0,
         "effectCount": 0,
         "lastDraw": {
@@ -352,15 +351,15 @@
       }
     },
     "after": {
-      "x": 1967.3180262286457,
-      "y": 1398.9683336530813,
-      "angle": -17.282851508684296,
+      "x": 1967.3474446016226,
+      "y": 1406.7139944022103,
+      "angle": -17.25937904463141,
       "id": "precinct-unit-9",
       "map": "harbor-main",
       "speed": 0,
       "engine": true,
       "lightMode": "off",
-      "wheelPhase": -56.3381752537551,
+      "wheelPhase": -55.829205557267535,
       "driving": true,
       "collisions": 0,
       "saveError": false,
@@ -368,35 +367,35 @@
       "count": 1,
       "visual": {
         "index": 4,
-        "draws": 575,
+        "draws": 534,
         "frameChanges": 44,
-        "effectCount": 4,
+        "effectCount": 0,
         "lastDraw": {
           "index": 4,
-          "angle": -17.282851508684296,
-          "visualAngle": -17.282850576890162,
-          "residual": -0.0007363767863341862,
+          "angle": -17.25937904463141,
+          "visualAngle": -17.25937337610332,
+          "residual": 0.0034895193552975357,
           "anchor": [
-            1967.3180262286457,
-            1398.9683336530813
+            1967.3474446016226,
+            1406.7139944022103
           ],
           "imageOrigin": [
             1967.5,
-            1399
+            1407
           ],
-          "bodySway": 0.08189821826486174,
+          "bodySway": 0.0708933219762441,
           "lightMode": "off",
           "activeLight": "off",
           "shadow": {
             "center": [
-              1969.3180262286457,
-              1402.9683336530813
+              1969.3474446016226,
+              1410.7139944022103
             ],
             "radii": [
               49,
               25
             ],
-            "angle": -17.282851508684296
+            "angle": -17.25937904463141
           }
         }
       },
@@ -410,14 +409,14 @@
   },
   "reverseParking": {
     "x": 1760,
-    "y": 1570.955521133334,
+    "y": 1570.8276051777793,
     "angle": 1.5707963267948966,
     "id": "precinct-unit-9",
     "map": "harbor-main",
-    "speed": -0.32600000000051854,
+    "speed": 0,
     "engine": true,
     "lightMode": "off",
-    "wheelPhase": -6.7187807036666785,
+    "wheelPhase": -6.729653559888915,
     "driving": true,
     "collisions": 0,
     "saveError": false,
@@ -425,9 +424,9 @@
     "count": 1,
     "visual": {
       "index": 4,
-      "draws": 98,
+      "draws": 93,
       "frameChanges": 0,
-      "effectCount": 2,
+      "effectCount": 6,
       "lastDraw": {
         "index": 4,
         "angle": 1.5707963267948966,
@@ -435,19 +434,19 @@
         "residual": 0,
         "anchor": [
           1760,
-          1570.955521133334
+          1570.8276051777793
         ],
         "imageOrigin": [
           1760,
           1571
         ],
-        "bodySway": 0.08848280322277302,
+        "bodySway": 0.08431958904368632,
         "lightMode": "off",
         "activeLight": "off",
         "shadow": {
           "center": [
             1762,
-            1574.955521133334
+            1574.8276051777793
           ],
           "radii": [
             49,
@@ -465,15 +464,15 @@
     }
   },
   "handbrake": {
-    "x": 1018.6851714927808,
-    "y": 2907.010195612521,
-    "angle": 2.348435926611818,
+    "x": 1019.24572734545,
+    "y": 2906.6184292524613,
+    "angle": 2.3124167053442672,
     "id": "precinct-unit-9",
     "map": "harbor-main",
-    "speed": 50.91530251062852,
+    "speed": 65.17019304010809,
     "engine": true,
     "lightMode": "off",
-    "wheelPhase": 10.959706525795815,
+    "wheelPhase": 10.90951145900656,
     "driving": true,
     "collisions": 0,
     "saveError": false,
@@ -481,35 +480,35 @@
     "count": 1,
     "visual": {
       "index": 6,
-      "draws": 89,
+      "draws": 83,
       "frameChanges": 6,
-      "effectCount": 12,
+      "effectCount": 16,
       "lastDraw": {
         "index": 6,
-        "angle": 2.348435926611818,
-        "visualAngle": 2.2954044569916645,
-        "residual": -0.010942205976122459,
+        "angle": 2.3124167053442672,
+        "visualAngle": 2.260186882821768,
+        "residual": -0.0172813693267038,
         "anchor": [
-          1018.6851714927808,
-          2907.010195612521
+          1019.24572734545,
+          2906.6184292524613
         ],
         "imageOrigin": [
-          1018.5,
-          2907.5
+          1019,
+          2907
         ],
-        "bodySway": 0.42553088293845437,
+        "bodySway": 0.4488716348835452,
         "lightMode": "off",
         "activeLight": "off",
         "shadow": {
           "center": [
-            1020.6851714927808,
-            2911.010195612521
+            1021.24572734545,
+            2910.6184292524613
           ],
           "radii": [
             49,
             25
           ],
-          "angle": 2.348435926611818
+          "angle": 2.3124167053442672
         }
       }
     },
@@ -521,15 +520,15 @@
     }
   },
   "downtown-corner": {
-    "x": 5874.210070316338,
-    "y": 1552.2452714576757,
-    "angle": -0.6609263267949003,
+    "x": 5873.973232654954,
+    "y": 1553.3726842705046,
+    "angle": -0.6400613267948899,
     "id": "precinct-unit-9",
     "map": "harbor-main",
-    "speed": 0.20074391195855634,
+    "speed": 0,
     "engine": true,
     "lightMode": "off",
-    "wheelPhase": 8.961131057664032,
+    "wheelPhase": 8.875716490644711,
     "driving": true,
     "collisions": 0,
     "saveError": false,
@@ -537,35 +536,35 @@
     "count": 1,
     "visual": {
       "index": 14,
-      "draws": 84,
+      "draws": 80,
       "frameChanges": 2,
       "effectCount": 8,
       "lastDraw": {
         "index": 14,
-        "angle": -0.6609263267949003,
-        "visualAngle": -0.660952477816186,
-        "residual": 0.022400223404627304,
+        "angle": -0.6400613267948899,
+        "visualAngle": -0.640087539275286,
+        "residual": 0.026155912341989246,
         "anchor": [
-          5874.210070316338,
-          1552.2452714576757
+          5873.973232654954,
+          1553.3726842705046
         ],
         "imageOrigin": [
           5874,
-          1552.5
+          1553.5
         ],
-        "bodySway": 0.16012913481036822,
+        "bodySway": 0.15590187748794837,
         "lightMode": "off",
         "activeLight": "off",
         "shadow": {
           "center": [
-            5876.210070316338,
-            1556.2452714576757
+            5875.973232654954,
+            1557.3726842705046
           ],
           "radii": [
             49,
             25
           ],
-          "angle": -0.6609263267949003
+          "angle": -0.6400613267948899
         }
       }
     },
@@ -577,15 +576,15 @@
     }
   },
   "marina-road": {
-    "x": 3780.1024969097157,
-    "y": 3788.5220099838048,
-    "angle": 0.9428249999999988,
+    "x": 3793.1824894726433,
+    "y": 3785.5947721425578,
+    "angle": 0.85995,
     "id": "precinct-unit-9",
     "map": "harbor-main",
     "speed": 0,
     "engine": true,
     "lightMode": "off",
-    "wheelPhase": 8.33569697362744,
+    "wheelPhase": 9.211174296395306,
     "driving": true,
     "collisions": 0,
     "saveError": false,
@@ -593,35 +592,35 @@
     "count": 1,
     "visual": {
       "index": 2,
-      "draws": 76,
+      "draws": 80,
       "frameChanges": 2,
       "effectCount": 8,
       "lastDraw": {
         "index": 2,
-        "angle": 0.9428249999999988,
-        "visualAngle": 0.9428087405243498,
-        "residual": 0.028333903882842276,
+        "angle": 0.85995,
+        "visualAngle": 0.8599368828039284,
+        "residual": 0.013416969493166429,
         "anchor": [
-          3780.1024969097157,
-          3788.5220099838048
+          3793.1824894726433,
+          3785.5947721425578
         ],
         "imageOrigin": [
-          3780,
-          3788.5
+          3793,
+          3785.5
         ],
-        "bodySway": 0.1281072100285291,
+        "bodySway": 0.12765498019282207,
         "lightMode": "off",
         "activeLight": "off",
         "shadow": {
           "center": [
-            3782.1024969097157,
-            3792.5220099838048
+            3795.1824894726433,
+            3789.5947721425578
           ],
           "radii": [
             49,
             25
           ],
-          "angle": 0.9428249999999988
+          "angle": 0.85995
         }
       }
     },
@@ -650,7 +649,7 @@
     "count": 1,
     "visual": {
       "index": 0,
-      "draws": 37,
+      "draws": 28,
       "frameChanges": 0,
       "effectCount": 0,
       "lastDraw": {

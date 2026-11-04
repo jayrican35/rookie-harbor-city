@@ -1,0 +1,7 @@
+{
+  "queries": 40000,
+  "oldOwnershipCalls": 44824228,
+  "indexedOwnershipCalls": 21170,
+  "geometryUnchanged": true,
+  "dynamicOwnershipChecked": true
+}

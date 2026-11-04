@@ -10,7 +10,6 @@ d=r/'published-game-capture/assets/police-driving/turning';(d/'frames').mkdir(pa
 sheet=Image.open(d.parent/'cruiser-16-source.png').convert('RGBA')
 cell=256;anchor=[128,168];scale=.5
 retained={0:0,2:1,4:4,6:5,12:12,14:13,15:15}
-baseline=[0,1,4,5,8,10,12,13]
 
 def old_cell(i):
     y=round(i//4*271.5);return sheet.crop((i%4*362,y,i%4*362+362,round((i//4+1)*271.5)))
@@ -65,16 +64,22 @@ def lens(im,b,color):
     assert max(p[1] for p in pts)-min(p[1] for p in pts)<35
     return {'polygon':hull(pts),'center':[round(sum(p[k] for p in pts)/len(pts),2) for k in range(2)]}
 
-widths=[]
-for i in baseline:
-    b=body_box(old_cell(i));widths.append((b[2]-b[0])*.34)
+def opaque_area(im):
+    return sum(n for a,n in enumerate(im.getchannel('A').histogram()) if a>=128)
+
+# Width-only fitting magnified tall reconstructed views and shrank shallow
+# views. Fit actual painted area to one symmetric, continuous projection model
+# calibrated from the original cardinal artwork. Each source still receives
+# ONE uniform offline scale; runtime dimensions never change with heading.
+side_area=sum(opaque_area(old_cell(i).crop(body_box(old_cell(i)))) for i in [0,8])*.34**2/2
+end_area=sum(opaque_area(old_cell(i).crop(body_box(old_cell(i)))) for i in [4,12])*.34**2/2
 atlas=Image.new('RGBA',(cell*4,cell*4));frames=[]
 reference=Image.new('RGB',(cell*4,(cell+24)*4),'#102238');draw=ImageDraw.Draw(reference)
 for i in range(16):
     source=old_cell(retained[i]) if i in retained else Image.open(d/'sources'/f'heading-{i:02}.png').convert('RGBA')
     b=body_box(source);crop=source.crop(b);a=math.radians(i*22.5)
-    target=(widths[i//2] if i%2==0 else (widths[i//2]+widths[(i//2+1)%8])/2)/scale
-    ratio=target/crop.width;size=(round(crop.width*ratio),round(crop.height*ratio))
+    target_area=(side_area*math.cos(a)**2+end_area*math.sin(a)**2)/scale**2
+    ratio=math.sqrt(target_area/opaque_area(crop));size=(round(crop.width*ratio),round(crop.height*ratio))
     assert ratio<=1,'Never upscale the source to claim extra detail'
     sprite=crop.resize(size,Image.Resampling.NEAREST)
     bottom=anchor[1]+round((14*abs(math.cos(a))+34*abs(math.sin(a)))/scale)
@@ -85,6 +90,7 @@ for i in range(16):
     lighting={color:lens(tile,bounds,color) for color in ['red','blue']}
     frames.append({'index':i,'angleDegrees':i*22.5,'angleRadians':a,'rect':[x,y,cell,cell],
         'anchor':anchor,'visualHeadingOffset':0,'bodyBounds':bounds,'lighting':lighting,
+        'normalization':{'method':'uniform projected opaque area','targetArea':round(target_area,2),'actualArea':opaque_area(tile)},
         'source':{'kind':'retained' if i in retained else 'image_gen reconstruction','cell':retained.get(i),
                   'file':'../cruiser-16-source.png' if i in retained else f'sources/heading-{i:02}.png',
                   'crop':b,'uniformExportScale':ratio},
@@ -99,6 +105,7 @@ for i in range(16):
 assert len({f['sha256'] for f in frames})==16
 atlas.save(d/'cruiser-16-atlas.png');reference.save(d/'angle-reference.png')
 manifest={'vehicleId':'precinct-unit-9','atlas':'cruiser-16-atlas.png','reviewed':args.approve,
+    'atlasSha256':hashlib.sha256((d/'cruiser-16-atlas.png').read_bytes()).hexdigest(),
     'cellSize':[cell,cell],'anchor':anchor,'renderScale':scale,'physicsFootprint':[96,48],
     'angleConvention':'0=east; positive clockwise with screen/world y down; fixed camera, no camera yaw',
     'frameStepDegrees':22.5,'visualHeadingOffset':0,'directionCount':16,

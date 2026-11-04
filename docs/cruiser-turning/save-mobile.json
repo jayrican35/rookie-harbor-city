@@ -2,14 +2,14 @@
   "mobile": {
     "moving": {
       "x": 1760,
-      "y": 1587.688460895074,
+      "y": 1590.0911139263308,
       "angle": 1.5707963267948966,
       "id": "precinct-unit-9",
       "map": "harbor-main",
-      "speed": 81.66113900930446,
+      "speed": 86.39433121884268,
       "engine": true,
       "lightMode": "off",
-      "wheelPhase": 1.673519176081255,
+      "wheelPhase": 1.8777446837380154,
       "driving": true,
       "collisions": 0,
       "saveError": false,
@@ -17,7 +17,7 @@
       "count": 1,
       "visual": {
         "index": 4,
-        "draws": 43,
+        "draws": 40,
         "frameChanges": 0,
         "effectCount": 0,
         "lastDraw": {
@@ -27,11 +27,11 @@
           "residual": 0,
           "anchor": [
             1760,
-            1587.688460895074
+            1590.0911139263308
           ],
           "imageOrigin": [
             1760,
-            1587.5
+            1590
           ],
           "bodySway": 0,
           "lightMode": "off",
@@ -39,7 +39,7 @@
           "shadow": {
             "center": [
               1762,
-              1591.688460895074
+              1594.0911139263308
             ],
             "radii": [
               49,
@@ -58,14 +58,14 @@
     },
     "parked": {
       "x": 1760,
-      "y": 1581.5547855659931,
+      "y": 1575.8712635530442,
       "angle": 1.5707963267948966,
       "id": "precinct-unit-9",
       "map": "harbor-main",
       "speed": 0,
       "engine": false,
       "lightMode": "red",
-      "wheelPhase": 1.1521567731092401,
+      "wheelPhase": 0.6690574020087224,
       "driving": false,
       "collisions": 0,
       "saveError": false,
@@ -73,7 +73,7 @@
       "count": 1,
       "visual": {
         "index": 4,
-        "draws": 221,
+        "draws": 204,
         "frameChanges": 0,
         "effectCount": 2,
         "lastDraw": {
@@ -83,19 +83,19 @@
           "residual": 0,
           "anchor": [
             1760,
-            1581.5547855659931
+            1575.8712635530442
           ],
           "imageOrigin": [
             1760,
-            1581.5
+            1576
           ],
-          "bodySway": 0.00009727759429033404,
+          "bodySway": 0.00002448085105925256,
           "lightMode": "red",
           "activeLight": "red",
           "shadow": {
             "center": [
               1762,
-              1585.5547855659931
+              1579.8712635530442
             ],
             "radii": [
               49,
@@ -114,7 +114,7 @@
     },
     "reloaded": {
       "x": 1760,
-      "y": 1581.5547855659931,
+      "y": 1575.8712635530442,
       "angle": 1.5707963267948966,
       "id": "precinct-unit-9",
       "map": "harbor-main",
@@ -172,7 +172,7 @@
     },
     "jay": {
       "x": 1760,
-      "y": 1581.5547855659931,
+      "y": 1575.8712635530442,
       "angle": 1.5707963267948966,
       "id": "precinct-unit-9",
       "map": "harbor-main",
@@ -196,11 +196,11 @@
           "residual": 0,
           "anchor": [
             1760,
-            1581.5547855659931
+            1575.8712635530442
           ],
           "imageOrigin": [
             1760,
-            1581.5
+            1576
           ],
           "bodySway": 0,
           "lightMode": "red",
@@ -208,7 +208,7 @@
           "shadow": {
             "center": [
               1762,
-              1585.5547855659931
+              1579.8712635530442
             ],
             "radii": [
               49,
@@ -227,7 +227,7 @@
     },
     "imported": {
       "x": 1760,
-      "y": 1581.5547855659931,
+      "y": 1575.8712635530442,
       "angle": 1.5707963267948966,
       "id": "precinct-unit-9",
       "map": "harbor-main",

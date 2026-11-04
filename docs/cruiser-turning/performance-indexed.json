@@ -1,0 +1,118 @@
+{
+  "throttle": 4,
+  "frames": 54,
+  "fps": 8.94973233670882,
+  "p50": 83.30000000000291,
+  "p95": 316.6999999999989,
+  "over34": 54,
+  "work": {
+    "draws": {
+      "v115CampusCanvas": 27322,
+      "(offscreen)": 2504
+    },
+    "writes": 9,
+    "writeMs": 4.1000001430511475
+  },
+  "topSelfMs": [
+    {
+      "fn": "(program) :-1",
+      "ms": 3659.728
+    },
+    {
+      "fn": "fillText :-1",
+      "ms": 767.795
+    },
+    {
+      "fn": "drawImage :-1",
+      "ms": 499.79
+    },
+    {
+      "fn": "fillRect :-1",
+      "ms": 381.707
+    },
+    {
+      "fn": "restore :-1",
+      "ms": 343.137
+    },
+    {
+      "fn": "blocked game-v115.bundle.js?v=6a6831c1b8ee:45753",
+      "ms": 181.164
+    },
+    {
+      "fn": "paint game-v115.bundle.js?v=6a6831c1b8ee:46689",
+      "ms": 153.157
+    },
+    {
+      "fn": "districtAt game-v115.bundle.js?v=6a6831c1b8ee:45596",
+      "ms": 138.17
+    },
+    {
+      "fn": "scenicBlocked v127-citywide-art.js?v=52ba8a385ee6:525",
+      "ms": 129.895
+    },
+    {
+      "fn": "proto.<computed> :2",
+      "ms": 128.858
+    },
+    {
+      "fn": "bayMark game-v115.bundle.js?v=6a6831c1b8ee:45507",
+      "ms": 121.795
+    },
+    {
+      "fn": "circleHitsRect game-v115.bundle.js?v=6a6831c1b8ee:45730",
+      "ms": 110.469
+    },
+    {
+      "fn": "save :-1",
+      "ms": 99.378
+    },
+    {
+      "fn": "drawEntityHighlights game-v115.bundle.js?v=6a6831c1b8ee:46560",
+      "ms": 93.075
+    },
+    {
+      "fn": "scopedRoom v131-precinct-legacy-bridge.js?v=f16a0605a2c1:282",
+      "ms": 87.936
+    },
+    {
+      "fn": "inDistrict game-v115.bundle.js?v=6a6831c1b8ee:45595",
+      "ms": 84.993
+    },
+    {
+      "fn": "collides game-v115.bundle.js?v=6a6831c1b8ee:45480",
+      "ms": 79.183
+    },
+    {
+      "fn": "tileChunk v127-citywide-art.js?v=52ba8a385ee6:46",
+      "ms": 70.2
+    },
+    {
+      "fn": "drawRoadNetwork v135-precinct-wallkit-test.js?v=b69c3845468f:292",
+      "ms": 68.162
+    },
+    {
+      "fn": "stats v135-precinct-wallkit-test.js?v=b69c3845468f:403",
+      "ms": 62.608
+    },
+    {
+      "fn": "clip :-1",
+      "ms": 58.766
+    },
+    {
+      "fn": "(garbage collector) :-1",
+      "ms": 54.291
+    },
+    {
+      "fn": "streets v115-showcase.js?v=28d1be15a300:166",
+      "ms": 52.919
+    },
+    {
+      "fn": "indexedSolidHit game-v115.bundle.js?v=6a6831c1b8ee:45745",
+      "ms": 48.836
+    },
+    {
+      "fn": " v131-precinct-legacy-bridge.js?v=f16a0605a2c1:327",
+      "ms": 47.698
+    }
+  ]
+}

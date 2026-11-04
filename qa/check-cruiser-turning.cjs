@@ -6,6 +6,11 @@ assert(!/requestAnimationFrame|setInterval|setTimeout|localStorage|Math\.random/
 assert.equal(new Set(manifest.frames.map(f=>f.sha256)).size,16);
 assert.equal(manifest.pixelBodyRotationsInExport,0);assert.equal(manifest.bodyMirrorsInExport,0);
 manifest.frames.forEach((f,i)=>{assert.equal(f.angleDegrees,i*22.5);assert.deepEqual(f.anchor,[128,168]);assert.equal(f.visualHeadingOffset,0);for(const lens of Object.values(f.lighting))assert(lens.polygon.length>=3);});
+for(let i=0;i<16;i++){
+ const a=manifest.frames[i].normalization,b=manifest.frames[(i+1)%16].normalization;
+ assert(Math.abs(a.actualArea/a.targetArea-1)<.025,'Painted size matches the continuous projection, not source width');
+ assert(Math.max(a.actualArea,b.actualArea)/Math.min(a.actualArea,b.actualArea)<1.12,'Adjacent poses cannot pop in apparent size');
+}
 let fetches=0;const window={};class FakeImage{set src(v){this.naturalWidth=this.naturalHeight=1024;this.complete=true;queueMicrotask(()=>this.onload());}}
 vm.runInNewContext(source,{window,Image:FakeImage,fetch:async()=>{fetches++;return {ok:true,json:async()=>manifest};},Math,Number,Promise,Object,Error});
 const V=window.ROOKIE_CRUISER_VISUAL;

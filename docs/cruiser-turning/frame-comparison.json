@@ -1,0 +1,41 @@
+{
+  "note": "Uninstrumented actual driving; identical art, view, keys. Baseline campus served from local commit 3984435 in an isolated browser route. Headless Chrome; not a handset benchmark.",
+  "runs": [
+    {
+      "baseline": true,
+      "rate": 1,
+      "fps": 54.6,
+      "p50Ms": 17.899999999999636,
+      "p95Ms": 18.399999999999636,
+      "over34": 4,
+      "frames": 246
+    },
+    {
+      "baseline": false,
+      "rate": 1,
+      "fps": 55.4,
+      "p50Ms": 17.80000000000109,
+      "p95Ms": 18.300000000000182,
+      "over34": 2,
+      "frames": 250
+    },
+    {
+      "baseline": true,
+      "rate": 4,
+      "fps": 12.3,
+      "p50Ms": 71.5,
+      "p95Ms": 123.69999999999982,
+      "over34": 56,
+      "frames": 56
+    },
+    {
+      "baseline": false,
+      "rate": 4,
+      "fps": 20.8,
+      "p50Ms": 36.099999999999454,
+      "p95Ms": 71.70000000000073,
+      "over34": 90,
+      "frames": 94
+    }
+  ]
+}

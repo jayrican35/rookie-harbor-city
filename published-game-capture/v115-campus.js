@@ -187,8 +187,29 @@
     const px=Math.max(b.x,Math.min(b.x+b.w,x)),py=Math.max(b.y,Math.min(b.y+b.h,y));
     return (x-px)*(x-px)+(y-py)*(y-py) < radius*radius;
   }
+  // Static connected geometry is indexed once. Moving traffic, actors, water
+  // and Marina ownership remain live checks; no result cache hides changes.
+  function buildSolidIndex(boxes){
+    const cells=new Map();
+    for(const b of boxes)for(let cy=Math.floor(b.y/192);cy<=Math.floor((b.y+b.h)/192);cy++)
+      for(let cx=Math.floor(b.x/192);cx<=Math.floor((b.x+b.w)/192);cx++){
+        const key=cx+','+cy;let list=cells.get(key);if(!list)cells.set(key,list=[]);list.push(b);
+      }
+    return cells;
+  }
+  const districtSolidIndex=buildSolidIndex(districtSolids),vehicleSolidIndex=buildSolidIndex(vehicleOnlySolids);
+  function indexedSolidHit(index,x,y,r){
+    for(let cy=Math.floor((y-r)/192);cy<=Math.floor((y+r)/192);cy++)
+      for(let cx=Math.floor((x-r)/192);cx<=Math.floor((x+r)/192);cx++){
+        const boxes=index.get(cx+','+cy);if(!boxes)continue;
+        for(const b of boxes)if(circleHitsRect(x,y,r,b)&&!window.ROOKIE_V116_MARINA?.ownsSolid?.(b))return true;
+      }
+    return false;
+  }
   function blocked(x,y,r=12,ignoreCruiser=false,vehicle=false){
-    if(vehicle)for(const b of vehicleOnlySolids){if(!window.ROOKIE_V116_MARINA?.ownsSolid?.(b)&&circleHitsRect(x,y,r,b))return true;}
+    // Broad rejection first: ownership only matters for an intersecting box.
+    // The ownership result and precise circle collision rules are unchanged.
+    if(vehicle&&indexedSolidHit(vehicleSolidIndex,x,y,r))return true;
     if(!ignoreCruiser&&cruiser?.blocksWalker(x,y,r))return true;
     if(x<MIN_X+r||y<MIN_Y+r||x>W-r||y>HGT-r)return true;
     // Outside the precinct, preserve each district's original solid geometry.
@@ -196,11 +217,7 @@
     if(!districtAt(x,y)){
       for(let i=0;i<collision.length;i++)if(circleHitsRect(x,y,r,collision[i]))return true;
     } else {
-      for(let i=0;i<districtSolids.length;i++){
-        const b=districtSolids[i];
-        if(window.ROOKIE_V116_MARINA?.ownsSolid?.(b))continue;
-        if(circleHitsRect(x,y,r,b))return true;
-      }
+      if(indexedSolidHit(districtSolidIndex,x,y,r))return true;
     }
     // V116 only adds solid coastal structures/water, never replaces legacy solids.
     const marina=window.ROOKIE_V116_MARINA;

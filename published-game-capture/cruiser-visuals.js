@@ -9,9 +9,9 @@ const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const assets={status:'idle',manifest:null,image:null,error:null};let pending=null;
 function load(root='./assets/police-driving/turning/'){
  if(pending)return pending;assets.status='loading';
- pending=fetch(root+'manifest.json').then(r=>{if(!r.ok)throw Error('Cruiser manifest '+r.status);return r.json();}).then(m=>{
+ pending=fetch(root+'manifest.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('Cruiser manifest '+r.status);return r.json();}).then(m=>{
   if(m.directionCount!==16||m.frames.length!==16||m.vehicleId!=='precinct-unit-9'||!m.frames.every((f,i)=>f.index===i&&f.angleDegrees===i*22.5&&f.rect[2]===m.cellSize[0]&&f.rect[3]===m.cellSize[1]&&f.anchor[0]===m.anchor[0]&&f.anchor[1]===m.anchor[1]))throw Error('Invalid cruiser atlas geometry');
-  return new Promise((resolve,reject)=>{const im=new Image();im.decoding='async';im.onload=()=>{if(!m.frames.every(f=>f.rect[0]>=0&&f.rect[1]>=0&&f.rect[0]+f.rect[2]<=im.naturalWidth&&f.rect[1]+f.rect[3]<=im.naturalHeight))return reject(Error('Cruiser atlas dimensions do not match its manifest'));resolve({m,im});};im.onerror=()=>reject(Error('Cruiser atlas unavailable'));im.src=root+m.atlas;});
+  return new Promise((resolve,reject)=>{const im=new Image();im.decoding='async';im.onload=()=>{if(!m.frames.every(f=>f.rect[0]>=0&&f.rect[1]>=0&&f.rect[0]+f.rect[2]<=im.naturalWidth&&f.rect[1]+f.rect[3]<=im.naturalHeight))return reject(Error('Cruiser atlas dimensions do not match its manifest'));resolve({m,im});};im.onerror=()=>reject(Error('Cruiser atlas unavailable'));im.src=root+m.atlas+(m.atlasSha256?'?v='+m.atlasSha256:'');});
  }).then(({m,im})=>{assets.manifest=m;assets.image=im;assets.status='ready';return true;}).catch(e=>{assets.status='fallback';assets.error=e.message;return false;});
  return pending;
 }

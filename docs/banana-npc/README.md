@@ -8,18 +8,20 @@ Refresh `http://127.0.0.1:8767/`, choose **Chicken & Banana NPCs · Talk nearby*
 
 `index.html` shows actual gameplay screenshots. `results.json` records the Banana browser tests. `source-validation.json` contains ZIP/file hashes and individual-frame/atlas comparisons.
 
-## Important source-art defect
+## Talking-frame repair
 
-The supplied **talking frames 2 and 3 contain visibly cut-off artwork**. Their transparent margins are valid, but the extracted character silhouette inside those margins is incomplete. The original PNGs and manifest are preserved unchanged for reference; these two cells are **excluded from gameplay**. Talking uses the intact cells **0, 1, 0, 1** at the supplied 220ms cadence. The test samples playback and confirms neither damaged cell appears.
+The initial pack had cut-off artwork in talking cells 2 and 3. The owner's `ROOKIE_Banana_Talking_Frames_Fixed_PATCH (1).zip` now replaces exactly those two individual PNGs and the assembled talking atlas. All four repaired cells were visually reviewed and exercised in the real game. The temporary 0/1-only restriction is removed; speech now plays **0, 1, 2, 3** at the supplied 220ms cadence.
 
-This remains reference-extracted pilot artwork. Minor edge, pose and directional differences remain at large zoom. The import does not claim to have redrawn or repaired those source pixels. Additional talk poses require a corrected source rather than silently displaying a chopped character.
+The cell size (112×120), foot anchor (56,110), scale and portrait/dialogue behavior are unchanged. A content hash on the talk-atlas URL refreshes the browser's cached artwork. Other Banana art, walking, spawn, route and Chicken are unchanged.
+
+This remains reference-extracted pilot artwork; subtle pose/edge differences may still be visible at large zoom. The corrected gloves are part of the supplied repair, not a runtime reconstruction. The original checkerboard preview remains historical; `previews/banana_talk_repaired_zoom.png` is the supplied repaired preview.
 
 ## Integration
 
-- `published-game-capture/assets/banana-npc/` preserves the supplied pack byte-for-byte at import.
+- `published-game-capture/assets/banana-npc/` preserves the base pack, with only the talking atlas and frames 2/3 replaced by the owner-supplied repair.
 - Walk atlas: 112×120 cells, four columns, rows **down, left, right, up**, foot anchor **(56,110)**, 170ms equivalent distance cadence. It uses the same 0.75 world scale, 30-unit walking speed and native collision radius as Chicken.
 - Idle/talk sheets use the same cells and anchor but contain taller artwork. Scale **60/102** normalizes visible body height to about 60 world units. Argument poses use 160×160 cells, anchor **(80,155)** and scale **0.45**. All states keep the same feet position and soft ground shadow.
-- The supplied idle sheet plays while listening; the approved talk cells play for ordinary Banana speech. Supplied argument poses are available for angry/excited metadata and were exercised in the actual-game QA view. Eight portraits are imported; normal comic replies use smug, with annoyed, surprised and thinking available for matching moods.
+- The supplied idle sheet plays while listening; all four repaired talk cells play for ordinary Banana speech. Supplied argument poses are available for angry/excited metadata and were exercised in the actual-game QA view. Eight portraits are imported; normal comic replies use smug, with annoyed, surprised and thinking available for matching moods.
 - A single `npc_banana` joins the existing ambient pedestrian route list, native interaction list and feet-sorted actor queue. Its short sidewalk route sits a few tiles from Chicken, away from the precinct entrance and cruiser lot. No new solid geometry is created.
 - Existing camera projection, comic renderer, modal controls, pagination and conversation callbacks are reused. There is no new simulation, dialogue engine, dependency, animation clock or save writer.
 - The existing exchange resolves both live NPCs, and its proximity check works near either actor. The old banana prop is suppressed in the connected view.
@@ -27,9 +29,9 @@ This remains reference-extracted pilot artwork. Minor edge, pose and directional
 
 ## Tests actually run
 
-- All original ZIP files match their imported bytes. All 28 animation cells match the individual PNGs, retain RGBA transparency and have margins. Visual inspection separately identified and withheld talking cells 2/3; structural bounds alone would not have caught their defects.
+- Every imported source file matches either the base ZIP or the supplied repair ZIP. All 28 animation cells match the individual PNGs and retain RGBA transparency and margins. Visual inspection confirms the repaired talking cells have complete gloves; structural bounds alone did not detect the original defects.
 - Actual walking through all four directions, correct source rows, stable feet and unobstructed native collision positions.
-- Idle, approved talking, argument animation and loaded expressive portrait in the real game.
+- Idle, full four-frame repaired talking, argument animation and loaded expressive portrait in the real game.
 - Stable world anchor and scale while zooming at 0.55×, 1.7× and 2.5×.
 - Both NPCs pause during conversation, then resume. Exactly one Chicken and one Banana remain after closing/reopening the preview.
 - Mobile portrait 390×844: taps advance to Banana; its speech balloon remains visible and within the screen.

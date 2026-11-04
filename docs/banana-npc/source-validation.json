@@ -1,58 +1,217 @@
 {
-  "sourceZIP": "ROOKIE_Banana_NPC_Import_Pack.zip",
-  "zipSHA256": "ae318d3ee5491436ae3273897903f2b827b92024067cf575b1db00d9eb72b227",
-  "sourceFilesByteIdentical": true,
+  "baseZIP": "ROOKIE_Banana_NPC_Import_Pack.zip",
+  "repairZIP": "ROOKIE_Banana_Talking_Frames_Fixed_PATCH (1).zip",
+  "repairSHA256": "6dcc34f39910d935d7922902dca9a6b96c94ef62803ebf8c9264c0b0aa3a5adf",
+  "sourceFilesMatchBaseOrRepair": true,
   "files": {
-    "README_FIRST.md": "ab3151b1d3d0d40022947d261124384d69e576777a68d8f45d7035c28509a5d3",
-    "banana_manifest.json": "6cff76df13c83eaaea7c11dcb8e1fec0d403ad06702ad36cb0ac000193b3ab79",
-    "preview.html": "b9a1853ff20266abfb56c28bb7d8226fa0ab1a36fd723932b6ee2dbe375f15cf",
-    "portraits/banana_annoyed.png": "7e73e49b492512a20c0d71bce207e023cc99c119202424c3f4d219791f7881f7",
-    "portraits/banana_confused.png": "be5c590a71a2100bce3eb74bdbd327d29917eb9919937c853cbe4b2ab63543c6",
-    "portraits/banana_laughing.png": "6a8187357ba5cf57fb3219681113d92ebe5371f3889e82b72976343ccae8741c",
-    "portraits/banana_neutral.png": "49720b3484129770586d5696a859d3b4a64097ad279408cac6a6d3f6d86f908f",
-    "portraits/banana_smug.png": "9ce62663c4af50b454f35272b7ea95854e1d47dc94e60512cabac681c3c034c8",
-    "portraits/banana_surprised.png": "c4b75a983c84e9aea768e6a6b6326f0f3d7f50b157b072878c60c37d8f9e8a3c",
-    "portraits/banana_talking.png": "8ab440fb581f354b6dcce71e8aa24b6e4407dd122b46e45056c64ddf514ceae9",
-    "portraits/banana_thinking.png": "a90277b01b3ed3705b1ff1b0828bbe2b9f2529403e763a0c865bb79c8d3686d6",
-    "reference/banana_concept_board.png": "7335e03e787bb163b62b1bca7801021506ebb5b4c1b33cb52a019a06b31cf4f8",
-    "sprites/frames/banana_argue_00.png": "0f79dcaec384d2740e6c4102e74aa0fa7d65887a10320d0c1c7b0243fdf0c837",
-    "sprites/frames/banana_argue_01.png": "9b33692de1a23b1033bcb0faa7d6e8478a067fda84c6e2dbdf0241b90138c7ef",
-    "sprites/frames/banana_argue_02.png": "46eb66c15767c898d71f49b8dd65f5721476387f67bf2189d4dd00bdc58612dd",
-    "sprites/frames/banana_argue_03.png": "5b840c166cccdcdd33cc544d53ae19cf66294dd46ae4b129f7f533c2818cd0bf",
-    "sprites/frames/banana_down_00.png": "d93fab632f70e3f0111cf60a4e76551c09460a92225432c8732199706b956572",
-    "sprites/frames/banana_down_01.png": "50fa46b97cb6aed7d37009b70e706b033e1645904a8203bb401584f316c56875",
-    "sprites/frames/banana_down_02.png": "0d8d3254f551f04845f1958636ab0f709f4baa74a56746ef477bab8c202883bc",
-    "sprites/frames/banana_down_03.png": "f9d4535f092c5f088f5a737c2dfcdf166bf407b8a4931087884e5d566d72076b",
-    "sprites/frames/banana_idle_00.png": "ee5ccd3734e6edef26a26ab5f2a11d9b5e66b6781632d09a4485bcc380fbbd29",
-    "sprites/frames/banana_idle_01.png": "78c173d83ec23c59abed45dd17328e3cf258e59c891a63af11f5628e6be4e958",
-    "sprites/frames/banana_idle_02.png": "ac04e8a578e822444e44b1f789eb7aa4728bac98b1180b395b236e381b59c62c",
-    "sprites/frames/banana_idle_03.png": "9cbb226aac9344c141c55f22a61e8d9a3630f7a86660500063372d45f074b39b",
-    "sprites/frames/banana_left_00.png": "637ae619e085445073d894be0a8b39fcd33ff6d61aa9a4465b7f4a7e9a8a9425",
-    "sprites/frames/banana_left_01.png": "27d5190a630e80304e4d46c130b277f4b7d6dd96ec83c481bda02680440d6a1b",
-    "sprites/frames/banana_left_02.png": "4a7f77e71df3d0f7595d6bd07a76c7588c6b60d6c480cf6b6d207cb4ec20f029",
-    "sprites/frames/banana_left_03.png": "7ce9559897ad1e02a47f325237c4b2b6dbb812126b4831a5e9e3f653fd5faf6c",
-    "sprites/frames/banana_right_00.png": "7967b8eb2fa0ce045f87fb19532aba7601bb9c7fe5f461fecd6d8f118b83a963",
-    "sprites/frames/banana_right_01.png": "a2a4b099d77dadfcba041d0f9ea11ab64b0c3edf0dbc4f9ac8d8a55112d607a7",
-    "sprites/frames/banana_right_02.png": "6325aaac26548717dae3207e9ae886fdf4f348e5cc28836aef2a420a5ceead4e",
-    "sprites/frames/banana_right_03.png": "9837994328ca2afdab60f326fbf4900b47e2bd137480cd247d55d4afb2eb1b8c",
-    "sprites/frames/banana_talk_00.png": "a5909b459faed96d5e936b4027396248d01ece8b9815d775763ac9b2c277cb91",
-    "sprites/frames/banana_talk_01.png": "91f984973bcd8923924bb6d99466fdafff087bfaadce7f96f5c92c3ea734bd2d",
-    "sprites/frames/banana_talk_02.png": "8aa810b6726669a69f2ddf1ff3e31b6721032e2e1ac375b759edd16d610c048d",
-    "sprites/frames/banana_talk_03.png": "f691ab4c615ffbec52280a39e6af2693b02a30e20e0092615ab5933a4d0d2188",
-    "sprites/frames/banana_up_00.png": "8113be4e15b6449e75f67bb7396da55429d872e283f23ef7a9df6fa98a943be9",
-    "sprites/frames/banana_up_01.png": "fd546b5ea99868f4c3eb1d199642a7fb6c6a9a252c923ef1719eff296c2eb19d",
-    "sprites/frames/banana_up_02.png": "eecd71b406208edbfa8b9d5507fb76ed1ffec8dcc1f7e1b8b8666d0c757b37f5",
-    "sprites/frames/banana_up_03.png": "925b5186710c2c853f5934e736337807de2165e772e3ae8633244437c3151e0e",
-    "sprites/atlas/banana_argue_4x1.png": "0d234a8201de269ec6b8819d4d93203f00857facc7c24db04efa7b61272de4eb",
-    "sprites/atlas/banana_idle_4x1.png": "8b0e091367d85d5f0eaf6c44642cd84052af6d4455b948df6f1b068de5ae8bfb",
-    "sprites/atlas/banana_talk_4x1.png": "1e639c49097bb42003b9af68390d276cbd4db4d710a3e84f3917bf31bb604f49",
-    "sprites/atlas/banana_walk_4x4.png": "be92ed209ed6c813ff442aebfe9ac27e7e911f5355e2ea1def0989a918507552",
-    "previews/banana_argue_checker.png": "7ce301cb253adbe0f574f75391b28b30bc1f60bcdd414cb6ae2e48cf0b5cb41d",
-    "previews/banana_idle_checker.png": "36985e514d5528156686a9b8fd8cc7b98882bb3a0ff32e84ef80b91a37b19175",
-    "previews/banana_talk_checker.png": "fb16df8405437ebf5c64ecf59b2e9ec5276c6df2dd7d74bf713f26b26fc86e0f",
-    "previews/banana_walk_checker.png": "a0dfb32bc8d2a999aa3b5925d5d14fc1385268c520bdc41c66fbcf4f0d7332fd",
-    "docs/CODEX_IMPORT.md": "91b2be04034a5bdc7f588b0246223c0740b7d835825a970cd8fb79c171234a9a",
-    "docs/extraction_qa.json": "7d57fbeaa115faab5e3e3cda4c3ad6731c814e5913ab6f5302b080f60699bd99"
+    "README_FIRST.md": {
+      "sha256": "ab3151b1d3d0d40022947d261124384d69e576777a68d8f45d7035c28509a5d3",
+      "source": "base"
+    },
+    "banana_manifest.json": {
+      "sha256": "6cff76df13c83eaaea7c11dcb8e1fec0d403ad06702ad36cb0ac000193b3ab79",
+      "source": "base"
+    },
+    "docs/CODEX_IMPORT.md": {
+      "sha256": "91b2be04034a5bdc7f588b0246223c0740b7d835825a970cd8fb79c171234a9a",
+      "source": "base"
+    },
+    "docs/CODEX_TALK_FRAME_REPAIR.md": {
+      "sha256": "e0fa2f37dacfb9d5547ad8175239ff47043eab9320e777978f45b834516f549a",
+      "source": "repair"
+    },
+    "docs/extraction_qa.json": {
+      "sha256": "7d57fbeaa115faab5e3e3cda4c3ad6731c814e5913ab6f5302b080f60699bd99",
+      "source": "base"
+    },
+    "portraits/banana_annoyed.png": {
+      "sha256": "7e73e49b492512a20c0d71bce207e023cc99c119202424c3f4d219791f7881f7",
+      "source": "base"
+    },
+    "portraits/banana_confused.png": {
+      "sha256": "be5c590a71a2100bce3eb74bdbd327d29917eb9919937c853cbe4b2ab63543c6",
+      "source": "base"
+    },
+    "portraits/banana_laughing.png": {
+      "sha256": "6a8187357ba5cf57fb3219681113d92ebe5371f3889e82b72976343ccae8741c",
+      "source": "base"
+    },
+    "portraits/banana_neutral.png": {
+      "sha256": "49720b3484129770586d5696a859d3b4a64097ad279408cac6a6d3f6d86f908f",
+      "source": "base"
+    },
+    "portraits/banana_smug.png": {
+      "sha256": "9ce62663c4af50b454f35272b7ea95854e1d47dc94e60512cabac681c3c034c8",
+      "source": "base"
+    },
+    "portraits/banana_surprised.png": {
+      "sha256": "c4b75a983c84e9aea768e6a6b6326f0f3d7f50b157b072878c60c37d8f9e8a3c",
+      "source": "base"
+    },
+    "portraits/banana_talking.png": {
+      "sha256": "8ab440fb581f354b6dcce71e8aa24b6e4407dd122b46e45056c64ddf514ceae9",
+      "source": "base"
+    },
+    "portraits/banana_thinking.png": {
+      "sha256": "a90277b01b3ed3705b1ff1b0828bbe2b9f2529403e763a0c865bb79c8d3686d6",
+      "source": "base"
+    },
+    "preview.html": {
+      "sha256": "b9a1853ff20266abfb56c28bb7d8226fa0ab1a36fd723932b6ee2dbe375f15cf",
+      "source": "base"
+    },
+    "previews/banana_argue_checker.png": {
+      "sha256": "7ce301cb253adbe0f574f75391b28b30bc1f60bcdd414cb6ae2e48cf0b5cb41d",
+      "source": "base"
+    },
+    "previews/banana_idle_checker.png": {
+      "sha256": "36985e514d5528156686a9b8fd8cc7b98882bb3a0ff32e84ef80b91a37b19175",
+      "source": "base"
+    },
+    "previews/banana_talk_checker.png": {
+      "sha256": "fb16df8405437ebf5c64ecf59b2e9ec5276c6df2dd7d74bf713f26b26fc86e0f",
+      "source": "base"
+    },
+    "previews/banana_talk_repaired_zoom.png": {
+      "sha256": "9ad6fb1f3a10cca77e8f9caaf48eea1b100aea02e5fad327eae7fe446df711c3",
+      "source": "repair"
+    },
+    "previews/banana_walk_checker.png": {
+      "sha256": "a0dfb32bc8d2a999aa3b5925d5d14fc1385268c520bdc41c66fbcf4f0d7332fd",
+      "source": "base"
+    },
+    "reference/banana_concept_board.png": {
+      "sha256": "7335e03e787bb163b62b1bca7801021506ebb5b4c1b33cb52a019a06b31cf4f8",
+      "source": "base"
+    },
+    "sprites/atlas/banana_argue_4x1.png": {
+      "sha256": "0d234a8201de269ec6b8819d4d93203f00857facc7c24db04efa7b61272de4eb",
+      "source": "base"
+    },
+    "sprites/atlas/banana_idle_4x1.png": {
+      "sha256": "8b0e091367d85d5f0eaf6c44642cd84052af6d4455b948df6f1b068de5ae8bfb",
+      "source": "base"
+    },
+    "sprites/atlas/banana_talk_4x1.png": {
+      "sha256": "a4720ba2c4ba268552ebee0a7291d07b2a697ccf92c615b93d4f9f04d5cb2719",
+      "source": "repair"
+    },
+    "sprites/atlas/banana_walk_4x4.png": {
+      "sha256": "be92ed209ed6c813ff442aebfe9ac27e7e911f5355e2ea1def0989a918507552",
+      "source": "base"
+    },
+    "sprites/frames/banana_argue_00.png": {
+      "sha256": "0f79dcaec384d2740e6c4102e74aa0fa7d65887a10320d0c1c7b0243fdf0c837",
+      "source": "base"
+    },
+    "sprites/frames/banana_argue_01.png": {
+      "sha256": "9b33692de1a23b1033bcb0faa7d6e8478a067fda84c6e2dbdf0241b90138c7ef",
+      "source": "base"
+    },
+    "sprites/frames/banana_argue_02.png": {
+      "sha256": "46eb66c15767c898d71f49b8dd65f5721476387f67bf2189d4dd00bdc58612dd",
+      "source": "base"
+    },
+    "sprites/frames/banana_argue_03.png": {
+      "sha256": "5b840c166cccdcdd33cc544d53ae19cf66294dd46ae4b129f7f533c2818cd0bf",
+      "source": "base"
+    },
+    "sprites/frames/banana_down_00.png": {
+      "sha256": "d93fab632f70e3f0111cf60a4e76551c09460a92225432c8732199706b956572",
+      "source": "base"
+    },
+    "sprites/frames/banana_down_01.png": {
+      "sha256": "50fa46b97cb6aed7d37009b70e706b033e1645904a8203bb401584f316c56875",
+      "source": "base"
+    },
+    "sprites/frames/banana_down_02.png": {
+      "sha256": "0d8d3254f551f04845f1958636ab0f709f4baa74a56746ef477bab8c202883bc",
+      "source": "base"
+    },
+    "sprites/frames/banana_down_03.png": {
+      "sha256": "f9d4535f092c5f088f5a737c2dfcdf166bf407b8a4931087884e5d566d72076b",
+      "source": "base"
+    },
+    "sprites/frames/banana_idle_00.png": {
+      "sha256": "ee5ccd3734e6edef26a26ab5f2a11d9b5e66b6781632d09a4485bcc380fbbd29",
+      "source": "base"
+    },
+    "sprites/frames/banana_idle_01.png": {
+      "sha256": "78c173d83ec23c59abed45dd17328e3cf258e59c891a63af11f5628e6be4e958",
+      "source": "base"
+    },
+    "sprites/frames/banana_idle_02.png": {
+      "sha256": "ac04e8a578e822444e44b1f789eb7aa4728bac98b1180b395b236e381b59c62c",
+      "source": "base"
+    },
+    "sprites/frames/banana_idle_03.png": {
+      "sha256": "9cbb226aac9344c141c55f22a61e8d9a3630f7a86660500063372d45f074b39b",
+      "source": "base"
+    },
+    "sprites/frames/banana_left_00.png": {
+      "sha256": "637ae619e085445073d894be0a8b39fcd33ff6d61aa9a4465b7f4a7e9a8a9425",
+      "source": "base"
+    },
+    "sprites/frames/banana_left_01.png": {
+      "sha256": "27d5190a630e80304e4d46c130b277f4b7d6dd96ec83c481bda02680440d6a1b",
+      "source": "base"
+    },
+    "sprites/frames/banana_left_02.png": {
+      "sha256": "4a7f77e71df3d0f7595d6bd07a76c7588c6b60d6c480cf6b6d207cb4ec20f029",
+      "source": "base"
+    },
+    "sprites/frames/banana_left_03.png": {
+      "sha256": "7ce9559897ad1e02a47f325237c4b2b6dbb812126b4831a5e9e3f653fd5faf6c",
+      "source": "base"
+    },
+    "sprites/frames/banana_right_00.png": {
+      "sha256": "7967b8eb2fa0ce045f87fb19532aba7601bb9c7fe5f461fecd6d8f118b83a963",
+      "source": "base"
+    },
+    "sprites/frames/banana_right_01.png": {
+      "sha256": "a2a4b099d77dadfcba041d0f9ea11ab64b0c3edf0dbc4f9ac8d8a55112d607a7",
+      "source": "base"
+    },
+    "sprites/frames/banana_right_02.png": {
+      "sha256": "6325aaac26548717dae3207e9ae886fdf4f348e5cc28836aef2a420a5ceead4e",
+      "source": "base"
+    },
+    "sprites/frames/banana_right_03.png": {
+      "sha256": "9837994328ca2afdab60f326fbf4900b47e2bd137480cd247d55d4afb2eb1b8c",
+      "source": "base"
+    },
+    "sprites/frames/banana_talk_00.png": {
+      "sha256": "a5909b459faed96d5e936b4027396248d01ece8b9815d775763ac9b2c277cb91",
+      "source": "base"
+    },
+    "sprites/frames/banana_talk_01.png": {
+      "sha256": "91f984973bcd8923924bb6d99466fdafff087bfaadce7f96f5c92c3ea734bd2d",
+      "source": "base"
+    },
+    "sprites/frames/banana_talk_02.png": {
+      "sha256": "932c8c7ba025053bc89aec277f48af8c1fd4ddc102ab1a600d93c24f8b2de8b6",
+      "source": "repair"
+    },
+    "sprites/frames/banana_talk_03.png": {
+      "sha256": "18b55a14ab551e0a918325948ae0dbfc56aafe29d88aaa812b40b5a2c72ebcf4",
+      "source": "repair"
+    },
+    "sprites/frames/banana_up_00.png": {
+      "sha256": "8113be4e15b6449e75f67bb7396da55429d872e283f23ef7a9df6fa98a943be9",
+      "source": "base"
+    },
+    "sprites/frames/banana_up_01.png": {
+      "sha256": "fd546b5ea99868f4c3eb1d199642a7fb6c6a9a252c923ef1719eff296c2eb19d",
+      "source": "base"
+    },
+    "sprites/frames/banana_up_02.png": {
+      "sha256": "eecd71b406208edbfa8b9d5507fb76ed1ffec8dcc1f7e1b8b8666d0c757b37f5",
+      "source": "base"
+    },
+    "sprites/frames/banana_up_03.png": {
+      "sha256": "925b5186710c2c853f5934e736337807de2165e772e3ae8633244437c3151e0e",
+      "source": "base"
+    }
   },
   "cells": [
     {
@@ -324,24 +483,24 @@
       "direction": "talk",
       "frame": 2,
       "alphaBounds": [
-        31,
+        17,
         8,
-        81,
+        94,
         110
       ],
-      "playbackAllowed": false
+      "playbackAllowed": true
     },
     {
       "kind": "talk",
       "direction": "talk",
       "frame": 3,
       "alphaBounds": [
-        35,
+        16,
         8,
-        77,
+        95,
         110
       ],
-      "playbackAllowed": false
+      "playbackAllowed": true
     },
     {
       "kind": "argue",
@@ -392,9 +551,12 @@
       "playbackAllowed": true
     }
   ],
-  "withheldTalkFrames": [
+  "withheldTalkFrames": [],
+  "playbackTalkFrames": [
+    0,
+    1,
     2,
     3
   ],
-  "reason": "Visual review: source talking cells 2 and 3 contain right-side cut-off silhouettes despite transparent cell margins."
+  "existingAssetsOutsideThreePNGsUnchanged": 85
 }

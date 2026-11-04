@@ -5,7 +5,7 @@
  const root='./assets/banana-npc/',images=new Map(),directions=new Set();
  let actor=null,draws=0,errors=0,lastPose=null;
  function enabled(){const h=window.HARBOR;return !!h?.seamlessCampusV115?.isOpen()&&!h.outbreak?.active?.()&&!h.academy?.active?.();}
- function image(file){if(!images.has(file)){const im=new Image();im.decoding='async';im.onerror=()=>errors++;im.src=root+file;images.set(file,im);}return images.get(file);}
+ function image(file){if(!images.has(file)){const im=new Image();im.decoding='async';im.onerror=()=>errors++;im.src=root+file+(file===pack.talk.file?'?art=a4720ba2c4ba':'');images.set(file,im);}return images.get(file);}
  function createActor(){return actor||(actor={id:pack.id,name:pack.name,npcStyle:3,x:620,y:1376,head:64,dir:'right',moving:false,distance:0,
   speed:30,stepLength:30*pack.walk.durationMsPerFrame/1000,route:[[620,1376],[670,1376],[670,1348],[620,1348]]});}
  function talking(){return enabled()&&['Chicken','Banana'].includes(window.HARBOR?.speech?.current()?.speaker);}
@@ -13,8 +13,8 @@
   const mood=speaks?document.getElementById('dlgPanel')?.dataset.comicStyle:null;
   const kind=speaks?(['angry','excited'].includes(mood)?'argue':'talk'):a.moving?'walk':'idle',set=pack[kind];
   const dir=pack.walk.directions.includes(a.dir)?a.dir:'down',phase=Math.floor(t/set.durationMsPerFrame)%4;
-  // Source talk cells 2/3 contain cut-off artwork. Preserve PNGs but never play them.
-  const frame=kind==='walk'?Math.floor(a.distance/a.stepLength)%4:kind==='talk'?[0,1,0,1][phase]:phase;
+  // Owner-supplied repair restores all four complete talking cells.
+  const frame=kind==='walk'?Math.floor(a.distance/a.stepLength)%4:phase;
   // Idle/talk art is taller inside the SAME cells. Normalize visible height,
   // not the frame rectangle, so switching states doesn't enlarge the body.
   return{kind,set,dir,row:kind==='walk'?pack.walk.directions.indexOf(dir):0,frame,scale:kind==='walk'?0.75:kind==='argue'?0.45:60/102};
@@ -27,5 +27,5 @@
  }
  function portrait(active,type){if(!enabled()||active?.speaker!==pack.name)return null;const mood=type==='angry'?'annoyed':type==='excited'?'surprised':type==='thought'?'thinking':'smug';return root+pack.portraits[mood];}
  window.ROOKIE_BANANA=Object.freeze({createActor,actor:()=>actor,draw,talking,portrait,
-  qa:()=>new URLSearchParams(location.search).has('pilotQA')?{id:pack.id,draws,errors,lastPose,seenDirections:[...directions],withheldTalkFrames:[2,3],requested:images.size,actor:actor?{id:actor.id,x:actor.x,y:actor.y,dir:actor.dir,moving:actor.moving,distance:actor.distance,route:actor.route.map(p=>p.slice())}:null}:null});
+  qa:()=>new URLSearchParams(location.search).has('pilotQA')?{id:pack.id,draws,errors,lastPose,seenDirections:[...directions],withheldTalkFrames:[],talkFrames:[0,1,2,3],requested:images.size,actor:actor?{id:actor.id,x:actor.x,y:actor.y,dir:actor.dir,moving:actor.moving,distance:actor.distance,route:actor.route.map(p=>p.slice())}:null}:null});
 })();

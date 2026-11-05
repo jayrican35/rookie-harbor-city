@@ -326,8 +326,9 @@
     // initialization hitch on midrange mobile phones.
     if(ambientInit<districtEntries.length)prepareDistrictPedestrians(districtEntries[ambientInit++]);
     for(const a of ambientRoutes){
-      if(a.id==='npc_chicken'&&window.ROOKIE_CHICKEN?.talking()){a.moving=false;continue;}
-      if(a.id==='npc_banana'&&window.ROOKIE_BANANA?.talking()){a.moving=false;continue;}
+      if(typeof window!=='undefined'&&window.ROOKIE_PARKING_ENCOUNTER?.holds(a)){a.moving=false;continue;}
+      if(a.id==='npc_chicken'&&!window.ROOKIE_PARKING_ENCOUNTER?.controlsActor(a)&&window.ROOKIE_CHICKEN?.talking()){a.moving=false;continue;}
+      if(a.id==='npc_banana'&&!window.ROOKIE_PARKING_ENCOUNTER?.controlsActor(a)&&window.ROOKIE_BANANA?.talking()){a.moving=false;continue;}
       // Waypoint zero is the return leg, not an unset target.
       const target=a.route[a.targetIndex??1],vx=target[0]-a.x,vy=target[1]-a.y;
       const remain=Math.hypot(vx,vy),step=Math.min(remain,a.speed*Math.min(.05,Math.max(0,dt)));
@@ -508,10 +509,12 @@
     cache=off;cacheValid=true;legacyAssetEpoch=epoch;return off;
   }
   function cameraFollow(dt){
+    const shot=window.ROOKIE_PARKING_ENCOUNTER?.camera();
+    if(shot)campus.zoom+=(shot.zoom-campus.zoom)*(1-Math.exp(-6*Math.max(.001,dt)));
     const zw=tw/campus.zoom,zh=th/campus.zoom;
-    if(campus.follow){
-      const wantedX=campus.x-zw/2,wantedY=campus.y-zh/2;
-      const ease=1-Math.exp(-9*Math.max(.001,dt));
+    if(campus.follow||shot){
+      const wantedX=(shot?shot.x:campus.x)-zw/2,wantedY=(shot?shot.y:campus.y)-zh/2;
+      const ease=1-Math.exp(-(shot?shot.ease:9)*Math.max(.001,dt));
       campus.camX+=(wantedX-campus.camX)*ease;campus.camY+=(wantedY-campus.camY)*ease;
     }
     campus.camX=zw>=W-MIN_X?MIN_X+(W-MIN_X-zw)/2:clamp(campus.camX,MIN_X,W-zw);
@@ -530,11 +533,17 @@
   }
   function simulate(dt){
     attachMarinaActors();
+    window.ROOKIE_PARKING_ENCOUNTER?.tick({host:modal,player:{x:campus.x,y:campus.y},room:interiorRoom(campus.x,campus.y),driving:!!cruiser?.active(),
+      free:!H.speech?.current()&&!H.profiles?.isOpen()&&!window.ROOKIE_V116_HUD?.blocked()&&!(typeof csActive!=='undefined'&&csActive),
+      width:tw,height:th,blocked,clearInput,
+      camera:()=>({x:campus.camX+tw/campus.zoom/2,y:campus.camY+th/campus.zoom/2,zoom:campus.zoom,follow:campus.follow,autoZoom:campus.autoZoom}),
+      restoreCamera:s=>{campus.zoom=s.zoom;campus.follow=s.follow;campus.autoZoom=s.autoZoom;campus.camX=(s.follow?campus.x:s.x)-tw/s.zoom/2;campus.camY=(s.follow?campus.y:s.y)-th/s.zoom/2;}
+    },dt);
     const marina=window.ROOKIE_V116_MARINA;
     if(marina)marina.stepNPCs(dt);
     stepAmbientPedestrians(dt);
     stepStreetTraffic(dt);
-    if(window.ROOKIE_COMIC?.modalActive()){clearInput();campus.moved=false;return;}
+    if(window.ROOKIE_PARKING_ENCOUNTER?.locked()||window.ROOKIE_COMIC?.modalActive()){clearInput();campus.moved=false;return;}
     if(cruiser?.step(dt))return;
     let {dx,dy}=direction();
     const shared=window.ROOKIE_JAY,run=!!shared?.requestRun()||!!(campus.runHeld&&shared?.eligible());
@@ -1261,6 +1270,7 @@
   }
   function close(){
     if(!campus.open)return;if(cruiser&&cruiser.suspend()===false)return;campus.open=false;cancelAnimationFrame(campus.frame);clearInput();
+    window.ROOKIE_PARKING_ENCOUNTER?.cancel();
     window.ROOKIE_COMIC?.close();
     window.ROOKIE_V116_HUD?.close();
     modal.hidden=true;document.body.classList.remove('v115-campus-open','v116-play-mode');
@@ -1277,6 +1287,7 @@
   modal.querySelector('#v115CampusInteract').addEventListener('click',()=>{
     const comic=window.ROOKIE_COMIC;
     if(comic?.modalActive()){comic.advance();return;}
+    if(window.ROOKIE_PARKING_ENCOUNTER?.locked())return;
     if(comic?.nearComedy(campus.x,campus.y)&&comic.comedy())return;
     if(cruiser?.interact())return;
     const sp=campus.near;
@@ -1316,7 +1327,7 @@
     base.classList.remove('active');
   };
   pad.addEventListener('pointerdown',e=>{
-    if(pointer!==null||window.ROOKIE_V116_HUD?.blocked()||window.ROOKIE_COMIC?.modalActive())return;
+    if(pointer!==null||window.ROOKIE_V116_HUD?.blocked()||window.ROOKIE_COMIC?.modalActive()||window.ROOKIE_PARKING_ENCOUNTER?.locked())return;
     e.preventDefault();e.stopPropagation();pointer=e.pointerId;
     pad.setPointerCapture?.(pointer);
     const r=pad.getBoundingClientRect();
@@ -1347,6 +1358,13 @@
   function captureKey(e,down){
     if(!campus.open)return;
     const k=e.key.toLowerCase();
+    if(window.ROOKIE_PARKING_ENCOUNTER?.locked()){
+      clearInput();if(e.ctrlKey||e.metaKey||/^f\d+$/.test(k))return;
+      e.preventDefault();e.stopImmediatePropagation();
+      if(k==='tab'&&down)modal.querySelector('#parkingEncounterSkip')?.focus();
+      if(down&&!e.repeat&&(k==='escape'||(k==='enter'||k===' ')&&document.activeElement?.id==='parkingEncounterSkip'))window.ROOKIE_PARKING_ENCOUNTER.skip();
+      return;
+    }
     if(window.ROOKIE_COMIC?.modalActive()){
       clearInput();if(['w','a','s','d','arrowleft','arrowright','escape'].includes(k)){e.preventDefault();e.stopImmediatePropagation();if(k==='escape'&&down)H.comicDialogue.close();}return;
     }

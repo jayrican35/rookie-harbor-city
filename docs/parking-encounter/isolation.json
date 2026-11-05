@@ -1,0 +1,21 @@
+{
+  "baseline": "c7291e7",
+  "protectedFiles": {
+    "published-game-capture/game.js": "fed646e5a213439b9ec269a80a2b7bb928d16d378b6a99714f10483d8e830d3f",
+    "published-game-capture/outbreak.css": "69b1d1ff50c6e6db60a0eb33100b4d25ea9d2b93b6e224222b40421f5aa9065b",
+    "published-game-capture/v115-world.js": "07e152c0280f72bf2e002f72c548d5ac402d2be670f6e781fb8a876c0efa3699",
+    "published-game-capture/v116-marina.js": "eb0005fd0e1c4a52ab7719271d93b0c59e2870cc5186ccc4efd719ef4335a210",
+    "published-game-capture/v116-marina-walk.js": "e8e9304768a26794abecb7da196744793b1fcb113f6405c0a0a5c6f601c26905",
+    "published-game-capture/v117-jay.js": "aaec1a78cf81303a3a9825a3f7982786cce9f66731b2b6affb435db0324af834",
+    "published-game-capture/civilian-connected.js": "5ba1a14a73338d55f38cece99070711233b4cdd825fad4dfc8decdff617b72f8",
+    "published-game-capture/precinct-cruiser.js": "3b1f7b029f87212c87928930c218b1012c1f1e4b400c7a7eebae68458f291b27",
+    "published-game-capture/cruiser-visuals.js": "45b85c6603f719e8d9f6b0665a59ff531185a05ef845fd4cb3452692180d8149",
+    "published-game-capture/connected-traffic.js": "9c246cda00cf4512dc997a35239b1ceae3bbd5badbf72b1c178406dbd477fb0d"
+  },
+  "allAssetsUnchanged": true,
+  "noNewWorldClock": true,
+  "noPlayerTeleportOrMapTransition": true,
+  "repeatBuildHooksIdentical": true,
+  "singleSpeechDecorationHook": true,
+  "singleSaveImportExtension": true
+}

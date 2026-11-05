@@ -42,6 +42,7 @@ for target in [before, after]:
   var unit=s.connectedCruiser;
   if(unit&&unit.id==='precinct-unit-9'&&Number.isFinite(unit.x)&&Number.isFinite(unit.y)&&Number.isFinite(unit.angle)&&unit.x>=-3100&&unit.x<=9656&&unit.y>=0&&unit.y<=4680)
     f.connectedCruiser={id:unit.id,x:unit.x,y:unit.y,angle:unit.angle,lightMode:['off','red','blue','alternating'].includes(unit.lightMode)?unit.lightMode:'off'};
+  if(s.connectedEvents&&typeof s.connectedEvents==='object'&&!Array.isArray(s.connectedEvents))f.connectedEvents={...s.connectedEvents,precinctParkingEncounter:s.connectedEvents.precinctParkingEncounter===true};
 '''
         token='  state = f;'
         assert bundle.count(token)==1
@@ -78,11 +79,12 @@ for target in [before, after]:
         payload=json.dumps(banana_pack,separators=(',',':')).replace('<','\\u003c')
         digest=hashlib.sha256((target/'banana-npc.js').read_bytes()).hexdigest()[:12]
         html=html.replace('</head>','<script data-banana-pack>window.ROOKIE_BANANA_PACK='+payload+';</script><script src="./banana-npc.js?v='+digest+'"></script></head>')
-    for ext in ['js','css']:
-        name='comic-dialogue.'+ext
+    for name in ['comic-dialogue.js','comic-dialogue.css','precinct-encounter.js','precinct-encounter.css']:
+        ext=name.rsplit('.',1)[1]
+        presentation=name.rsplit('.',1)[0]
         shutil.copy2(r/'published-game-capture'/name,target/name)
-        if ext=='js':html=re.sub(r'<script src="\./comic-dialogue\.js[^"]*"></script>\s*','',html)
-        html=re.sub(r'<link[^>]*href="\./comic-dialogue\.css[^"]*"[^>]*>\s*','',html)
+        if ext=='js':html=re.sub(r'<script src="\./'+re.escape(presentation)+r'\.js[^"]*"></script>\s*','',html)
+        if ext=='css':html=re.sub(r'<link[^>]*href="\./'+re.escape(presentation)+r'\.css[^"]*"[^>]*>\s*','',html)
         digest=hashlib.sha256((target/name).read_bytes()).hexdigest()[:12]
         element=('<script src="./'+name+'?v='+digest+'"></script>') if ext=='js' else ('<link rel="stylesheet" href="./'+name+'?v='+digest+'">')
         html=html.replace('</head>',element+'</head>')
@@ -110,6 +112,8 @@ if not args.candidate:
     if evidence.exists():shutil.copytree(evidence,r/'site/evidence/chicken-npc',dirs_exist_ok=True)
     evidence=r/'docs/banana-npc'
     if evidence.exists():shutil.copytree(evidence,r/'site/evidence/banana-npc',dirs_exist_ok=True)
+    evidence=r/'docs/parking-encounter'
+    if evidence.exists():shutil.copytree(evidence,r/'site/evidence/parking-encounter',dirs_exist_ok=True)
 if not art_ready and not args.candidate:
     target=r/'site/evidence/civilian-preview'
     target.mkdir(parents=True,exist_ok=True)

@@ -12,7 +12,7 @@
    route:[[720,1376],[770,1376],[770,1312],[720,1312]]};return actor;
  }
  function talking(){const s=window.HARBOR?.speech?.current();return enabled()&&!!s&&['Chicken','Banana'].includes(s.speaker);}
- function pose(a,t){const speech=window.HARBOR?.speech?.current(),argue=talking()&&speech.speaker==='Chicken';
+ function pose(a,t){const speech=window.HARBOR?.speech?.current(),hint=window.ROOKIE_PARKING_ENCOUNTER?.poseFor(a),argue=hint==='argue'||hint!=='walk'&&talking()&&speech.speaker==='Chicken';
   const set=argue?pack.argue:pack.walk,dir=pack.walk.directions.includes(a.dir)?a.dir:'down';
   return{kind:argue?'argue':'walk',dir,row:argue?0:pack.walk.directions.indexOf(dir),
    frame:argue?Math.floor(t/set.durationMsPerFrame)%4:a.moving?Math.floor(a.distance/a.stepLength)%4:0,
@@ -28,7 +28,7 @@
   g.drawImage(im,p.frame*s.frameWidth,p.row*s.frameHeight,s.frameWidth,s.frameHeight,x,y,s.frameWidth*p.scale,s.frameHeight*p.scale);g.restore();
   draws++;seen.add(p.dir);lastPose={kind:p.kind,dir:p.dir,row:p.row,frame:p.frame,scale:p.scale,x:a.x,y:a.y,foot:[x+ax*p.scale,y+ay*p.scale],worldFrame:[s.frameWidth*p.scale,s.frameHeight*p.scale]};return true;
  }
- function portrait(active,type){if(!enabled()||active?.speaker!==pack.name)return null;const mood=type==='angry'?'angry':type==='excited'?'surprised':'talking';return root+pack.portraits[mood];}
+ function portrait(active,type){if(!enabled()||active?.speaker!==pack.name)return null;const mood=window.ROOKIE_PARKING_ENCOUNTER?.portraitMood(active.speaker)||(type==='angry'?'angry':type==='excited'?'surprised':'talking');return root+pack.portraits[mood];}
  window.ROOKIE_CHICKEN=Object.freeze({createActor,actor:()=>actor,draw,talking,portrait,
   qa:()=>new URLSearchParams(location.search).has('pilotQA')?{id:pack.id,draws,errors,lastPose,seenDirections:[...seen],requested:images.size,loaded:[...images.values()].filter(i=>i.complete&&i.naturalWidth).length,decodedBytes:[...images.values()].reduce((n,i)=>n+i.naturalWidth*i.naturalHeight*4,0),actor:actor?{id:actor.id,x:actor.x,y:actor.y,dir:actor.dir,moving:actor.moving,distance:actor.distance,route:actor.route.map(p=>p.slice())}:null}:null});
 })();

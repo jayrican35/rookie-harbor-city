@@ -1,0 +1,16 @@
+{
+  "errors": [],
+  "busyConversationWait": true,
+  "unrelatedEventFlagPreserved": true,
+  "driving": {
+    "insideTrigger": true,
+    "noEncounter": true,
+    "gasWorks": true
+  },
+  "profileSwitchCancels": true,
+  "zombie": {
+    "assetRequests": 0,
+    "mapSHA256": "d7d3b856703f52913d323c3ee5217c108303480883155939f212b3240278156f"
+  },
+  "assetsAndProtectedSystemsUnchanged": true
+}

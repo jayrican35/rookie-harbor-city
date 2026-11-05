@@ -73,16 +73,16 @@
     "nativeAdvances": 12
   },
   "performance": {
-    "fps": 60.021826118588585,
+    "fps": 60.02075905952431,
     "paint": {
-      "frames": 234,
-      "paintP95Ms": 6.799999998882413,
-      "paintMaxMs": 8.099999999627471,
+      "frames": 252,
+      "paintP95Ms": 7.699999999254942,
+      "paintMaxMs": 10.599999997764826,
       "samples": 180,
       "ambientPedestrians": 19,
       "ambientDistrictsInitialized": 9,
       "streetCars": 28,
-      "stoppedCars": 4
+      "stoppedCars": 5
     },
     "activeBalloon": true
   },

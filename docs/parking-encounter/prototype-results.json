@@ -1,0 +1,15 @@
+{
+  "errors": [],
+  "prototype": {
+    "nativeTrigger": true,
+    "smoothPan": true,
+    "lines": [
+      "OFFICER! THIS BANANA STOLE MY PARKING SPOT!",
+      "You don't even own a car."
+    ],
+    "playerPositionPreserved": true,
+    "cameraRestored": true,
+    "controlsRestored": true,
+    "persistedReload": true
+  }
+}

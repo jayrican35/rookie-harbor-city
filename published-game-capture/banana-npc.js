@@ -11,10 +11,10 @@
  function talking(){return enabled()&&['Chicken','Banana'].includes(window.HARBOR?.speech?.current()?.speaker);}
  function pose(a,t){const s=window.HARBOR?.speech?.current(),speaks=talking()&&s.speaker===pack.name;
   const mood=speaks?document.getElementById('dlgPanel')?.dataset.comicStyle:null;
-  const kind=speaks?(['angry','excited'].includes(mood)?'argue':'talk'):a.moving?'walk':'idle',set=pack[kind];
+  const hint=window.ROOKIE_PARKING_ENCOUNTER?.poseFor(a),kind=hint||(speaks?(['angry','excited'].includes(mood)?'argue':'talk'):a.moving?'walk':'idle'),set=pack[kind];
   const dir=pack.walk.directions.includes(a.dir)?a.dir:'down',phase=Math.floor(t/set.durationMsPerFrame)%4;
   // Owner-supplied repair restores all four complete talking cells.
-  const frame=kind==='walk'?Math.floor(a.distance/a.stepLength)%4:phase;
+  const frame=kind==='walk'?(a.moving?Math.floor(a.distance/a.stepLength)%4:0):phase;
   // Idle/talk art is taller inside the SAME cells. Normalize visible height,
   // not the frame rectangle, so switching states doesn't enlarge the body.
   return{kind,set,dir,row:kind==='walk'?pack.walk.directions.indexOf(dir):0,frame,scale:kind==='walk'?0.75:kind==='argue'?0.45:60/102};
@@ -25,7 +25,7 @@
   g.drawImage(im,p.frame*s.frameWidth,p.row*s.frameHeight,s.frameWidth,s.frameHeight,x,y,s.frameWidth*p.scale,s.frameHeight*p.scale);g.restore();
   draws++;directions.add(p.dir);lastPose={kind:p.kind,dir:p.dir,row:p.row,frame:p.frame,scale:p.scale,x:a.x,y:a.y,foot:[x+ax*p.scale,y+ay*p.scale],worldFrame:[s.frameWidth*p.scale,s.frameHeight*p.scale]};return true;
  }
- function portrait(active,type){if(!enabled()||active?.speaker!==pack.name)return null;const mood=type==='angry'?'annoyed':type==='excited'?'surprised':type==='thought'?'thinking':'smug';return root+pack.portraits[mood];}
+ function portrait(active,type){if(!enabled()||active?.speaker!==pack.name)return null;const mood=window.ROOKIE_PARKING_ENCOUNTER?.portraitMood(active.speaker)||(type==='angry'?'annoyed':type==='excited'?'surprised':type==='thought'?'thinking':'smug');return root+pack.portraits[mood];}
  window.ROOKIE_BANANA=Object.freeze({createActor,actor:()=>actor,draw,talking,portrait,
   qa:()=>new URLSearchParams(location.search).has('pilotQA')?{id:pack.id,draws,errors,lastPose,seenDirections:[...directions],withheldTalkFrames:[],talkFrames:[0,1,2,3],requested:images.size,actor:actor?{id:actor.id,x:actor.x,y:actor.y,dir:actor.dir,moving:actor.moving,distance:actor.distance,route:actor.route.map(p=>p.slice())}:null}:null});
 })();

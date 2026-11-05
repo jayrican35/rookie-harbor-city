@@ -1,0 +1,1927 @@
+{
+  "errors": [],
+  "desktop": {
+    "rows": [
+      {
+        "text": "OFFICER! THIS BANANA STOLE MY PARKING SPOT!",
+        "speaker": "Chicken",
+        "width": 354,
+        "x": 218,
+        "y": 327,
+        "h": 191.375,
+        "visible": "visible",
+        "style": "angry",
+        "camera": {
+          "cameraX": 241.5771416483258,
+          "cameraY": 971.9523679896827,
+          "zoom": 1.3499999999976893,
+          "follows": true,
+          "roofAlpha": 0.95,
+          "playerX": 798.5083003834152,
+          "playerY": 1302.4223700635036,
+          "dir": "down",
+          "room": null,
+          "crossings": 1
+        },
+        "people": [
+          {
+            "id": "npc_chicken",
+            "draws": 327,
+            "errors": 0,
+            "lastPose": {
+              "kind": "argue",
+              "dir": "right",
+              "row": 0,
+              "frame": 3,
+              "scale": 0.45,
+              "x": 681.3351536440402,
+              "y": 1356.2024534406412,
+              "foot": [
+                681.3351536440402,
+                1356.2024534406412
+              ],
+              "worldFrame": [
+                72,
+                72
+              ]
+            },
+            "seenDirections": [
+              "right",
+              "up",
+              "left"
+            ],
+            "requested": 2,
+            "loaded": 2,
+            "decodedBytes": 1269760,
+            "actor": {
+              "id": "npc_chicken",
+              "x": 681.3351536440402,
+              "y": 1356.2024534406412,
+              "dir": "right",
+              "moving": false,
+              "distance": 144.2348000000002,
+              "route": [
+                [
+                  769.0888447175422,
+                  1369.508814671875
+                ],
+                [
+                  680,
+                  1356
+                ]
+              ]
+            }
+          },
+          {
+            "id": "npc_banana",
+            "draws": 328,
+            "errors": 0,
+            "lastPose": {
+              "kind": "walk",
+              "dir": "left",
+              "row": 1,
+              "frame": 0,
+              "scale": 0.75,
+              "x": 749.9737715884474,
+              "y": 1357.2129877351292,
+              "foot": [
+                749.9737715884474,
+                1357.2129877351292
+              ],
+              "worldFrame": [
+                84,
+                90
+              ]
+            },
+            "seenDirections": [
+              "right",
+              "up",
+              "down",
+              "left"
+            ],
+            "withheldTalkFrames": [],
+            "talkFrames": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "requested": 2,
+            "actor": {
+              "id": "npc_banana",
+              "x": 749.9737715884474,
+              "y": 1357.2129877351292,
+              "dir": "left",
+              "moving": false,
+              "distance": 195.41720000000032,
+              "route": [
+                [
+                  669.2209491284425,
+                  1369.5122528635088
+                ],
+                [
+                  669.2209491284425,
+                  1394
+                ],
+                [
+                  750,
+                  1394
+                ],
+                [
+                  750,
+                  1356
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "text": "You don't even own a car.",
+        "speaker": "Banana",
+        "width": 354,
+        "x": 509,
+        "y": 536,
+        "h": 166.1875,
+        "visible": "visible",
+        "style": "normal",
+        "camera": {
+          "cameraX": 241.58023709233478,
+          "cameraY": 971.8956793591113,
+          "zoom": 1.3499999999999768,
+          "follows": true,
+          "roofAlpha": 0.95,
+          "playerX": 798.5083003834152,
+          "playerY": 1302.4223700635036,
+          "dir": "down",
+          "room": null,
+          "crossings": 1
+        },
+        "people": [
+          {
+            "id": "npc_chicken",
+            "draws": 371,
+            "errors": 0,
+            "lastPose": {
+              "kind": "walk",
+              "dir": "right",
+              "row": 2,
+              "frame": 0,
+              "scale": 0.75,
+              "x": 681.3351536440402,
+              "y": 1356.2024534406412,
+              "foot": [
+                681.3351536440402,
+                1356.2024534406412
+              ],
+              "worldFrame": [
+                84,
+                90
+              ]
+            },
+            "seenDirections": [
+              "right",
+              "up",
+              "left"
+            ],
+            "requested": 2,
+            "loaded": 2,
+            "decodedBytes": 1269760,
+            "actor": {
+              "id": "npc_chicken",
+              "x": 681.3351536440402,
+              "y": 1356.2024534406412,
+              "dir": "right",
+              "moving": false,
+              "distance": 144.2348000000002,
+              "route": [
+                [
+                  769.0888447175422,
+                  1369.508814671875
+                ],
+                [
+                  680,
+                  1356
+                ]
+              ]
+            }
+          },
+          {
+            "id": "npc_banana",
+            "draws": 368,
+            "errors": 0,
+            "lastPose": {
+              "kind": "talk",
+              "dir": "left",
+              "row": 0,
+              "frame": 1,
+              "scale": 0.5882352941176471,
+              "x": 749.9737715884474,
+              "y": 1357.2129877351292,
+              "foot": [
+                749.9737715884474,
+                1357.2129877351292
+              ],
+              "worldFrame": [
+                65.88235294117648,
+                70.58823529411765
+              ]
+            },
+            "seenDirections": [
+              "right",
+              "up",
+              "down",
+              "left"
+            ],
+            "withheldTalkFrames": [],
+            "talkFrames": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "requested": 3,
+            "actor": {
+              "id": "npc_banana",
+              "x": 749.9737715884474,
+              "y": 1357.2129877351292,
+              "dir": "left",
+              "moving": false,
+              "distance": 195.41720000000032,
+              "route": [
+                [
+                  669.2209491284425,
+                  1369.5122528635088
+                ],
+                [
+                  669.2209491284425,
+                  1394
+                ],
+                [
+                  750,
+                  1394
+                ],
+                [
+                  750,
+                  1356
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "text": "THAT IS COMPLETELY IRRELEVANT!",
+        "speaker": "Chicken",
+        "width": 354,
+        "x": 218,
+        "y": 327,
+        "h": 191.375,
+        "visible": "visible",
+        "style": "excited",
+        "camera": {
+          "cameraX": 241.58033638537367,
+          "cameraY": 971.8938609497803,
+          "zoom": 1.3499999999999952,
+          "follows": true,
+          "roofAlpha": 0.95,
+          "playerX": 798.5083003834152,
+          "playerY": 1302.4223700635036,
+          "dir": "down",
+          "room": null,
+          "crossings": 1
+        },
+        "people": [
+          {
+            "id": "npc_chicken",
+            "draws": 387,
+            "errors": 0,
+            "lastPose": {
+              "kind": "argue",
+              "dir": "right",
+              "row": 0,
+              "frame": 0,
+              "scale": 0.45,
+              "x": 681.3351536440402,
+              "y": 1356.2024534406412,
+              "foot": [
+                681.3351536440402,
+                1356.2024534406412
+              ],
+              "worldFrame": [
+                72,
+                72
+              ]
+            },
+            "seenDirections": [
+              "right",
+              "up",
+              "left"
+            ],
+            "requested": 2,
+            "loaded": 2,
+            "decodedBytes": 1269760,
+            "actor": {
+              "id": "npc_chicken",
+              "x": 681.3351536440402,
+              "y": 1356.2024534406412,
+              "dir": "right",
+              "moving": false,
+              "distance": 144.2348000000002,
+              "route": [
+                [
+                  769.0888447175422,
+                  1369.508814671875
+                ],
+                [
+                  680,
+                  1356
+                ]
+              ]
+            }
+          },
+          {
+            "id": "npc_banana",
+            "draws": 384,
+            "errors": 0,
+            "lastPose": {
+              "kind": "walk",
+              "dir": "left",
+              "row": 1,
+              "frame": 0,
+              "scale": 0.75,
+              "x": 749.9737715884474,
+              "y": 1357.2129877351292,
+              "foot": [
+                749.9737715884474,
+                1357.2129877351292
+              ],
+              "worldFrame": [
+                84,
+                90
+              ]
+            },
+            "seenDirections": [
+              "right",
+              "up",
+              "down",
+              "left"
+            ],
+            "withheldTalkFrames": [],
+            "talkFrames": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "requested": 3,
+            "actor": {
+              "id": "npc_banana",
+              "x": 749.9737715884474,
+              "y": 1357.2129877351292,
+              "dir": "left",
+              "moving": false,
+              "distance": 195.41720000000032,
+              "route": [
+                [
+                  669.2209491284425,
+                  1369.5122528635088
+                ],
+                [
+                  669.2209491284425,
+                  1394
+                ],
+                [
+                  750,
+                  1394
+                ],
+                [
+                  750,
+                  1356
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "text": "Speaking of which... did you move those boxes?",
+        "speaker": "Banana",
+        "width": 288,
+        "x": 538,
+        "y": 536,
+        "h": 191.375,
+        "visible": "visible",
+        "style": "whisper",
+        "camera": {
+          "cameraX": 241.04479009885247,
+          "cameraY": 971.8281456506319,
+          "zoom": 1.349999999999999,
+          "follows": true,
+          "roofAlpha": 0.95,
+          "playerX": 798.5083003834152,
+          "playerY": 1302.4223700635036,
+          "dir": "down",
+          "room": null,
+          "crossings": 1
+        },
+        "people": [
+          {
+            "id": "npc_chicken",
+            "draws": 401,
+            "errors": 0,
+            "lastPose": {
+              "kind": "walk",
+              "dir": "right",
+              "row": 2,
+              "frame": 0,
+              "scale": 0.75,
+              "x": 681.3351536440402,
+              "y": 1356.2024534406412,
+              "foot": [
+                681.3351536440402,
+                1356.2024534406412
+              ],
+              "worldFrame": [
+                84,
+                90
+              ]
+            },
+            "seenDirections": [
+              "right",
+              "up",
+              "left"
+            ],
+            "requested": 2,
+            "loaded": 2,
+            "decodedBytes": 1269760,
+            "actor": {
+              "id": "npc_chicken",
+              "x": 681.3351536440402,
+              "y": 1356.2024534406412,
+              "dir": "right",
+              "moving": false,
+              "distance": 144.2348000000002,
+              "route": [
+                [
+                  769.0888447175422,
+                  1369.508814671875
+                ],
+                [
+                  680,
+                  1356
+                ]
+              ]
+            }
+          },
+          {
+            "id": "npc_banana",
+            "draws": 398,
+            "errors": 0,
+            "lastPose": {
+              "kind": "talk",
+              "dir": "left",
+              "row": 0,
+              "frame": 3,
+              "scale": 0.5882352941176471,
+              "x": 746.3331964152085,
+              "y": 1356.770229146285,
+              "foot": [
+                746.3331964152085,
+                1356.770229146285
+              ],
+              "worldFrame": [
+                65.88235294117648,
+                70.58823529411765
+              ]
+            },
+            "seenDirections": [
+              "right",
+              "up",
+              "down",
+              "left"
+            ],
+            "withheldTalkFrames": [],
+            "talkFrames": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "requested": 3,
+            "actor": {
+              "id": "npc_banana",
+              "x": 746.3331964152085,
+              "y": 1356.770229146285,
+              "dir": "left",
+              "moving": true,
+              "distance": 199.0846000000003,
+              "route": [
+                [
+                  749.9737715884474,
+                  1357.2129877351292
+                ],
+                [
+                  740,
+                  1356
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "text": "WHAT BOXES?!",
+        "speaker": "Chicken",
+        "width": 354,
+        "x": 222,
+        "y": 341,
+        "h": 166.1875,
+        "visible": "visible",
+        "style": "confusion",
+        "camera": {
+          "cameraX": 238.07786054783128,
+          "cameraY": 971.4669780737964,
+          "zoom": 1.349999999999999,
+          "follows": true,
+          "roofAlpha": 0.95,
+          "playerX": 798.5083003834152,
+          "playerY": 1302.4223700635036,
+          "dir": "down",
+          "room": null,
+          "crossings": 1
+        },
+        "people": [
+          {
+            "id": "npc_chicken",
+            "draws": 434,
+            "errors": 0,
+            "lastPose": {
+              "kind": "walk",
+              "dir": "right",
+              "row": 2,
+              "frame": 0,
+              "scale": 0.75,
+              "x": 681.3351536440402,
+              "y": 1356.2024534406412,
+              "foot": [
+                681.3351536440402,
+                1356.2024534406412
+              ],
+              "worldFrame": [
+                84,
+                90
+              ]
+            },
+            "seenDirections": [
+              "right",
+              "up",
+              "left"
+            ],
+            "requested": 2,
+            "loaded": 2,
+            "decodedBytes": 1269760,
+            "actor": {
+              "id": "npc_chicken",
+              "x": 681.3351536440402,
+              "y": 1356.2024534406412,
+              "dir": "right",
+              "moving": false,
+              "distance": 144.2348000000002,
+              "route": [
+                [
+                  769.0888447175422,
+                  1369.508814671875
+                ],
+                [
+                  680,
+                  1356
+                ]
+              ]
+            }
+          },
+          {
+            "id": "npc_banana",
+            "draws": 431,
+            "errors": 0,
+            "lastPose": {
+              "kind": "walk",
+              "dir": "left",
+              "row": 1,
+              "frame": 0,
+              "scale": 0.75,
+              "x": 741.9675636789727,
+              "y": 1356.2392906825178,
+              "foot": [
+                741.9675636789727,
+                1356.2392906825178
+              ],
+              "worldFrame": [
+                84,
+                90
+              ]
+            },
+            "seenDirections": [
+              "right",
+              "up",
+              "down",
+              "left"
+            ],
+            "withheldTalkFrames": [],
+            "talkFrames": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "requested": 3,
+            "actor": {
+              "id": "npc_banana",
+              "x": 741.9675636789727,
+              "y": 1356.2392906825178,
+              "dir": "left",
+              "moving": false,
+              "distance": 203.48240000000024,
+              "route": [
+                [
+                  749.9737715884474,
+                  1357.2129877351292
+                ],
+                [
+                  740,
+                  1356
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "text": "The ones under your eyes. You look exhausted.",
+        "speaker": "Banana",
+        "width": 354,
+        "x": 504,
+        "y": 536,
+        "h": 191.375,
+        "visible": "visible",
+        "style": "normal",
+        "camera": {
+          "cameraX": 237.6548684428083,
+          "cameraY": 971.4154993155169,
+          "zoom": 1.349999999999999,
+          "follows": true,
+          "roofAlpha": 0.95,
+          "playerX": 798.5083003834152,
+          "playerY": 1302.4223700635036,
+          "dir": "down",
+          "room": null,
+          "crossings": 1
+        },
+        "people": [
+          {
+            "id": "npc_chicken",
+            "draws": 462,
+            "errors": 0,
+            "lastPose": {
+              "kind": "walk",
+              "dir": "right",
+              "row": 2,
+              "frame": 0,
+              "scale": 0.75,
+              "x": 681.3351536440402,
+              "y": 1356.2024534406412,
+              "foot": [
+                681.3351536440402,
+                1356.2024534406412
+              ],
+              "worldFrame": [
+                84,
+                90
+              ]
+            },
+            "seenDirections": [
+              "right",
+              "up",
+              "left"
+            ],
+            "requested": 2,
+            "loaded": 2,
+            "decodedBytes": 1269760,
+            "actor": {
+              "id": "npc_chicken",
+              "x": 681.3351536440402,
+              "y": 1356.2024534406412,
+              "dir": "right",
+              "moving": false,
+              "distance": 144.2348000000002,
+              "route": [
+                [
+                  769.0888447175422,
+                  1369.508814671875
+                ],
+                [
+                  680,
+                  1356
+                ]
+              ]
+            }
+          },
+          {
+            "id": "npc_banana",
+            "draws": 459,
+            "errors": 0,
+            "lastPose": {
+              "kind": "walk",
+              "dir": "right",
+              "row": 2,
+              "frame": 0,
+              "scale": 0.75,
+              "x": 741.9675636789727,
+              "y": 1356.2392906825178,
+              "foot": [
+                741.9675636789727,
+                1356.2392906825178
+              ],
+              "worldFrame": [
+                84,
+                90
+              ]
+            },
+            "seenDirections": [
+              "right",
+              "up",
+              "down",
+              "left"
+            ],
+            "withheldTalkFrames": [],
+            "talkFrames": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "requested": 3,
+            "actor": {
+              "id": "npc_banana",
+              "x": 741.9675636789727,
+              "y": 1356.2392906825178,
+              "dir": "right",
+              "moving": false,
+              "distance": 203.48240000000024,
+              "route": [
+                [
+                  749.9737715884474,
+                  1357.2129877351292
+                ],
+                [
+                  740,
+                  1356
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "text": "I DEMAND TO SPEAK TO YOUR SUPERVISOR!",
+        "speaker": "Chicken",
+        "width": 354,
+        "x": 223,
+        "y": 328,
+        "h": 191.375,
+        "visible": "visible",
+        "style": "angry",
+        "camera": {
+          "cameraX": 237.58779282370128,
+          "cameraY": 971.4073361144984,
+          "zoom": 1.349999999999999,
+          "follows": true,
+          "roofAlpha": 0.95,
+          "playerX": 798.5083003834152,
+          "playerY": 1302.4223700635036,
+          "dir": "down",
+          "room": null,
+          "crossings": 1
+        },
+        "people": [
+          {
+            "id": "npc_chicken",
+            "draws": 492,
+            "errors": 0,
+            "lastPose": {
+              "kind": "argue",
+              "dir": "right",
+              "row": 0,
+              "frame": 0,
+              "scale": 0.45,
+              "x": 681.3351536440402,
+              "y": 1356.2024534406412,
+              "foot": [
+                681.3351536440402,
+                1356.2024534406412
+              ],
+              "worldFrame": [
+                72,
+                72
+              ]
+            },
+            "seenDirections": [
+              "right",
+              "up",
+              "left"
+            ],
+            "requested": 2,
+            "loaded": 2,
+            "decodedBytes": 1269760,
+            "actor": {
+              "id": "npc_chicken",
+              "x": 681.3351536440402,
+              "y": 1356.2024534406412,
+              "dir": "right",
+              "moving": false,
+              "distance": 144.2348000000002,
+              "route": [
+                [
+                  769.0888447175422,
+                  1369.508814671875
+                ],
+                [
+                  680,
+                  1356
+                ]
+              ]
+            }
+          },
+          {
+            "id": "npc_banana",
+            "draws": 489,
+            "errors": 0,
+            "lastPose": {
+              "kind": "walk",
+              "dir": "left",
+              "row": 1,
+              "frame": 0,
+              "scale": 0.75,
+              "x": 741.9675636789727,
+              "y": 1356.2392906825178,
+              "foot": [
+                741.9675636789727,
+                1356.2392906825178
+              ],
+              "worldFrame": [
+                84,
+                90
+              ]
+            },
+            "seenDirections": [
+              "right",
+              "up",
+              "down",
+              "left"
+            ],
+            "withheldTalkFrames": [],
+            "talkFrames": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "requested": 3,
+            "actor": {
+              "id": "npc_banana",
+              "x": 741.9675636789727,
+              "y": 1356.2392906825178,
+              "dir": "left",
+              "moving": false,
+              "distance": 203.48240000000024,
+              "route": [
+                [
+                  749.9737715884474,
+                  1357.2129877351292
+                ],
+                [
+                  740,
+                  1356
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "glance": [
+      {
+        "id": "npc_chicken",
+        "x": 621.7759780948842,
+        "y": 1356.0058621011678,
+        "dir": "left",
+        "moving": false,
+        "distance": 203.79430000000033,
+        "route": [
+          [
+            681.3351536440402,
+            1356.2024534406412
+          ],
+          [
+            620,
+            1356
+          ]
+        ]
+      },
+      {
+        "id": "npc_banana",
+        "x": 741.9675636789727,
+        "y": 1356.2392906825178,
+        "dir": "right",
+        "moving": false,
+        "distance": 203.48240000000024,
+        "route": [
+          [
+            749.9737715884474,
+            1357.2129877351292
+          ],
+          [
+            740,
+            1356
+          ]
+        ]
+      }
+    ],
+    "completed": true,
+    "positionPreserved": true,
+    "cameraRestored": true,
+    "roamingResumed": true
+  },
+  "mobile": {
+    "rows": [
+      {
+        "text": "OFFICER! THIS BANANA STOLE MY PARKING SPOT!",
+        "speaker": "Chicken",
+        "width": 354,
+        "x": 8,
+        "y": 227,
+        "h": 191.375,
+        "visible": "visible",
+        "style": "angry",
+        "camera": {
+          "cameraX": 536.2298919796681,
+          "cameraY": 898.43200011164,
+          "zoom": 1.0866666666704439,
+          "follows": true,
+          "roofAlpha": 0.95,
+          "playerX": 798.5083003834151,
+          "playerY": 1302.4223700635032,
+          "dir": "down",
+          "room": null,
+          "crossings": 1
+        },
+        "people": [
+          {
+            "id": "npc_chicken",
+            "draws": 333,
+            "errors": 0,
+            "lastPose": {
+              "kind": "argue",
+              "dir": "right",
+              "row": 0,
+              "frame": 3,
+              "scale": 0.45,
+              "x": 681.3888548392666,
+              "y": 1356.2183381270104,
+              "foot": [
+                681.3888548392666,
+                1356.2183381270104
+              ],
+              "worldFrame": [
+                72,
+                72
+              ]
+            },
+            "seenDirections": [
+              "right",
+              "up",
+              "left"
+            ],
+            "requested": 2,
+            "loaded": 2,
+            "decodedBytes": 1269760,
+            "actor": {
+              "id": "npc_chicken",
+              "x": 681.3888548392666,
+              "y": 1356.2183381270104,
+              "dir": "right",
+              "moving": false,
+              "distance": 143.74640000000005,
+              "route": [
+                [
+                  769.0782840487026,
+                  1370.0037570137572
+                ],
+                [
+                  680,
+                  1356
+                ]
+              ]
+            }
+          },
+          {
+            "id": "npc_banana",
+            "draws": 260,
+            "errors": 0,
+            "lastPose": {
+              "kind": "walk",
+              "dir": "left",
+              "row": 1,
+              "frame": 0,
+              "scale": 0.75,
+              "x": 749.9731686817759,
+              "y": 1357.2134778043837,
+              "foot": [
+                749.9731686817759,
+                1357.2134778043837
+              ],
+              "worldFrame": [
+                84,
+                90
+              ]
+            },
+            "seenDirections": [
+              "right",
+              "up",
+              "down",
+              "left"
+            ],
+            "withheldTalkFrames": [],
+            "talkFrames": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "requested": 2,
+            "actor": {
+              "id": "npc_banana",
+              "x": 749.9731686817759,
+              "y": 1357.2134778043837,
+              "dir": "left",
+              "moving": false,
+              "distance": 194.924,
+              "route": [
+                [
+                  669.2006760703055,
+                  1370.0069518499831
+                ],
+                [
+                  669.2006760703055,
+                  1394
+                ],
+                [
+                  750,
+                  1394
+                ],
+                [
+                  750,
+                  1356
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "text": "You don't even own a car.",
+        "speaker": "Banana",
+        "width": 354,
+        "x": 28,
+        "y": 251,
+        "h": 166.1875,
+        "visible": "visible",
+        "style": "normal",
+        "camera": {
+          "cameraX": 536.2321745987151,
+          "cameraY": 898.390323235518,
+          "zoom": 1.0866666666672913,
+          "follows": true,
+          "roofAlpha": 0.95,
+          "playerX": 798.5083003834151,
+          "playerY": 1302.4223700635032,
+          "dir": "down",
+          "room": null,
+          "crossings": 1
+        },
+        "people": [
+          {
+            "id": "npc_chicken",
+            "draws": 351,
+            "errors": 0,
+            "lastPose": {
+              "kind": "walk",
+              "dir": "right",
+              "row": 2,
+              "frame": 0,
+              "scale": 0.75,
+              "x": 681.3888548392666,
+              "y": 1356.2183381270104,
+              "foot": [
+                681.3888548392666,
+                1356.2183381270104
+              ],
+              "worldFrame": [
+                84,
+                90
+              ]
+            },
+            "seenDirections": [
+              "right",
+              "up",
+              "left"
+            ],
+            "requested": 2,
+            "loaded": 2,
+            "decodedBytes": 1269760,
+            "actor": {
+              "id": "npc_chicken",
+              "x": 681.3888548392666,
+              "y": 1356.2183381270104,
+              "dir": "right",
+              "moving": false,
+              "distance": 143.74640000000005,
+              "route": [
+                [
+                  769.0782840487026,
+                  1370.0037570137572
+                ],
+                [
+                  680,
+                  1356
+                ]
+              ]
+            }
+          },
+          {
+            "id": "npc_banana",
+            "draws": 277,
+            "errors": 0,
+            "lastPose": {
+              "kind": "talk",
+              "dir": "left",
+              "row": 0,
+              "frame": 3,
+              "scale": 0.5882352941176471,
+              "x": 749.9731686817759,
+              "y": 1357.2134778043837,
+              "foot": [
+                749.9731686817759,
+                1357.2134778043837
+              ],
+              "worldFrame": [
+                65.88235294117648,
+                70.58823529411765
+              ]
+            },
+            "seenDirections": [
+              "right",
+              "up",
+              "down",
+              "left"
+            ],
+            "withheldTalkFrames": [],
+            "talkFrames": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "requested": 3,
+            "actor": {
+              "id": "npc_banana",
+              "x": 749.9731686817759,
+              "y": 1357.2134778043837,
+              "dir": "left",
+              "moving": false,
+              "distance": 194.924,
+              "route": [
+                [
+                  669.2006760703055,
+                  1370.0069518499831
+                ],
+                [
+                  669.2006760703055,
+                  1394
+                ],
+                [
+                  750,
+                  1394
+                ],
+                [
+                  750,
+                  1356
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "text": "THAT IS COMPLETELY IRRELEVANT!",
+        "speaker": "Chicken",
+        "width": 354,
+        "x": 8,
+        "y": 227,
+        "h": 191.375,
+        "visible": "visible",
+        "style": "excited",
+        "camera": {
+          "cameraX": 536.2326534566587,
+          "cameraY": 898.3815800739615,
+          "zoom": 1.0866666666668965,
+          "follows": true,
+          "roofAlpha": 0.95,
+          "playerX": 798.5083003834151,
+          "playerY": 1302.4223700635032,
+          "dir": "down",
+          "room": null,
+          "crossings": 1
+        },
+        "people": [
+          {
+            "id": "npc_chicken",
+            "draws": 361,
+            "errors": 0,
+            "lastPose": {
+              "kind": "argue",
+              "dir": "right",
+              "row": 0,
+              "frame": 1,
+              "scale": 0.45,
+              "x": 681.3888548392666,
+              "y": 1356.2183381270104,
+              "foot": [
+                681.3888548392666,
+                1356.2183381270104
+              ],
+              "worldFrame": [
+                72,
+                72
+              ]
+            },
+            "seenDirections": [
+              "right",
+              "up",
+              "left"
+            ],
+            "requested": 2,
+            "loaded": 2,
+            "decodedBytes": 1269760,
+            "actor": {
+              "id": "npc_chicken",
+              "x": 681.3888548392666,
+              "y": 1356.2183381270104,
+              "dir": "right",
+              "moving": false,
+              "distance": 143.74640000000005,
+              "route": [
+                [
+                  769.0782840487026,
+                  1370.0037570137572
+                ],
+                [
+                  680,
+                  1356
+                ]
+              ]
+            }
+          },
+          {
+            "id": "npc_banana",
+            "draws": 287,
+            "errors": 0,
+            "lastPose": {
+              "kind": "walk",
+              "dir": "left",
+              "row": 1,
+              "frame": 0,
+              "scale": 0.75,
+              "x": 749.9731686817759,
+              "y": 1357.2134778043837,
+              "foot": [
+                749.9731686817759,
+                1357.2134778043837
+              ],
+              "worldFrame": [
+                84,
+                90
+              ]
+            },
+            "seenDirections": [
+              "right",
+              "up",
+              "down",
+              "left"
+            ],
+            "withheldTalkFrames": [],
+            "talkFrames": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "requested": 3,
+            "actor": {
+              "id": "npc_banana",
+              "x": 749.9731686817759,
+              "y": 1357.2134778043837,
+              "dir": "left",
+              "moving": false,
+              "distance": 194.924,
+              "route": [
+                [
+                  669.2006760703055,
+                  1370.0069518499831
+                ],
+                [
+                  669.2006760703055,
+                  1394
+                ],
+                [
+                  750,
+                  1394
+                ],
+                [
+                  750,
+                  1356
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "text": "Speaking of which... did you move those boxes?",
+        "speaker": "Banana",
+        "width": 288,
+        "x": 85,
+        "y": 225,
+        "h": 191.375,
+        "visible": "visible",
+        "style": "whisper",
+        "camera": {
+          "cameraX": 535.786119726183,
+          "cameraY": 898.3218634121516,
+          "zoom": 1.0866666666667295,
+          "follows": true,
+          "roofAlpha": 0.95,
+          "playerX": 798.5083003834151,
+          "playerY": 1302.4223700635032,
+          "dir": "down",
+          "room": null,
+          "crossings": 1
+        },
+        "people": [
+          {
+            "id": "npc_chicken",
+            "draws": 374,
+            "errors": 0,
+            "lastPose": {
+              "kind": "walk",
+              "dir": "right",
+              "row": 2,
+              "frame": 0,
+              "scale": 0.75,
+              "x": 681.3888548392666,
+              "y": 1356.2183381270104,
+              "foot": [
+                681.3888548392666,
+                1356.2183381270104
+              ],
+              "worldFrame": [
+                84,
+                90
+              ]
+            },
+            "seenDirections": [
+              "right",
+              "up",
+              "left"
+            ],
+            "requested": 2,
+            "loaded": 2,
+            "decodedBytes": 1269760,
+            "actor": {
+              "id": "npc_chicken",
+              "x": 681.3888548392666,
+              "y": 1356.2183381270104,
+              "dir": "right",
+              "moving": false,
+              "distance": 143.74640000000005,
+              "route": [
+                [
+                  769.0782840487026,
+                  1370.0037570137572
+                ],
+                [
+                  680,
+                  1356
+                ]
+              ]
+            }
+          },
+          {
+            "id": "npc_banana",
+            "draws": 300,
+            "errors": 0,
+            "lastPose": {
+              "kind": "talk",
+              "dir": "left",
+              "row": 0,
+              "frame": 0,
+              "scale": 0.5882352941176471,
+              "x": 746.6973283814015,
+              "y": 1356.8148923976742,
+              "foot": [
+                746.6973283814015,
+                1356.8148923976742
+              ],
+              "worldFrame": [
+                65.88235294117648,
+                70.58823529411765
+              ]
+            },
+            "seenDirections": [
+              "right",
+              "up",
+              "down",
+              "left"
+            ],
+            "withheldTalkFrames": [],
+            "talkFrames": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "requested": 3,
+            "actor": {
+              "id": "npc_banana",
+              "x": 746.6973283814015,
+              "y": 1356.8148923976742,
+              "dir": "left",
+              "moving": true,
+              "distance": 198.224,
+              "route": [
+                [
+                  749.9731686817759,
+                  1357.2134778043837
+                ],
+                [
+                  740,
+                  1356
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "text": "WHAT BOXES?!",
+        "speaker": "Chicken",
+        "width": 354,
+        "x": 8,
+        "y": 252,
+        "h": 166.1875,
+        "visible": "visible",
+        "style": "confusion",
+        "camera": {
+          "cameraX": 533.5791762501889,
+          "cameraY": 898.0504587230283,
+          "zoom": 1.0866666666666753,
+          "follows": true,
+          "roofAlpha": 0.95,
+          "playerX": 798.5083003834151,
+          "playerY": 1302.4223700635032,
+          "dir": "down",
+          "room": null,
+          "crossings": 1
+        },
+        "people": [
+          {
+            "id": "npc_chicken",
+            "draws": 392,
+            "errors": 0,
+            "lastPose": {
+              "kind": "walk",
+              "dir": "right",
+              "row": 2,
+              "frame": 0,
+              "scale": 0.75,
+              "x": 681.3888548392666,
+              "y": 1356.2183381270104,
+              "foot": [
+                681.3888548392666,
+                1356.2183381270104
+              ],
+              "worldFrame": [
+                84,
+                90
+              ]
+            },
+            "seenDirections": [
+              "right",
+              "up",
+              "left"
+            ],
+            "requested": 2,
+            "loaded": 2,
+            "decodedBytes": 1269760,
+            "actor": {
+              "id": "npc_chicken",
+              "x": 681.3888548392666,
+              "y": 1356.2183381270104,
+              "dir": "right",
+              "moving": false,
+              "distance": 143.74640000000005,
+              "route": [
+                [
+                  769.0782840487026,
+                  1370.0037570137572
+                ],
+                [
+                  680,
+                  1356
+                ]
+              ]
+            }
+          },
+          {
+            "id": "npc_banana",
+            "draws": 318,
+            "errors": 0,
+            "lastPose": {
+              "kind": "walk",
+              "dir": "left",
+              "row": 1,
+              "frame": 0,
+              "scale": 0.75,
+              "x": 742.3317252077692,
+              "y": 1356.2837109123325,
+              "foot": [
+                742.3317252077692,
+                1356.2837109123325
+              ],
+              "worldFrame": [
+                84,
+                90
+              ]
+            },
+            "seenDirections": [
+              "right",
+              "up",
+              "down",
+              "left"
+            ],
+            "withheldTalkFrames": [],
+            "talkFrames": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "requested": 3,
+            "actor": {
+              "id": "npc_banana",
+              "x": 742.3317252077692,
+              "y": 1356.2837109123325,
+              "dir": "left",
+              "moving": false,
+              "distance": 202.6218,
+              "route": [
+                [
+                  749.9731686817759,
+                  1357.2134778043837
+                ],
+                [
+                  740,
+                  1356
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "text": "The ones under your eyes. You look exhausted.",
+        "speaker": "Banana",
+        "width": 354,
+        "x": 28,
+        "y": 225,
+        "h": 191.375,
+        "visible": "visible",
+        "style": "normal",
+        "camera": {
+          "cameraX": 532.7641335371083,
+          "cameraY": 897.9505692150557,
+          "zoom": 1.086666666666668,
+          "follows": true,
+          "roofAlpha": 0.95,
+          "playerX": 798.5083003834151,
+          "playerY": 1302.4223700635032,
+          "dir": "down",
+          "room": null,
+          "crossings": 1
+        },
+        "people": [
+          {
+            "id": "npc_chicken",
+            "draws": 410,
+            "errors": 0,
+            "lastPose": {
+              "kind": "walk",
+              "dir": "right",
+              "row": 2,
+              "frame": 0,
+              "scale": 0.75,
+              "x": 681.3888548392666,
+              "y": 1356.2183381270104,
+              "foot": [
+                681.3888548392666,
+                1356.2183381270104
+              ],
+              "worldFrame": [
+                84,
+                90
+              ]
+            },
+            "seenDirections": [
+              "right",
+              "up",
+              "left"
+            ],
+            "requested": 2,
+            "loaded": 2,
+            "decodedBytes": 1269760,
+            "actor": {
+              "id": "npc_chicken",
+              "x": 681.3888548392666,
+              "y": 1356.2183381270104,
+              "dir": "right",
+              "moving": false,
+              "distance": 143.74640000000005,
+              "route": [
+                [
+                  769.0782840487026,
+                  1370.0037570137572
+                ],
+                [
+                  680,
+                  1356
+                ]
+              ]
+            }
+          },
+          {
+            "id": "npc_banana",
+            "draws": 336,
+            "errors": 0,
+            "lastPose": {
+              "kind": "walk",
+              "dir": "right",
+              "row": 2,
+              "frame": 0,
+              "scale": 0.75,
+              "x": 742.3317252077692,
+              "y": 1356.2837109123325,
+              "foot": [
+                742.3317252077692,
+                1356.2837109123325
+              ],
+              "worldFrame": [
+                84,
+                90
+              ]
+            },
+            "seenDirections": [
+              "right",
+              "up",
+              "down",
+              "left"
+            ],
+            "withheldTalkFrames": [],
+            "talkFrames": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "requested": 3,
+            "actor": {
+              "id": "npc_banana",
+              "x": 742.3317252077692,
+              "y": 1356.2837109123325,
+              "dir": "right",
+              "moving": false,
+              "distance": 202.6218,
+              "route": [
+                [
+                  749.9731686817759,
+                  1357.2134778043837
+                ],
+                [
+                  740,
+                  1356
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "text": "I DEMAND TO SPEAK TO YOUR SUPERVISOR!",
+        "speaker": "Chicken",
+        "width": 354,
+        "x": 8,
+        "y": 227,
+        "h": 191.375,
+        "visible": "visible",
+        "style": "angry",
+        "camera": {
+          "cameraX": 532.5051557558218,
+          "cameraY": 897.9188295740113,
+          "zoom": 1.0866666666666678,
+          "follows": true,
+          "roofAlpha": 0.95,
+          "playerX": 798.5083003834151,
+          "playerY": 1302.4223700635032,
+          "dir": "down",
+          "room": null,
+          "crossings": 1
+        },
+        "people": [
+          {
+            "id": "npc_chicken",
+            "draws": 430,
+            "errors": 0,
+            "lastPose": {
+              "kind": "argue",
+              "dir": "right",
+              "row": 0,
+              "frame": 2,
+              "scale": 0.45,
+              "x": 681.3888548392666,
+              "y": 1356.2183381270104,
+              "foot": [
+                681.3888548392666,
+                1356.2183381270104
+              ],
+              "worldFrame": [
+                72,
+                72
+              ]
+            },
+            "seenDirections": [
+              "right",
+              "up",
+              "left"
+            ],
+            "requested": 2,
+            "loaded": 2,
+            "decodedBytes": 1269760,
+            "actor": {
+              "id": "npc_chicken",
+              "x": 681.3888548392666,
+              "y": 1356.2183381270104,
+              "dir": "right",
+              "moving": false,
+              "distance": 143.74640000000005,
+              "route": [
+                [
+                  769.0782840487026,
+                  1370.0037570137572
+                ],
+                [
+                  680,
+                  1356
+                ]
+              ]
+            }
+          },
+          {
+            "id": "npc_banana",
+            "draws": 356,
+            "errors": 0,
+            "lastPose": {
+              "kind": "walk",
+              "dir": "left",
+              "row": 1,
+              "frame": 0,
+              "scale": 0.75,
+              "x": 742.3317252077692,
+              "y": 1356.2837109123325,
+              "foot": [
+                742.3317252077692,
+                1356.2837109123325
+              ],
+              "worldFrame": [
+                84,
+                90
+              ]
+            },
+            "seenDirections": [
+              "right",
+              "up",
+              "down",
+              "left"
+            ],
+            "withheldTalkFrames": [],
+            "talkFrames": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "requested": 3,
+            "actor": {
+              "id": "npc_banana",
+              "x": 742.3317252077692,
+              "y": 1356.2837109123325,
+              "dir": "left",
+              "moving": false,
+              "distance": 202.6218,
+              "route": [
+                [
+                  749.9731686817759,
+                  1357.2134778043837
+                ],
+                [
+                  740,
+                  1356
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "glance": [
+      {
+        "id": "npc_chicken",
+        "x": 621.8297315404847,
+        "y": 1356.0065076984824,
+        "dir": "left",
+        "moving": false,
+        "distance": 203.30590000000024,
+        "route": [
+          [
+            681.3888548392666,
+            1356.2183381270104
+          ],
+          [
+            620,
+            1356
+          ]
+        ]
+      },
+      {
+        "id": "npc_banana",
+        "x": 742.3317252077692,
+        "y": 1356.2837109123325,
+        "dir": "right",
+        "moving": false,
+        "distance": 202.6218,
+        "route": [
+          [
+            749.9731686817759,
+            1357.2134778043837
+          ],
+          [
+            740,
+            1356
+          ]
+        ]
+      }
+    ],
+    "completed": true,
+    "positionPreserved": true,
+    "cameraRestored": true,
+    "roamingResumed": true
+  },
+  "skip": [
+    "line-0",
+    "line-1",
+    "line-2",
+    "line-3",
+    "line-4",
+    "line-5",
+    "line-6",
+    "stage",
+    "pan",
+    "storm",
+    "glance",
+    "follow",
+    "return"
+  ],
+  "persistence": {
+    "reload": true,
+    "revisitDoesNotRepeat": true,
+    "independentProfiles": true
+  }
+}

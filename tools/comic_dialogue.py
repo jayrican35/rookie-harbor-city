@@ -8,6 +8,7 @@ def apply_comic_hooks(bundle, engine):
     bundle=bundle[:a]+engine[engine.index(start):engine.index(end)]+bundle[bundle.index(end):]
 
     replacements = {
+        'var s=settings();active=': 'var s=settings(full);active=',
         ' function blocks(v,actor){': ' function blocks(v,actor){var comic=window.ROOKIE_COMIC?.blocks(actor);if(comic)return comic;',
         'var actor=present(active.actor)?active.actor:null,ap=actor?point(actor):null;': 'if(window.ROOKIE_COMIC?.cameraChanged())active.dirty=true;var actor=present(active.actor)?active.actor:null,ap=actor?point(actor):null;',
 
@@ -23,7 +24,7 @@ def apply_comic_hooks(bundle, engine):
         ' function screen(p,r){': ' function screen(p,r){var comic=window.ROOKIE_COMIC?.screen(p);if(comic)return comic;',
         ' function viewport(){': ' function viewport(){var comic=window.ROOKIE_COMIC?.viewport();if(comic)return comic;',
         'metrics.font="500 16px Barlow, sans-serif";': 'metrics.font=window.ROOKIE_COMIC?.font()||"500 16px Barlow, sans-serif";',
-        ' function settings(){': ' function settings(){var comic=window.ROOKIE_COMIC?.settings();if(comic)return comic;',
+        ' function settings(){': ' function settings(full){var comic=window.ROOKIE_COMIC?.settings(full);if(comic)return comic;',
         's.width-32,s.lines': 's.width-(window.ROOKIE_COMIC?.inset()||32),s.lines',
         'conf.width-32,conf.lines': 'conf.width-(window.ROOKIE_COMIC?.inset()||32),conf.lines',
         ' function layout(){': ' function layout(){window.ROOKIE_COMIC?.decorate(active,panel);',
@@ -41,6 +42,7 @@ def apply_comic_hooks(bundle, engine):
 window.HARBOR.comicDialogue={
  lines:function(lines,done){if(window.ROOKIE_COMIC?.enabled())showLines(lines,done);},
  choices:function(s,t,c){if(window.ROOKIE_COMIC?.enabled())showChoices(s,t,c);},
+ pop:function(){if(window.ROOKIE_COMIC?.enabled())sndClick();},
  close:function(){hideDlgPanel();}
 };
 '''

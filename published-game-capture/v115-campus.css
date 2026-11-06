@@ -21,3 +21,5 @@ body.v115-campus-open{overflow:hidden}
 .v115-campus-footer{position:absolute;left:12px;right:12px;bottom:calc(6px + env(safe-area-inset-bottom,0px));color:#edf3f6;background:rgba(13,33,50,.8);border-radius:6px;padding:7px;text-align:center;font-size:10px;pointer-events:none}
 @media(max-width:480px){.v115-campus-brand span{font-size:9px}.v115-campus-header{padding:8px}.v115-campus-note{top:calc(env(safe-area-inset-top,0px) + 157px);font-size:10px}.v115-campus-tools{top:calc(env(safe-area-inset-top,0px) + 116px)}}
 @media(prefers-reduced-motion:reduce){#v115Campus *{transition:none!important}}
+/* Existing story panels share the connected canvas stacking context. */
+#v115Campus>#hcAssignmentBoard,#v115Campus>#caperNotebook,#v115Campus>#hcCells,#v115Campus>.overlay-back,#v115Campus>.menu-page{z-index:100;touch-action:auto}

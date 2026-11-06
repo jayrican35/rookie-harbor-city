@@ -1,7 +1,7 @@
 /* Scoped to opt-in presentation: Zombie and legacy rendering retain native UI. */
 #dlgPanel.hc-speech.comic-balloon{padding:28px 34px 20px!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;isolation:isolate;overflow:visible!important;transform-origin:50% 90%!important;}
 .comic-shell{position:absolute;inset:0;width:100%;height:100%;z-index:-1;overflow:visible;pointer-events:none}
-.comic-tail{position:absolute;z-index:-2;overflow:visible;pointer-events:none}
+.comic-tail{position:fixed;inset:0;width:100%;height:100%;z-index:62;overflow:hidden;pointer-events:none}
 #dlgPanel.comic-balloon #hcSpeechTail{display:none!important}
 #dlgPanel.hc-speech.comic-balloon #dlgSpeaker{font:800 12px/1.3 'Trebuchet MS',sans-serif!important;letter-spacing:.07em!important;border:0!important;color:#5d4a31!important;margin:0 0 8px!important;padding:0!important;}
 #dlgPanel.hc-speech.comic-balloon #dlgText{font:700 18px/1.4 'Trebuchet MS',sans-serif!important;color:#18283b!important;}
@@ -16,6 +16,7 @@
 .comic-pop[data-comic-style=thought]{animation:comic-thought .25s ease-out!important}
 #hcAmbientSpeech.comic-reaction{isolation:isolate;background:transparent;border:0;border-radius:0;box-shadow:none;padding:18px 24px;max-width:180px;font:800 22px/1.3 'Trebuchet MS',sans-serif;pointer-events:none;}
 #hcAmbientSpeech.comic-reaction:after{display:none}
+#hcAmbientSpeech.comic-reaction.comic-banter{box-sizing:border-box;max-width:min(300px,calc(100vw - 24px));padding:17px 23px;font:700 15px/1.35 'Trebuchet MS',sans-serif;white-space:normal;overflow-wrap:break-word;overflow:visible;pointer-events:none}
 .comic-dismiss{position:fixed;isolation:isolate;pointer-events:none;animation:comic-dismiss .12s ease-in forwards;z-index:65}
 @keyframes comic-pop{0%{transform:scale(.78,.72);opacity:0}65%{transform:scale(1.035,1.06);opacity:1}100%{transform:scale(1)}}
 @keyframes comic-energy{0%{transform:scale(.8,.75);opacity:0}45%{transform:scale(1.04,1.06) rotate(-1deg);opacity:1}70%{transform:scale(.99,1.01) rotate(1deg)}100%{transform:scale(1)}}
@@ -27,3 +28,8 @@
 body.comic-dialogue-enabled #csCaption.show{background:#fff9e9!important;color:#18283b!important;border:4px solid #18283b!important;border-radius:47% 43% 44% 40% / 20% 25% 20% 23%!important;box-shadow:4px 5px 0 #15253955!important;padding:22px 32px!important;font:700 18px/1.4 'Trebuchet MS',sans-serif!important;text-shadow:none!important;}
 
 #dlgPanel.comic-balloon .comic-npc-portrait{width:44px;height:44px;object-fit:cover;display:inline-block;vertical-align:middle;margin-right:8px;border:2px solid #18283b;border-radius:12px;image-rendering:pixelated;}
+
+/* Decorative tails live outside the panel. Scrollable choices retain wheel,
+   touch and keyboard access without drawing a slider in the artwork. */
+#dlgPanel.hc-speech.comic-balloon,#dlgPanel.comic-balloon #dlgActions{scrollbar-width:none!important}
+#dlgPanel.comic-balloon::-webkit-scrollbar,#dlgPanel.comic-balloon #dlgActions::-webkit-scrollbar{width:0!important;height:0!important;display:none!important}

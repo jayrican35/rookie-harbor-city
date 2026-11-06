@@ -1,0 +1,411 @@
+{
+  "scope": "Eight existing civilians around Midtown, Precinct 9, Maple Court and the adjoining downtown shops. No citywide rollout.",
+  "assignments": [
+    {
+      "id": "nico",
+      "actorId": "ambient:midtown:0",
+      "label": "Nico",
+      "tags": [
+        "gen-z"
+      ],
+      "area": "midtown"
+    },
+    {
+      "id": "tess",
+      "actorId": "ambient:midtown:1",
+      "label": "Tess",
+      "tags": [
+        "overdramatic"
+      ],
+      "area": "midtown"
+    },
+    {
+      "id": "avery",
+      "actorId": "ambient:precinct:visitor",
+      "label": "Avery",
+      "tags": [
+        "overconfident"
+      ],
+      "area": "precinct"
+    },
+    {
+      "id": "maya",
+      "name": "MAYA",
+      "station": true,
+      "label": "Maya",
+      "tags": [
+        "exhausted-worker"
+      ],
+      "area": "precinct"
+    },
+    {
+      "id": "mara",
+      "actorId": "ambient:residential:0",
+      "label": "Mara",
+      "tags": [
+        "friendly",
+        "mysterious"
+      ],
+      "area": "residential"
+    },
+    {
+      "id": "ed",
+      "actorId": "ambient:residential:1",
+      "label": "Ed",
+      "tags": [
+        "confused",
+        "conspiracy-minded"
+      ],
+      "area": "residential"
+    },
+    {
+      "id": "omar",
+      "name": "OMAR",
+      "room": "store",
+      "label": "Omar",
+      "tags": [
+        "sarcastic"
+      ],
+      "area": "downtown"
+    },
+    {
+      "id": "ibarra",
+      "name": "MS. IBARRA",
+      "label": "Ms. Ibarra",
+      "tags": [
+        "friendly"
+      ],
+      "area": "downtown"
+    }
+  ],
+  "entries": [
+    {
+      "id": "steps",
+      "starter": "nico",
+      "partner": "tess",
+      "areas": [
+        "midtown"
+      ],
+      "lines": [
+        [
+          "nico",
+          "My phone says I walked ten thousand steps."
+        ],
+        [
+          "tess",
+          "You shook it while waiting for pizza."
+        ]
+      ]
+    },
+    {
+      "id": "parking-survivor",
+      "starter": "tess",
+      "partner": "nico",
+      "contexts": [
+        "driving",
+        "parked"
+      ],
+      "lines": [
+        [
+          "tess",
+          "I survived parallel parking."
+        ],
+        [
+          "nico",
+          "You were the passenger."
+        ]
+      ]
+    },
+    {
+      "id": "sandwich-security",
+      "starter": "nico",
+      "lines": [
+        [
+          "nico",
+          "Bro, that sandwich has more security than my phone."
+        ]
+      ]
+    },
+    {
+      "id": "automatic-door",
+      "starter": "tess",
+      "lines": [
+        [
+          "tess",
+          "I dressed for a main-character entrance. The automatic door disagreed."
+        ]
+      ]
+    },
+    {
+      "id": "suspicious-loaf",
+      "starter": "avery",
+      "lines": [
+        [
+          "avery",
+          "I reported a suspicious loaf. Turned out to be bread, with intentions."
+        ]
+      ]
+    },
+    {
+      "id": "pigeon-detective",
+      "starter": "avery",
+      "contexts": [
+        "walking"
+      ],
+      "lines": [
+        [
+          "avery",
+          "Detective tip: follow the clues. I followed a pigeon. Mixed results."
+        ]
+      ]
+    },
+    {
+      "id": "printer-rights",
+      "starter": "maya",
+      "mood": "thought",
+      "lines": [
+        [
+          "maya",
+          "Printer jam. Again. The paper has exercised its right to remain silent."
+        ]
+      ]
+    },
+    {
+      "id": "next-break",
+      "starter": "maya",
+      "contexts": [
+        "day"
+      ],
+      "lines": [
+        [
+          "maya",
+          "My break has been postponed until my next break."
+        ]
+      ]
+    },
+    {
+      "id": "camera-tip",
+      "starter": "maya",
+      "gate": "m2-camera",
+      "lines": [
+        [
+          "maya",
+          "Working the QuickMart case? Ask Omar about the store camera."
+        ]
+      ]
+    },
+    {
+      "id": "park-squirrels",
+      "starter": "mara",
+      "areas": [
+        "residential",
+        "coast-park"
+      ],
+      "topics": [
+        "coast-park"
+      ],
+      "lines": [
+        [
+          "mara",
+          "The park's nice today. Even the squirrels are minding their business."
+        ]
+      ]
+    },
+    {
+      "id": "bench-listener",
+      "starter": "mara",
+      "mood": "whisper",
+      "lines": [
+        [
+          "mara",
+          "That empty bench? Best listener on the block."
+        ]
+      ]
+    },
+    {
+      "id": "ate-toast",
+      "starter": "ed",
+      "lines": [
+        [
+          "ed",
+          "My grandson said I ate. I checked. I had toast."
+        ]
+      ]
+    },
+    {
+      "id": "pigeon-meeting",
+      "starter": "ed",
+      "contexts": [
+        "day"
+      ],
+      "lines": [
+        [
+          "ed",
+          "The pigeons meet every morning. Nobody invites me."
+        ]
+      ]
+    },
+    {
+      "id": "porch-code",
+      "starter": "ed",
+      "contexts": [
+        "night"
+      ],
+      "lines": [
+        [
+          "ed",
+          "Every porch light is on. Either a code or it's recycling night."
+        ]
+      ]
+    },
+    {
+      "id": "checkout",
+      "starter": "omar",
+      "lines": [
+        [
+          "omar",
+          "Self-checkout asked if I found everything. Emotionally? No."
+        ]
+      ]
+    },
+    {
+      "id": "fresh-ice",
+      "starter": "omar",
+      "lines": [
+        [
+          "omar",
+          "A customer asked if our ice was fresh. I told him it's chilling."
+        ]
+      ]
+    },
+    {
+      "id": "pencils",
+      "starter": "ibarra",
+      "lines": [
+        [
+          "ibarra",
+          "Good detectives ask questions. Great ones remember their pencils."
+        ]
+      ]
+    },
+    {
+      "id": "sprint-reward",
+      "starter": "nico",
+      "contexts": [
+        "running"
+      ],
+      "lines": [
+        [
+          "nico",
+          "That sprint has side-quest energy. Hope the reward is a snack."
+        ]
+      ]
+    },
+    {
+      "id": "umbrella-yacht",
+      "starter": "nico",
+      "partner": "tess",
+      "areas": [
+        "midtown",
+        "southbay",
+        "waterfront"
+      ],
+      "topics": [
+        "marina"
+      ],
+      "lines": [
+        [
+          "nico",
+          "One day I'm buying a boat."
+        ],
+        [
+          "tess",
+          "You've named your umbrella ‘Yacht’."
+        ]
+      ]
+    },
+    {
+      "id": "paperclip-receipt",
+      "starter": "avery",
+      "rare": true,
+      "gate": "after-first-case",
+      "contexts": [
+        "comedy-near"
+      ],
+      "mood": "whisper",
+      "lines": [
+        [
+          "avery",
+          "The banana asked for a receipt for one paper clip. Very organized fruit."
+        ]
+      ]
+    },
+    {
+      "id": "fruit-protection",
+      "starter": "avery",
+      "rare": true,
+      "contexts": [
+        "comedy-near"
+      ],
+      "lines": [
+        [
+          "avery",
+          "Chicken asked for witness protection. From a fruit."
+        ]
+      ]
+    },
+    {
+      "id": "pigeon-reminder",
+      "starter": "ed",
+      "requiresHeard": "pigeon-meeting",
+      "lines": [
+        [
+          "ed",
+          "Pigeons sent me a meeting reminder. It was on my car."
+        ]
+      ]
+    }
+  ],
+  "reactions": {
+    "trafficPilot": {
+      "kind": "civilian",
+      "initialDistrict": "midtown",
+      "label": "Driver",
+      "personality": "sarcastic"
+    },
+    "traffic": [
+      {
+        "seconds": 3,
+        "text": "Could you scoot over? This lane has plans.",
+        "mood": "normal"
+      },
+      {
+        "seconds": 8,
+        "text": "Officer, respectfully, MOVE!",
+        "mood": "excited"
+      },
+      {
+        "seconds": 12,
+        "text": "At this point, I'm paying rent in this traffic.",
+        "mood": "excited",
+        "chance": 0.12
+      }
+    ],
+    "pedestrianPilot": "ambient:midtown:0",
+    "pedestrianLabel": "Nico",
+    "pedestrian": {
+      "vehicle-contact": {
+        "text": "My shoes did not sign up for your parking plan.",
+        "mood": "surprise"
+      },
+      "repeat-contact": {
+        "text": "My personal space just filed a complaint.",
+        "mood": "normal"
+      },
+      "running-close": {
+        "text": "Lowkey, my personal space has a speed limit.",
+        "mood": "surprise"
+      }
+    }
+  }
+}

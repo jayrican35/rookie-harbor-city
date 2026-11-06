@@ -26,11 +26,11 @@ function update(v,car,dt,input={}){
  if(v.index===null)v.index=((Math.round(v.angle/STEP)%16)+16)%16;
  if(Math.abs(wrap(v.angle-v.index*STEP))>STEP/2+HYST){const i=((Math.round(v.angle/STEP)%16)+16)%16;if(i!==v.index){v.index=i;v.frameChanges++;}}
  const braking=!!(input.brake||input.down&&car.speed>8),sharp=Math.abs(v.rate)>1.2&&Math.abs(car.speed)>170;
- const target=clamp(v.rate*Math.abs(car.speed)/700,-.35,.35)+(braking&&Math.abs(car.speed)>12?.2:0);
+ const target=clamp(v.rate*Math.abs(car.speed)/700,-.35,.35)+(braking&&Math.abs(car.speed)>12?.2:0)+(input.impact||0)*.8;
  v.sway+=(target-v.sway)*(1-Math.exp(-dt*12));
  for(const e of v.effects)e.life-=dt;v.effects=v.effects.filter(e=>e.life>0);
  const wheels=[rear(car,-1),rear(car,1)];v.fxTime+=dt;
- if((sharp||input.brake)&&Math.abs(car.speed)>70&&v.rear&&v.fxTime>.07){
+ if((sharp||input.brake||input.sliding)&&Math.max(Math.abs(car.speed),car.impactSpeed||0)>70&&v.rear&&v.fxTime>.07){
   for(let i=0;i<2;i++){v.effects.push({kind:'skid',a:v.rear[i],b:wheels[i],life:1.7,max:1.7});v.effects.push({kind:'puff',a:wheels[i],life:.38,max:.38});}
   v.fxTime=0;
  }

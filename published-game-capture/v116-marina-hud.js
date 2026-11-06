@@ -8,12 +8,13 @@ function openPanel(type){
  panel.hidden=false;
  const title=panel.querySelector('h2'),body=panel.querySelector('.v116-panel-body');
  if(type==='case'){
-  title.textContent='CASE 001 · THE GREAT SANDWICH CAPER';body.textContent='';
+  title.textContent=window.HARBOR.caper?.active()?window.HARBOR.caper.definition.title:(document.getElementById('caseStatus')?.textContent||'CURRENT CASE');body.textContent='';
   const summary=document.createElement('p');summary.textContent='Current assignment';body.appendChild(summary);
   const objectives=document.querySelector('#objList');const text=document.createElement('p');text.textContent=objectives?.innerText||'Visit Sergeant Brooks at Precinct 9 for your briefing.';body.appendChild(text);
+  for(const [label,open] of [['Detective Notebook',()=>window.HARBOR.caper?.notebook()],['Assignment Board',()=>window.HARBOR.board?.open()]]){const b=document.createElement('button');b.type='button';b.textContent=label;b.onclick=()=>{panel.hidden=true;open();};body.appendChild(b);}
  }else{
   title.textContent='HARBOR CITY MAP';body.textContent='Explore the continuous Harbor City districts. The gold marker shows your actual world position, including beyond Southbay Marina.';
-  const b=document.createElement('button');b.type='button';b.textContent='Open full city map';b.onclick=()=>{window.HARBOR.seamlessCampusV115.close();document.getElementById('btnMap')?.click();};body.appendChild(b);
+  const b=document.createElement('button');b.type='button';b.textContent='Open full city map';b.onclick=()=>{panel.hidden=true;if(window.HARBOR.mainCity)return window.HARBOR.mainCity.openNative('map');window.HARBOR.seamlessCampusV115.close();document.getElementById('btnMap')?.click();};body.appendChild(b);
  }
  panel.querySelector('.v116-panel-close').focus();
 }
@@ -57,10 +58,11 @@ function ready(){
  };
  settings.onclick=()=>{
    closeMenu();
+   if(window.HARBOR.mainCity)return window.HARBOR.mainCity.openNative('menu');
    // Native settings in the original game—not a duplicate options screen.
    window.HARBOR.seamlessCampusV115.close();document.getElementById('btnMenu')?.click();
  };
- const profiles=()=>{window.HARBOR.seamlessCampusV115.close();window.HARBOR.profiles?.open();};
+ const profiles=()=>{if(window.HARBOR.mainCity)return window.HARBOR.mainCity.openNative('profiles');window.HARBOR.seamlessCampusV115.close();window.HARBOR.profiles?.open();};
  root.querySelector('.v116-identity').onclick=profiles;
  for(const b of root.querySelectorAll('[data-profile]'))b.onclick=profiles;
  root.querySelector('.v116-minimap').onclick=()=>openPanel('map');root.querySelector('.v116-case').onclick=()=>openPanel('case');
@@ -71,6 +73,7 @@ function ready(){
   const action=b.dataset.action;
   if(action==='case'||action==='map')return openPanel(action);
   if(action==='team')return profiles();
+  if(window.HARBOR.mainCity)return window.HARBOR.mainCity.openNative('gear');
   window.HARBOR.seamlessCampusV115.close();document.getElementById('btnInv')?.click();
  };
 }

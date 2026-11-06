@@ -1,29 +1,45 @@
 # ROOKIE: Harbor City
 
-The editable development candidate is the V140 source lineage. `main` currently
-assembles historical releases through deployment workflows; it does not contain
-the game source. Keep the original campaign and Zombie Outbreak protected.
+`published-game-capture/` is the complete playable seamless main game. Its
+`index.html` boots the connected city, current campaign and introduction,
+police cruiser, connected traffic, directional vehicle artwork, two-way
+collisions, dialogue and audio. No preview harness, `site/` folder, scene
+selector or compilation is required to play a checkout.
 
-## Run the precinct review locally
+## Play the committed game
 
-Requires Python 3. Run from this checkout:
+Requires Python 3. Run from the repository root:
 
 ```powershell
-python tools/prepare_local_review.py
-python -m http.server 8767 --bind 127.0.0.1 --directory site
+python -m http.server 8768 --bind 127.0.0.1 --directory published-game-capture
 ```
 
-Open [the playable comparison](http://127.0.0.1:8767/). It offers updated and
-previous layouts in the existing connected-world preview. This preview does
-not yet integrate the full campaign's missions or player driving.
+Open [the game](http://127.0.0.1:8768/index.html). Select a family profile;
+fresh profiles play First Shift. Approach Unit 9 in the Precinct 9 parking lot
+and use **Drive**. Academy and Zombie Outbreak retain their existing mode access.
 
-For browser QA, install Playwright and its FFmpeg dependency, with Chrome
-installed, then run `node qa/audit-baseline.cjs --review`. The script writes
-actual phone/desktop screenshots, a keyboard walkthrough video, collision and
-touch observations, and a bounded protected-mode parity check.
+## Verify or copy the package
 
-See [the takeover audit](docs/TAKEOVER-AUDIT-2026-11-02.md) and
-[the Option A implementation review](docs/PRECINCT9-OPTION-A-REVIEW.md).
+Python 3 and Node are required for package verification:
 
-The [roadway asset pass](docs/ROADWAY-IMPLEMENTATION.md) starts at the precinct
-and follows the original connected street geometry into the surrounding districts.
+```powershell
+python tools/package_main_game.py
+python tools/package_main_game.py --output site/distribution
+```
+
+The output destination must be empty. This copies only the committed game
+inventory, with no generated asset cache or external source ZIP needed.
+`PLAYABLE-PACKAGE.json` hashes normalize text line endings for Windows/Linux.
+
+Authoring adapters remain beside the distributable. Their already bound
+runtime is `game-v115.bundle.js`; `precinct-cruiser.compiled.js` contains the
+existing bound controller. The original `game.js` and Zombie files remain
+unchanged. Recompiling gameplay source is separate from copying this package;
+historical preview tools remain available as authoring utilities.
+
+For direct-folder browser verification, install Playwright with Chrome
+available, then run `node qa/check-published-package.cjs`. It starts a fresh
+server rooted exclusively in `published-game-capture/`, checks normal startup,
+and uses the same index with existing diagnostics for live fleet verification.
+
+See [packaging verification and limitations](docs/published-package/README.md).

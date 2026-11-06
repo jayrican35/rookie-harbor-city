@@ -1,0 +1,122 @@
+{
+  "pack": "Harbor City Civic Monument",
+  "engine": "HTML5 Canvas 2D",
+  "format": "PNG RGBA",
+  "notes": "Art assets only. No new world/road/collision systems. Sizes are source canvas pixels; scale in your existing renderer.",
+  "monument": {
+    "path": "monument/harbor_city_monument.png",
+    "size": [
+      598,
+      315
+    ],
+    "small_path": "monument/harbor_city_monument_small.png",
+    "anchor": {
+      "x": 0.5,
+      "y": 1.0
+    },
+    "animation": "static"
+  },
+  "flagpole": {
+    "path": "flags/shared/stone_flagpole.png",
+    "size": [
+      160,
+      248
+    ],
+    "anchor": {
+      "x": 0.2,
+      "y": 1.0
+    }
+  },
+  "flags": {
+    "puerto_rico": {
+      "display_name": "Puerto Rico",
+      "frame_count": 6,
+      "fps": 6,
+      "loop": true,
+      "direction": "right",
+      "pole_and_flag_sheet": "flags/puerto_rico/pole_and_flag_sheet.png",
+      "pole_and_flag_frames": [
+        "flags/puerto_rico/pole_and_flag_00.png",
+        "flags/puerto_rico/pole_and_flag_01.png",
+        "flags/puerto_rico/pole_and_flag_02.png",
+        "flags/puerto_rico/pole_and_flag_03.png",
+        "flags/puerto_rico/pole_and_flag_04.png",
+        "flags/puerto_rico/pole_and_flag_05.png"
+      ],
+      "frame_size": [
+        160,
+        248
+      ],
+      "sheet_grid": {
+        "columns": 6,
+        "rows": 1
+      },
+      "anchor": {
+        "x": 0.2,
+        "y": 1.0
+      },
+      "cloth_sheet": "flags/puerto_rico/cloth_sheet.png",
+      "cloth_frame_size": [
+        110,
+        95
+      ],
+      "cloth_frames": [
+        "flags/puerto_rico/cloth_00.png",
+        "flags/puerto_rico/cloth_01.png",
+        "flags/puerto_rico/cloth_02.png",
+        "flags/puerto_rico/cloth_03.png",
+        "flags/puerto_rico/cloth_04.png",
+        "flags/puerto_rico/cloth_05.png"
+      ],
+      "cloth_offset_on_pole": [
+        39,
+        29
+      ]
+    },
+    "el_salvador": {
+      "display_name": "El Salvador",
+      "frame_count": 6,
+      "fps": 6,
+      "loop": true,
+      "direction": "right",
+      "pole_and_flag_sheet": "flags/el_salvador/pole_and_flag_sheet.png",
+      "pole_and_flag_frames": [
+        "flags/el_salvador/pole_and_flag_00.png",
+        "flags/el_salvador/pole_and_flag_01.png",
+        "flags/el_salvador/pole_and_flag_02.png",
+        "flags/el_salvador/pole_and_flag_03.png",
+        "flags/el_salvador/pole_and_flag_04.png",
+        "flags/el_salvador/pole_and_flag_05.png"
+      ],
+      "frame_size": [
+        160,
+        248
+      ],
+      "sheet_grid": {
+        "columns": 6,
+        "rows": 1
+      },
+      "anchor": {
+        "x": 0.2,
+        "y": 1.0
+      },
+      "cloth_sheet": "flags/el_salvador/cloth_sheet.png",
+      "cloth_frame_size": [
+        110,
+        95
+      ],
+      "cloth_frames": [
+        "flags/el_salvador/cloth_00.png",
+        "flags/el_salvador/cloth_01.png",
+        "flags/el_salvador/cloth_02.png",
+        "flags/el_salvador/cloth_03.png",
+        "flags/el_salvador/cloth_04.png",
+        "flags/el_salvador/cloth_05.png"
+      ],
+      "cloth_offset_on_pole": [
+        39,
+        29
+      ]
+    }
+  }
+}

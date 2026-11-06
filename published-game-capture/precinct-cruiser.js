@@ -8,7 +8,7 @@ const controllerFactory=/* CANONICAL_CONTROLLER */null;
 function valid(v){return !!v&&v.id==='precinct-unit-9'&&Number.isFinite(v.x)&&Number.isFinite(v.y)&&Number.isFinite(v.angle)&&v.x>=-3100&&v.x<=9656&&v.y>=0&&v.y<=4680;}
 function restored(v){return {...(valid(v)?{x:v.x,y:v.y,angle:v.angle}:SPAWN),id:'precinct-unit-9',map:'harbor-main',speed:0,engine:false,lightMode:['off','red','blue','alternating'].includes(v?.lightMode)?v.lightMode:'off'};}
 H.connectedCruiser={install({campus,modal,blocked,actors,clearInput}){
- let owner=null,car=null,update=null,driving=false,lastSave=0,collisions=0,saveError=false;
+ let owner=null,car=null,update=null,driving=false,lastSave=0,collisions=0,saveError=false,lastContact=null;
  const V=window.ROOKIE_CRUISER_VISUAL;let visual=V?.create(),lightHeld=false;
  const artOptions={candidate:new URLSearchParams(location.search).get('cruiserCandidate')==='1',legacy:new URLSearchParams(location.search).get('cruiserLegacy')==='1'};
  const input={up:false,down:false,left:false,right:false},proxy={__carSpace:false};
@@ -27,13 +27,14 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput}){
  `;document.head.appendChild(style);
  function eligible(){return campus.open&&!H.academy?.active()&&!H.outbreak?.active();}
  function reset(){lightHeld=false;Object.keys(input).forEach(k=>input[k]=false);proxy.__carSpace=false;controls.querySelectorAll('button').forEach(b=>b.classList.remove('held'));}
- function ensure(){if(eligible()&&!loading){loading=true;V?.load();image.src='./assets/police-driving/cruiser-16-source.png';}if(owner===state)return;owner=state;car=restored(state.connectedCruiser);visual=V?.create();driving=false;reset();show();update=controllerFactory(car,input,proxy,collides,()=>persist(false),()=>collisions++);}
+ function ensure(){if(eligible()&&!loading){loading=true;V?.load();image.src='./assets/police-driving/cruiser-16-source.png';}if(owner===state)return;owner=state;car=restored(state.connectedCruiser);visual=V?.create();driving=false;reset();show();update=controllerFactory(car,input,proxy,collides,()=>persist(false),impact=>{collisions++;if(lastContact&&impact>3)window.ROOKIE_BANTER?.contact(lastContact,'vehicle-contact',performance.now());});}
  function persist(force=true){if(!owner||owner!==state||!eligible())return false;if(!force&&Date.now()-lastSave<700)return true;lastSave=Date.now();state.connectedCruiser={id:car.id,x:car.x,y:car.y,angle:car.angle,lightMode:car.lightMode};saveError=H.save()===false;if(saveError)message('Your cruiser could not be saved. Keep this page open and export your save from Menu.');return !saveError;}
  function collides(x,y,angle){
+  lastContact=null;
   const c=Math.cos(angle),s=Math.sin(angle);
   // Cover the complete 96×48 footprint, using the SAME solid/water/traffic gate.
-  for(const lx of [-40,-20,0,20,40])for(const ly of [-16,0,16])if(blocked(x+lx*c-ly*s,y+lx*s+ly*c,9,true,true))return true;
-  for(const a of actors())if(obbHitsRect(x,y,angle,{x:a.x-11,y:a.y-11,w:22,h:22}))return true;
+  for(const lx of [-40,-20,0,20,40])for(const ly of [-16,0,16])if(blocked(x+lx*c-ly*s,y+lx*s+ly*c,9,true,true,!!H.cityCollisions))return true;
+  for(const a of actors())if(obbHitsRect(x,y,angle,{x:a.x-11,y:a.y-11,w:22,h:22})){lastContact=a;return true;}
   return false;
  }
  function show(){controls.querySelector('#connectedCruiserLight').textContent='LIGHTS: '+(car?.lightMode||'off').toUpperCase();controls.hidden=!driving;modal.classList.toggle('connected-cruiser-driving',driving);}
@@ -42,7 +43,7 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput}){
  function message(text){const d=modal.querySelector('#v116Dialogue');if(d){d.hidden=false;d.textContent=text;}}
  function interact(){ensure();if(!eligible())return false;
   if(driving){
-   if(Math.abs(car.speed)>6){message('Brake to a complete stop before getting out.');return true;}
+   if(Math.max(Math.abs(car.speed),car.impactState?car.impactSpeed||0:0)>6){message('Brake to a complete stop before getting out.');return true;}
    const c=Math.cos(car.angle),s=Math.sin(car.angle),tries=[door(),{x:car.x-s*58,y:car.y+c*58},{x:car.x+s*66,y:car.y-c*66},{x:car.x-c*76,y:car.y-s*76},{x:car.x+c*76,y:car.y+s*76}];
    const spot=tries.find(p=>!blocked(p.x,p.y,13,true)&&!obbHitsRect(car.x,car.y,car.angle,{x:p.x-12,y:p.y-12,w:24,h:24}));
    if(!spot){message('There is no clear place to step out. Move the cruiser slightly.');return true;}
@@ -61,8 +62,10 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput}){
  controls.querySelector('#connectedCruiserLight').onclick=()=>{if(driving)cycleLights();};
  function key(k,down){if(!driving)return false;if(k==='l'){if(down&&!lightHeld)cycleLights();lightHeld=down;return true;}const map={w:'up',arrowup:'up',s:'down',arrowdown:'down',a:'left',arrowleft:'left',d:'right',arrowright:'right'};if(map[k]){input[map[k]]=down;return true;}if(k===' '){proxy.__carSpace=down;return true;}return false;}
  function step(dt){ensure();if(!eligible())return false;
+  H.cityCollisions?.beforeControl(car);
   if(driving){const n=Math.max(1,Math.ceil(dt/(1/120)));for(let i=0;i<n;i++)update(dt/n,performance.now());campus.x=car.x;campus.y=car.y;campus.moved=false;const d=modal.querySelector('#v116Dialogue');if(Math.abs(car.speed)<=6&&d.textContent==='Brake to a complete stop before getting out.')d.hidden=true;controls.querySelector('output').textContent=(car.speed<-3?'REVERSE · ':'UNIT 9 · ')+Math.round(Math.abs(car.speed)*.22)+' mph · E / Exit · Space: stop'+(saveError?' · Save unavailable':'');}
-  if(visual)V.update(visual,car,dt,{down:input.down,brake:proxy.__carSpace});
+  H.cityCollisions?.afterControl(car);
+  if(visual&&!H.cityCollisions)V.update(visual,car,dt,{down:input.down,brake:proxy.__carSpace});
   return driving;
  }
  function draw(g){ensure();if(!eligible())return;
@@ -83,6 +86,11 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput}){
  }
  window.addEventListener('blur',reset);window.addEventListener('pagehide',()=>persist());
  return Object.freeze({step,draw,bayMark,key,near,interact,reset,
+  stageForScene:p=>{ensure();if(!p||collides(p.x,p.y,p.angle||0))return false;driving=false;Object.assign(car,{x:p.x,y:p.y,angle:p.angle||0,speed:0,engine:false,lightMode:'alternating'});visual=V?.create();reset();show();persist();return true;},
+  vehicleImpact:()=>{collisions++;},
+  physicsBody:()=>{ensure();Object.assign(car,{kind:'patrol',length:96,width:48,driving});return car;},
+  syncImpact:dt=>{if(driving){campus.x=car.x;campus.y=car.y;}if(visual)V.update(visual,car,dt,{down:input.down,brake:proxy.__carSpace,impact:car.impactJolt||0,sliding:!!car.impactState});if(car.impactState)persist(false);},
+  audioState:()=>{ensure();return{x:car.x,y:car.y,speed:car.speed,engine:car.engine,driving,throttle:input.up||input.down&&car.speed<0};},
   active:()=>driving,position:()=>{ensure();return {x:car.x,y:car.y};},
   blocksWalker:(x,y,r)=>{ensure();return !driving&&obbHitsRect(car.x,car.y,car.angle,{x:x-r,y:y-r,w:r*2,h:r*2});},
   overlapsTraffic:tc=>{ensure();if(Math.abs(car.x-tc.x)>180||Math.abs(car.y-tc.y)>180)return false;if(Number.isFinite(tc.angle)&&window.ROOKIE_CITY_TRAFFIC)return window.ROOKIE_CITY_TRAFFIC.overlap({x:car.x,y:car.y,angle:car.angle,length:96,width:48},tc);const h=tc.dir==='left'||tc.dir==='right',w=h?(tc.kind==='delivery'?104:86):38,l=h?38:(tc.kind==='delivery'?104:86);return obbHitsRect(car.x,car.y,car.angle,{x:tc.x-w/2,y:tc.y-l/2,w,h:l});},

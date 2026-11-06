@@ -80,10 +80,11 @@
   age+=Math.min(.05,Math.max(0,dt));const p=ctx.player,inside=p.x>=ZONE.x&&p.x<=ZONE.x+ZONE.w&&p.y>=ZONE.y&&p.y<=ZONE.y+ZONE.h;
   if(ctx.room||p.x>=860&&p.x<=1100&&p.y>=1100&&p.y<1290)frontage=true;
   if(last&&!ctx.driving){const d=Math.hypot(p.x-last.x,p.y-last.y);if(d<25)travel+=d;}last={...p};
-  if(!ctx.driving&&inside&&!wasInside&&frontage&&travel>=20)pending=true;if(!inside||ctx.driving)pending=false;wasInside=inside;
+  if(!ctx.driving&&inside&&frontage&&travel>=20)pending=true;if(!inside||ctx.driving)pending=false;wasInside=inside;
   if(age>=1&&pending&&ctx.free&&!done())start(false);
  }
  window.ROOKIE_PARKING_ENCOUNTER=Object.freeze({tick,locked,controlsActor,holds,camera,skip,cancel,poseFor,portraitMood,
+  interact:()=>!done()&&!!ctx&&pair().some(a=>a&&Math.hypot(a.x-ctx.player.x,a.y-ctx.player.y)<80)&&start(false),
   replay:()=>query.get('pilotQA')==='1'&&start(true),
   qa:()=>query.get('pilotQA')==='1'?{zone:ZONE,completed:done(),phase:scene?.phase||'idle',index:scene?.index??-1,prototype:!!scene?.prototype,profile:scene?.profile||hProfile(),armed:frontage,pending,travel,age,lastResult,script:LINES.map(l=>l.slice())}:null});
  function hProfile(){return window.HARBOR?.profiles.current();}

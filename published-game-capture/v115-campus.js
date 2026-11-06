@@ -10,7 +10,7 @@
       typeof MAPS === 'undefined' || !MAPS.station || !MAPS.plaza ||
       !document.querySelector('#mapOverlay .maptools')) return;
   const H=window.HARBOR, ST=MAPS.station, PL=MAPS.plaza;
-  let cruiser=null;
+  let cruiser=null,story=null,storyDispatch=false;
   const WORLD_ID='harbor-main', AREA_ID='precinct-campus-v115';
   const MIN_X=-3100, MIN_Y=0, W=9656,HGT=4680, TILE=32, CHUNK=512;
   // A single authored city graph, derived from the original district MAPS.
@@ -57,7 +57,11 @@
   const roadNetwork=H.worldV115.roadNetwork();
   if(roadNetwork.worldId!==WORLD_ID || roadNetwork.primary.centerY!==1784)
     throw new Error('Connected-road coordinate contract mismatch');
-  const links=roadNetwork.segments;
+  // The owner-approved west Midtown connection closes the empty boundary
+  // between the existing Harbor Avenue, lower avenue and Bayview road.
+  // Keep canonical geography immutable: this connected-only link is appended
+  // to a copy and feeds the SAME material painter and traffic graph.
+  const links=roadNetwork.segments.concat([{id:'midtown-west-connection',x:2644,y:1721,w:156,h:2087,kind:'collector',newRoad:true}]);
   // Recover native district streets omitted by the inter-district graph.
   // These are read-only authored asphalt rectangles, not new roads. Broad
   // parking pads and the protected waterfront are deliberately excluded.
@@ -116,6 +120,104 @@
       pedSolids:m.pedSolids?.map(shift),solids:m.solids?.map(shift)};
     streetRelocations.push({district:d.id,type:o.t,from:{x:d.x+x,y:d.y+y,w,h},to:{x:d.x+x+move.dx,y:d.y+y+move.dy,w,h}});
   }
+  // First-block Midtown pilot only. Clone decor AND its exact native collider;
+  // original MAPS and all other districts keep their authored definitions.
+  if(connectedMidtown){
+    let m=connectedMidtown.map;
+    const edits=[
+      {t:'mtprop',key:'img',role:'lamp',x:1450,y:680,box:[1458,746,8,6]},
+      {t:'mtprop',key:'img',role:'bollard',x:1490,y:420,box:[1494,438,8,6]},
+      {t:'mtprop',key:'img',role:'bollard',x:2030,y:470,box:[2034,488,8,6]},
+      {t:'landscapeV1',key:'role',role:'planter',x:780,y:450,box:[752.12,440,55.76,12],to:[780,414]},
+      {t:'rpgProp',key:'role',role:'bicycle',x:960,y:455,box:[930,445,60,10],to:[1340,390]},
+      {t:'rpgProp',key:'role',role:'planter',x:1280,y:460,box:[1235,448,90,12],to:[1280,430]},
+      {t:'rpgProp',key:'role',role:'planter',x:1625,y:464,box:[1582,452,86,12],to:[1625,432]},
+      {t:'rpgProp',key:'role',role:'planter',x:2020,y:464,box:[2000,452,40,12],to:[2020,432]},
+      {t:'mtprop',key:'img',role:'bench',x:820,y:610,box:[824,632,56,10],to:[820,680]},
+      {t:'rpgProp',key:'role',role:'hedge',x:1480,y:1080,box:[1425,1068,110,12]},
+      {t:'rpgProp',key:'role',role:'hedge',x:1370,y:1080,box:[1315,1068,110,12]},
+      {t:'rpgProp',key:'role',role:'hedge',x:1480,y:1108,box:[1425,1096,110,12]},
+      {t:'rpgProp',key:'role',role:'hedge',x:1370,y:1108,box:[1315,1096,110,12]},
+      {t:'rpgProp',key:'role',role:'shade',x:1200,y:1054,box:[1193,1042,14,12]},
+      {t:'rpgProp',key:'role',role:'shade',x:1890,y:1040,box:[1883,1028,14,12]},
+      {t:'rpgProp',key:'role',role:'shade',x:1170,y:1000,box:[1163,988,14,12],to:[1260,1050]},
+      {t:'rpgProp',key:'role',role:'shade',x:1834,y:1018,box:[1827,1006,14,12],to:[1870,1050]},
+      {t:'rpgProp',key:'role',role:'planter',x:1220,y:1048,box:[1174,1036,92,12],to:[1340,1052]},
+      {t:'car',x:1314,y:822,box:[1314,822,48,96],to:[1202,774]},
+      {t:'car',x:1578,y:822,box:[1578,822,48,96],to:[1858,1008],size:[96,48]}
+    ];
+    for(const e of edits){
+      const obj=m.decors.find(o=>o.t===e.t&&o.x===e.x&&o.y===e.y&&(!e.key||o[e.key]===e.role));
+      if(!obj)throw Error('Midtown pilot source changed: '+JSON.stringify(e));
+      const equal=s=>e.box.every((v,i)=>v===s[['x','y','w','h'][i]]);
+      const shift=s=>e.to?{...s,x:s.x+e.to[0]-e.x,y:s.y+e.to[1]-e.y,...(e.size?{w:e.size[0],h:e.size[1]}:{})}:null;
+      const solids=arr=>arr?.flatMap(s=>equal(s)?(e.to?[shift(s)]:[]):[s]);
+      m={...m,decors:m.decors.flatMap(o=>o!==obj?[o]:e.to?[{...o,x:e.to[0],y:e.to[1],...(e.size?{w:e.size[0],h:e.size[1]}:{}),...(Number.isFinite(o.dy)?{dy:o.dy+e.to[1]-e.y}:{})}]:[]),solids:solids(m.solids),pedSolids:solids(m.pedSolids)};
+    }
+    // Replace the former overlapping parking greenery with authored beds.
+    // Exact native footprints are retired with their corresponding objects.
+    const retired=[];
+    m={...m,decors:m.decors.filter(o=>{
+      if(o.t==='rpgProp'&&((o.role==='hedge'&&o.y>=1080&&o.y<=1108&&o.x>=1200&&o.x<=1900)||
+        (['shade','planter'].includes(o.role)&&o.y>=760&&o.y<=1080&&o.x>=1160&&o.x<=1900))){
+        retired.push({x:o.x-(o.role==='shade'?7:o.w/2),y:o.y-12,w:o.role==='shade'?14:o.w,h:12});return false;
+      }return true;
+    })};
+    const isRetired=s=>retired.some(r=>['x','y','w','h'].every(k=>Math.abs(r[k]-s[k])<.001));
+    m={...m,solids:m.solids.filter(s=>!isRetired(s)),pedSolids:m.pedSolids.filter(s=>!isRetired(s))};
+    const props=[],newSolids=[];
+    function civic(file,x,y,w,h,fw,fh=12,banner=false){
+      props.push({t:'midtownProp',file,x,y,w,h,dy:y,banner});
+      if(fw)newSolids.push({x:x-fw/2,y:y-fh,w:fw,h:fh});
+    }
+    // Reuse the approved warm lamp/bench sprites at the original native feet.
+    m.decors=m.decors.map(o=>{
+      if(o.t==='mtprop'&&o.img==='lamp'&&o.y<1100)return {t:'midtownProp',file:'community-walk/lamp.png',x:o.x+12,y:o.y+70,w:30,h:117,dy:o.y+70};
+      if(o.t==='rpgProp'&&o.role==='lamp'&&o.y<1100)return {t:'midtownProp',file:'community-walk/lamp.png',x:o.x,y:o.y,w:30,h:117,dy:o.y};
+      if(o.t==='mtprop'&&o.img==='bench'&&o.y>588&&o.y<750)return {t:'midtownProp',file:'community-walk/bench.png',x:o.x+32,y:o.y+30,w:92,h:62,dy:o.y+30};
+      return o;
+    });
+    civic('community-walk/tree_flowering.png',1120,714,92,160,38,14);
+    civic('community-walk/tree.png',1780,714,120,163,40,14);
+    civic('community-walk/tree_flowering.png',1976,720,88,153,36,14);
+    for(const [x,y,w]of [[1256,712,144],[1768,724,144],[1900,704,104],[1198,1110,100],[1312,1110,96],[1648,1110,100],[1932,1110,96]])
+      civic('community-walk/planter.png',x,y,w,Math.round(w*52/188),w-10,12);
+    for(const [x,y]of [[1360,438],[1592,438],[2016,438],[1356,704],[1632,704],[1936,704]])civic('community-walk/lamp.png',x,y,30,117,10,8,true);
+    // Corner planting frames the new street without narrowing its sidewalk.
+    civic('community-walk/tree_flowering.png',56,760,88,153,30,12);
+    civic('community-walk/tree.png',56,1060,100,136,32,12);
+    for(const y of [626,1150])civic('community-walk/lamp.png',56,y,30,117,10,8);
+    for(const x of [1250,1310,1690,1780,1870])civic('community-walk/hedge.png',x,1110,90,30,82,10);
+    for(const x of [1162,1986])for(let y=790;y<=1060;y+=34)civic('community-walk/shrub.png',x,y,32,30,28,10);
+    civic('community-walk/tree.png',1788,942,112,152,0);
+    civic('community-walk/flower_patch.png',1788,948,90,36,0);
+    civic('community-walk/lamp_short.png',1748,940,22,58,0);
+    civic('community-walk/lamp_short.png',1828,940,22,58,0);
+    civic('midtown/cafe_patio_set.webp',454,1102,128,121,100,54);
+    civic('midtown/cafe_patio_set.webp',636,1102,128,121,100,54);
+    for(const [x,y]of [[454,1120],[636,1120]])civic('community-walk/planter.png',x,y,124,34,114,12);
+    // Additional parked cars use the same existing vehicle sprites and depth queue.
+    for(const o of [{t:'car',x:1288,y:982,w:48,h:96,c:'#5a5a52'},
+      {t:'car',x:1858,y:746,w:96,h:48,c:'#c5a975'}]){props.push(o);newSolids.push({x:o.x,y:o.y,w:o.w,h:o.h});}
+    const island={x:1732,y:894,w:112,h:62};newSolids.push({...island});
+    m={...m,decors:m.decors.concat(props),solids:m.solids.concat(newSolids),pedSolids:m.pedSolids.concat(newSolids)};
+    // Keep 48px pedestrian strips and an unobstructed side entrance to each
+    // half of the existing shared lot; the through-road is never repurposed.
+    m={...m,ground:[...m.ground.filter(r=>!(r.x===1500&&r.y===686&&r.w===150&&r.h===104)&&!(r.x===1180&&r.y===790&&r.w===780&&r.h===270)),
+        {x:1392,y:1080,w:168,h:136,c:'#43474e'},
+        {x:1376,y:1080,w:16,h:136,c:'#b9bec4'},{x:1560,y:1080,w:16,h:136,c:'#b9bec4'}],
+      connectedParking:{reference:true,lots:[{x:1180,y:758,w:180,h:326,side:'right'},{x:1608,y:730,w:360,h:354,side:'left'}],
+        bays:[...[1190,1274].flatMap(x=>[{x,y:768,w:72,h:104},{x,y:976,w:72,h:104,angle:Math.PI}]),
+          ...[746,826,1002].map(y=>({x:1856,y,w:100,h:68,angle:Math.PI/2})),
+          ...[746,1002].map(y=>({x:1620,y,w:100,h:68,angle:-Math.PI/2}))],
+        entrances:[{x:1360,y:880,w:32,h:96},{x:1560,y:880,w:48,h:124}],
+        islands:[island],terraces:[{x:1168,y:676,w:196,h:54},{x:1608,y:676,w:400,h:54}],
+        crossings:[{x:1476,y:524},{x:2132,y:524}]}};
+    connectedMidtown.map=m;
+    // The source street stopped 136px short of the existing southern road.
+    // Register only that missing asphalt so rendering and routing agree.
+    nativeRoadSurfaces.push({id:'native:midtown:parking-connection',x:connectedMidtown.x+1392,y:connectedMidtown.y+1080,w:168,h:136,native:true});
+  }
   // These legacy fenceH lines have no painter in the connected presentation.
   // Retire only their exact thin colliders, leaving visible fences, walls,
   // buildings, street furniture and waterfront railings authoritative.
@@ -129,33 +231,46 @@
       solids:d.map.solids?.filter(b=>!retired(b)),pedSolids:d.map.pedSolids?.filter(b=>!retired(b))};
   }
   const linkCollision = []; // Roads are traversable, never scene exits.
+  // Keep the authored parked-car footprint and art, but share its live pose
+  // with the impact extension instead of leaving an invisible static copy.
+  const parkedBodies=[],movableParked=[],parkedByObject=new WeakMap();let collisionOwner=null;
+  if(window.ROOKIE_MAIN_CITY_ACTIVE)for(const d of districtEntries)for(const o of d.map.decors||[]){if(o.t!=='car'||window.ROOKIE_V116_MARINA?.ownsDecor?.(d.id,o))continue;
+    const w=o.w||70,h=o.h||36,dir=['up','down','left','right'].includes(o.dir)?o.dir:w>=h?'right':'down',horizontal=dir==='right'||dir==='left';
+    const body={id:'parked:'+d.id+':'+parkedBodies.length,x:d.x+(o.x||0)+w/2,y:d.y+(o.y||0)+h/2,angle:({right:0,down:Math.PI/2,left:Math.PI,up:-Math.PI/2}[dir]),dir,length:horizontal?w:h,width:horizontal?h:w,kind:o.police?'patrol':o.kind==='delivery'?'delivery':'civilian',color:o.c,parked:true};
+    body.cos=Math.cos(body.angle);body.sin=Math.sin(body.angle);body.home={x:body.x,y:body.y,angle:body.angle};parkedBodies.push(body);parkedByObject.set(o,body);
+  }
+  function parkedSolid(d,b){return window.ROOKIE_MAIN_CITY_ACTIVE&&(d.map.decors||[]).some(o=>parkedByObject.has(o)&&Math.abs((o.x||0)-b.x)<1&&Math.abs((o.y||0)-b.y)<1&&Math.abs((o.w||70)-b.w)<1&&Math.abs((o.h||36)-b.h)<1);}
   const districtSolids=[],vehicleOnlySolids=[];
   for(const d of districtEntries){
     const solids = d.map.pedSolids || d.map.solids || [];
     for(const b of solids){
       if(!b||!Number.isFinite(b.x)||!Number.isFinite(b.y)||!Number.isFinite(b.w)||!Number.isFinite(b.h))continue;
-      if(b.w<=0||b.h<=0)continue;
+      if(b.w<=0||b.h<=0||parkedSolid(d,b))continue;
       districtSolids.push({x:d.x+b.x,y:d.y+b.y,w:b.w,h:b.h,id:d.id});
     }
     // Native vehicle solids also include thin visible posts that walkers may
     // step around. Reuse those existing shapes rather than blocking pavement.
-    for(const b of d.map.solids||[])if(!solids.some(p=>p.x===b.x&&p.y===b.y&&p.w===b.w&&p.h===b.h))
+    for(const b of d.map.solids||[])if(!parkedSolid(d,b)&&!solids.some(p=>p.x===b.x&&p.y===b.y&&p.w===b.w&&p.h===b.h))
       vehicleOnlySolids.push({x:d.x+b.x,y:d.y+b.y,w:b.w,h:b.h,id:d.id});
   }
   const STX=380, STY=96, PLX=148, PLY=600;
   const FRONT={x:STX+568,y:STY+1028}, GARAGE={x:STX+1538,y:STY+1160};
   const rect=(r,ox,oy)=>({x:r.x+ox,y:r.y+oy,w:r.w,h:r.h});
-  const roomRects=ST.rooms.map(r=>rect(r,STX,STY));
-  const walls=ST.walls.map(r=>rect(r,STX,STY));
+  // The canonical first case puts its refrigerator and staff in this wing.
+  // Restore a physical room and doorway instead of retaining the old void.
+  const stationRooms=ST.rooms.concat([{x:1560,y:12,w:364,h:624,label:'BREAK ROOM',fill:'#d6d0bb'}]);
+  const stationWalls=ST.walls.flatMap(r=>r.x===1548&&r.y===0&&r.h===648?
+    [{...r,h:194},{...r,y:270,h:378}]:[r]).concat([{x:1924,y:0,w:12,h:648},{x:1560,y:636,w:364,h:12}]);
+  const roomRects=stationRooms.map(r=>rect(r,STX,STY));
+  const walls=stationWalls.map(r=>rect(r,STX,STY));
   const furniture=ST.furn.filter(f=>f.solid).map(f=>rect(f,STX,STY));
-  const northEastVoid={x:STX+1558,y:STY+12,w:366,h:636};
-  const collision=walls.concat(furniture,[northEastVoid]);
+  const collision=walls.concat(furniture,[{x:STX+1780,y:STY+64,w:106,h:30},{x:STX+1600,y:STY+64,w:30,h:26},{x:STX+1690,y:STY+330,w:132,h:52},{x:STX+1785,y:STY+420,w:90,h:34}]);
   const worldSpots=ST.spots.filter(s=>s.id!=='stationDoor'&&s.id!=='garageDoor')
     .map(s=>({id:'station:'+s.id,areaId:'station',x:STX+s.x,y:STY+s.y,label:s.label}));
   worldSpots.push({id:'campus:front',areaId:'precinct-campus',x:FRONT.x,y:FRONT.y+54,label:'Precinct 9 front entrance'},
     {id:'campus:garage',areaId:'precinct-campus',x:GARAGE.x,y:GARAGE.y+60,label:'Precinct garage door'},
     {id:'campus:road',areaId:'precinct-campus',x:948,y:1738,label:'Harbor Avenue — connects through city districts'});
-  const npcActors=ST.npcs.map((n,i)=>({id:'station-npc:'+i,name:n.name,color:n.color,hat:n.hat,hideName:!!n.hideName,dir:n.dir||'down',x:n.x+STX,y:n.y+STY}));
+  const npcActors=ST.npcs.map((n,i)=>({...n,id:'station-npc:'+i,source:n,storyStation:true,x:n.x+STX,y:n.y+STY}));
   npcActors.push({id:'campus-npc:diaz',name:'OFCR. DIAZ',color:'#44557a',hat:true,x:PLX+960,y:PLY+640});
   for(const d of districtEntries){
     for(const sp of d.map.spots||[]){
@@ -202,11 +317,12 @@
     for(let cy=Math.floor((y-r)/192);cy<=Math.floor((y+r)/192);cy++)
       for(let cx=Math.floor((x-r)/192);cx<=Math.floor((x+r)/192);cx++){
         const boxes=index.get(cx+','+cy);if(!boxes)continue;
-        for(const b of boxes)if(circleHitsRect(x,y,r,b)&&!window.ROOKIE_V116_MARINA?.ownsSolid?.(b))return true;
+        for(const b of boxes)if(circleHitsRect(x,y,r,b)&&!window.ROOKIE_V116_MARINA?.ownsSolid?.(b)&&!story?.ownsSolid(b))return true;
       }
     return false;
   }
   function blocked(x,y,r=12,ignoreCruiser=false,vehicle=false,ignoreTraffic=false){
+    if(H.campaignScenes?.vehicleBlocks(x,y,r))return true;
     // Broad rejection first: ownership only matters for an intersecting box.
     // The ownership result and precise circle collision rules are unchanged.
     if(vehicle&&indexedSolidHit(vehicleSolidIndex,x,y,r))return true;
@@ -219,6 +335,7 @@
     } else {
       if(indexedSolidHit(districtSolidIndex,x,y,r))return true;
     }
+    if(story?.collides(x,y,r))return true;
     // V116 only adds solid coastal structures/water, never replaces legacy solids.
     const marina=window.ROOKIE_V116_MARINA;
     if(marina&&marina.blocksProp(x,y,r))return true;
@@ -243,6 +360,7 @@
     return {x,y,district:district?.id||null,
       bounds:x<MIN_X+r||y<MIN_Y+r||x>W-r||y>HGT-r,
       solidHits:raw.slice(0,12).map(b=>({x:b.x,y:b.y,w:b.w,h:b.h,id:b.id||'precinct'})),
+      vehicleHits:vehicleOnlySolids.filter(b=>circleHitsRect(x,y,r,b)).map(b=>({...b})),
       marina:!!window.ROOKIE_V116_MARINA?.blocksProp(x,y,r),
       water:!!window.ROOKIE_V127_CITY?.waterBlocked(x,y),
       trees:!!window.ROOKIE_V127_CITY?.scenicBlocked(x,y,r,districtEntries),
@@ -320,6 +438,7 @@
       actor.interaction=spot;
       ambientRoutes.push(actor);npcActors.push(actor);worldSpots.push(spot);added++;
     }
+    if(d.id==='midtown'&&!/[?&]banter=off(?:&|$)/.test(location.search))window.ROOKIE_BANTER?.arrange(ambientRoutes.find(a=>a.id==='ambient:midtown:0'),ambientRoutes.find(a=>a.id==='ambient:midtown:1'),safeStreetSegment);
   }
   function stepAmbientPedestrians(dt){
     // Spread district placement across simulation frames to avoid a long
@@ -343,7 +462,7 @@
   }
   function interiorRoom(x,y){
     for(let i=0;i<roomRects.length;i++){
-      const r=roomRects[i];if(x>=r.x&&x<r.x+r.w&&y>=r.y&&y<r.y+r.h)return ST.rooms[i].label;
+      const r=roomRects[i];if(x>=r.x&&x<r.x+r.w&&y>=r.y&&y<r.y+r.h)return stationRooms[i].label;
     }
     return null;
   }
@@ -360,20 +479,20 @@
     const navigation=window.ROOKIE_CITY_TRAFFIC;if(!navigation)return;
     trafficRouter=navigation.create({roads:[...links,...nativeRoadSurfaces],anchors:crossings,fleet:streetTraffic,
       blocked:(x,y,r)=>blocked(x,y,r,true,true,true),districtAt:(x,y)=>districtAt(x,y)?.id||'precinct',
-      actors:()=>trafficActors,player:()=>trafficPlayer,cruiser:()=>cruiser,
+      actors:()=>trafficActors,player:()=>trafficPlayer,cruiser:()=>cruiser,impacts:()=>H.cityCollisions,parked:()=>movableParked.concat(H.campaignScenes?.vehicles()||[]),
       view:()=>({x:campus.camX,y:campus.camY,w:tw/campus.zoom,h:th/campus.zoom})});
   }
   function stepStreetTraffic(dt){
     initializeStreetTraffic();
-    trafficActors=npcActors.concat(window.ROOKIE_V133_PRECINCT?.actors?.(performance.now())||[]);
+    trafficActors=npcActors.concat(window.ROOKIE_V133_PRECINCT?.actors?.(performance.now()).filter(a=>!story?.duplicate(a))||[]);
     trafficPlayer={x:campus.x,y:campus.y,driving:!!cruiser?.active()};
     trafficRouter?.step(dt);
   }
   function trafficBlocked(x,y,r=12){
-    for(const car of streetTraffic){
+    for(const car of streetTraffic.concat(parkedBodies)){
       const dx=x-car.x,dy=y-car.y;if(Math.abs(dx)>car.length/2+19+r||Math.abs(dy)>car.length/2+19+r)continue;
       const c=car.cos,s=car.sin;
-      const lx=dx*c+dy*s,ly=-dx*s+dy*c,ex=Math.max(0,Math.abs(lx)-car.length/2),ey=Math.max(0,Math.abs(ly)-19);
+      const lx=dx*c+dy*s,ly=-dx*s+dy*c,ex=Math.max(0,Math.abs(lx)-car.length/2),ey=Math.max(0,Math.abs(ly)-(car.width||38)/2);
       if(ex*ex+ey*ey<r*r)return true;
     }
     return false;
@@ -416,7 +535,7 @@
     camX:0,camY:0,zoom:1.15,autoZoom:true,follow:true,keys:new Set(),stick:null,runHeld:false,frame:0,last:0,
     paintCosts:[],paintCount:0,near:null,firstPaint:true,doorCrossings:0,previousRoom:null,visibleChunks:[]};
   const priorOverlay=overlayOpen;
-  overlayOpen=function(){return campus.open||priorOverlay();};
+  overlayOpen=function(){return campus.open&&!storyDispatch||priorOverlay();};
   const modal=document.createElement('section');modal.id='v115Campus';modal.hidden=true;
   modal.setAttribute('aria-label','V115 seamless precinct and grounds development preview');
   modal.innerHTML=`<canvas id="v115CampusCanvas" aria-label="Continuous 1:1 Precinct 9 interior, grounds and streets"></canvas>
@@ -434,8 +553,21 @@
     <button id="v115CampusInteract" class="v115-campus-interact" type="button">Action</button>
     <footer class="v115-campus-footer">Continuous city streets · joystick / WASD · all districts one canvas · Unit 9 parking saved per player</footer>`;
   document.body.appendChild(modal);
-  cruiser=H.connectedCruiser?.install({campus,modal,blocked,actors:()=>npcActors.concat(window.ROOKIE_V133_PRECINCT?.actors?.(performance.now())||[]),clearInput});
+  cruiser=H.connectedCruiser?.install({campus,modal,blocked,actors:()=>npcActors.concat(window.ROOKIE_V133_PRECINCT?.actors?.(performance.now()).filter(a=>!story?.duplicate(a))||[]),clearInput});
   const cv=modal.querySelector('canvas'),g=cv.getContext('2d',{alpha:false});
+  const storyFurnitureCache=new Map();
+  const storyFactory=/* CONNECTED_STORY */null;
+  story=storyFactory?.({H,ST,MAPS,STX,STY,PLX,PLY,campus,modal,npcActors,worldSpots,districtEntries,
+    canEnter:map=>map==='hale'?currentMission()==='m3'&&state.camp.m3.brief:map==='shedint'?currentMission()==='m5'&&state.camp.m5.brief&&evGot('m3key'):true,
+    nativeOverlay:priorOverlay,clearInput,close,openAt:(x,y,z)=>api.openAt(x,y,z),
+    dispatch:(map,x,y,id)=>{state.map=map;player.x=x-player.w/2;player.y=y-player.h/2;player.dir=campus.dir;
+      nearSpot={id,x,y};storyDispatch=true;try{if(id.startsWith('legacy:')){window.ROOKIE_CONNECTED_STORY_UNREPLACED=true;(id==='legacy:chen'?H.connectedLegacyReception:H.connectedLegacyPark)?.();}else if(id.startsWith('family:'))H.caper?.connectedFamilyTalk(id.slice(7));else interact();}finally{storyDispatch=false;window.ROOKIE_CONNECTED_STORY_UNREPLACED=false;}},
+    paintActor:(a,isPlayer=false)=>withOriginalContext(g,()=>{const prior=state.map;state.map='station';g.save();
+      try{g.translate(a.x-a.source.x,a.y-a.source.y);drawPerson(a.source.x,a.source.y,a.color,a.hat,a.name,a.dir||'down',isPlayer,true,0,a.moving?a.distance/22:null);}
+      finally{g.restore();state.map=prior;}}),
+    drawFurniture:drawStoryFurniture,nativeProp:nativeDistrictProp,drawDecor:d=>withOriginalContext(g,()=>drawDecor(d,performance.now())),
+    actorVisible:n=>npcVisible(n),blocked,circleHitsRect,buildingBox:districtBuildingBox});
+
   const btn=document.createElement('button');btn.id='v115CampusLaunch';btn.type='button';
   btn.textContent='EXPLORE CONNECTED HARBOR CITY';btn.title='Walk inside and outside one continuous precinct world (experimental preview)';
   document.querySelector('#mapOverlay .maptools').appendChild(btn);
@@ -457,6 +589,24 @@
     if(typeof ctx==='undefined')return fn();
     const prior=ctx;ctx=other;try{return fn();}finally{ctx=prior;}
   }
+  function tacticalContext(c,fn,draw=false){
+    const prior={ctx,cam,worldZoom,VW,VH,x:player.x,y:player.y,dir:player.dir,dispatch:storyDispatch};
+    state.map=c.id;player.x=campus.x-c.floor.x-13;player.y=campus.y-c.floor.y-13;player.dir=campus.dir;storyDispatch=true;
+    if(draw){ctx=g;cam={x:campus.camX-c.floor.x,y:campus.camY-c.floor.y};worldZoom=campus.zoom;VW=tw;VH=th;g.save();g.setTransform(dpr,0,0,dpr,0,0);g.beginPath();g.rect((c.floor.x-campus.camX)*campus.zoom,(c.floor.y-campus.camY)*campus.zoom,c.floor.w*campus.zoom,c.floor.h*campus.zoom);g.clip();}
+    try{const result=fn();if(!draw){const x=c.floor.x+player.x+13,y=c.floor.y+player.y+13;if(!blocked(x,y)){campus.x=x;campus.y=y;}campus.dir=player.dir;}return result;}
+    finally{if(draw)g.restore();ctx=prior.ctx;cam=prior.cam;worldZoom=prior.worldZoom;VW=prior.VW;VH=prior.VH;player.x=prior.x;player.y=prior.y;player.dir=prior.dir;storyDispatch=prior.dispatch;}
+  }
+  function drawStoryFurniture(f){
+    const epoch=window.ROOKIE_V131_PRECINCT_BRIDGE?.assetEpoch()||0;
+    let item=storyFurnitureCache.get(f.type);
+    if(!item||item.epoch!==epoch){const plate=document.createElement('canvas');plate.width=400;plate.height=320;const c=plate.getContext('2d');
+      withOriginalContext(c,()=>{const prior=state.map;state.map='station';try{drawFurn({x:128,y:140,w:96,h:36,type:f.type});}finally{state.map=prior;}});
+      const pixels=c.getImageData(0,0,400,320).data;let x0=400,y0=320,x1=0,y1=0;
+      for(let y=0;y<320;y++)for(let x=0;x<400;x++)if(pixels[(y*400+x)*4+3]>8){x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y);}
+      if(x1<=x0||y1<=y0)return;item={epoch,plate,rect:[x0,y0,x1-x0+1,y1-y0+1]};storyFurnitureCache.set(f.type,item);
+    }
+    const w=Math.min(f.w,48*item.rect[2]/item.rect[3]),h=w*item.rect[3]/item.rect[2];g.imageSmoothingEnabled=false;g.drawImage(item.plate,...item.rect,f.x+(f.w-w)/2,f.y+f.h-h,w,h);
+  }
   // Cache the original precinct room geometry at native resolution. Drawing
   // may use original game floor/furniture painters, but never alters them.
   function stationTexture(){
@@ -473,7 +623,7 @@
       withOriginalContext(c,()=>{
         // Original station rooms/furniture keep their physical rectangles.
         // Only their DRAWING is upgraded with cached classic art sources.
-        ST.rooms.forEach(r=>{
+        stationRooms.forEach(r=>{
           if(r.label==='GARAGE'){
             // The prior classic garage already owns the correct ramps,
             // door arrow and bay geometry. Only port missing original
@@ -493,23 +643,23 @@
       c.clearRect(0,0,ST.w,ST.h);
       c.fillStyle='#253953';c.fillRect(0,0,ST.w,ST.h);
       withOriginalContext(c,()=>{
-        ST.rooms.forEach(r=>drawRoom(r));
+        stationRooms.forEach(r=>drawRoom(r));
         ST.furn.forEach(f=>{if(!previous?.interiorFurnitureActive?.(f,ST.rooms))drawFurn(f);});
       });
     }
     c.fillStyle='rgba(10,25,44,.36)';
     if(previous?.interiorActive?.()){
-      c.beginPath();ST.walls.forEach(r=>c.rect(r.x+2,r.y+7,r.w,r.h));c.fill();
-    }else ST.walls.forEach(r=>c.fillRect(r.x+2,r.y+7,r.w,r.h));
-    c.fillStyle='#13263d';ST.walls.forEach(r=>c.fillRect(r.x,r.y,r.w,r.h));
+      c.beginPath();stationWalls.forEach(r=>c.rect(r.x+2,r.y+7,r.w,r.h));c.fill();
+    }else stationWalls.forEach(r=>c.fillRect(r.x+2,r.y+7,r.w,r.h));
+    c.fillStyle='#13263d';stationWalls.forEach(r=>c.fillRect(r.x,r.y,r.w,r.h));
     // Reapply the ORIGINAL 96px precinct-craft wall artwork only where
     // the existing real collision wall rectangles are actually solid.
-    previous?.wallSkins(c,ST.walls);
+    previous?.wallSkins(c,stationWalls);
     // Replaced after any original bitmap finishes decoding.
     cache=off;cacheValid=true;legacyAssetEpoch=epoch;return off;
   }
   function cameraFollow(dt){
-    const shot=window.ROOKIE_PARKING_ENCOUNTER?.camera();
+    const shot=H.campaignScenes?.camera()||window.ROOKIE_PARKING_ENCOUNTER?.camera();
     if(shot)campus.zoom+=(shot.zoom-campus.zoom)*(1-Math.exp(-6*Math.max(.001,dt)));
     const zw=tw/campus.zoom,zh=th/campus.zoom;
     if(campus.follow||shot){
@@ -532,7 +682,12 @@
     return {dx,dy};
   }
   function simulate(dt){
-    attachMarinaActors();
+    if(H.profiles.isOpen())return;
+    attachMarinaActors();story?.sync();
+    if(story?.activity())return;
+    if(H.campaignScenes?.active()){H.campaignScenes.tick(dt);clearInput();return;}
+    H.campaignScenes?.tick(dt);
+    story?.step(dt);
     window.ROOKIE_PARKING_ENCOUNTER?.tick({host:modal,player:{x:campus.x,y:campus.y},room:interiorRoom(campus.x,campus.y),driving:!!cruiser?.active(),
       free:!H.speech?.current()&&!H.profiles?.isOpen()&&!window.ROOKIE_V116_HUD?.blocked()&&!(typeof csActive!=='undefined'&&csActive),
       width:tw,height:th,blocked,clearInput,
@@ -543,12 +698,14 @@
     if(marina)marina.stepNPCs(dt);
     stepAmbientPedestrians(dt);
     stepStreetTraffic(dt);
-    if(window.ROOKIE_PARKING_ENCOUNTER?.locked()||window.ROOKIE_COMIC?.modalActive()){clearInput();campus.moved=false;return;}
-    if(cruiser?.step(dt))return;
+    if(window.ROOKIE_PARKING_ENCOUNTER?.locked()||window.ROOKIE_COMIC?.modalActive()||story?.blocked()){clearInput();campus.moved=false;return;}
+    const isDriving=cruiser?.step(dt);
+    if(H.cityCollisions){if(collisionOwner!==state){collisionOwner=state;H.cityCollisions.reset();for(const b of parkedBodies)Object.assign(b,b.home,{cos:Math.cos(b.home.angle),sin:Math.sin(b.home.angle)});}H.cityCollisions.step(dt);cruiser?.syncImpact(dt);}
+    if(isDriving)return;
     let {dx,dy}=direction();
-    const shared=window.ROOKIE_JAY,run=!!shared?.requestRun()||!!(campus.runHeld&&shared?.eligible());
+    const shared=window.ROOKIE_JAY,run=!!shared?.requestRun()||!!campus.runHeld;
     if(Math.hypot(dx,dy)<.08){dx=0;dy=0;}
-    const motion=shared?shared.advanceSpeed(campus.speed||0,(dx||dy)?(run?325:210):0,dt):{speed:210,distance:clamp(dt,0,.05)*210};
+    const motion=shared?shared.advanceSpeed(campus.speed||0,(dx||dy)?(run?325:210)*(H.connectedTactics?.quiet()?.5:1):0,dt):{speed:210,distance:clamp(dt,0,.05)*210};
     campus.speed=motion.speed;const step=motion.distance;
     const ox=campus.x,oy=campus.y,r=12;
     const ax=Math.abs(dx),ay=Math.abs(dy),vertical=campus.dir==='up'||campus.dir==='down';
@@ -557,6 +714,7 @@
     if(!blocked(campus.x,campus.y+dy*step,r))campus.y+=dy*step;
     const dist=Math.hypot(campus.x-ox,campus.y-oy);
     campus.moved=dist>.04;if(campus.moved){campus.stride+=dist*.055;dialogue.hidden=true;}
+    H.connectedTactics?.step(dt,dist);
     if(shared?.eligible())shared.update('connected-jay',{x:campus.x,y:campus.y,dir:campus.dir,map:WORLD_ID,run},dt);
     marina?.updateInteriors?.({x:campus.x,y:campus.y},dt);
     // Phase-3 glass doors reuse the EXISTING movement simulation clock.
@@ -787,6 +945,10 @@
   const connectedSouthbayBodies=/* SOUTH_BAY_NATIVE_CROPS */ {"southbay/bayview_inn.webp":[131,91,1194,1070],"southbay/house_8_cream.webp":[100,56,1302,1051],"southbay/boat_shed.webp":[199,77,1114,1069],"southbay/house_12_peach.webp":[104,44,1216,1112],"southbay/motorboat.webp":[213,34,812,1502],"southbay/cafe.webp":[278,136,1259,843],"southbay/pier_segment.webp":[233,144,793,1390],"southbay-addon/cafe_patio_two_chairs.webp":[158,67,1144,1103],"southbay-addon/coastal_rocks.webp":[89,159,1497,872],"southbay-addon/marina_office.webp":[102,48,1437,926],"southbay-addon/rowboat.webp":[293,42,897,1263],"southbay-addon/tree_canopy_cluster.webp":[75,72,1206,1162],"southbay-addon/seawall_segment.webp":[56,208,2117,530],"southbay-addon/motorboat_blue.webp":[361,60,867,1230],"southbay-addon/seafood_shop.webp":[86,88,1146,1164],"southbay-addon/surfboard.webp":[339,56,686,1456]};
   function nativeDistrictProp(o){
     const t=o.t,x=o.x||0,y=o.y||0;
+    if(t==='midtownProp'){
+      const im=connectedNativeImage(o.file);
+      return im?.complete&&im.naturalWidth?{im,x:x-o.w/2,y:y-o.h,w:o.w,h:o.h,depth:o.dy??y,banner:o.banner}:null;
+    }
     if(t==='mcprop'||t==='mtprop'){
       const im=window.__EXT?.img?.[o.img];
       return im?.complete&&im.naturalWidth?{im,x,y,w:im.naturalWidth,h:im.naturalHeight,depth:o.dy??y+im.naturalHeight}:null;
@@ -872,6 +1034,8 @@
     // shoreline across the native regions, without a new scene or map switch.
     const city=window.ROOKIE_V127_CITY;
     if(city){const view={x:campus.camX,y:campus.camY,w:tw/campus.zoom,h:th/campus.zoom};
+      city.boundaryGround?.(g,{view,zoom:campus.zoom});
+      city.parkGround(g,{view,zoom:campus.zoom});
       city.walkways(g,{view,zoom:campus.zoom});
       city.coastline(g,{view,zoom:campus.zoom});
     }
@@ -916,8 +1080,11 @@
     }
   }
   function roofAlpha(){
-    const room=interiorRoom(campus.x,campus.y);
-    if(room)return .04;
+    // Room labels stop at the floor rectangles, but the 32px wall bands
+    // contain walkable doorway gaps. Keep those thresholds in the cutaway
+    // instead of briefly treating them as outdoors between adjacent rooms.
+    // This margin affects roof visibility only, never collision or room IDs.
+    if(roomRects.some(r=>circleHitsRect(campus.x,campus.y,18,r)))return .04;
     const dx=Math.abs(campus.x-FRONT.x),dy=Math.abs(campus.y-FRONT.y);
     if(dx<130&&dy<155)return clamp((dy-30)/180,.12,.94);
     const gd=Math.hypot(campus.x-GARAGE.x,campus.y-(GARAGE.y+30));
@@ -939,6 +1106,7 @@
   function drawStationRoof(section='main'){
     if(!nearViewport(STX-20,STY-20,ST.w+40,ST.h+60))return;
     const alpha=roofAlpha();
+    if(section==='break') {g.save();g.globalAlpha=alpha;g.fillStyle='#253c57';g.fillRect(STX+1560,STY+12,364,624);g.strokeStyle='#61788b';g.lineWidth=3;g.strokeRect(STX+1560,STY+12,364,624);for(let y=STY+40;y<STY+620;y+=56){g.beginPath();g.moveTo(STX+1572,y);g.lineTo(STX+1912,y);g.stroke();}g.restore();return;}
     // Roof artwork remains the existing V132 texture, but the two original
     // footprints have different street-facing foot-depths. A world-space
     // clip lets the ONE existing painter sort each portion with characters.
@@ -972,6 +1140,7 @@
     g.restore(); // balanced station/garage world-space section clip
   }
   function drawOfficer(p,isPlayer,t){
+    if(isPlayer&&story?.drawPlayer(p))return;
     const shared=window.ROOKIE_JAY;
     if(isPlayer)shared?.control?.('v117ConnectedRun',!!shared.eligible());
     if(isPlayer&&shared?.eligible()){
@@ -1017,10 +1186,11 @@
     // One depth queue: existing actors and new furnishing geometry share it.
     const entries=npcActors.filter(npc=>visible(npc)&&(!marina?.interiorActorVisible||marina.interiorActorVisible(npc))).map(npc=>({y:npc.y,actor:npc}));
     const bridge=window.ROOKIE_V131_PRECINCT_BRIDGE;
-    for(const wall of bridge?.interiorDepthProps?.(ST.walls,ST.rooms,ST.furn,view)||[])
+    for(const wall of bridge?.interiorDepthProps?.(stationWalls,stationRooms,ST.furn,view)||[])
       entries.push({y:wall.depthY,interiorWall:wall});
     for(const f of ST.furn)if(bridge?.interiorFurnitureActive?.(f,ST.rooms)&&nearViewport(STX+f.x-100,STY+f.y-140,f.w+200,f.h+240))
       entries.push({y:STY+f.y+f.h,stationFurniture:f});
+    for(const d of ST.decors)if(d.t==='cellInterior')entries.push({y:STY+(d.dy??d.y),stationDecor:d});
     // Approved city pass: existing district silhouettes join the SAME queue
     // as actors. No new geometry, projection, camera or building instances.
     if(window.ROOKIE_CITY_PERSPECTIVE_ACTIVE&&campus.zoom>=.10)
@@ -1034,11 +1204,12 @@
           }
           const building=!!b;if(!building&&o.t!=='car')continue;
           const {x,y,w,h}=b||{x:o.x||0,y:o.y||0,w:o.w||70,h:o.h||36};
-          if(!nearViewport(d.x+x-8,d.y+y-8,w+24,h+24))continue;
+          const liveParked=parkedByObject.get(o),extent=liveParked?Math.max(liveParked.length,liveParked.width)*.65:0;
+          if(liveParked?!nearViewport(liveParked.x-extent,liveParked.y-extent,extent*2,extent*2):!nearViewport(d.x+x-8,d.y+y-8,w+24,h+24))continue;
           if(building){
             if(!marina?.ownsSolid?.({x:d.x+x,y:d.y+y,w,h}))
               entries.push({y:d.y+(o.dy??y+h),districtBuilding:{object:o,district:d}});
-          }else entries.push({y:d.y+y+(o.h||36)/2,parkedVehicle:{object:o,district:d}});
+          }else entries.push({y:parkedByObject.get(o)?.y??d.y+y+(o.h||36)/2,parkedVehicle:{object:o,district:d}});
         }
     for(const prop of window.ROOKIE_V134_PRECINCT?.communityProps?.(view)||[])
       entries.push({y:prop.y,communityProp:prop});
@@ -1046,10 +1217,12 @@
     // cast painter. No duplicated NPC engine or new citywide actor registry.
     if(window.ROOKIE_V133_PRECINCT?.actors)
       for(const a of window.ROOKIE_V133_PRECINCT.actors(t))
-        if(visible(a))entries.push({y:a.y,actor:a});
+        if(visible(a)&&!story?.duplicate(a))entries.push({y:a.y,actor:a});
     // Vehicles join Jay, NPCs, roofs and trees in the SAME world-depth queue.
     if(campus.zoom>=.19)for(const car of streetTraffic)if(visible(car))
       entries.push({y:car.y,trafficCar:car});
+    for(const car of H.campaignScenes?.vehicles()||[])if(visible(car))entries.push({y:car.y,trafficCar:car});
+    for(const a of H.campaignScenes?.actors()||[])if(visible(a))entries.push({y:a.y,actor:a});
     if(marina?.interiorFurniture)for(const f of marina.interiorFurniture(view))entries.push({y:f.y+f.h,furniture:f});
     // V122: native marina piling bases join the SAME y-sorted draw queue as
     // Jay, ambient NPCs and interior furniture. This gives genuine occlusion:
@@ -1072,6 +1245,7 @@
     // inside actors draw behind each shell; outside actors draw in front.
     entries.push({y:FRONT.y-1,precinctShell:'main'});
     entries.push({y:GARAGE.y-1,precinctShell:'garage'});
+    entries.push({y:STY+636,precinctShell:'break'});
     if(cruiser){const p=cruiser.position();if(visible(p))entries.push({y:p.y,patrolCruiser:true});}
     if(!cruiser?.active())entries.push({y:campus.y,player:true});entries.sort((a,b)=>a.y-b.y);
     for(const entry of entries){
@@ -1090,17 +1264,28 @@
         if(p.repeat){g.beginPath();g.rect(x,y,p.w,p.h);g.clip();for(let xx=x-25;xx<x+p.w;xx+=48)g.drawImage(p.im,xx,y);}
         else if(p.crop)g.drawImage(p.im,...p.crop,x,y,p.w,p.h);
         else g.drawImage(p.im,x,y,p.w,p.h);
+        if(p.banner){
+          // Compose existing civic crest art with the lamp in this same pass.
+          // The cloth is a small ground-independent accent; no extra collider.
+          const crest=connectedNativeImage('precinct-cinematic-v1/crest.png'),cx=x+p.w/2,top=y+38;
+          g.strokeStyle='#bca25d';g.lineWidth=2;g.beginPath();g.moveTo(cx-29,top);g.lineTo(cx+29,top);g.stroke();
+          for(const side of [-1,1]){const bx=cx+side*19;
+            g.fillStyle='#174568';g.strokeStyle='#deb969';g.lineWidth=1.5;g.beginPath();g.moveTo(bx-9,top+2);g.lineTo(bx+9,top+2);g.lineTo(bx+9,top+32);g.lineTo(bx,top+37);g.lineTo(bx-9,top+32);g.closePath();g.fill();g.stroke();
+            if(crest?.complete&&crest.naturalWidth)g.drawImage(crest,bx-7,top+9,14,17);
+          }
+        }
         g.restore();continue;
       }
+      if(entry.stationDecor){withOriginalContext(g,()=>{const prior=state.map;state.map='station';g.save();g.translate(STX,STY);try{drawDecor(entry.stationDecor,t);}finally{g.restore();state.map=prior;}});continue;}
       if(entry.districtBuilding){
         const {object:o,district:d}=entry.districtBuilding;
-        g.save();g.translate(d.x,d.y);paintedBuilding(o,d.id);g.restore();continue;
+        g.save();g.globalAlpha*=story?.roofFor(o)??1;g.translate(d.x,d.y);paintedBuilding(o,d.id);g.restore();continue;
       }
       if(entry.parkedVehicle){
         const {object:o,district:d}=entry.parkedVehicle,w=o.w||70,h=o.h||36;
         const dir=['up','down','left','right'].includes(o.dir)?o.dir:(w>=h?'right':'down');
         const horizontal=dir==='right'||dir==='left';
-        const car={x:d.x+(o.x||0)+w/2,y:d.y+(o.y||0)+h/2,dir,
+        const car=parkedByObject.get(o)||{x:d.x+(o.x||0)+w/2,y:d.y+(o.y||0)+h/2,dir,
           kind:o.police?'patrol':o.kind==='delivery'?'delivery':'civilian',color:o.c,
           length:horizontal?w:h,width:horizontal?h:w};
         if(!window.ROOKIE_V135_WALL_KIT?.drawPilotVehicle(g,car)){
@@ -1112,12 +1297,12 @@
         // Use the EXISTING roof texture, façade cache and camera transform.
         // No new sprite renderer, wall copy, NPC pass or animation loop.
         drawStationRoof(entry.precinctShell);
-        window.ROOKIE_V134_PRECINCT?.architecture(g,{
+        if(entry.precinctShell!=='break')window.ROOKIE_V134_PRECINCT?.architecture(g,{
           zoom:campus.zoom,view,alpha:roofAlpha(),section:entry.precinctShell},t);
         continue;
       }
       if(entry.trafficCar){drawStreetTraffic(g,entry.trafficCar);continue;}
-      if(entry.cityProp){window.ROOKIE_V127_CITY.drawDepthProp(g,entry.cityProp);continue;}
+      if(entry.cityProp){window.ROOKIE_V127_CITY.drawDepthProp(g,entry.cityProp,t);continue;}
       if(entry.depthProp){
         marina.drawDepthProp(g,entry.depthProp,{zoom:campus.zoom,view,player:{x:campus.x,y:campus.y}},t);continue;
       }
@@ -1126,6 +1311,9 @@
       if(entry.player){drawOfficer({x:campus.x,y:campus.y,color:'#2b467a'},true,t);continue;}
       if(entry.furniture){marina.drawInteriorFurniture(g,entry.furniture);continue;}
       const npc=entry.actor;
+      if(H.campaignScenes?.suppress(npc))continue;
+      if(H.campaignScenes?.drawActor(npc))continue;
+      if(story?.drawActor(npc))continue;
       if(window.ROOKIE_CHICKEN?.draw(g,npc,t))continue;
       if(window.ROOKIE_BANANA?.draw(g,npc,t))continue;
       if(window.ROOKIE_CIVILIANS?.draw(g,npc))continue;
@@ -1134,6 +1322,7 @@
     }
     campus.near=null;let best=58;
     for(const sp of worldSpots){
+      if(story&&!story.available(sp,campus.x,campus.y))continue;
       if(marina?.interactionAvailable&&!marina.interactionAvailable(sp,campus.x,campus.y))continue;
       const d=Math.hypot(sp.x-campus.x,sp.y-campus.y);
       if(d<best){best=d;campus.near=sp;}
@@ -1147,7 +1336,7 @@
     const viewW=tw/campus.zoom,viewH=th/campus.zoom;
     campus.visibleChunks=chunkWindow(campus.camX,campus.camY,viewW,viewH);
     g.save();g.setTransform(dpr,0,0,dpr,0,0);g.fillStyle='#172e48';g.fillRect(0,0,tw,th);
-    g.scale(campus.zoom,campus.zoom);g.translate(-campus.camX,-campus.camY);
+    g.scale(campus.zoom,campus.zoom);g.translate(-campus.camX+(H.cityCollisions?.camera()||0),-campus.camY);
     // The same canvas and camera always draw both the campus and interior.
     // Visual presentation hooks are optional and must never change gameplay.
     // They receive a read-only view rectangle and the drawing context only.
@@ -1183,12 +1372,19 @@
     if(art)art.streets(g,{zoom:campus.zoom,view},t);
     // V133 original connected geometry remains under a cached civic-ground
     // visual layer; do not paint into active roads or create scene transitions.
-    window.ROOKIE_V133_PRECINCT?.ground(g,{zoom:campus.zoom,view},t);
+    // The current park owns its ground; keep the older cached Civic Green
+    // lawn/placard from repainting the new woodland and monument landing.
+    g.save();const parkBounds=window.ROOKIE_V127_CITY?.parkBounds;
+    if(parkBounds){g.beginPath();g.rect(MIN_X,MIN_Y,W-MIN_X,HGT-MIN_Y);g.rect(parkBounds.x,parkBounds.y,parkBounds.w,parkBounds.h);g.clip('evenodd');}
+    window.ROOKIE_V133_PRECINCT?.ground(g,{zoom:campus.zoom,view},t);g.restore();
     // One connected-road finish after historical ground layers, before props
     // and actors. It reads the same immutable road graph used by traffic.
     window.ROOKIE_V135_WALL_KIT?.drawRoadNetwork?.(g,links,crossings,view,nativeRoadSurfaces);
+    window.ROOKIE_V127_CITY?.midtownStreetFinish?.(g,connectedMidtown,view);
     // Actual reference-guided plaza details, after existing civic pavement.
     window.ROOKIE_V134_PRECINCT?.ground(g,{zoom:campus.zoom,view},t);
+    window.ROOKIE_V127_CITY?.civicGround?.(g,view);
+    window.ROOKIE_V127_CITY?.beachGround?.(g,view,t);
     drawOutdoorDecor();
     const marina=window.ROOKIE_V116_MARINA;
     if(marina)marina.background(g,{zoom:campus.zoom,view},t);
@@ -1204,9 +1400,16 @@
     // the one feet-depth queue above. Jay in front of Precinct 9 no longer
     // disappears behind the wall. Interior actors remain behind the facade
     // until the SAME original roof cutaway reveals the rooms.
+    // Native clue props use their original coordinates and handlers.
+    if(nearViewport(STX+1558,STY+12,366,624))withOriginalContext(g,()=>{const prior=state.map;state.map='station';g.save();g.translate(STX,STY);try{drawDecor({t:'caperFridge',x:1780,y:60},t);drawDecor({t:'caperCoffee',x:1608,y:82},t);drawFurn({x:1690,y:330,w:132,h:52,type:'table'});drawFurn({x:1785,y:420,w:90,h:34,type:'sofa'});}finally{g.restore();state.map=prior;}});
     cruiser?.bayMark(g);
+    story?.ground(g);
+    if(H.caper?.active())withOriginalContext(g,()=>{const prior=state.map;state.map='station';g.save();g.translate(STX,STY);try{for(const d of ST.decors)if(d.t.startsWith('caper'))drawDecor(d,t);}finally{g.restore();state.map=prior;}});
     window.ROOKIE_COMIC?.drawProps(g);
     drawEntityHighlights(t);
+    // Contact flashes/debug labels must follow the cached road and actor
+    // passes; drawing them under historical pavement made them disappear.
+    H.cityCollisions?.draw(g);
     // The V115 showcase also drew roof vents; V132 owns that layer now.
     // Avoid double glazing/vents over the ported legacy material and signs.
     if(art&&!window.ROOKIE_V132_PRECINCT)art.precinct(g,{zoom:campus.zoom,view,STX,STY,alpha:roofAlpha()},t);
@@ -1225,6 +1428,7 @@
     if(pilot&&!window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE)pilot.animated(g,{zoom:campus.zoom,view},t);
     if(art)art.atmosphere(g,{zoom:campus.zoom,view},t);
     g.restore();
+    H.connectedTactics?.paint();
     const region=interiorRoom(campus.x,campus.y);
     const district=districtAt(campus.x,campus.y);
     const desc=region ? 'PRECINCT 9 · '+region : district ? district.map.name : campus.y>1640?'HARBOR CITY · CONNECTED AVENUES':'PRECINCT 9 · GROUNDS';
@@ -1234,7 +1438,7 @@
     const act=modal.querySelector('#v115CampusInteract');
     const near=campus.near,actor=near&&(near.ambientActor||marina?.actors?.some(a=>a.id===near.id));
     const vehicleAction=cruiser?.active()||cruiser?.near();
-    window.ROOKIE_COMIC?.frame({host:modal,canvas:cv,view,actors:npcActors,player:{x:campus.x,y:campus.y},driving:!!cruiser?.active(),visible:a=>a.x>=view.x-30&&a.x<=view.x+view.w+30&&a.y>=view.y&&a.y<=view.y+view.h+60&&(!interiorRoom(a.x,a.y)||roofAlpha()<.5)&&(!marina?.interiorActorVisible||marina.interiorActorVisible(a))},t);
+    window.ROOKIE_COMIC?.frame({host:modal,canvas:cv,view,actors:(H.campaignScenes?.actors()||[]).concat(npcActors),traffic:streetTraffic,player:{x:campus.x,y:campus.y,moving:campus.moved,speed:campus.speed},driving:!!cruiser?.active(),area:district?.id||(campus.x>=200&&campus.x<=2600&&campus.y>=1900&&campus.y<=3650?'coast-park':'precinct'),timeOfDay:(typeof H.worldClock?.phase==='function'?H.worldClock.phase():H.worldClock?.phase||state.timeOfDay||'day'),progress:{mission:currentMission(),briefed:!!state.camp?.m2?.brief,cameraFound:!!state.evidence?.m2camera,firstCaseComplete:!!state.caper?.complete},comedyNear:window.ROOKIE_COMIC?.nearComedy(campus.x,campus.y,640),ambientFree:!priorOverlay()&&!csActive&&!H.profiles.isOpen()&&!window.ROOKIE_PARKING_ENCOUNTER?.locked()&&!['hale','warehouse'].includes(story?.room()),visible:a=>a.x>=view.x-30&&a.x<=view.x+view.w+30&&a.y>=view.y&&a.y<=view.y+view.h+60&&(!interiorRoom(a.x,a.y)||roofAlpha()<.5)&&(!marina?.interiorActorVisible||marina.interiorActorVisible(a))&&(!a.storyInterior||story?.available(a,campus.x,campus.y))},t);
     const comicActive=window.ROOKIE_COMIC?.modalActive(),comicNear=!cruiser?.active()&&window.ROOKIE_COMIC?.nearComedy(campus.x,campus.y);
     const caption=comicActive?'Continue':comicNear?'Talk':vehicleAction?(cruiser.active()?'Exit':'Drive'):near?(actor?'Talk':'Inspect'):'Action';
     if(act.textContent!==caption)act.textContent=caption;
@@ -1244,7 +1448,7 @@
   function loop(timestamp){
     if(!campus.open)return;
     const dt=campus.last?clamp((timestamp-campus.last)/1000,0,.05):1/60;campus.last=timestamp;
-    if(!document.hidden){if(!window.ROOKIE_V116_HUD?.blocked())simulate(dt);paint(timestamp,dt);}
+    if(!document.hidden){if(!window.ROOKIE_V116_HUD?.blocked())simulate(dt);paint(timestamp,dt);H.mainCity?.tick(timestamp);H.cityAudio?.tick(timestamp);}
     campus.frame=requestAnimationFrame(loop);
   }
   function open(){
@@ -1262,17 +1466,21 @@
       if(!blocked(x,y)){campus.x=x;campus.y=y;}
       else {campus.x=FRONT.x;campus.y=FRONT.y+86;}
     }
-    closeMap();
+    closeMap();story?.sync();
     campus.open=true;campus.firstPaint=true;campus.previousRoom=interiorRoom(campus.x,campus.y);
     modal.hidden=false;document.body.classList.add('v115-campus-open');
-    if(window.ROOKIE_V116_MARINA)document.body.classList.add('v116-play-mode');
+    // Main startup opens the city before deferred marina assets finish loading.
+    // Activate the existing city HUD/control layout on that first open too.
+    if(window.ROOKIE_MAIN_CITY_ACTIVE||window.ROOKIE_V116_MARINA)document.body.classList.add('v116-play-mode');
     clearInput();campus.last=0;resize();campus.frame=requestAnimationFrame(loop);
   }
   function close(){
+    if(window.ROOKIE_MAIN_CITY_ACTIVE&&!H.academy?.active()&&!H.outbreak?.active()&&!H.mainCity?.activityActive()){H.mainCity?.openNative('menu');return;}
     if(!campus.open)return;if(cruiser&&cruiser.suspend()===false)return;campus.open=false;cancelAnimationFrame(campus.frame);clearInput();
     window.ROOKIE_PARKING_ENCOUNTER?.cancel();
     window.ROOKIE_COMIC?.close();
-    window.ROOKIE_V116_HUD?.close();
+    window.ROOKIE_V116_HUD?.close();story?.restorePanels();
+    H.cityAudio?.stop();H.campaignScenes?.suspend();H.connectedTactics?.reset();H.mainCity?.suspend();
     modal.hidden=true;document.body.classList.remove('v115-campus-open','v116-play-mode');
   }
   btn.addEventListener('click',open);
@@ -1288,9 +1496,11 @@
     const comic=window.ROOKIE_COMIC;
     if(comic?.modalActive()){comic.advance();return;}
     if(window.ROOKIE_PARKING_ENCOUNTER?.locked())return;
+    if(comic?.nearComedy(campus.x,campus.y)&&window.ROOKIE_PARKING_ENCOUNTER?.interact())return;
     if(comic?.nearComedy(campus.x,campus.y)&&comic.comedy())return;
     if(cruiser?.interact())return;
     const sp=campus.near;
+    if(story?.interact(sp))return;
     if(comic?.converse(sp,npcActors))return;
     const marina=window.ROOKIE_V116_MARINA;
     if(sp?.ambientActor){
@@ -1303,8 +1513,8 @@
       return;
     }
     modal.querySelector('#v115CampusNote').textContent=sp?
-      sp.label+' · This is a continuous-world geometry preview. Story interactions still run in the main game.':
-      'Move near a door or precinct marker to inspect its world position. No mission progress changes here.';
+      sp.label:
+      'Approach a person, case clue or precinct desk and use Action.';
   });
   const dialogue=document.createElement('output');dialogue.id='v116Dialogue';
   dialogue.hidden=true;dialogue.setAttribute('aria-live','polite');modal.appendChild(dialogue);
@@ -1358,6 +1568,10 @@
   function captureKey(e,down){
     if(!campus.open)return;
     const k=e.key.toLowerCase();
+    if(H.campaignScenes?.active()){
+      clearInput();if(e.ctrlKey||e.metaKey||/^f\d+$/.test(k))return;
+      if(['w','a','s','d','arrowleft','arrowright','e','m','i','escape','+','=','-'].includes(k)){e.preventDefault();e.stopImmediatePropagation();if(k==='escape'&&down)window.ROOKIE.cutscene.skip();}return;
+    }
     if(window.ROOKIE_PARKING_ENCOUNTER?.locked()){
       clearInput();if(e.ctrlKey||e.metaKey||/^f\d+$/.test(k))return;
       e.preventDefault();e.stopImmediatePropagation();
@@ -1368,11 +1582,14 @@
     if(window.ROOKIE_COMIC?.modalActive()){
       clearInput();if(['w','a','s','d','arrowleft','arrowright','escape'].includes(k)){e.preventDefault();e.stopImmediatePropagation();if(k==='escape'&&down)H.comicDialogue.close();}return;
     }
+    if(story?.blocked()) {clearInput();return;}
     if(window.ROOKIE_V116_HUD?.blocked()){
       clearInput();if(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d','e','m','i','escape'].includes(k)){e.preventDefault();e.stopImmediatePropagation();}
       if(k==='escape'&&down)window.ROOKIE_V116_HUD.close();return;
     }
     if(cruiser?.key(k,down)){e.preventDefault();e.stopImmediatePropagation();return;}
+    if(H.connectedTactics?.key(k,down)){e.preventDefault();e.stopImmediatePropagation();return;}
+    if(H.mainCity&&['m','i'].includes(k)){e.preventDefault();e.stopImmediatePropagation();if(down)H.mainCity.openNative(k==='m'?'map':'gear');return;}
     if(k==='e'){e.preventDefault();e.stopImmediatePropagation();if(down)modal.querySelector('#v115CampusInteract').click();return;}
 
     if(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d','escape','+','=','-'].includes(k)){
@@ -1411,7 +1628,7 @@
     width:W-MIN_X,height:HGT,chunkSize:CHUNK,entrances:Object.freeze({front:FRONT,garage:GARAGE}),
     districts:()=>districtEntries.map(d=>({id:d.id,x:d.x,y:d.y,w:d.w,h:d.h,instanceId:d.instanceId})),
     perspectiveQA:()=>/[?&]pilotQA=1(?:&|$)/.test(window.location.search)?JSON.parse(JSON.stringify(districtEntries.map(d=>({
-      id:d.id,x:d.x,y:d.y,w:d.w,h:d.h,decors:d.map.decors,
+      id:d.id,x:d.x,y:d.y,w:d.w,h:d.h,decors:d.map.decors,connectedParking:d.map.connectedParking,
       solids:d.map.pedSolids||d.map.solids||[],ground:d.map.ground
     })))):null,
     links:()=>links.map(l=>({...l})),
@@ -1421,6 +1638,7 @@
     sidewalkRepairs:()=>JSON.parse(JSON.stringify(retiredSidewalkBarriers)),
     cruiserQA:()=>/[?&]pilotQA=1(?:&|$)/.test(window.location.search)?cruiser:null,
     trafficQA:()=>/[?&]pilotQA=1(?:&|$)/.test(window.location.search)?streetTraffic.map(c=>({...c})):null,
+    parkedQA:()=>/[?&]pilotQA=1(?:&|$)/.test(window.location.search)?parkedBodies.map(b=>({...b})):null,
     trafficGraphQA:()=>/[?&]pilotQA=1(?:&|$)/.test(window.location.search)&&trafficRouter?{metrics:trafficRouter.metrics(),roads:trafficRouter.graph.roads,legs:trafficRouter.graph.legs,turns:trafficRouter.graph.turns,nodes:trafficRouter.graph.nodes}:null,
     trafficAdvanceQA:seconds=>{if(!/[?&]pilotQA=1(?:&|$)/.test(window.location.search))return false;for(let i=0;i<Math.min(60,Math.max(0,seconds))*30;i++){stepAmbientPedestrians(1/30);window.ROOKIE_V116_MARINA?.stepNPCs(1/30);stepStreetTraffic(1/30);}return true;},
     civilianQA:()=>/[?&]pilotQA=1(?:&|$)/.test(window.location.search)?{
@@ -1438,6 +1656,11 @@
        playerX:campus.x,playerY:campus.y,dir:campus.dir,
        room:interiorRoom(campus.x,campus.y),crossings:campus.doorCrossings}:null,
     districtAt:(x,y)=>districtAt(x,y)?.id||'precinct-campus',
+    travelStory:(map,x,y)=>story?.travel(map,x,y)||false,
+    legacyLocation:(map,x,y)=>story?.locate(map,x,y)||null,
+    storyRoom:()=>story?.room()||null,
+    legacyManifest:()=>/[?&]pilotQA=1(?:&|$)/.test(window.location.search)?Object.fromEntries(Object.entries(MAPS).map(([id,m])=>[id,{indoor:!!m.indoor,spots:m.spots.map(s=>({id:s.id,to:s.to,label:s.label})),npcs:m.npcs.map(n=>({name:n.name,talk:n.talk}))}])):null,
+    storyQA:()=>/[?&]pilotQA=1(?:&|$)/.test(window.location.search)?story?.qa():null,
     open,close,isOpen:()=>campus.open,
     openAt:(x,y,z=1.1)=>{
       if(!Number.isFinite(x)||!Number.isFinite(y)||blocked(x,y))return false;
@@ -1451,8 +1674,8 @@
       areaId==='plaza'?{worldId:WORLD_ID,areaId:'precinct-campus-v115',x:PLX+x,y:PLY+y}:null,
     metrics:()=>{const times=campus.paintCosts.slice().sort((a,b)=>a-b);return {frames:campus.paintCount,paintP95Ms:times[Math.floor((times.length-1)*.95)]||0,paintMaxMs:times.at(-1)||0,samples:times.length,ambientPedestrians:ambientRoutes.length,ambientDistrictsInitialized:ambientInit,streetCars:streetTraffic.length,stoppedCars:streetTraffic.filter(c=>c.stopped).length};},
     snapshot:()=>Object.freeze({schema:1,worldId:WORLD_ID,areaId:districtAt(campus.x,campus.y)?.id||AREA_ID,
-      playerId:'local-preview',x:campus.x,y:campus.y,instanceId:districtAt(campus.x,campus.y)?.instanceId||'harbor-main:campus',
-      transport:'none',authoritativeServer:false,committedToSave:false}),
+      playerId:H.profiles.current(),x:campus.x,y:campus.y,dir:campus.dir,zoom:campus.zoom,instanceId:districtAt(campus.x,campus.y)?.instanceId||'harbor-main:campus',
+      transport:cruiser?.active()?'cruiser':'none',authoritativeServer:false,committedToSave:!!window.ROOKIE_MAIN_CITY_ACTIVE}),
     chunks:(x,y,vw,vh)=>chunkWindow(x,y,vw,vh),
     geometry:()=>({walls:walls.length,furniture:furniture.length,rooms:roomRects.length,spots:worldSpots.length,
       stationFootprint:{x:STX,y:STY,w:ST.w,h:ST.h},plazaPlacement:{x:PLX,y:PLY},
@@ -1466,6 +1689,34 @@
     },
     test:{blocked,roadCollisionDiagnostic,interiorRoom,chunkAt,moveTo:(x,y)=>{if(blocked(x,y))return false;campus.x=x;campus.y=y;return true;},
       position:()=>({x:campus.x,y:campus.y}),doorCrossings:()=>campus.doorCrossings},
-    scope:'Connected district geography and precinct foot exploration share one camera. Missions, street NPC routines, interiors beyond Precinct 9, live multiplayer and campaign missions still require migration; Unit 9 uses the canonical driving controller.'};
+    scope:'Connected district geography and precinct foot exploration share one camera. Profile-owned precinct cast, case actions and seamless investigation interiors reuse native story handlers and saves; Academy keeps its original simulation lifecycle. Zombie remains excluded.'};
   H.seamlessCampusV115=Object.freeze(api);
+  // Three native display vehicles sit inside solid building/garage footprints.
+  // Keep those structures intact; only publicly reachable parked cars move.
+  for(const b of parkedBodies){b.sheltered=blocked(b.x,b.y,4,true,true,true);if(!b.sheltered)movableParked.push(b);}
+  if(window.ROOKIE_MAIN_CITY_ACTIVE)H.cityCollisions=window.ROOKIE_WILD_ARCADE?.create({qa:/[?&]pilotQA=1(?:&|$)/.test(location.search),debug:/[?&]collisionDebug=1(?:&|$)/.test(location.search),unit:()=>cruiser?.physicsBody(),fleet:()=>streetTraffic,parked:()=>movableParked,
+    blocked:(x,y,angle,b)=>{const c=Math.cos(angle),s=Math.sin(angle),l=(b.length||86)/2-8,w=(b.width||38)/2-8;for(const lx of [-l,-l/2,0,l/2,l])for(const ly of [-w,0,w])if(blocked(x+lx*c-ly*s,y+lx*s+ly*c,8,true,true,true))return true;return false;},
+    release:c=>trafficRouter?.release(c),rejoin:c=>trafficRouter?.rejoin(c),reenter:c=>trafficRouter?.reenter(c),
+    impact:(e,a,b)=>{a.impactJolt=b.impactJolt=Math.min(1,e.closing/180);if(a.id==='precinct-unit-9'||b.id==='precinct-unit-9')cruiser?.vehicleImpact();}
+  });
+  if(window.ROOKIE_MAIN_CITY_ACTIVE)H.cityAudio=window.ROOKIE_CITY_AUDIO_FACTORY?.({
+    context:()=>AC,unlock:ensureAudio,gain:avSfxGain,player:()=>campus,traffic:()=>streetTraffic,vehicle:()=>cruiser?.audioState(),
+    allowed:()=>campus.open&&!H.profiles.isOpen()&&!H.academy.active()&&!H.outbreak.active(),
+    environment:()=>{const park=window.ROOKIE_V127_CITY?.parkBounds;return{zone:park&&campus.x>=park.x&&campus.x<park.x+park.w&&campus.y>=park.y&&campus.y<park.y+park.h?'forest':campus.y>=3800?'coast':'city',indoors:!!interiorRoom(campus.x,campus.y)||!!story?.room()||!!window.ROOKIE_V116_MARINA?.interiorAt(campus.x,campus.y),paused:priorOverlay()||!!csActive||!!window.ROOKIE_V116_HUD?.blocked()||!!window.ROOKIE_PARKING_ENCOUNTER?.locked(),dialogue:!!H.speech?.current()};},
+    surface:()=>{
+      const x=campus.x,y=campus.y,marina=window.ROOKIE_V116_MARINA;
+      if(marina?.interiorAt(x,y)?.kind==='bait'||marina?.arrivalDecks.some(r=>x>=r.x&&x<r.x+r.w&&y>=r.y&&y<r.y+r.h)||marina?.piers.some(px=>x>=px&&x<px+90&&y>=3800&&y<4100)||x>=2800&&x<4240&&y>=4104&&y<4174||x>=3560&&x<3620&&y>=4174&&y<4294)return 'wood';
+      if(interiorRoom(x,y)||story?.room()||marina?.interiorAt(x,y))return 'pavement';
+      const city=window.ROOKIE_V127_CITY,park=city?.parkBounds;if(park&&x>=park.x&&x<park.x+park.w&&y>=park.y&&y<park.y+park.h)return 'grass';
+      if(links.some(r=>x>=r.x&&x<r.x+r.w&&y>=r.y&&y<r.y+r.h))return 'pavement';
+      const d=districtAt(x,y);if(d){let kind=city?.colorKind(d.map.base||'#729763');for(const r of d.map.ground||[])if(x>=d.x+r.x&&x<d.x+r.x+r.w&&y>=d.y+r.y&&y<d.y+r.y+r.h)kind=city?.colorKind(r.c);return kind==='grass'?'grass':'pavement';}
+      return y>3880?'sand':'pavement';
+    }
+  });
+  const tacticsFactory=/* CONNECTED_TACTICS */null;
+  if(window.ROOKIE_MAIN_CITY_ACTIVE)H.connectedTactics=tacticsFactory?.({H,api,campus,maps:MAPS,modal,actors:npcActors,spots:worldSpots,room:()=>story?.roomData(),context:tacticalContext,blocked});
+  const campaignFactory=/* CONNECTED_CAMPAIGN */null;
+  if(window.ROOKIE_MAIN_CITY_ACTIVE)campaignFactory?.({H,api,campus,STX,STY,worldSpots,npcActors,cruiser,clearInput,streetGraph:()=>trafficRouter?.graph,paintActor:a=>withOriginalContext(g,()=>drawPerson(a.x,a.y,a.color,a.hat,a.name,a.dir||'down',false,true,0,a.moving?a.distance/22:null))});
+  const mainFactory=/* CONNECTED_MAIN */null;
+  if(window.ROOKIE_MAIN_CITY_ACTIVE)mainFactory?.({H,api,campus,state:()=>state,save:()=>save(),setSave:fn=>{save=fn;},getSave:()=>save,player,nativePlace:(map,x,y)=>{state.map=map;state.inCar=false;player.x=x;player.y=y;player.dir='up';updateLocLabel();updateCam();H.fit();}});
 })();

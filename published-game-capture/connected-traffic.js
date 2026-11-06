@@ -12,6 +12,12 @@ function overlap(a,b,pad=0){
   if(Math.abs(dx*c+dy*s)>=ar+br+pad)return false;
  }return true;
 }
+function touchesPedestrian(body,human,radius=18){
+ const dx=human.x-body.x,dy=human.y-body.y,c=Math.cos(body.angle),s=Math.sin(body.angle);
+ const longitudinal=Math.max(0,Math.abs(dx*c+dy*s)-(body.length||86)/2);
+ const lateral=Math.max(0,Math.abs(-dx*s+dy*c)-(body.width||38)/2);
+ return longitudinal*longitudinal+lateral*lateral<radius*radius;
+}
 function build(roads,blocked=()=>false,anchors=[]){
  const asphalt=roads.filter(r=>r.w>0&&r.h>0),inside=(x,y)=>asphalt.some(r=>x>=r.x-.1&&x<=r.x+r.w+.1&&y>=r.y-.1&&y<=r.y+r.h+.1);
  const lines=[];
@@ -56,7 +62,7 @@ function build(roads,blocked=()=>false,anchors=[]){
  const destinations=new Map();for(const id of live){const reached=new Set([id]),todo=[id];while(todo.length){const n=todo.pop();for(const t of legs[n].next){const next=turns[t].to;if(live.has(next)&&!reached.has(next)){reached.add(next);todo.push(next);}}}destinations.set(id,[...reached]);}
  return {roads:asphalt,nodes,legs,turns,live,destinations,rejected,inside,valid};
 }
-function create({roads,blocked,districtAt,actors=()=>[],player=()=>null,cruiser=()=>null,view=()=>null,count=28,fleet=[],anchors=[]}){
+function create({roads,blocked,districtAt,actors=()=>[],player=()=>null,cruiser=()=>null,view=()=>null,impacts=()=>null,parked=()=>[],count=28,fleet=[],anchors=[]}){
  const graph=build(roads,blocked,anchors),cars=fleet,reservations=new Map(),closures=new Map(),routes=new Set(),turnKinds=new Set(),visited=new Set();let clock=0,accumulator=0,seed=9147;
  const random=()=>((seed=Math.imul(seed,1664525)+1013904223>>>0)/4294967296);
  const legPose=c=>pose(c.recovery?.path||(c.turn===null?graph.legs[c.leg].path:graph.turns[c.turn].path),c.distance);
@@ -79,15 +85,17 @@ function create({roads,blocked,districtAt,actors=()=>[],player=()=>null,cruiser=
   const c={id:'street:'+cars.length,leg:id,turn:null,distance:60+random()*(l.path.length-120),velocity:0,speed:90+cars.length%5*9,kind:region==='industrial'?'delivery':cars.length%11===0?'patrol':cars.length%7===0?'delivery':'civilian',color:['#557e9a','#a66852','#7d8b76','#c5a975'][cars.length%4],stopped:false,wait:0,completed:0};assign(c);
   if(cars.some(b=>dist(c,b)<160)||cruiser()?.overlapsTraffic?.(c))continue;cars.push(c);
  }
- function obstructed(c,p,padding=12){const body={...p,length:c.length};
+ function obstructionReason(c,p,padding=12){const body={...p,length:c.length};
   // Following distance comes from the forward probe. Inflating lateral
   // widths beyond the lane gap makes opposing queues stop each other.
-  for(const other of cars)if(other!==c&&dist(p,other)<150&&overlap(body,other,Math.min(padding,4)))return true;
-  const human=player();if(human&&!human.driving&&dist(p,human)<c.length/2+23)return true;
-  for(const a of actors())if(dist(p,a)<c.length/2+18)return true;
-  const unit=cruiser();if(unit?.overlapsTraffic?.({...body,dir:Math.abs(Math.cos(p.angle))>.5?'right':'down'}))return true;
-  return false;
+  for(const other of cars)if(other!==c&&dist(p,other)<150&&overlap(body,other,Math.min(padding,4)))return 'traffic';
+  for(const other of parked())if(dist(p,other)<170&&overlap(body,other,Math.min(padding,4)))return 'parked-vehicle';
+    const human=player();if(human&&!human.driving&&touchesPedestrian(body,human,23))return 'player';
+    for(const a of actors())if(touchesPedestrian(body,a,18))return 'pedestrian';
+  const unit=cruiser();if(unit?.overlapsTraffic?.({...body,dir:Math.abs(Math.cos(p.angle))>.5?'right':'down'}))return unit.active?.()?'player':'parked-cruiser';
+  return null;
  }
+ const obstructed=(c,p,padding=12)=>!!obstructionReason(c,p,padding);
  let recoveries=0,reroutes=0,offscreenReentries=0;
  function outside(p){const v=view();return !!v&&(p.x<v.x-250||p.y<v.y-250||p.x>v.x+v.w+250||p.y>v.y+v.h+250);}
  function reenter(c){
@@ -99,7 +107,7 @@ function create({roads,blocked,districtAt,actors=()=>[],player=()=>null,cruiser=
   for(let i=0;i<80;i++){const id=pool[Math.floor(random()*pool.length)],l=graph.legs[id];if(l.path.length<220)continue;const distance=60+random()*(l.path.length-120),p=pose(l.path,distance);
    if(!outside(p)||obstructed(c,p,5)||cars.some(o=>o!==c&&dist(p,o)<180))continue;
    for(const [n,owner] of reservations)if(owner===c.id)reservations.delete(n);
-   Object.assign(c,{leg:id,turn:null,distance,velocity:0,wait:0,destination:undefined,nextTurn:undefined,deliveryUntil:0});delete c.recovery;assign(c);offscreenReentries++;return true;
+   Object.assign(c,{leg:id,turn:null,distance,velocity:0,wait:0,playerWait:0,stopReason:null,destination:undefined,nextTurn:undefined,deliveryUntil:0});delete c.recovery;assign(c);offscreenReentries++;return true;
   }return false;
  }
  function recover(c){
@@ -122,9 +130,21 @@ function create({roads,blocked,districtAt,actors=()=>[],player=()=>null,cruiser=
   if(!p)return false;
   closures.set(c.leg,clock+45);c.recovery={path:p,to:reverse.id,end:Math.max(0,Math.min(reverse.path.length,reverse.path.length-c.distance))};c.distance=0;c.velocity=0;recoveries++;return true;
  }
+ function release(c){for(const [n,owner]of reservations)if(owner===c.id)reservations.delete(n);c.wait=0;c.playerWait=0;c.stopReason='impact';}
+ function rejoin(c){
+  // Search only when a displaced car has settled, never every frame. The
+  // connector begins at its actual pose and ends on a validated live lane.
+  const choices=[];for(const id of ids){const l=graph.legs[id];for(let s=0;s<=l.path.length;s+=40){const p=pose(l.path,s),d=dist(c,p);if(d<230)choices.push({id,s,p,d,score:d+Math.abs(wrap(p.angle-c.angle))*35});}}
+  choices.sort((a,b)=>a.score-b.score);for(const q of choices.slice(0,32)){const start={x:c.x,y:c.y},end=q.p,lead=Math.min(65,Math.max(18,q.d*.4)),a={x:start.x+Math.cos(c.angle)*lead,y:start.y+Math.sin(c.angle)*lead},b={x:end.x-Math.cos(end.angle)*lead,y:end.y-Math.sin(end.angle)*lead},points=[];
+   if(q.d<5&&Math.abs(wrap(c.angle-end.angle))<.12)continue;
+   for(let i=0;i<=24;i++){const t=i/24;points.push({x:(1-t)**3*start.x+3*(1-t)**2*t*a.x+3*(1-t)*t*t*b.x+t**3*end.x,y:(1-t)**3*start.y+3*(1-t)**2*t*a.y+3*(1-t)*t*t*b.y+t**3*end.y});}
+   const p=path(points);let safe=true;for(let s=0;safe&&s<=p.length+4;s+=8){const at=pose(p,Math.min(s,p.length));if(obstructed(c,at,2))safe=false;for(const v of corners(at,c.length,38))if(blocked(v.x,v.y,2))safe=false;}
+   if(!safe)continue;release(c);c.turn=null;c.recovery={path:p,to:q.id,end:q.s};c.distance=0;c.velocity=0;delete c.nextTurn;c.destination=undefined;recoveries++;return true;
+  }return false;
+ }
  function step(dt){accumulator+=Math.max(0,Math.min(.05,dt||0));while(accumulator>=1/30){tick(1/30);accumulator-=1/30;}}
  function tick(dt){clock+=dt;for(const [id,until] of closures)if(until<clock)closures.delete(id);
-  for(const c of cars){const current=c.recovery||(c.turn===null?graph.legs[c.leg]:graph.turns[c.turn]),remaining=current.path.length-c.distance;
+  for(const c of cars){if(impacts()?.owns(c))continue;const current=c.recovery||(c.turn===null?graph.legs[c.leg]:graph.turns[c.turn]),remaining=current.path.length-c.distance;
    if(c.wait>30&&reenter(c))continue;
    if(c.wait>7&&c.turn===null&&!c.recovery&&clock>(c.retryAt||0)){
     c.retryAt=clock+3;
@@ -142,12 +162,19 @@ function create({roads,blocked,districtAt,actors=()=>[],player=()=>null,cruiser=
    let target=c.recovery?28:c.turn===null?base:(current.kind==='uturn'?28:current.kind==='straight'?base:52);
    if(!c.recovery&&c.turn===null&&remaining<130)target=Math.min(target,55);
    if(hold)target=Math.min(target,Math.max(0,(remaining-84)*1.2));
-   const look=Math.min(remaining,Math.max(65,c.velocity*.85));if(obstructed(c,pose(current.path,c.distance+look),14))target=0;
+   const look=Math.min(remaining,Math.max(65,c.velocity*.85)),lookReason=obstructionReason(c,pose(current.path,c.distance+look),14);if(lookReason)target=0;
    if(c.deliveryUntil>clock)target=0;
    c.velocity=target<c.velocity?Math.max(target,c.velocity-240*dt):Math.min(target,c.velocity+65*dt);
    let move=Math.min(c.velocity*dt,remaining);if(hold)move=Math.min(move,Math.max(0,remaining-84));
-   const next=pose(current.path,c.distance+move);if(obstructed(c,next,5)){move=0;c.velocity=0;}
+   const next=pose(current.path,c.distance+move),nextReason=obstructionReason(c,next,5);if(nextReason){move=0;c.velocity=0;}
    c.distance+=move;c.stopped=move<.01;c.wait=c.stopped?c.wait+dt:0;assign(c);
+   // Read-only speech telemetry from the SAME probes that actually stopped
+   // this car. Keep unrelated junction/traffic/delivery waits out of it.
+   const unrelated=nextReason&&nextReason!=='player'?nextReason:lookReason&&lookReason!=='player'?lookReason:null;
+   c.stopReason=c.stopped?(hold?'junction':c.deliveryUntil>clock?'delivery':unrelated||nextReason||lookReason||'other'):null;
+   const playerStopped=c.stopped&&c.stopReason==='player';
+   if(playerStopped&&!(c.playerWait>0))c.playerBlockEpisode=(c.playerBlockEpisode||0)+1;
+   c.playerWait=playerStopped?(c.playerWait||0)+dt:0;c.district=district;
    for(const [id,owner] of reservations)if(owner===c.id&&dist(c,graph.nodes[id])>135&&id!==junction)reservations.delete(id);
    if(current.path.length-c.distance<.001){
     if(c.recovery){const r=c.recovery;c.leg=r.to;c.distance=r.end;delete c.recovery;delete c.nextTurn;c.destination=undefined;}
@@ -158,7 +185,7 @@ function create({roads,blocked,districtAt,actors=()=>[],player=()=>null,cruiser=
    visited.add(district);
   }
  }
- return {cars,step,graph,metrics:()=>({cars:cars.length,legs:graph.legs.length,liveLegs:graph.live.size,turns:graph.turns.length,rejected:graph.rejected,distinctTransitions:routes.size,turnKinds:[...turnKinds],districts:[...visited],recoveries,reroutes,offscreenReentries,reservations:reservations.size,clock,maxWait:Math.max(0,...cars.map(c=>c.wait))}),pose,corners,overlap};
+ return {cars,step,graph,release,rejoin,reenter,metrics:()=>({cars:cars.length,legs:graph.legs.length,liveLegs:graph.live.size,turns:graph.turns.length,rejected:graph.rejected,distinctTransitions:routes.size,turnKinds:[...turnKinds],districts:[...visited],recoveries,reroutes,offscreenReentries,reservations:reservations.size,clock,maxWait:Math.max(0,...cars.map(c=>c.wait))}),pose,corners,overlap};
 }
-window.ROOKIE_CITY_TRAFFIC=Object.freeze({build,create,pose,corners,overlap});
+window.ROOKIE_CITY_TRAFFIC=Object.freeze({build,create,pose,corners,overlap,touchesPedestrian});
 })();

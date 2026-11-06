@@ -21,22 +21,29 @@ const protectedNames=/\b(?:JAY|ROSA|KALEB|GIGI|LING\s?LING|MAYA|SARITAH?|ELIAS\s
 function protectedActor(a){
  if(!a)return true;
  const id=String(a.id||''),name=String(a.name||'');
+ // Maya is civilian intake staff. Her station ID must not force the old
+ // block-person fallback used before the connected citizen pack was added.
+ if(a.storyStation&&name.toUpperCase()==='MAYA'&&!a.isPlayer&&!a.police)return false;
  return !!(a.isPlayer||a.police||a.npcStyle===0||id==='connected-jay'||
   /^(?:station-npc:|v133-precinct:)/.test(id)||id==='campus-npc:diaz'||
   protectedNames.test(name)||/\b(?:OFCR|OFFICER|POLICE|SGT|SERGEANT|DETECTIVE|CAPTAIN)\b/i.test(name)||
   window.HARBOR?.cast?.identity?.(name,false));
 }
-function roleFor(a){
+function requestedRole(a){
  if(protectedActor(a))return null;
  if(roles.includes(a.civilianRole))return a.civilianRole;
  if(byId[a.id])return byId[a.id];
  const parts=String(a.id||'').split(':');
  if(parts[0]==='ambient'&&districtRoles[parts[1]]){const pool=districtRoles[parts[1]];return pool[(Number(parts[2])||0)%pool.length];}
  const n=String(a.name||'').toUpperCase();
+ if(n==='MAYA')return 'office_worker';
  if(/OLD TOM|FISHER|ANGLER/.test(n))return 'fisher';
  if(/BARISTA/.test(n))return 'barista';
  if(/MECHANIC/.test(n))return 'mechanic';
- if(/MARCO|VENDOR/.test(n))return 'vendor';
+ if(/OMAR|STORE CLERK|SHOPKEEPER/.test(n))return 'store_clerk';
+ if(/LINDQVIST/.test(n))return 'office_worker';
+ if(/MARCO|FOREMAN/.test(n))return 'construction';
+ if(/VENDOR/.test(n))return 'vendor';
  if(/ALMEIDA|IBARRA/.test(n))return 'elder';
  if(/CLERK|SHOPKEEPER/.test(n))return 'store_clerk';
  if(/WATCHMAN/.test(n))return 'business';
@@ -45,6 +52,10 @@ function roleFor(a){
  if(/CUSTOMER/.test(n))return 'shopper';
  return 'resident';
 }
+// Withheld damaged atlases retain their job identity but use a compatible
+// approved citizen outfit instead of falling back to the old human artwork.
+const approvedFallbacks=Object.freeze({chef:'waiter',construction:'dock_worker',artist:'musician',kid:'student'});
+function roleFor(a){const role=requestedRole(a);if(!role)return null;if(pack.characters[role]?.playback_allowed!==false)return role;return approvedFallbacks[role]||'resident';}
 const images=new Map(),seen=new Map();
 const stats={draws:0,pendingFallbacks:0,errors:0};
 function image(role){

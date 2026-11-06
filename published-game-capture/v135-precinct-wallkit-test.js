@@ -228,10 +228,11 @@ function fillRoadMaterial(g,x,y,w,h){
   c.getContext('2d').drawImage(roadImage,f.x,f.y,f.w,f.h,0,0,f.w,f.h);roadPattern=g.createPattern(c,'repeat');}
  g.save();g.imageSmoothingEnabled=false;g.fillStyle=roadPattern;g.fillRect(x,y,w,h);g.restore();return true;
 }
-function drawRoadDecal(g,id,x,y,scale=1,angle=0){
+function drawRoadDecal(g,id,x,y,scale=1,angle=0,dimensions=null){
  const f=roadway?.frames?.[id];if(!roadImage||!f)return false;
  g.save();g.imageSmoothingEnabled=false;g.translate(x,y);g.rotate(angle);
- g.drawImage(roadImage,f.x,f.y,f.w,f.h,-f.w*scale/2,-f.h*scale/2,f.w*scale,f.h*scale);g.restore();return true;
+ const w=dimensions?.[0]??f.w*scale,h=dimensions?.[1]??f.h*scale;
+ g.drawImage(roadImage,f.x,f.y,f.w,f.h,-w/2,-h/2,w,h);g.restore();return true;
 }
 function roadBand(roads,r,along){
  const horizontal=r.axis==='h';let lo=horizontal?r.y:r.x,hi=lo+(horizontal?r.h:r.w),changed=true;
@@ -337,7 +338,7 @@ function drawRoadNetwork(g,source,nodes,view,native=[]){
    drawRoadDecal(g,'yellow_dashes',horizontal?a:center,horizontal?center:a,1,horizontal?0:Math.PI/2);
   }
  }
- for(const c of crossings)if(visible({x:c.x-80,y:c.y-80,w:160,h:160}))drawRoadDecal(g,'crosswalk',c.x,c.y,c.scale,c.axis==='h'?Math.PI/2:0);
+ for(const c of crossings)if(!window.ROOKIE_V127_CITY?.refinesCrossing?.(c)&&visible({x:c.x-80,y:c.y-80,w:160,h:160}))drawRoadDecal(g,'crosswalk',c.x,c.y,c.scale,c.axis==='h'?Math.PI/2:0);
  g.restore();roadMetrics.draws++;return true;
 }
 // Approved local perspective art. The pilot keeps its original bounds; the
@@ -363,15 +364,25 @@ function drawPilotVehicle(g,car){
  const color=family==='sedan'?String(car.color||'').replace('#','')+'.':'';
  const f=pilotManifest.frames[family+'.'+color+direction]||pilotManifest.frames[family+'.'+direction];
  if(!f)return false;
- const b=f.bounds,sw=b[2]-b[0],sh=b[3]-b[1],horizontal=direction==='right'||direction==='left';
+ const b=f.bounds,sw=b[2]-b[0],sh=b[3]-b[1];
  const length=car.length??(car.kind==='delivery'?104:86),width=car.width??38;
  // Uniform sprite scaling preserves 3/4 proportions. The ground contact
  // shadow is the original collision footprint; bodywork rises above it.
- const scale=Math.min((horizontal?length:width)/sw,(horizontal?Math.max(width+18,length*.74):length+12)/sh);
- const w=sw*scale,h=sh*scale,bottom=car.y+(horizontal?width/2:length*.35);
+ // Every view was authored in the same 64px cell. Calibrate from the
+ // side-view length once; fitting north/south frames into the collision
+ // width used to shrink the entire car whenever its direction switched.
+ const reference=pilotManifest.frames[family+'.'+color+'right']||pilotManifest.frames[family+'.right'];
+ const referenceWidth=reference.bounds[2]-reference.bounds[0];
+ const scale=length/referenceWidth;
+ const heading=Number.isFinite(car.angle)?car.angle:({right:0,down:Math.PI/2,left:Math.PI,up:-Math.PI/2}[direction]);
+ const verticalWeight=Math.sin(heading)**2;
+ const w=sw*scale,h=sh*scale,bottom=car.y+width/2*(1-verticalWeight)+length*.35*verticalWeight;
  g.save();g.imageSmoothingEnabled=false;g.fillStyle='rgba(7,18,30,.22)';g.beginPath();
- g.ellipse(car.x+2,car.y+2,horizontal?length/2:width/2,horizontal?width/2:length/2,0,0,Math.PI*2);g.fill();
- g.drawImage(pilotImage,f.x+b[0],f.y+b[1],sw,sh,Math.round(car.x-w/2),Math.round(bottom-h),Math.round(w),Math.round(h));g.restore();
+ g.ellipse(car.x+2,car.y+2,length/2,width/2,heading,0,Math.PI*2);g.fill();
+ // The fleet has four authored views. A bounded residual follows physical
+ // yaw between them; Unit 9 continues to use its genuine 16-view renderer.
+ const cardinal={right:0,down:Math.PI/2,left:Math.PI,up:-Math.PI/2}[direction],residual=Math.atan2(Math.sin(heading-cardinal),Math.cos(heading-cardinal));
+ g.translate(car.x,car.y);g.rotate(residual);g.drawImage(pilotImage,f.x+b[0],f.y+b[1],sw,sh,Math.round(-w/2),Math.round(bottom-car.y-h-(car.impactJolt||0)*.8),Math.round(w),Math.round(h));g.restore();
  pilotMetrics.draws++;pilotMetrics.byFamily[family]=(pilotMetrics.byFamily[family]||0)+1;
  pilotMetrics.byDirection[direction]=(pilotMetrics.byDirection[direction]||0)+1;
  return true;

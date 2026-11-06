@@ -146,6 +146,7 @@
       instanceId: d.instanceId, x: d.x+x, y: d.y+y, localX: x, localY: y });
   }
   function playerPoint() {
+    if(window.ROOKIE_MAIN_CITY_ACTIVE&&H.seamlessCampusV115?.isOpen())return H.seamlessCampusV115.snapshot();
     return !active() ? null : worldPoint(state.map, player.x + player.w/2, player.y + player.h/2);
   }
   function chunksAround(x, y, radius) {
@@ -292,14 +293,20 @@
     const px=(canvas.width-(W-MIN_X)*scale)/2, py=(canvas.height-HGT*scale)/2;
     return {x:(px+(wx-MIN_X)*scale)/canvas.width*100, y:(py+wy*scale)/canvas.height*100};
   }
+  function connectedMapPos(p){
+    if(!p)return null;const scale=Math.min(canvas.width/(W-MIN_X),canvas.height/HGT);
+    const px=(canvas.width-(W-MIN_X)*scale)/2,py=(canvas.height-HGT*scale)/2;
+    return {x:(px+(p.x-MIN_X)*scale)/canvas.width*100,y:(py+p.y*scale)/canvas.height*100};
+  }
   function refreshMarkers() {
     const mark=(id,pos)=>{
       const el=document.getElementById(id);if(!el)return;
       if(!pos){el.style.display='none';return;}
       el.style.display='';el.style.left=pos.x+'%';el.style.top=pos.y+'%';
     };
-    mark('mapYou',mapPos(state.map,player.x+player.w/2,player.y+player.h/2));
-    mark('mapCar',state.inCar?null:mapPos(car.map,car.x,car.y));
+    const main=window.ROOKIE_MAIN_CITY_ACTIVE&&H.seamlessCampusV115?.isOpen();
+    mark('mapYou',main?connectedMapPos(H.seamlessCampusV115.snapshot()):mapPos(state.map,player.x+player.w/2,player.y+player.h/2));
+    mark('mapCar',main?connectedMapPos(state.connectedCruiser):state.inCar?null:mapPos(car.map,car.x,car.y));
     const target=typeof currentTargetId==='function'?targetDest(currentTargetId()):null;
     mark('mapDest',target?mapPos(target.map,
       (MAPS[target.map]&&MAPS[target.map].spots.find(s=>s.id===target.spot)||{}).x||MAPS[target.map].w/2,
@@ -312,14 +319,14 @@
     showingBlueprint=true;
     applyView();
     setMapZoom(baseZoom);
-    const p=mapPos(state.map,player.x+player.w/2,player.y+player.h/2);
+    const p=window.ROOKIE_MAIN_CITY_ACTIVE&&H.seamlessCampusV115?.isOpen()?connectedMapPos(H.seamlessCampusV115.snapshot()):mapPos(state.map,player.x+player.w/2,player.y+player.h/2);
     if(p)centerMapOn(p.x,p.y);
     return true;
   }
   function applyView(){
     mapOverlay.classList.toggle('v115-atlas-view',showingBlueprint);
     if(mapHint)mapHint.textContent=showingBlueprint?
-      'Connected precinct, Harbor Avenue, all nine outdoor districts and roads. Other buildings still need interior reconstruction · pinch / swipe to pan.':
+      (window.ROOKIE_MAIN_CITY_ACTIVE?'Harbor City · continuous streets and interiors · pinch / swipe to pan.':'Connected precinct, Harbor Avenue, all nine outdoor districts and roads · pinch / swipe to pan.'):
       'Original illustrated city concept — not yet geographically matched to the playable world.';
     mapImg.style.display=showingBlueprint?'none':'';
     canvas.style.display=showingBlueprint?'block':'none';

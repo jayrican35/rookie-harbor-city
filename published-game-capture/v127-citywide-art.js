@@ -1,7 +1,7 @@
 /* ROOKIE V127 — unified 32px citywide materials and depth props.
  * Uses the existing Southbay Marina tile atlas & original exterior sprites.
- * VISUAL ADAPTER: same 1:1 harbor-main world, native camera, zero new loops.
- * One explicitly physical coastline extension shares existing blocked() call.
+ * Same 1:1 harbor-main world, native camera, zero new loops. The authored
+ * Coast Park plan shares the existing depth queue and blocked() entry point.
  * No direct writes to campaign state, saved data, vehicles or Zombie mode.
  */
 (function(){
@@ -31,6 +31,8 @@ let frameZoom=1; // use color LOD only when whole-city overview is zoomed far ou
 // Invalidate fallback-color chunks as soon as the shared atlas decodes.
 // Otherwise first-frame blank tiles could remain cached across the whole city.
 atlas.addEventListener('load',()=>cache.clear());
+const ocean=new Image();ocean.decoding='async';ocean.src='./assets/v121-marina/water-body.png';
+ocean.addEventListener('load',()=>cache.clear());
 function hash(a,b,c=0){let x=Math.imul(a|0,374761393)^Math.imul(b|0,668265263)^Math.imul(c|0,1442695041);x=Math.imul(x^(x>>>13),1274126177);return (x^(x>>>16))>>>0;}
 function visible(r,v,p=32){return !v||(r.x<v.x+v.w+p&&r.x+r.w>v.x-p&&r.y<v.y+v.h+p&&r.y+r.h>v.y-p);}
 function inRect(x,y,r){return x>=r.x&&x<r.x+r.w&&y>=r.y&&y<r.y+r.h;}
@@ -51,6 +53,11 @@ function tileChunk(type,cx,cy){
  const g=c.getContext('2d');g.imageSmoothingEnabled=false;
  g.fillStyle=colors[type]||colors.grass;g.fillRect(0,0,CHUNK,CHUNK);
  const ready=atlas.complete&&atlas.naturalWidth>=256&&atlas.naturalHeight>=96;
+ if(type==='water'){
+   if(ocean.complete&&ocean.naturalWidth)g.drawImage(ocean,0,0,CHUNK,CHUNK);
+   if(cache.size>=CAP)cache.delete(cache.keys().next().value);
+   cache.set(key,c);return c;
+ }
  for(let y=0;y<CHUNK;y+=32)for(let x=0;x<CHUNK;x+=32){
    const wx=cx+x,wy=cy+y,n=hash(wx/32,wy/32,47);
    if(ready&&type!=='road'&&type!=='stone'&&type!=='sand'){
@@ -60,7 +67,7 @@ function tileChunk(type,cx,cy){
    }else if(type==='road'||type==='stone'||type==='sand'){
      g.fillStyle=type==='road'?['#404a53','#3f4953','#414b54'][n%3]:
        type==='stone'?['#adaba0','#b6b1a5','#c1b9ad'][n%3]:
-       ['#b8a97d','#c5af7d','#b5a475'][n%3];
+       ['#d4bc87','#d6bd89','#d5bd88'][n%3];
      g.fillRect(x,y,32,32);
    }
    // A restrained, world-seeded 1px pixel texture (never noisy glitter).
@@ -114,6 +121,7 @@ function districtGround(g,d,view){
    if(!visible(abs,view))continue;
    surface(g,abs,colorKind(r.c),view);
  }
+ if(m.connectedParking)midtownParking(g,d,view);
  if(frameZoom<.45||d.id==='waterfront')return; // protected Marina art is authoritative
  const step=92,fromX=Math.max(d.x,Math.floor(view.x/step)*step),
    fromY=Math.max(d.y,Math.floor(view.y/step)*step);
@@ -136,6 +144,78 @@ function districtGround(g,d,view){
    metrics.details++;
  }
  districtFinish(g,d,view);
+}
+// Ground dressing in the existing district pass. Original depth props and
+// parked-car renderers still own every object above this parking surface.
+function midtownParking(g,d,view){
+ const p=d.map.connectedParking,kit=window.ROOKIE_V135_WALL_KIT;
+ kit?.prepareCommunityAssets();
+ for(const t of p.terraces||[]){
+   const r={...t,x:d.x+t.x,y:d.y+t.y};surface(g,r,'grass',view);
+   kit?.drawCommunityBorder(g,{x:r.x+12,y:r.y+12,w:r.w-24,h:r.h-24});
+ }
+ for(const lot of p.lots){
+   const r={...lot,x:d.x+lot.x,y:d.y+lot.y};if(!visible(r,view))continue;
+   surface(g,r,'road',view);
+   g.save();g.beginPath();g.rect(r.x,r.y,r.w,r.h);g.clip();
+   if(!kit?.fillGround(g,'asphalt',r.x,r.y,r.w,r.h))surface(g,r,'road',view);
+   g.strokeStyle='#b4a895';g.lineWidth=7;g.beginPath();g.roundRect(r.x+4,r.y+4,r.w-8,r.h-8,12);g.stroke();
+   g.strokeStyle='#eee0c8';g.lineWidth=2;g.beginPath();g.roundRect(r.x+4,r.y+2,r.w-8,r.h-8,12);g.stroke();
+   kit?.drawCommunityBorder(g,{x:r.x+12,y:r.y+12,w:r.w-24,h:r.h-24});
+   g.restore();
+ }
+ // Openings cross the existing paved sidewalk into the real lot aisle.
+ for(const e of p.entrances){
+   const x=d.x+e.x-5,y=d.y+e.y,w=e.w+10;
+   surface(g,{x,y,w,h:e.h},'road',view);kit?.fillGround(g,'asphalt',x,y,w,e.h);
+   g.strokeStyle='#d5c8ac';g.lineWidth=3;g.beginPath();g.moveTo(x,y);g.lineTo(x+w,y);g.moveTo(x,y+e.h);g.lineTo(x+w,y+e.h);g.stroke();
+ }
+ for(const bay of p.bays){
+   const x=d.x+bay.x,y=d.y+bay.y,quarter=Math.abs(Math.sin(bay.angle||0))>.5,w=quarter?bay.h:bay.w,h=quarter?bay.w:bay.h;
+   g.save();g.translate(x+bay.w/2,y+bay.h/2);g.rotate(bay.angle||0);
+   if(!kit?.drawGroundSprite(g,'parking_stall_top',-w/2,-h/2,w,h)){
+     g.strokeStyle='#e2dfca';g.lineWidth=2;g.strokeRect(-w/2,-h/2,w,h);
+   }
+   kit?.drawGroundSprite(g,'parking_wheelstop',-w/2+8,-h/2+5,w-16,24);g.restore();
+ }
+ for(const island of p.islands){
+   const r={...island,x:d.x+island.x,y:d.y+island.y};
+   surface(g,r,'grass',view);g.strokeStyle='#c4b79f';g.lineWidth=4;g.strokeRect(r.x+2,r.y+2,r.w-4,r.h-4);
+   kit?.drawCommunityBorder(g,{x:r.x+12,y:r.y+12,w:r.w-24,h:r.h-24});
+ }
+}
+function refinesCrossing(c){return !!window.HARBOR?.seamlessCampusV115?.isOpen()&&((c.x>4090&&c.x<5120&&c.y>1620&&c.y<1930)||(c.x>2550&&c.x<2920&&[1784,2540,3744].some(y=>Math.abs(c.y-y)<140)));}
+function boundaryGround(g,opt){
+ for(const r of [{x:2600,y:1848,w:44,h:1832},{x:2800,y:1848,w:64,h:1832}])surface(g,r,'brick',opt.view);
+}
+function midtownStreetFinish(g,d,view){
+ const p=d?.map?.connectedParking,kit=window.ROOKIE_V135_WALL_KIT;if(!p?.reference||!kit)return;
+ for(const cross of p.crossings){
+   const x=d.x+cross.x,y=d.y+cross.y;
+   if(!visible({x:x-140,y:y-130,w:280,h:260},view))continue;
+   for(const yy of [y-94,y+94])kit.drawRoadDecal(g,'crosswalk',x,yy,1,0,[152,34]);
+   for(const xx of [x-110,x+110])kit.drawRoadDecal(g,'crosswalk',xx,y,1,Math.PI/2,[111,34]);
+   // Ground-only curb returns and tactile pads at the actual street corners.
+   for(const sx of [-1,1])for(const sy of [-1,1]){
+     const cx=x+sx*84,cy=y+sy*63.5;
+     g.save();g.translate(cx,cy);g.scale(sx,sy);
+     g.strokeStyle='#b1a28a';g.lineWidth=8;g.beginPath();g.moveTo(0,25);g.lineTo(0,18);g.quadraticCurveTo(0,0,18,0);g.lineTo(25,0);g.stroke();
+     g.strokeStyle='#f1dec0';g.lineWidth=3;g.stroke();g.fillStyle='#dcae4a';
+     g.fillRect(8,10,13,9);g.fillStyle='#f7d573';for(let i=0;i<3;i++)for(let j=0;j<2;j++)g.fillRect(10+i*4,12+j*4,2,2);g.restore();
+   }
+ }
+ // Three T-junctions on the new west-boundary street. Mark only approaches
+ // backed by actual asphalt; no phantom crossing into a closed park edge.
+ for(const [y,mode]of [[1784,'south'],[2540,'east'],[3744,'north']]){
+   const x=2722;if(!visible({x:x-150,y:y-130,w:300,h:260},view))continue;
+   if(mode==='east'){
+     for(const yy of [y-94,y+94])kit.drawRoadDecal(g,'crosswalk',x,yy,1,0,[140,30]);
+     kit.drawRoadDecal(g,'crosswalk',x+110,y,1,Math.PI/2,[112,30]);
+   }else{
+     kit.drawRoadDecal(g,'crosswalk',x,y+(mode==='south'?94:-94),1,0,[140,30]);
+     for(const xx of [x-110,x+110])kit.drawRoadDecal(g,'crosswalk',xx,y,1,Math.PI/2,[112,30]);
+   }
+ }
 }
 // District identity is painted from the real MAPS footprint and authored decor
 // positions, not from a fake overview layer. Everything here sits ON the ground:
@@ -251,6 +331,187 @@ function districtFinish(g,d,view){
 }
 
 function road(g,r,view){surface(g,r,'road',view);}
+// Coast Park uses the same material cache, world depth queue and collision
+// entry point as the city. One deterministic scenery plan; no new game loop.
+const PARK=Object.freeze({x:200,y:1900,w:2400,h:1750});
+const CIVIC=Object.freeze({x:528,y:1900,w:840,h:228,centerX:948,
+ monument:{x:948,y:2058,w:280,h:280*315/598},
+ flags:[{id:'puerto_rico',x:716,y:2070},{id:'el_salvador',x:1148,y:2070}],
+ steps:{x:904,y:2128,w:88,h:40}});
+function civicContains(x,y,pad=0){return x>=CIVIC.x-pad&&x<=CIVIC.x+CIVIC.w+pad&&y>=CIVIC.y-pad&&y<=CIVIC.y+CIVIC.h+pad;}
+function civicOverlaps(x,y,w,h,pad=12){return x<CIVIC.x+CIVIC.w+pad&&x+w>CIVIC.x-pad&&y<CIVIC.y+CIVIC.h+pad&&y+h>CIVIC.y-pad;}
+const parkWaypoints=[
+ [[1460,1900],[1440,2680],[1120,2880],[950,2980],[650,3080],[550,3290],[740,3440],[1130,3520],[1460,3470],[1700,3370],[1850,3200],[2020,3010],[1910,2880],[1670,2850],[1440,2930],[1170,2900],[950,2980]],
+ [[200,3260],[380,3220],[550,3290]],[[1350,3650],[1380,3560],[1460,3470]],
+ [[2600,3480],[2280,3440],[2100,3370],[1700,3370]],
+ [[1130,3520],[1220,3390],[1340,3260],[1380,3220]],
+ [[2020,3010],[2020,2940],[2060,2918]],
+ [[948,2168],[1040,2260],[1260,2310],[1472.5,2277.5]]
+];
+const parkTrails=parkWaypoints.map(points=>{
+ const samples=[];
+ for(let i=0;i<points.length-1;i++){
+   const p0=points[Math.max(0,i-1)],p1=points[i],p2=points[i+1],p3=points[Math.min(points.length-1,i+2)];
+   for(let k=0;k<12;k++){const t=k/12,t2=t*t,t3=t2*t;
+     samples.push([0,1].map(a=>.5*((2*p1[a])+(-p0[a]+p2[a])*t+(2*p0[a]-5*p1[a]+4*p2[a]-p3[a])*t2+(-p0[a]+3*p1[a]-3*p2[a]+p3[a])*t3)));
+   }
+ }samples.push(points.at(-1).slice());return samples;
+});
+const pond={x:930,y:3290,rx:142,ry:86};
+let parkPlan=null;const parkImages=new Map([['v121-marina/water-body.png',ocean]]);
+function parkImage(file){if(!parkImages.has(file)){const im=new Image();im.decoding='async';im.src='./assets/'+file;parkImages.set(file,im);}return parkImages.get(file);}
+function trailDistance(x,y){let best=Infinity;for(const points of parkTrails)for(let i=1;i<points.length;i++){
+ const a=points[i-1],b=points[i],dx=b[0]-a[0],dy=b[1]-a[1],t=Math.max(0,Math.min(1,((x-a[0])*dx+(y-a[1])*dy)/(dx*dx+dy*dy)));
+ best=Math.min(best,Math.hypot(x-a[0]-dx*t,y-a[1]-dy*t));
+}return best;}
+function pondRadius(a){return 1+.06*Math.sin(a*3)+.025*Math.cos(a*7);}
+function parkWater(x,y,pad=0){const dx=(x-pond.x)/(pond.rx+pad),dy=(y-pond.y)/(pond.ry+pad);return Math.hypot(dx,dy)<pondRadius(Math.atan2(dy,dx));}
+function pondShape(g,pad=0){g.beginPath();for(let i=0;i<=48;i++){const a=i*Math.PI*2/48,r=pondRadius(a),x=pond.x+Math.cos(a)*(pond.rx+pad)*r,y=pond.y+Math.sin(a)*(pond.ry+pad)*r;g[i?'lineTo':'moveTo'](x,y);}g.closePath();}
+function parkInside(x,y,pad=0){return x>=PARK.x-pad&&x<=PARK.x+PARK.w+pad&&y>=PARK.y-pad&&y<=PARK.y+PARK.h+pad;}
+function ensurePark(){
+ if(parkPlan)return parkPlan;
+ const objects=[],cells=new Map(),solidCells=new Map(),cellSize=192;
+ function add(file,x,y,w,h,fw=0,fh=12,crop=null,anchor=.5,animation=null,id=null){
+   const o={file,x,y,w,h,crop,anchor,animation,id,foot:fw?{x:x-fw/2,y:y-fh,w:fw,h:fh}:null};objects.push(o);parkImage(file);
+   const key=Math.floor(x/cellSize)+':'+Math.floor(y/cellSize);if(!cells.has(key))cells.set(key,[]);cells.get(key).push(o);return o;
+ }
+ const clear=(x,y)=>civicContains(x,y,20)||Math.hypot((x-1380)*.94,y-3220)<172||Math.hypot(x-2110,y-2930)<116||parkWater(x,y,40);
+ for(let y=PARK.y+35;y<PARK.y+PARK.h-36;y+=86)for(let x=PARK.x+28;x<PARK.x+PARK.w-24;x+=86){
+   const n=hash(x,y,871),px=x+(n%57)-28,py=y+((n>>>8)%51)-25,w=110+(n>>>15)%64+(n%7===0?30:0),h=Math.round(w*96/108);
+   if(px>PARK.x+PARK.w-44||n%13===0||clear(px,py)||clear(px,py-h*.4)||civicOverlaps(px-w/2,py-h,w,h)||trailDistance(px,py)<62||trailDistance(px,py-h*.5)<43)continue;
+   add('exterior/shade_tree.webp',px,py,w,h,18,12,[2,14,108,96]);
+ }
+ // Understory in small groups, with the same protected walking corridors.
+ for(let y=PARK.y+48;y<PARK.y+PARK.h-30;y+=73)for(let x=PARK.x+40;x<PARK.x+PARK.w-40;x+=81){
+   const n=hash(x,y,1321),px=x+n%43-21,py=y+(n>>>6)%41-20;
+   if(clear(px,py)||civicOverlaps(px-25,py-39,50,39)||trailDistance(px,py)<49||n%4===0)continue;
+   const flowering=n%3===0;
+   add(flowering?'community-walk/shrub_flowering.png':'community-walk/shrub.png',px,py,flowering?48:34,flowering?37:32,22,10);
+   if(n%2===0)add('community-walk/flower_patch.png',px+24,py+17,62,34);
+ }
+ for(const [x,y,w]of [[590,2970,84],[1120,3095,72],[1760,3130,90],[1560,3560,86],[2240,3300,70],[400,3490,78]])
+   if(trailDistance(x,y)>50)add('southbay-addon/coastal_rocks.webp',x,y,w,w*.51,Math.min(w*.6,52),18,[89,159,1408,713]);
+ // Existing small table and wood benches make a quiet picnic rest area.
+ add('community-walk/bench.png',2140,2888,96,65,84,14);
+ add('precinct-craft-v1/visitorTable.png',2110,2970,88,64,72,26);
+ add('community-walk/bench_small.png',2110,3018,90,46,82,14);
+ add('community-walk/lamp.png',2015,2880,30,117,10,8);
+ for(const [x,y]of [[2036,2860],[2200,2960],[2090,2855],[2180,3030]])add('community-walk/shrub_flowering.png',x,y,50,39,28,10);
+ // Natural rocks, flowers and reeds frame the pond; the bank remains passable.
+ for(let i=0;i<11;i++){const a=i*Math.PI*2/11,x=pond.x+Math.cos(a)*(pond.rx+26),y=pond.y+Math.sin(a)*(pond.ry+24);
+   add(i%3===0?'southbay-addon/coastal_rocks.webp':'community-walk/shrub_flowering.png',x,y,i%3===0?58:42,i%3===0?30:33,18,10,i%3===0?[89,159,1408,713]:null);
+ }
+ for(const points of parkTrails){if(points===parkTrails[4])continue;for(let i=3;i<points.length;i+=7){
+   const a=points[i-1],b=points[i],dx=b[0]-a[0],dy=b[1]-a[1],len=Math.hypot(dx,dy)||1,side=i%2?1:-1,x=b[0]-dy/len*side*44,y=b[1]+dx/len*side*44;
+   if(parkInside(x,y,0)&&!civicContains(x,y,20)&&!parkWater(x,y,20))add('community-walk/flower_patch.png',x,y,42,17,0,12,[9,10,48,19]);
+ }}
+ // Compact civic landing across the existing x=948 Precinct 9 crossing.
+ // Original PNGs retain aspect, source frames and bottom anchors.
+ const monument=add('civic-monument/monument/harbor_city_monument.png',CIVIC.monument.x,CIVIC.monument.y,CIVIC.monument.w,CIVIC.monument.h,268,28,null,.5,null,'civic:monument');monument.shadow=[130,8];
+ for(const f of CIVIC.flags){const h=174,w=h*160/248;
+   const flag=add('civic-monument/flags/'+f.id+'/pole_and_flag_sheet.png',f.x,f.y,w,h,30,18,null,.2,{frameW:160,frameH:248,count:6,fps:6},'civic:flag:'+f.id);flag.shadow=[18,5];
+ }
+ for(const x of [656,1240])for(const y of [2026,2100])add('community-walk/bench.png',x,y,86,86*53/78,78,14,null,.5,null,'civic:bench:'+x+':'+y);
+ for(const x of [558,1338])add('community-walk/lamp.png',x,1924,30,117,10,8,null,.5,null,'civic:lamp:'+x);
+ for(const x of [878,1018])add('community-walk/lamp.png',x,2148,24,24*117/30,8,7,null,.5,null,'civic:entry-lamp:'+x);
+ for(const x of [574,1322]){
+   add('community-walk/tree_flowering.png',x,2074,78,78*118/68,34,12,null,.5,null,'civic:tree:'+x);
+   for(const y of [1972,2110])add('community-walk/flower_patch.png',x,y,58,26,0,12,[9,10,48,19]);
+ }
+ for(const [x,y]of [[682,1968],[1212,1968]])add('community-walk/pot_square.png',x,y,32,32*52/45,24,10);
+ for(const x of [574,1322])add('community-walk/hedge.png',x,2116,62,62*32/95,54,8);
+ // Beach furniture stays outside the continuous 72px promenade and the
+ // broad sand walking corridor. Reuse this queue and footprint index.
+ for(let x=-2700;x<9600;x+=480){
+   if(x>2600&&x<6100)continue;
+   const shore=coastY(x);if(shore<4090)continue;
+   add('exterior/palm.webp',x,3960,100,140,22,16,null,.5,null,'beach:palm:'+x);
+   add('community-walk/bench.png',x+110,3910,86,58,76,14,null,.5,null,'beach:bench:'+x);
+   add('midtown/cafe_patio_set.webp',x+300,4070,100,95,68,30,null,.5,null,'beach:shade:'+x);
+ }
+ parkImage('v121-marina/water-body.png');
+ // Collision footprints may span cells (the monument is wider than a tree).
+ // Keep this index separate from centre-indexed visibility to avoid duplicate draws.
+ for(const o of objects){const b=o.foot;if(!b)continue;
+   for(let cy=Math.floor(b.y/cellSize);cy<=Math.floor((b.y+b.h)/cellSize);cy++)for(let cx=Math.floor(b.x/cellSize);cx<=Math.floor((b.x+b.w)/cellSize);cx++){
+     const key=cx+':'+cy;if(!solidCells.has(key))solidCells.set(key,[]);solidCells.get(key).push(o);
+   }
+ }
+ parkPlan={objects,cells,solidCells,cellSize};return parkPlan;
+}
+let civicGroundCache=null,civicGroundStamp='';
+function civicGround(g,view){
+ if(!visible({...CIVIC,y:1848,h:324},view))return;
+ const stats=window.ROOKIE_V135_WALL_KIT?.stats?.()||{},stamp=[!!stats.communityAtlas,!!stats.groundAtlas,atlas.complete&&atlas.naturalWidth>0,frameZoom<.16].join(':');
+ if(!civicGroundCache||stamp!==civicGroundStamp){
+   if(!civicGroundCache){civicGroundCache=document.createElement('canvas');civicGroundCache.width=CIVIC.w;civicGroundCache.height=324;}
+   const ctx=civicGroundCache.getContext('2d');ctx.clearRect(0,0,CIVIC.w,324);ctx.save();ctx.translate(-CIVIC.x,-1848);
+   paintCivicGround(ctx,{x:CIVIC.x,y:1848,w:CIVIC.w,h:324});ctx.restore();civicGroundStamp=stamp;
+ }
+ g.save();g.imageSmoothingEnabled=false;g.drawImage(civicGroundCache,CIVIC.x,1848);g.restore();
+}
+function paintCivicGround(g,view){
+ const kit=window.ROOKIE_V135_WALL_KIT;if(!visible({...CIVIC,y:1848,h:320},view))return;
+ surface(g,{x:CIVIC.x,y:1848,w:CIVIC.w,h:CIVIC.h+52},'brick',view);
+ kit?.prepareCommunityAssets();kit?.drawCommunityBorder(g,{x:CIVIC.x+12,y:CIVIC.y+12,w:CIVIC.w-24,h:CIVIC.h-24});
+ for(const x of [544,1296]){
+   const bed={x,y:1940,w:52,h:178};surface(g,bed,'grass',view);
+   kit?.drawCommunityBorder(g,{x:x+12,y:1952,w:28,h:154});
+ }
+ // Shallow stone steps are assembled from the existing paving/curb tiles.
+ const s=CIVIC.steps;surface(g,{...s,h:s.h+4},'stone',view);
+ kit?.fillGround(g,'paver_stone',s.x,s.y,s.w,s.h);
+ for(let y=s.y;y<s.y+s.h;y+=8){kit?.fillCommunityGround(g,'curb_straight',s.x,y,s.w,6);g.fillStyle='rgba(58,53,47,.19)';g.fillRect(s.x,y+6,s.w,2);}
+ // Open the south border visually onto the walkable steps and forest path.
+ kit?.fillGround(g,'paver_stone',s.x,s.y-8,s.w,8);
+}
+function parkGround(g,opt){
+ const view=opt.view;if(!visible(PARK,view,30))return;ensurePark();
+ surface(g,PARK,'grass',view);g.save();g.beginPath();g.rect(PARK.x,PARK.y,PARK.w,PARK.h);g.clip();
+ // Soft leaf-litter variation, world anchored; avoid the old flat green box.
+ for(let y=Math.max(PARK.y,Math.floor(view.y/96)*96);y<Math.min(PARK.y+PARK.h,view.y+view.h);y+=96)
+ for(let x=Math.max(PARK.x,Math.floor(view.x/96)*96);x<Math.min(PARK.x+PARK.w,view.x+view.w);x+=96){
+   const n=hash(x,y,81);g.fillStyle=n%2?'rgba(29,70,33,.11)':'rgba(177,185,75,.09)';g.beginPath();g.ellipse(x+40,y+45,52,34,n%5,0,Math.PI*2);g.fill();
+ }
+ g.lineJoin='round';g.lineCap='round';
+ for(const points of parkTrails){
+   if(points===parkTrails[4])continue; // quiet clearing stays grass, still walkable
+   g.beginPath();points.forEach((p,i)=>g[i?'lineTo':'moveTo'](p[0],p[1]));g.strokeStyle='#7f8650';g.lineWidth=68;g.stroke();g.strokeStyle='#b29b69';g.lineWidth=56;g.stroke();g.strokeStyle='rgba(224,204,148,.24)';g.lineWidth=46;g.stroke();
+ }
+ // Sand grain and tiny stones follow the actual path, rather than a new texture pack.
+ for(const points of parkTrails)for(let j=1;j<points.length;j++){
+   if(points===parkTrails[4])continue;
+   const a=points[j-1],b=points[j],n=Math.ceil(Math.hypot(b[0]-a[0],b[1]-a[1])/14);
+   for(let i=0;i<n;i++){const t=i/n,seed=hash(a[0]+i,a[1],j),x=a[0]+(b[0]-a[0])*t+(seed%31)-15,y=a[1]+(b[1]-a[1])*t+(seed>>>6)%31-15;
+     if(!visible({x,y,w:5,h:3},view,1))continue;g.fillStyle=seed%3?'#c4b382':'#958b63';g.fillRect(x,y,2+seed%3,1+(seed>>>4)%2);
+   }
+ }
+ // Break up the trail margins with small grass bites and occasional pebbles.
+ for(const points of parkTrails){if(points===parkTrails[4])continue;for(let i=2;i<points.length;i+=2){
+   const a=points[i-1],b=points[i],dx=b[0]-a[0],dy=b[1]-a[1],len=Math.hypot(dx,dy)||1,seed=hash(i,b[0],29);
+   for(const side of [-1,1]){const off=27+seed%7,x=b[0]-dy/len*off*side,y=b[1]+dx/len*off*side;
+     g.fillStyle=side<0?'#659344':'#527d3a';g.fillRect(x,y,3+seed%5,2+(seed>>>4)%4);
+   }
+ }}
+ g.fillStyle='#a39768';g.beginPath();g.ellipse(2110,2955,112,85,0,0,Math.PI*2);g.fill();
+ g.fillStyle='#86865a';pondShape(g,12);g.fill();
+ g.save();pondShape(g);g.clip();
+ const water=parkImage('v121-marina/water-body.png');g.fillStyle='#176879';g.fillRect(pond.x-pond.rx,pond.y-pond.ry,pond.rx*2,pond.ry*2);
+ if(water.complete&&water.naturalWidth)g.drawImage(water,pond.x-pond.rx,pond.y-pond.ry,pond.rx*2,pond.ry*2);g.restore();
+ g.strokeStyle='rgba(144,211,186,.6)';g.lineWidth=3;pondShape(g,-4);g.stroke();g.restore();
+}
+function parkObjects(view,margin=190){const p=ensurePark(),items=[],s=p.cellSize;
+ for(let cy=Math.floor((view.y-margin)/s);cy<=Math.floor((view.y+view.h+margin)/s);cy++)for(let cx=Math.floor((view.x-margin)/s);cx<=Math.floor((view.x+view.w+margin)/s);cx++)
+ for(const o of p.cells.get(cx+':'+cy)||[])if(visible({x:o.x-o.w*(o.anchor??.5),y:o.y-o.h,w:o.w,h:o.h},view,12))items.push(o);
+ return items;
+}
+function parkBlocked(x,y,r){
+ if(!parkInside(x,y,48)&&(y<3880||y>4140))return false;if(parkInside(x,y)&&parkWater(x,y,r))return true;
+ const p=ensurePark(),s=p.cellSize;
+ for(let cy=Math.floor((y-r)/s);cy<=Math.floor((y+r)/s);cy++)for(let cx=Math.floor((x-r)/s);cx<=Math.floor((x+r)/s);cx++)for(const o of p.solidCells.get(cx+':'+cy)||[]){
+   const b=o.foot;if(!b)continue;const px=Math.max(b.x,Math.min(x,b.x+b.w)),py=Math.max(b.y,Math.min(y,b.y+b.h));if((x-px)**2+(y-py)**2<r*r)return true;
+ }return false;
+}
 function coastY(x){
  if(x>=4400&&x<5900)return 3800;
  if(x>=3500&&x<4400)return 4200-(x-3500)*400/900;
@@ -258,6 +519,7 @@ function coastY(x){
  return 4220+Math.sin(x*.0018)*25;
 }
 function coastalWater(x,y){
+ if(parkInside(x,y)&&parkWater(x,y))return true;
  if(x>=2800&&x<4400)return false; // Bayview's authored shore and pier are owned by Marina.
  if(x>=4400&&x<5900)return false; // Native V116 coastline / piers own this.
  if(y<3780||y>WORLD.maxY)return false;
@@ -281,6 +543,23 @@ function coastline(g,opt){
    metrics.coast++;
  }
 }
+function beachGround(g,view,time=0){
+ if(view.y+view.h<3808)return;
+ for(const [left,right]of [[WORLD.minX,2800],[5900,WORLD.maxX]]){
+  const sx=Math.max(left,Math.floor(view.x/32)*32-32),ex=Math.min(right,view.x+view.w+32);if(sx>=ex)continue;
+  const points=[];for(let x=sx;x<ex;x+=16)points.push([x,coastY(x)+18]);points.push([ex,coastY(ex)+18]);
+  // Clip one continuous beach/ocean polygon, avoiding fractional-zoom
+  // seams from painting a separate clipped rectangle every 32 pixels.
+  g.save();g.beginPath();g.moveTo(sx,3808);g.lineTo(ex,3808);for(let i=points.length-1;i>=0;i--)g.lineTo(...points[i]);g.closePath();g.clip();
+  surface(g,{x:sx,y:3808,w:ex-sx,h:WORLD.maxY-3808},'sand',view);
+  g.beginPath();g.moveTo(sx,3808);g.lineTo(ex,3808);for(let i=points.length-1;i>=0;i--)g.lineTo(points[i][0],Math.min(3880,points[i][1]-50));g.closePath();g.clip();
+  surface(g,{x:sx,y:3808,w:ex-sx,h:72},'brick',view);g.restore();
+  g.save();g.beginPath();g.moveTo(...points[0]);for(const p of points.slice(1))g.lineTo(...p);g.lineTo(ex,WORLD.maxY);g.lineTo(sx,WORLD.maxY);g.closePath();g.clip();
+  surface(g,{x:sx,y:3800,w:ex-sx,h:WORLD.maxY-3800},'water',view);g.restore();
+  g.strokeStyle='rgba(215,247,237,.7)';g.lineWidth=2;g.beginPath();for(const [i,p]of points.entries())g[i?'lineTo':'moveTo'](p[0],p[1]+Math.sin(p[0]*.045+time*.0012)*3);g.stroke();
+ }
+}
+
 const promenades=[
  [-3100,-650],[-506,2800],[2800,3460],[3630,4400],[5900,6556],[6556,8156],[8156,9656]
 ];
@@ -312,6 +591,7 @@ function walkways(g,opt){
  }
 }
 function location(x,y){
+ if(parkInside(x,y))return 'COAST PARK';
  if(x>=4400&&x<5900&&y>=3220&&y<4220)return 'SOUTHBAY MARINA';
  const area=H?.worldV115?.areas?.().find(a=>x>=a.x&&x<a.x+a.w&&y>=a.y&&y<a.y+a.h);
  // Use exact canonical world origin from worldV115 descriptor, not a
@@ -524,6 +804,7 @@ function scenicFor(d){
  scenicCache.set(d.id,{map:d.map,trees,cells,cellSize:CELL});return trees;
 }
 function scenicBlocked(x,y,r=12,districts=[]){
+ if(parkBlocked(x,y,r))return true;
  for(const d of districts){
    if(d.id==='waterfront'||x<d.x-24||y<d.y-24||x>d.x+d.w+24||y>d.y+d.h+24)continue;
    scenicFor(d); // lazily build a deterministic index just once per native map
@@ -544,7 +825,10 @@ function scenicBlocked(x,y,r=12,districts=[]){
 
 function depthProps(view,districts){
  const entries=[];
- if(frameZoom<.18)return entries; // premium props vanish naturally in overview
+ if(frameZoom<.18){
+   if(frameZoom>=.08&&visible(PARK,view,190))for(const o of parkObjects(view))if(o.file==='exterior/shade_tree.webp'||o.id==='civic:monument'||o.id?.startsWith('civic:flag:'))entries.push({parkObject:o,depthY:o.y});
+   return entries;
+ }
  if(!districts)return entries;
  for(const d of districts){
   if(d.id==='waterfront')continue; // V116 has its own authored depth / props.
@@ -571,10 +855,17 @@ function depthProps(view,districts){
     }
   }
  }
+ if(visible(PARK,view,190)||view.y+view.h>3808)for(const o of parkObjects(view))entries.push({parkObject:o,depthY:o.y});
  metrics.props=entries.length;
  return entries;
 }
-function drawDepthProp(g,entry){
+function drawDepthProp(g,entry,timeMs=0){
+ if(entry.parkObject){const o=entry.parkObject,im=parkImage(o.file);if(!im.complete||!im.naturalWidth)return;g.save();g.imageSmoothingEnabled=false;
+   if(o.shadow){g.fillStyle='rgba(18,30,33,.2)';g.beginPath();g.ellipse(o.x+2,o.y+2,...o.shadow,0,0,Math.PI*2);g.fill();}
+   const x=Math.round(o.x-o.w*(o.anchor??.5)),y=Math.round(o.y-o.h),w=Math.round(o.w),h=Math.round(o.h);
+   const crop=o.animation?[Math.floor(timeMs*o.animation.fps/1000)%o.animation.count*o.animation.frameW,0,o.animation.frameW,o.animation.frameH]:o.crop;
+   if(crop)g.drawImage(im,...crop,x,y,w,h);else g.drawImage(im,x,y,w,h);g.restore();return;
+ }
  const o=entry.object,b=entry.box,im=sprites[o.t];
  if(!spriteReady(o.t)||!im)return;
  g.save();g.imageSmoothingEnabled=false;
@@ -605,8 +896,10 @@ function map(g,x,y){
 }
 window.ROOKIE_V127_CITY=Object.freeze({
  version:'127-citywide-material-continuity',worldId:'harbor-main',
- base,surface,colorKind,districtGround,road,coastline,walkways,depthProps,drawDepthProp,
- building,handlesDecor,scenicBlocked,spriteImage:type=>spriteReady(type)?sprites[type]:null,waterBlocked:coastalWater,location,map,
+ base,surface,colorKind,districtGround,midtownStreetFinish,refinesCrossing,boundaryGround,road,coastline,beachGround,walkways,parkGround,civicGround,parkBounds:PARK,depthProps,drawDepthProp,
+ parkQA:()=>/[?&]pilotQA=1(?:&|$)/.test(window.location.search)?{bounds:{...PARK},trails:parkTrails.map(p=>p.map(x=>x.slice())),pond:{...pond},objects:ensurePark().objects.map(o=>({...o})),images:[...parkImages].map(([file,im])=>({file,ready:im.complete&&im.naturalWidth>0})),indexCells:ensurePark().cells.size}:null,
+ civicQA:()=>/[?&]pilotQA=1(?:&|$)/.test(window.location.search)?{plaza:{...CIVIC},objects:ensurePark().objects.filter(o=>o.id?.startsWith('civic:')).map(o=>({...o}))}:null,
+ building,handlesDecor,propGeometry,scenicBlocked,spriteImage:type=>spriteReady(type)?sprites[type]:null,waterBlocked:coastalWater,location,map,
  metrics:()=>({...metrics,cacheMax:CAP,atlasReady:atlas.complete&&atlas.naturalWidth>0})
 });
 })();

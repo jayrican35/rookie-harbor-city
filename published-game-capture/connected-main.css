@@ -1,0 +1,29 @@
+/* Native menus sit above the continuous city instead of exposing the old map. */
+body.rookie-main-city:not(.main-activity-open) #game{visibility:hidden!important}
+body.rookie-main-city #v115CampusLaunch,
+body.rookie-main-city #v115CampusExit,
+body.rookie-main-city #v125HudExit{display:none!important}
+body.rookie-main-city #v115Campus>#familySelect,
+body.rookie-main-city #v115Campus>#menuPage,
+body.rookie-main-city #v115Campus>#mapOverlay,
+body.rookie-main-city #v115Campus>#tutOverlay,
+body.rookie-main-city #v115Campus>#avOverlay{z-index:200;touch-action:auto}
+body.connected-cinematic #v115CampusPad,
+body.connected-cinematic #v125CampusSprint,
+body.connected-cinematic #v115CampusInteract{visibility:hidden!important;pointer-events:none!important}
+body.rookie-main-city #v115Campus>#fade{position:absolute;inset:0;z-index:210;pointer-events:none}
+body.rookie-main-city #v115Campus>#btnSkipCs{position:absolute;top:max(12px,env(safe-area-inset-top));right:14px;z-index:240;min-height:44px;max-width:160px;white-space:normal}
+body.rookie-main-city #v115Campus>#csTitle{position:absolute;inset:30% 8% auto;transform:none;width:auto;z-index:220;pointer-events:none;text-align:center}
+body.rookie-main-city #v115Campus>#csCaption{position:absolute;left:8%;right:8%;bottom:12%;transform:none;width:auto;max-width:none;box-sizing:border-box;z-index:220;pointer-events:none;white-space:normal;overflow-wrap:anywhere}
+@media(max-width:500px){body.rookie-main-city #v115Campus>#csCaption.show{font-size:14px!important;padding:14px 18px!important}}
+body.connected-cinematic #v125HudMenu{pointer-events:none}
+body.rookie-main-city #v115Campus>#lbTop,
+body.rookie-main-city #v115Campus>#lbBot{position:absolute;z-index:205;pointer-events:none}
+body.rookie-main-city #v115Campus #haleTools,
+body.rookie-main-city #v115Campus #tacticalTools{position:absolute;top:auto;bottom:110px;left:50%;right:auto;transform:translateX(-50%);width:min(560px,calc(100% - 30px));max-width:560px;z-index:45;flex-wrap:wrap;background:rgba(15,34,49,.94);border:1px solid #c6a66b;border-radius:12px;padding:8px;box-sizing:border-box;pointer-events:auto}
+body.rookie-main-city #v115Campus #haleTools p,
+body.rookie-main-city #v115Campus #tacticalStatus{font:12px/1.35 system-ui;margin:0 0 6px;white-space:normal}
+body.rookie-main-city #v115Campus #haleTools button,
+body.rookie-main-city #v115Campus #tacticalTools button{font-size:12px;min-height:36px;padding:6px 10px}
+body.rookie-main-city #v115Campus #haleAim{position:relative;inset:auto;width:100%;height:42px;min-height:42px;margin-top:6px;border:1px dashed #d8bb79;border-radius:8px;touch-action:none}
+body.rookie-main-city #v115Campus #haleFire{position:static;float:right;width:auto;height:auto;min-height:36px;margin:6px 0 0 8px}

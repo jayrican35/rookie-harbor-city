@@ -46083,6 +46083,12 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput,roadContact}
  const familyKey=n=>n==='PAPI'||n==='GUIDE JAY'?'jay':n==='SARITAH'?'lingling':H.family?.key(n,false);
  const nativePanels=['hcAssignmentBoard','caperNotebook','dbOverlay','lockerOverlay','hcCells','hcStoryOverlay','invPage','manualOverlay'];
  if(window.ROOKIE_MAIN_CITY_ACTIVE)nativePanels.push('shiftOverlay','endOverlay','resetModal');
+ const fridgeHint=document.createElement('div');
+ fridgeHint.id='caperFridgeHint';fridgeHint.hidden=true;fridgeHint.setAttribute('role','status');
+ fridgeHint.innerHTML='<strong>Find the fridge</strong><span></span>';
+ if(window.ROOKIE_MAIN_CITY_ACTIVE)modal.appendChild(fridgeHint);
+ const fridgeInstruction=fridgeHint.querySelector('span');
+ const touchControls=matchMedia('(pointer: coarse)');
  // Reparent the existing panels so their own callbacks/focus handling work
  // above this canvas. Restore their original homes when leaving the city.
  const homes=new Map();
@@ -46222,6 +46228,35 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput,roadContact}
  function ownsSolid(r){if(clearedProps.some(p=>r.w<=p.w+12&&r.h<=p.h+12&&r.x<p.x+p.w&&r.x+r.w>p.x&&r.y<p.y+p.h&&r.y+r.h>p.y))return true;return interiors.some(b=>!b.existing&&r.x>=b.exterior.x-18&&r.y>=b.exterior.y-18&&r.x+r.w<=b.exterior.x+b.exterior.w+18&&r.y+r.h<=b.exterior.y+b.exterior.h+18&&r.w>b.exterior.w*.45&&r.h>b.exterior.h*.4);}
  function collides(x,y,r){if(x>=STX+768&&x<=STX+1148&&y>=STY+796&&y<=STY+1040&&(ST.pedSolids||ST.solids).some(p=>p.x>=780&&p.x<1140&&p.y>=808&&o.circleHitsRect(x,y,r,{...p,x:p.x+STX,y:p.y+STY})))return true;return interiors.some(b=>[...b.walls,...b.furniture,...(!o.canEnter(b.map)?[{x:b.door.x-b.door.w/2,y:b.door.y-6,w:b.door.w,h:12}]:[])].some(p=>o.circleHitsRect(x,y,r,p)));}
  function objective(){const goal=H.objective()||(H.caper?.active()?H.caper.objective():window.ROOKIE.objective());if(!goal)return null;const sp=worldSpots.find(s=>s.nativeMap===goal.map&&s.nativeId===goal.spot);if(!sp)return null;const b=interiors.find(b=>b.map===sp.storyRoom);return b&&roomAt(campus.x,campus.y)!==b?{x:b.door.x,y:b.door.y+22}:sp;}
+ function fridgeGuide(g,view,inside,free){
+  const searching=window.ROOKIE_MAIN_CITY_ACTIVE&&H.caper?.active()&&H.caper.stage()===1;
+  const show=searching&&free;
+  if(fridgeHint.hidden===show)fridgeHint.hidden=!show;
+  if(!show)return;
+  const near=campus.near?.nativeId==='caper:fridge';
+  const inBreakRoom=inside&&campus.x>=STX+1560&&campus.x<STX+1924&&campus.y<STY+636;
+  const instruction=near?(touchControls.matches?'Tap Check Fridge.':'Press E or select Check Fridge.'):
+   inBreakRoom?'Look for the gold FRIDGE sign.':'Break room · right of Briefing';
+  if(fridgeInstruction.textContent!==instruction)fridgeInstruction.textContent=instruction;
+  if(!inside)return;
+  const x=STX+(inBreakRoom?1825:1554),y=STY+(inBreakRoom?123:224);
+  if(x<view.x-64||x>view.x+view.w+64||y<view.y-64||y>view.y+view.h+64)return;
+  g.save();
+  if(inBreakRoom){
+   const outline=[STX+1776,STY+11,114,83];
+   g.strokeStyle='#182537';g.lineWidth=8;g.strokeRect(...outline);
+   g.strokeStyle='#ffe079';g.lineWidth=4;g.strokeRect(...outline);
+  }
+  g.translate(x,y);g.scale(1/view.zoom,1/view.zoom);
+  g.font='800 16px system-ui';g.textAlign='center';g.textBaseline='middle';
+  const label=inBreakRoom?'FRIDGE':'BREAK ROOM →';
+  const width=g.measureText(label).width+24;
+  g.fillStyle='#14283b';g.strokeStyle='#ffe079';g.lineWidth=2;
+  g.beginPath();g.roundRect(-width/2,-37,width,28,7);g.fill();g.stroke();
+  g.fillStyle='#fff6d7';g.fillText(label,0,-23);
+  g.fillStyle='#ffe079';g.beginPath();g.moveTo(-6,-9);g.lineTo(6,-9);g.lineTo(0,-2);g.fill();
+  g.restore();
+ }
  function ground(g){const target=objective();if(target){g.save();g.strokeStyle='#ffdc76';g.lineWidth=3;g.beginPath();g.arc(target.x,target.y,14,0,Math.PI*2);g.stroke();g.restore();}for(const b of interiors)if(!b.existing&&b.roof<.995){const f=b.floor;g.save();g.fillStyle=b.map==='warehouse'?'#727d7e':'#d6c7aa';g.fillRect(f.x,f.y,f.w,f.h);g.strokeStyle='#9c947f';g.lineWidth=1;for(let y=f.y;y<f.y+f.h;y+=24){g.beginPath();g.moveTo(f.x,y);g.lineTo(f.x+f.w,y);g.stroke();}for(let x=f.x;x<f.x+f.w;x+=24){g.beginPath();g.moveTo(x,f.y);g.lineTo(x,f.y+f.h);g.stroke();}for(const w of b.walls){g.fillStyle='#405262';g.fillRect(w.x,w.y-12,w.w,w.h+12);}g.restore();for(const f of b.furniture)o.drawFurniture(f);}}
  function roofFor(object){return buildingOwners.get(object)?.roof??1;}
  function locate(map,x,y){
@@ -46244,7 +46279,7 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput,roadContact}
   }
  }):null;
  observer?.observe(tools,{attributes:true,attributeFilter:['style','class']});
- return {sync,duplicate,drawActor,drawPlayer,interact,blocked,activity,restorePanels,available,step,ground,roofFor,ownsSolid,collides,travel,locate,roomData:()=>roomAt(campus.x,campus.y),room:()=>roomAt(campus.x,campus.y)?.map||null,
+ return {sync,duplicate,drawActor,drawPlayer,interact,blocked,activity,restorePanels,available,step,ground,fridgeGuide,roofFor,ownsSolid,collides,travel,locate,roomData:()=>roomAt(campus.x,campus.y),room:()=>roomAt(campus.x,campus.y)?.map||null,
   qa:()=>({profile,clearedEntranceProps:clearedProps.length,near:campus.near?.id,interiors:interiors.map(b=>({map:b.map,floor:b.floor,door:b.door,roof:b.roof,locked:!o.canEnter(b.map)})),actors:npcActors.filter(n=>n.storyStation||n.storyInterior).map(n=>({id:n.id,name:n.name,familyId:n.familyId,x:n.x,y:n.y})),spots:worldSpots.filter(s=>s.nativeMap).map(s=>({...s}))})};
 })
 ;
@@ -46893,7 +46928,9 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput,roadContact}
     const bridge=window.ROOKIE_V131_PRECINCT_BRIDGE;
     for(const wall of bridge?.interiorDepthProps?.(stationWalls,stationRooms,ST.furn,view)||[])
       entries.push({y:wall.depthY,interiorWall:wall});
-    for(const f of ST.furn)if(bridge?.interiorFurnitureActive?.(f,ST.rooms)&&nearViewport(STX+f.x-100,STY+f.y-140,f.w+200,f.h+240))
+    const showCaperFridge=H.caper?.active();
+    for(const f of ST.furn)if(!(showCaperFridge&&f.x===1780&&f.y===60)&&
+      bridge?.interiorFurnitureActive?.(f,ST.rooms)&&nearViewport(STX+f.x-100,STY+f.y-140,f.w+200,f.h+240))
       entries.push({y:STY+f.y+f.h,stationFurniture:f});
     for(const d of ST.decors)if(d.t==='cellInterior')entries.push({y:STY+(d.dy??d.y),stationDecor:d});
     // Approved city pass: existing district silhouettes join the SAME queue
@@ -47109,7 +47146,7 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput,roadContact}
     if(nearViewport(STX+1558,STY+12,366,624))withOriginalContext(g,()=>{const prior=state.map;state.map='station';g.save();g.translate(STX,STY);try{drawDecor({t:'caperFridge',x:1780,y:60},t);drawDecor({t:'caperCoffee',x:1608,y:82},t);drawFurn({x:1690,y:330,w:132,h:52,type:'table'});drawFurn({x:1785,y:420,w:90,h:34,type:'sofa'});}finally{g.restore();state.map=prior;}});
     cruiser?.bayMark(g);
     story?.ground(g);
-    if(H.caper?.active())withOriginalContext(g,()=>{const prior=state.map;state.map='station';g.save();g.translate(STX,STY);try{for(const d of ST.decors)if(d.t.startsWith('caper'))drawDecor(d,t);}finally{g.restore();state.map=prior;}});
+    if(H.caper?.active())withOriginalContext(g,()=>{const prior=state.map;state.map='station';g.save();g.translate(STX,STY);try{for(const d of ST.decors)if(d.t.startsWith('caper'))drawDecor(d.t==='caperBreakSign'?{...d,x:1708}:d,t);}finally{g.restore();state.map=prior;}});
     window.ROOKIE_COMIC?.drawProps(g);
     drawEntityHighlights(t);
     // Contact flashes/debug labels must follow the cached road and actor
@@ -47132,6 +47169,8 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput,roadContact}
     if(cinematic)cinematic.atmosphere(g,{zoom:campus.zoom,view},t);
     if(pilot&&!window.ROOKIE_V140_APPROVED_CAMPUS_ACTIVE)pilot.animated(g,{zoom:campus.zoom,view},t);
     if(art)art.atmosphere(g,{zoom:campus.zoom,view},t);
+    story?.fridgeGuide(g,view,roofAlpha()<.1,!priorOverlay()&&!csActive&&!H.profiles.isOpen()&&
+      !H.speech?.current()&&!cruiser?.active()&&!window.ROOKIE_PARKING_ENCOUNTER?.locked()&&!window.ROOKIE_V116_HUD?.blocked());
     g.restore();
     H.connectedTactics?.paint();
     const region=interiorRoom(campus.x,campus.y);
@@ -47145,7 +47184,8 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput,roadContact}
     const vehicleAction=cruiser?.active()||cruiser?.near();
     window.ROOKIE_COMIC?.frame({host:modal,canvas:cv,view,actors:(H.campaignScenes?.actors()||[]).concat(npcActors),traffic:streetTraffic,player:{x:campus.x,y:campus.y,moving:campus.moved,speed:campus.speed},driving:!!cruiser?.active(),area:district?.id||(campus.x>=200&&campus.x<=2600&&campus.y>=1900&&campus.y<=3650?'coast-park':'precinct'),timeOfDay:(typeof H.worldClock?.phase==='function'?H.worldClock.phase():H.worldClock?.phase||state.timeOfDay||'day'),progress:{mission:currentMission(),briefed:!!state.camp?.m2?.brief,cameraFound:!!state.evidence?.m2camera,firstCaseComplete:!!state.caper?.complete},comedyNear:window.ROOKIE_COMIC?.nearComedy(campus.x,campus.y,640),ambientFree:!priorOverlay()&&!csActive&&!H.profiles.isOpen()&&!window.ROOKIE_PARKING_ENCOUNTER?.locked()&&!['hale','warehouse'].includes(story?.room()),visible:a=>a.x>=view.x-30&&a.x<=view.x+view.w+30&&a.y>=view.y&&a.y<=view.y+view.h+60&&(!interiorRoom(a.x,a.y)||roofAlpha()<.5)&&(!marina?.interiorActorVisible||marina.interiorActorVisible(a))&&(!a.storyInterior||story?.available(a,campus.x,campus.y))},t);
     const comicActive=window.ROOKIE_COMIC?.modalActive(),comicNear=!cruiser?.active()&&window.ROOKIE_COMIC?.nearComedy(campus.x,campus.y);
-    const caption=comicActive?'Continue':comicNear?'Talk':vehicleAction?(cruiser.active()?'Exit':'Drive'):near?(actor?'Talk':'Inspect'):'Action';
+    const caption=comicActive?'Continue':comicNear?'Talk':vehicleAction?(cruiser.active()?'Exit':'Drive'):
+      near?.nativeId==='caper:fridge'?'Check Fridge':near?(actor?'Talk':'Inspect'):'Action';
     if(act.textContent!==caption)act.textContent=caption;
     act.disabled=!(comicActive||comicNear||near||vehicleAction);
     if(paintStart!==null){campus.paintCount++;campus.paintCosts.push(performance.now()-paintStart);if(campus.paintCosts.length>180)campus.paintCosts.shift();}

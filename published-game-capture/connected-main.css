@@ -8,6 +8,12 @@ body.rookie-main-city #v115Campus>#menuPage,
 body.rookie-main-city #v115Campus>#mapOverlay,
 body.rookie-main-city #v115Campus>#tutOverlay,
 body.rookie-main-city #v115Campus>#avOverlay{z-index:200;touch-action:auto}
+#caperFridgeHint{position:absolute;z-index:5;top:calc(14px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);
+ display:grid;gap:3px;padding:8px 14px;border:2px solid #ffe079;border-radius:10px;background:#14283b;color:#fff6d7;
+ text-align:center;font:600 13px/1.25 system-ui;pointer-events:none;width:max-content;max-width:calc(100% - 28px);box-sizing:border-box}
+#caperFridgeHint[hidden]{display:none}
+#caperFridgeHint strong{font-size:17px}
+@media(max-width:600px){#caperFridgeHint{top:auto;bottom:calc(105px + env(safe-area-inset-bottom,0px))}}
 body.rookie-main-city #v115Campus>#shiftOverlay,
 body.rookie-main-city #v115Campus>#endOverlay,
 body.rookie-main-city #v115Campus>#resetModal{z-index:200;touch-action:auto}

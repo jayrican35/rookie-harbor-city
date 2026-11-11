@@ -1,0 +1,6 @@
+#parkingEncounterUI{position:absolute;inset:0;pointer-events:none;z-index:50;color:#fff5db;font:700 14px/1.3 'Trebuchet MS',sans-serif}
+#parkingEncounterUI[hidden]{display:none}
+#parkingEncounterUI>span{position:absolute;top:14px;left:50%;transform:translateX(-50%);max-width:calc(100% - 340px);padding:8px 14px;background:#152c43ed;border:2px solid #e0bf79;border-radius:14px;text-align:center}
+#v115Campus #parkingEncounterSkip{position:absolute;right:14px;top:106px;min-height:44px;padding:8px 12px;pointer-events:auto;border:2px solid #e0bf79;border-radius:14px;background:#17364b;color:#fff5db;font:700 13px 'Trebuchet MS',sans-serif}
+.parking-encounter-active #v116MarinaHUD,.parking-encounter-active #v115CampusPad,.parking-encounter-active #v125CampusSprint,.parking-encounter-active .v115-campus-tools{pointer-events:none!important}
+@media(max-width:600px){#parkingEncounterUI>span{top:112px;left:8px;transform:none;max-width:calc(100% - 135px);font-size:11px;padding:6px 9px}}

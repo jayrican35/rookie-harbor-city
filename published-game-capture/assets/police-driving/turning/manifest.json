@@ -1,0 +1,2378 @@
+{
+  "vehicleId": "precinct-unit-9",
+  "atlas": "cruiser-16-atlas.png",
+  "reviewed": true,
+  "cellSize": [
+    256,
+    256
+  ],
+  "anchor": [
+    128,
+    168
+  ],
+  "renderScale": 0.5,
+  "physicsFootprint": [
+    96,
+    48
+  ],
+  "angleConvention": "0=east; positive clockwise with screen/world y down; fixed camera, no camera yaw",
+  "frameStepDegrees": 22.5,
+  "visualHeadingOffset": 0,
+  "directionCount": 16,
+  "pixelBodyRotationsInExport": 0,
+  "bodyMirrorsInExport": 0,
+  "frames": [
+    {
+      "index": 0,
+      "angleDegrees": 0.0,
+      "angleRadians": 0.0,
+      "rect": [
+        0,
+        0,
+        256,
+        256
+      ],
+      "anchor": [
+        128,
+        168
+      ],
+      "visualHeadingOffset": 0,
+      "bodyBounds": [
+        42,
+        81,
+        213,
+        196
+      ],
+      "lighting": {
+        "red": {
+          "polygon": [
+            [
+              116,
+              86
+            ],
+            [
+              118,
+              84
+            ],
+            [
+              126,
+              84
+            ],
+            [
+              128,
+              86
+            ],
+            [
+              128,
+              98
+            ],
+            [
+              117,
+              98
+            ],
+            [
+              116,
+              95
+            ]
+          ],
+          "center": [
+            122.23,
+            90.48
+          ]
+        },
+        "blue": {
+          "polygon": [
+            [
+              117,
+              111
+            ],
+            [
+              118,
+              109
+            ],
+            [
+              120,
+              108
+            ],
+            [
+              125,
+              108
+            ],
+            [
+              128,
+              109
+            ],
+            [
+              128,
+              122
+            ],
+            [
+              119,
+              121
+            ],
+            [
+              118,
+              120
+            ],
+            [
+              117,
+              115
+            ]
+          ],
+          "center": [
+            122.82,
+            114.32
+          ]
+        }
+      },
+      "normalization": {
+        "method": "uniform projected opaque area",
+        "targetArea": 15235.85,
+        "actualArea": 15283
+      },
+      "source": {
+        "kind": "retained",
+        "cell": 0,
+        "file": "../cruiser-16-source.png",
+        "crop": [
+          77,
+          87,
+          330,
+          257
+        ],
+        "uniformExportScale": 0.675975554694356
+      },
+      "sha256": "fa49a614ce7a932c5fa3bd666a16cfa65736bf7ae213e57fcd77a7b29b4ed668",
+      "brakeLamps": [
+        [
+          55,
+          159,
+          9,
+          15
+        ]
+      ]
+    },
+    {
+      "index": 1,
+      "angleDegrees": 22.5,
+      "angleRadians": 0.39269908169872414,
+      "rect": [
+        256,
+        0,
+        256,
+        256
+      ],
+      "anchor": [
+        128,
+        168
+      ],
+      "visualHeadingOffset": 0,
+      "bodyBounds": [
+        38,
+        102,
+        218,
+        220
+      ],
+      "lighting": {
+        "red": {
+          "polygon": [
+            [
+              131,
+              112
+            ],
+            [
+              134,
+              107
+            ],
+            [
+              138,
+              104
+            ],
+            [
+              145,
+              104
+            ],
+            [
+              149,
+              105
+            ],
+            [
+              151,
+              108
+            ],
+            [
+              151,
+              109
+            ],
+            [
+              145,
+              118
+            ],
+            [
+              144,
+              118
+            ]
+          ],
+          "center": [
+            141.52,
+            109.08
+          ]
+        },
+        "blue": {
+          "polygon": [
+            [
+              116,
+              130
+            ],
+            [
+              118,
+              127
+            ],
+            [
+              122,
+              123
+            ],
+            [
+              133,
+              123
+            ],
+            [
+              134,
+              124
+            ],
+            [
+              134,
+              126
+            ],
+            [
+              128,
+              138
+            ],
+            [
+              127,
+              139
+            ],
+            [
+              116,
+              138
+            ]
+          ],
+          "center": [
+            124.85,
+            128.91
+          ]
+        }
+      },
+      "normalization": {
+        "method": "uniform projected opaque area",
+        "targetArea": 14749.1,
+        "actualArea": 14707
+      },
+      "source": {
+        "kind": "image_gen reconstruction",
+        "cell": null,
+        "file": "sources/heading-01.png",
+        "crop": [
+          230,
+          393,
+          1013,
+          908
+        ],
+        "uniformExportScale": 0.23006889508217665
+      },
+      "sha256": "e2d51d80abf8bfe0d02ba5feac9e54817e802615b540d2e39c7b65d66697ef91",
+      "brakeLamps": [
+        [
+          49,
+          173,
+          8,
+          16
+        ]
+      ]
+    },
+    {
+      "index": 2,
+      "angleDegrees": 45.0,
+      "angleRadians": 0.7853981633974483,
+      "rect": [
+        512,
+        0,
+        256,
+        256
+      ],
+      "anchor": [
+        128,
+        168
+      ],
+      "visualHeadingOffset": 0,
+      "bodyBounds": [
+        47,
+        110,
+        209,
+        236
+      ],
+      "lighting": {
+        "red": {
+          "polygon": [
+            [
+              126,
+              122
+            ],
+            [
+              129,
+              119
+            ],
+            [
+              134,
+              117
+            ],
+            [
+              135,
+              117
+            ],
+            [
+              141,
+              119
+            ],
+            [
+              143,
+              120
+            ],
+            [
+              144,
+              123
+            ],
+            [
+              143,
+              124
+            ],
+            [
+              135,
+              131
+            ],
+            [
+              127,
+              124
+            ],
+            [
+              126,
+              123
+            ]
+          ],
+          "center": [
+            135.08,
+            122.66
+          ]
+        },
+        "blue": {
+          "polygon": [
+            [
+              105,
+              138
+            ],
+            [
+              107,
+              136
+            ],
+            [
+              112,
+              132
+            ],
+            [
+              115,
+              130
+            ],
+            [
+              120,
+              132
+            ],
+            [
+              123,
+              134
+            ],
+            [
+              123,
+              138
+            ],
+            [
+              113,
+              147
+            ],
+            [
+              112,
+              147
+            ],
+            [
+              105,
+              141
+            ]
+          ],
+          "center": [
+            114.16,
+            137.55
+          ]
+        }
+      },
+      "normalization": {
+        "method": "uniform projected opaque area",
+        "targetArea": 13573.98,
+        "actualArea": 13585
+      },
+      "source": {
+        "kind": "retained",
+        "cell": 1,
+        "file": "../cruiser-16-source.png",
+        "crop": [
+          65,
+          80,
+          310,
+          271
+        ],
+        "uniformExportScale": 0.6603770883841197
+      },
+      "sha256": "2aa792d060ee649ab5df248671d0a91d0cce0dc1bda4b2b69ff104ab0b82f1e9",
+      "brakeLamps": [
+        [
+          56,
+          164,
+          6,
+          16
+        ]
+      ]
+    },
+    {
+      "index": 3,
+      "angleDegrees": 67.5,
+      "angleRadians": 1.1780972450961724,
+      "rect": [
+        768,
+        0,
+        256,
+        256
+      ],
+      "anchor": [
+        128,
+        168
+      ],
+      "visualHeadingOffset": 0,
+      "bodyBounds": [
+        68,
+        108,
+        187,
+        242
+      ],
+      "lighting": {
+        "red": {
+          "polygon": [
+            [
+              139,
+              127
+            ],
+            [
+              145,
+              126
+            ],
+            [
+              155,
+              126
+            ],
+            [
+              158,
+              131
+            ],
+            [
+              158,
+              134
+            ],
+            [
+              157,
+              136
+            ],
+            [
+              156,
+              136
+            ],
+            [
+              142,
+              134
+            ],
+            [
+              139,
+              128
+            ]
+          ],
+          "center": [
+            148.71,
+            130.12
+          ]
+        },
+        "blue": {
+          "polygon": [
+            [
+              105,
+              132
+            ],
+            [
+              106,
+              131
+            ],
+            [
+              108,
+              130
+            ],
+            [
+              111,
+              129
+            ],
+            [
+              121,
+              128
+            ],
+            [
+              123,
+              128
+            ],
+            [
+              125,
+              130
+            ],
+            [
+              127,
+              134
+            ],
+            [
+              127,
+              135
+            ],
+            [
+              126,
+              136
+            ],
+            [
+              108,
+              141
+            ],
+            [
+              105,
+              134
+            ]
+          ],
+          "center": [
+            115.76,
+            133.13
+          ]
+        }
+      },
+      "normalization": {
+        "method": "uniform projected opaque area",
+        "targetArea": 12398.87,
+        "actualArea": 12409
+      },
+      "source": {
+        "kind": "image_gen reconstruction",
+        "cell": null,
+        "file": "sources/heading-03.png",
+        "crop": [
+          324,
+          279,
+          922,
+          950
+        ],
+        "uniformExportScale": 0.19965527114495785
+      },
+      "sha256": "cb8cd3608ed950a278ed2236dcb75f34606e475a028d77a93ec66432690480e2",
+      "brakeLamps": [
+        [
+          72,
+          151,
+          5,
+          15
+        ]
+      ]
+    },
+    {
+      "index": 4,
+      "angleDegrees": 90.0,
+      "angleRadians": 1.5707963267948966,
+      "rect": [
+        0,
+        256,
+        256,
+        256
+      ],
+      "anchor": [
+        128,
+        168
+      ],
+      "visualHeadingOffset": 0,
+      "bodyBounds": [
+        74,
+        98,
+        183,
+        236
+      ],
+      "lighting": {
+        "red": {
+          "polygon": [
+            [
+              135,
+              121
+            ],
+            [
+              150,
+              121
+            ],
+            [
+              151,
+              122
+            ],
+            [
+              151,
+              129
+            ],
+            [
+              136,
+              130
+            ],
+            [
+              135,
+              130
+            ]
+          ],
+          "center": [
+            142.82,
+            124.88
+          ]
+        },
+        "blue": {
+          "polygon": [
+            [
+              104,
+              124
+            ],
+            [
+              106,
+              121
+            ],
+            [
+              121,
+              121
+            ],
+            [
+              121,
+              127
+            ],
+            [
+              104,
+              129
+            ]
+          ],
+          "center": [
+            112.62,
+            124.35
+          ]
+        }
+      },
+      "normalization": {
+        "method": "uniform projected opaque area",
+        "targetArea": 11912.12,
+        "actualArea": 11968
+      },
+      "source": {
+        "kind": "retained",
+        "cell": 4,
+        "file": "../cruiser-16-source.png",
+        "crop": [
+          110,
+          56,
+          268,
+          256
+        ],
+        "uniformExportScale": 0.6882445171224637
+      },
+      "sha256": "512f82a3508e7672d38910cf42d4687add82c29c95a14f0c7e400f373dd40fc0",
+      "brakeLamps": []
+    },
+    {
+      "index": 5,
+      "angleDegrees": 112.5,
+      "angleRadians": 1.9634954084936207,
+      "rect": [
+        256,
+        256,
+        256,
+        256
+      ],
+      "anchor": [
+        128,
+        168
+      ],
+      "visualHeadingOffset": 0,
+      "bodyBounds": [
+        65,
+        108,
+        191,
+        242
+      ],
+      "lighting": {
+        "red": {
+          "polygon": [
+            [
+              134,
+              135
+            ],
+            [
+              136,
+              131
+            ],
+            [
+              138,
+              129
+            ],
+            [
+              139,
+              129
+            ],
+            [
+              150,
+              131
+            ],
+            [
+              152,
+              132
+            ],
+            [
+              153,
+              133
+            ],
+            [
+              153,
+              135
+            ],
+            [
+              150,
+              143
+            ],
+            [
+              149,
+              144
+            ],
+            [
+              148,
+              144
+            ],
+            [
+              134,
+              141
+            ]
+          ],
+          "center": [
+            143.12,
+            136.26
+          ]
+        },
+        "blue": {
+          "polygon": [
+            [
+              105,
+              129
+            ],
+            [
+              106,
+              127
+            ],
+            [
+              109,
+              124
+            ],
+            [
+              111,
+              123
+            ],
+            [
+              112,
+              123
+            ],
+            [
+              119,
+              124
+            ],
+            [
+              123,
+              125
+            ],
+            [
+              123,
+              126
+            ],
+            [
+              119,
+              136
+            ],
+            [
+              117,
+              136
+            ],
+            [
+              108,
+              135
+            ],
+            [
+              106,
+              134
+            ],
+            [
+              105,
+              131
+            ]
+          ],
+          "center": [
+            113.54,
+            129.14
+          ]
+        }
+      },
+      "normalization": {
+        "method": "uniform projected opaque area",
+        "targetArea": 12398.87,
+        "actualArea": 12363
+      },
+      "source": {
+        "kind": "image_gen reconstruction",
+        "cell": null,
+        "file": "sources/heading-05.png",
+        "crop": [
+          333,
+          326,
+          902,
+          933
+        ],
+        "uniformExportScale": 0.22138222724033835
+      },
+      "sha256": "b9f40596813933cb9244fa632a36dcfdf15d6587e59117b98d6bf7cfc3e940e6",
+      "brakeLamps": [
+        [
+          185,
+          145,
+          5,
+          17
+        ]
+      ]
+    },
+    {
+      "index": 6,
+      "angleDegrees": 135.0,
+      "angleRadians": 2.356194490192345,
+      "rect": [
+        512,
+        256,
+        256,
+        256
+      ],
+      "anchor": [
+        128,
+        168
+      ],
+      "visualHeadingOffset": 0,
+      "bodyBounds": [
+        52,
+        97,
+        204,
+        236
+      ],
+      "lighting": {
+        "red": {
+          "polygon": [
+            [
+              137,
+              126
+            ],
+            [
+              143,
+              122
+            ],
+            [
+              146,
+              121
+            ],
+            [
+              147,
+              121
+            ],
+            [
+              151,
+              123
+            ],
+            [
+              154,
+              125
+            ],
+            [
+              156,
+              127
+            ],
+            [
+              156,
+              129
+            ],
+            [
+              152,
+              133
+            ],
+            [
+              149,
+              135
+            ],
+            [
+              147,
+              135
+            ],
+            [
+              144,
+              134
+            ],
+            [
+              139,
+              131
+            ],
+            [
+              137,
+              128
+            ]
+          ],
+          "center": [
+            146.56,
+            127.96
+          ]
+        },
+        "blue": {
+          "polygon": [
+            [
+              114,
+              116
+            ],
+            [
+              116,
+              112
+            ],
+            [
+              124,
+              110
+            ],
+            [
+              127,
+              110
+            ],
+            [
+              132,
+              113
+            ],
+            [
+              133,
+              114
+            ],
+            [
+              133,
+              115
+            ],
+            [
+              126,
+              122
+            ],
+            [
+              124,
+              122
+            ],
+            [
+              115,
+              117
+            ]
+          ],
+          "center": [
+            123.79,
+            115.23
+          ]
+        }
+      },
+      "normalization": {
+        "method": "uniform projected opaque area",
+        "targetArea": 13573.98,
+        "actualArea": 13620
+      },
+      "source": {
+        "kind": "retained",
+        "cell": 5,
+        "file": "../cruiser-16-source.png",
+        "crop": [
+          61,
+          56,
+          280,
+          256
+        ],
+        "uniformExportScale": 0.6935826721678142
+      },
+      "sha256": "544f7da6b618d476305c62f73183bc9068ec2f043060bd81aedb50e53e4acdb4",
+      "brakeLamps": [
+        [
+          196,
+          144,
+          5,
+          14
+        ]
+      ]
+    },
+    {
+      "index": 7,
+      "angleDegrees": 157.5,
+      "angleRadians": 2.748893571891069,
+      "rect": [
+        768,
+        256,
+        256,
+        256
+      ],
+      "anchor": [
+        128,
+        168
+      ],
+      "visualHeadingOffset": 0,
+      "bodyBounds": [
+        34,
+        106,
+        221,
+        220
+      ],
+      "lighting": {
+        "red": {
+          "polygon": [
+            [
+              133,
+              128
+            ],
+            [
+              134,
+              126
+            ],
+            [
+              136,
+              125
+            ],
+            [
+              142,
+              124
+            ],
+            [
+              145,
+              124
+            ],
+            [
+              146,
+              125
+            ],
+            [
+              150,
+              131
+            ],
+            [
+              151,
+              134
+            ],
+            [
+              151,
+              136
+            ],
+            [
+              150,
+              137
+            ],
+            [
+              148,
+              138
+            ],
+            [
+              141,
+              139
+            ],
+            [
+              138,
+              139
+            ],
+            [
+              137,
+              138
+            ],
+            [
+              133,
+              133
+            ]
+          ],
+          "center": [
+            141.59,
+            131.68
+          ]
+        },
+        "blue": {
+          "polygon": [
+            [
+              122,
+              111
+            ],
+            [
+              124,
+              109
+            ],
+            [
+              126,
+              108
+            ],
+            [
+              133,
+              108
+            ],
+            [
+              136,
+              109
+            ],
+            [
+              139,
+              115
+            ],
+            [
+              138,
+              116
+            ],
+            [
+              127,
+              123
+            ],
+            [
+              126,
+              122
+            ],
+            [
+              123,
+              118
+            ],
+            [
+              122,
+              116
+            ]
+          ],
+          "center": [
+            129.24,
+            113.47
+          ]
+        }
+      },
+      "normalization": {
+        "method": "uniform projected opaque area",
+        "targetArea": 14749.1,
+        "actualArea": 14738
+      },
+      "source": {
+        "kind": "image_gen reconstruction",
+        "cell": null,
+        "file": "sources/heading-07.png",
+        "crop": [
+          221,
+          374,
+          1050,
+          881
+        ],
+        "uniformExportScale": 0.22540159909229926
+      },
+      "sha256": "cdae8ba496b8c4773358652c1ac5304dab685e87a1f6002433cf5443f475eb8f",
+      "brakeLamps": [
+        [
+          211,
+          168,
+          9,
+          17
+        ]
+      ]
+    },
+    {
+      "index": 8,
+      "angleDegrees": 180.0,
+      "angleRadians": 3.141592653589793,
+      "rect": [
+        0,
+        512,
+        256,
+        256
+      ],
+      "anchor": [
+        128,
+        168
+      ],
+      "visualHeadingOffset": 0,
+      "bodyBounds": [
+        38,
+        80,
+        218,
+        196
+      ],
+      "lighting": {
+        "red": {
+          "polygon": [
+            [
+              126,
+              110
+            ],
+            [
+              128,
+              108
+            ],
+            [
+              130,
+              107
+            ],
+            [
+              137,
+              107
+            ],
+            [
+              139,
+              109
+            ],
+            [
+              140,
+              111
+            ],
+            [
+              140,
+              123
+            ],
+            [
+              138,
+              124
+            ],
+            [
+              127,
+              124
+            ],
+            [
+              126,
+              123
+            ]
+          ],
+          "center": [
+            133.13,
+            114.3
+          ]
+        },
+        "blue": {
+          "polygon": [
+            [
+              126,
+              86
+            ],
+            [
+              127,
+              84
+            ],
+            [
+              129,
+              82
+            ],
+            [
+              137,
+              82
+            ],
+            [
+              139,
+              84
+            ],
+            [
+              140,
+              86
+            ],
+            [
+              140,
+              98
+            ],
+            [
+              126,
+              98
+            ]
+          ],
+          "center": [
+            132.91,
+            89.51
+          ]
+        }
+      },
+      "normalization": {
+        "method": "uniform projected opaque area",
+        "targetArea": 15235.85,
+        "actualArea": 15273
+      },
+      "source": {
+        "kind": "image_gen reconstruction",
+        "cell": null,
+        "file": "sources/heading-08.png",
+        "crop": [
+          232,
+          349,
+          1100,
+          909
+        ],
+        "uniformExportScale": 0.20720338597674787
+      },
+      "sha256": "86d447207e00af65bd8b56a3535daaa5bcaf369781a7a2381d1f4cea86b2f125",
+      "brakeLamps": [
+        [
+          205,
+          160,
+          9,
+          17
+        ]
+      ]
+    },
+    {
+      "index": 9,
+      "angleDegrees": 202.5,
+      "angleRadians": 3.5342917352885173,
+      "rect": [
+        256,
+        512,
+        256,
+        256
+      ],
+      "anchor": [
+        128,
+        168
+      ],
+      "visualHeadingOffset": 0,
+      "bodyBounds": [
+        32,
+        104,
+        224,
+        220
+      ],
+      "lighting": {
+        "red": {
+          "polygon": [
+            [
+              125,
+              130
+            ],
+            [
+              126,
+              128
+            ],
+            [
+              130,
+              123
+            ],
+            [
+              131,
+              122
+            ],
+            [
+              145,
+              122
+            ],
+            [
+              147,
+              124
+            ],
+            [
+              148,
+              129
+            ],
+            [
+              147,
+              131
+            ],
+            [
+              142,
+              136
+            ],
+            [
+              126,
+              136
+            ],
+            [
+              125,
+              134
+            ]
+          ],
+          "center": [
+            136.43,
+            129.14
+          ]
+        },
+        "blue": {
+          "polygon": [
+            [
+              140,
+              111
+            ],
+            [
+              144,
+              107
+            ],
+            [
+              146,
+              106
+            ],
+            [
+              154,
+              106
+            ],
+            [
+              157,
+              107
+            ],
+            [
+              158,
+              108
+            ],
+            [
+              158,
+              109
+            ],
+            [
+              157,
+              111
+            ],
+            [
+              155,
+              113
+            ],
+            [
+              154,
+              113
+            ],
+            [
+              140,
+              112
+            ]
+          ],
+          "center": [
+            149.51,
+            109.37
+          ]
+        }
+      },
+      "normalization": {
+        "method": "uniform projected opaque area",
+        "targetArea": 14749.1,
+        "actualArea": 14771
+      },
+      "source": {
+        "kind": "image_gen reconstruction",
+        "cell": null,
+        "file": "sources/heading-09.png",
+        "crop": [
+          186,
+          354,
+          1062,
+          881
+        ],
+        "uniformExportScale": 0.21941950452340492
+      },
+      "sha256": "39fddb46fa348bb8cf54e10d8c9e9a88d0c9fdc5d4f27d9960e7e3bff5bc409b",
+      "brakeLamps": [
+        [
+          209,
+          183,
+          11,
+          17
+        ]
+      ]
+    },
+    {
+      "index": 10,
+      "angleDegrees": 225.0,
+      "angleRadians": 3.9269908169872414,
+      "rect": [
+        512,
+        512,
+        256,
+        256
+      ],
+      "anchor": [
+        128,
+        168
+      ],
+      "visualHeadingOffset": 0,
+      "bodyBounds": [
+        44,
+        112,
+        213,
+        236
+      ],
+      "lighting": {
+        "red": {
+          "polygon": [
+            [
+              110,
+              139
+            ],
+            [
+              118,
+              131
+            ],
+            [
+              120,
+              131
+            ],
+            [
+              124,
+              132
+            ],
+            [
+              129,
+              135
+            ],
+            [
+              129,
+              139
+            ],
+            [
+              120,
+              148
+            ],
+            [
+              117,
+              148
+            ],
+            [
+              111,
+              145
+            ],
+            [
+              110,
+              144
+            ]
+          ],
+          "center": [
+            119.21,
+            139.36
+          ]
+        },
+        "blue": {
+          "polygon": [
+            [
+              128,
+              121
+            ],
+            [
+              131,
+              118
+            ],
+            [
+              136,
+              114
+            ],
+            [
+              142,
+              114
+            ],
+            [
+              146,
+              116
+            ],
+            [
+              148,
+              118
+            ],
+            [
+              148,
+              122
+            ],
+            [
+              146,
+              125
+            ],
+            [
+              138,
+              132
+            ]
+          ],
+          "center": [
+            139.48,
+            120.82
+          ]
+        }
+      },
+      "normalization": {
+        "method": "uniform projected opaque area",
+        "targetArea": 13573.98,
+        "actualArea": 13547
+      },
+      "source": {
+        "kind": "image_gen reconstruction",
+        "cell": null,
+        "file": "sources/heading-10.png",
+        "crop": [
+          205,
+          328,
+          1064,
+          959
+        ],
+        "uniformExportScale": 0.1968244477632936
+      },
+      "sha256": "e72388159407dac8553b1ab6bed59d5fae56b0437de8cc97b35caa7d02035d3f",
+      "brakeLamps": [
+        [
+          167,
+          208,
+          13,
+          15
+        ],
+        [
+          204,
+          178,
+          6,
+          17
+        ]
+      ]
+    },
+    {
+      "index": 11,
+      "angleDegrees": 247.5,
+      "angleRadians": 4.319689898685966,
+      "rect": [
+        768,
+        512,
+        256,
+        256
+      ],
+      "anchor": [
+        128,
+        168
+      ],
+      "visualHeadingOffset": 0,
+      "bodyBounds": [
+        62,
+        114,
+        195,
+        242
+      ],
+      "lighting": {
+        "red": {
+          "polygon": [
+            [
+              107,
+              134
+            ],
+            [
+              108,
+              132
+            ],
+            [
+              110,
+              130
+            ],
+            [
+              124,
+              128
+            ],
+            [
+              126,
+              132
+            ],
+            [
+              127,
+              135
+            ],
+            [
+              127,
+              139
+            ],
+            [
+              126,
+              140
+            ],
+            [
+              113,
+              142
+            ],
+            [
+              110,
+              142
+            ],
+            [
+              109,
+              141
+            ],
+            [
+              107,
+              137
+            ]
+          ],
+          "center": [
+            117.39,
+            135.35
+          ]
+        },
+        "blue": {
+          "polygon": [
+            [
+              138,
+              127
+            ],
+            [
+              140,
+              126
+            ],
+            [
+              149,
+              124
+            ],
+            [
+              153,
+              124
+            ],
+            [
+              155,
+              126
+            ],
+            [
+              156,
+              128
+            ],
+            [
+              157,
+              134
+            ],
+            [
+              156,
+              135
+            ],
+            [
+              152,
+              136
+            ],
+            [
+              142,
+              136
+            ],
+            [
+              139,
+              130
+            ]
+          ],
+          "center": [
+            148.0,
+            130.26
+          ]
+        }
+      },
+      "normalization": {
+        "method": "uniform projected opaque area",
+        "targetArea": 12398.87,
+        "actualArea": 12359
+      },
+      "source": {
+        "kind": "image_gen reconstruction",
+        "cell": null,
+        "file": "sources/heading-11.png",
+        "crop": [
+          302,
+          304,
+          947,
+          926
+        ],
+        "uniformExportScale": 0.206498165773095
+      },
+      "sha256": "cc9fcab54d585b9e9e30c0f4f1e5de370982a2da756a82ff1fa2226e533af265",
+      "brakeLamps": [
+        [
+          119,
+          214,
+          17,
+          14
+        ],
+        [
+          182,
+          207,
+          14,
+          17
+        ]
+      ]
+    },
+    {
+      "index": 12,
+      "angleDegrees": 270.0,
+      "angleRadians": 4.71238898038469,
+      "rect": [
+        0,
+        768,
+        256,
+        256
+      ],
+      "anchor": [
+        128,
+        168
+      ],
+      "visualHeadingOffset": 0,
+      "bodyBounds": [
+        72,
+        103,
+        184,
+        236
+      ],
+      "lighting": {
+        "red": {
+          "polygon": [
+            [
+              106,
+              120
+            ],
+            [
+              107,
+              119
+            ],
+            [
+              121,
+              119
+            ],
+            [
+              121,
+              128
+            ],
+            [
+              115,
+              129
+            ],
+            [
+              106,
+              129
+            ]
+          ],
+          "center": [
+            113.59,
+            123.64
+          ]
+        },
+        "blue": {
+          "polygon": [
+            [
+              135,
+              120
+            ],
+            [
+              136,
+              119
+            ],
+            [
+              148,
+              119
+            ],
+            [
+              150,
+              120
+            ],
+            [
+              151,
+              122
+            ],
+            [
+              151,
+              128
+            ],
+            [
+              136,
+              127
+            ],
+            [
+              135,
+              124
+            ]
+          ],
+          "center": [
+            142.88,
+            122.91
+          ]
+        }
+      },
+      "normalization": {
+        "method": "uniform projected opaque area",
+        "targetArea": 11912.12,
+        "actualArea": 11925
+      },
+      "source": {
+        "kind": "retained",
+        "cell": 12,
+        "file": "../cruiser-16-source.png",
+        "crop": [
+          111,
+          27,
+          278,
+          225
+        ],
+        "uniformExportScale": 0.6720448416544188
+      },
+      "sha256": "b8c916891cbbc9a969b70c0b0053ead89f4a6b5519b7691120e135280eb18b21",
+      "brakeLamps": [
+        [
+          99,
+          205,
+          15,
+          13
+        ],
+        [
+          158,
+          204,
+          15,
+          12
+        ]
+      ]
+    },
+    {
+      "index": 13,
+      "angleDegrees": 292.5,
+      "angleRadians": 5.105088062083414,
+      "rect": [
+        256,
+        768,
+        256,
+        256
+      ],
+      "anchor": [
+        128,
+        168
+      ],
+      "visualHeadingOffset": 0,
+      "bodyBounds": [
+        66,
+        109,
+        191,
+        242
+      ],
+      "lighting": {
+        "red": {
+          "polygon": [
+            [
+              98,
+              136
+            ],
+            [
+              99,
+              133
+            ],
+            [
+              100,
+              131
+            ],
+            [
+              103,
+              128
+            ],
+            [
+              105,
+              127
+            ],
+            [
+              107,
+              127
+            ],
+            [
+              121,
+              129
+            ],
+            [
+              116,
+              140
+            ],
+            [
+              108,
+              140
+            ],
+            [
+              98,
+              139
+            ]
+          ],
+          "center": [
+            108.86,
+            133.82
+          ]
+        },
+        "blue": {
+          "polygon": [
+            [
+              130,
+              138
+            ],
+            [
+              131,
+              135
+            ],
+            [
+              133,
+              132
+            ],
+            [
+              141,
+              132
+            ],
+            [
+              146,
+              133
+            ],
+            [
+              148,
+              134
+            ],
+            [
+              148,
+              136
+            ],
+            [
+              146,
+              144
+            ],
+            [
+              130,
+              139
+            ]
+          ],
+          "center": [
+            139.66,
+            136.37
+          ]
+        }
+      },
+      "normalization": {
+        "method": "uniform projected opaque area",
+        "targetArea": 12398.87,
+        "actualArea": 12379
+      },
+      "source": {
+        "kind": "image_gen reconstruction",
+        "cell": null,
+        "file": "sources/heading-13.png",
+        "crop": [
+          302,
+          271,
+          937,
+          949
+        ],
+        "uniformExportScale": 0.19672228202034267
+      },
+      "sha256": "e7c91c1f2216bceae4a94909eb3ce42afbfa467dd6de2d8dc49cae220b95896c",
+      "brakeLamps": [
+        [
+          137,
+          215,
+          17,
+          13
+        ],
+        [
+          78,
+          210,
+          15,
+          14
+        ]
+      ]
+    },
+    {
+      "index": 14,
+      "angleDegrees": 315.0,
+      "angleRadians": 5.497787143782138,
+      "rect": [
+        512,
+        768,
+        256,
+        256
+      ],
+      "anchor": [
+        128,
+        168
+      ],
+      "visualHeadingOffset": 0,
+      "bodyBounds": [
+        54,
+        102,
+        203,
+        236
+      ],
+      "lighting": {
+        "red": {
+          "polygon": [
+            [
+              102,
+              115
+            ],
+            [
+              103,
+              111
+            ],
+            [
+              108,
+              109
+            ],
+            [
+              112,
+              109
+            ],
+            [
+              122,
+              113
+            ],
+            [
+              122,
+              114
+            ],
+            [
+              121,
+              116
+            ],
+            [
+              116,
+              122
+            ],
+            [
+              115,
+              123
+            ],
+            [
+              114,
+              123
+            ],
+            [
+              102,
+              118
+            ]
+          ],
+          "center": [
+            111.41,
+            115.18
+          ]
+        },
+        "blue": {
+          "polygon": [
+            [
+              129,
+              125
+            ],
+            [
+              130,
+              123
+            ],
+            [
+              132,
+              121
+            ],
+            [
+              135,
+              119
+            ],
+            [
+              137,
+              119
+            ],
+            [
+              142,
+              121
+            ],
+            [
+              146,
+              123
+            ],
+            [
+              147,
+              125
+            ],
+            [
+              147,
+              127
+            ],
+            [
+              146,
+              128
+            ],
+            [
+              140,
+              133
+            ],
+            [
+              139,
+              133
+            ],
+            [
+              130,
+              127
+            ],
+            [
+              129,
+              126
+            ]
+          ],
+          "center": [
+            138.02,
+            125.29
+          ]
+        }
+      },
+      "normalization": {
+        "method": "uniform projected opaque area",
+        "targetArea": 13573.98,
+        "actualArea": 13612
+      },
+      "source": {
+        "kind": "retained",
+        "cell": 13,
+        "file": "../cruiser-16-source.png",
+        "crop": [
+          60,
+          29,
+          282,
+          229
+        ],
+        "uniformExportScale": 0.6696825232876354
+      },
+      "sha256": "9f4b56587ddf614599835ccaa625dbb12e7055eaa8162ebbe4f685d9243d8e97",
+      "brakeLamps": [
+        [
+          115,
+          205,
+          16,
+          12
+        ],
+        [
+          64,
+          187,
+          10,
+          19
+        ]
+      ]
+    },
+    {
+      "index": 15,
+      "angleDegrees": 337.5,
+      "angleRadians": 5.8904862254808625,
+      "rect": [
+        768,
+        768,
+        256,
+        256
+      ],
+      "anchor": [
+        128,
+        168
+      ],
+      "visualHeadingOffset": 0,
+      "bodyBounds": [
+        40,
+        102,
+        215,
+        220
+      ],
+      "lighting": {
+        "red": {
+          "polygon": [
+            [
+              119,
+              108
+            ],
+            [
+              122,
+              105
+            ],
+            [
+              130,
+              105
+            ],
+            [
+              131,
+              106
+            ],
+            [
+              134,
+              115
+            ],
+            [
+              122,
+              118
+            ],
+            [
+              121,
+              116
+            ],
+            [
+              120,
+              113
+            ]
+          ],
+          "center": [
+            125.9,
+            110.54
+          ]
+        },
+        "blue": {
+          "polygon": [
+            [
+              126,
+              128
+            ],
+            [
+              128,
+              126
+            ],
+            [
+              136,
+              126
+            ],
+            [
+              138,
+              130
+            ],
+            [
+              139,
+              134
+            ],
+            [
+              139,
+              136
+            ],
+            [
+              128,
+              139
+            ],
+            [
+              126,
+              130
+            ]
+          ],
+          "center": [
+            132.23,
+            131.33
+          ]
+        }
+      },
+      "normalization": {
+        "method": "uniform projected opaque area",
+        "targetArea": 14749.1,
+        "actualArea": 14698
+      },
+      "source": {
+        "kind": "retained",
+        "cell": 15,
+        "file": "../cruiser-16-source.png",
+        "crop": [
+          37,
+          31,
+          303,
+          211
+        ],
+        "uniformExportScale": 0.6576759083126051
+      },
+      "sha256": "96c7e374a5f5a597e57c83b46d9cb38aad8e5b414a8cf2b7d12fe74a262c0dac",
+      "brakeLamps": [
+        [
+          69,
+          189,
+          11,
+          15
+        ]
+      ]
+    }
+  ],
+  "atlasSha256": "cb259cf4649fc84f156d1894bce7df859b4310c8bc497b97fd6859f0b83ccec6"
+}

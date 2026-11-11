@@ -1,0 +1,4 @@
+body.outbreak-mode #trainingTools #outbreakUse{position:absolute;z-index:30;pointer-events:auto;right:calc(96px + env(safe-area-inset-right,0px));bottom:calc(178px + env(safe-area-inset-bottom,0px));width:76px;height:66px;border:2px solid #d9c275;border-radius:22px;background:#dfbe65;color:#152f3f;font:700 10px/1.2 system-ui;touch-action:none;padding:6px;box-shadow:0 3px 0 #28373a88}
+body.outbreak-mode #trainingTools #outbreakUse:disabled{background:#344d5a;color:#d6d0b8;border-color:#879b9c}
+body.outbreak-mode #trainingStatus{max-width:calc(100% - 180px);font-size:11px;line-height:1.4}
+@media(orientation:landscape) and (max-height:600px){body.outbreak-mode #trainingTools #outbreakUse{bottom:calc(118px + env(safe-area-inset-bottom,0px));width:66px;height:56px}}

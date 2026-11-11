@@ -1,0 +1,12 @@
+/* V115 showcase skin applies ONLY to the preview's continuous-world modal. */
+#v115Campus { background: #0c2134; }
+#v115Campus .v115-campus-header { background:linear-gradient(108deg,#102f49,#173b53 74%,#112b44);border-bottom:2px solid #c4a96f;box-shadow:0 6px 22px rgba(8,25,39,.20); }
+#v115Campus .v115-campus-brand {letter-spacing:.035em;}
+#v115Campus .v115-campus-brand span {color:#e2c891;}
+#v115Campus .v115-campus-hud {background:rgba(9,29,45,.93);border:1px solid rgba(216,192,133,.66);box-shadow:0 8px 20px rgba(4,22,36,.25);}
+#v115Campus .v115-campus-tools button {background:#203e56;border:1px solid rgba(216,192,133,.68);box-shadow:inset 0 1px rgba(255,255,255,.08);}
+#v115Campus .v115-campus-note {background:rgba(7,27,42,.87);border-left:3px solid #bd9a5d;color:#f0e6cf;line-height:1.42;}
+#v115Campus .v115-campus-interact {border:1px solid rgba(239,211,157,.67);background:rgba(23,60,76,.92);box-shadow:0 7px 17px rgba(6,25,36,.26);}
+#v115Campus button:focus-visible {outline:3px solid #f5d585;outline-offset:2px;}
+#v115ShowcaseTag {pointer-events:none;position:absolute;z-index:15;top:211px;right:10px;color:#f7e5be;background:rgba(10,39,55,.84);border:1px solid rgba(229,199,131,.5);border-radius:5px;padding:5px 9px;font:700 11px system-ui,sans-serif;letter-spacing:.05em;}
+@media(max-width:540px) { #v115ShowcaseTag {top:209px;right:9px;font-size:9px;padding:3px 6px;} }

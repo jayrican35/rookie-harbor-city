@@ -1,0 +1,254 @@
+{
+  "id": "precinct-interior-walls",
+  "tileSize": 32,
+  "worldPixelsPerAssetPixel": 1,
+  "atlas": "walls-atlas.png",
+  "atlasSize": [
+    512,
+    256
+  ],
+  "wallHeight": 48,
+  "frames": {
+    "wall_plain": {
+      "atlas": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 48
+      },
+      "sourceCrop": [
+        25,
+        147,
+        178,
+        265
+      ],
+      "anchor": "bottom-left"
+    },
+    "wall_badge": {
+      "atlas": {
+        "x": 66,
+        "y": 0,
+        "w": 64,
+        "h": 48
+      },
+      "sourceCrop": [
+        325,
+        147,
+        426,
+        265
+      ],
+      "anchor": "bottom-left"
+    },
+    "wall_picture": {
+      "atlas": {
+        "x": 132,
+        "y": 0,
+        "w": 64,
+        "h": 48
+      },
+      "sourceCrop": [
+        634,
+        135,
+        716,
+        227
+      ],
+      "anchor": "bottom-left"
+    },
+    "wall_stone": {
+      "atlas": {
+        "x": 198,
+        "y": 0,
+        "w": 64,
+        "h": 48
+      },
+      "sourceCrop": [
+        824,
+        136,
+        907,
+        227
+      ],
+      "anchor": "bottom-left"
+    },
+    "wall_utility": {
+      "atlas": {
+        "x": 264,
+        "y": 0,
+        "w": 64,
+        "h": 48
+      },
+      "sourceCrop": [
+        918,
+        136,
+        1000,
+        227
+      ],
+      "anchor": "bottom-left"
+    },
+    "end_cap": {
+      "atlas": {
+        "x": 330,
+        "y": 0,
+        "w": 24,
+        "h": 48
+      },
+      "sourceCrop": [
+        519,
+        148,
+        542,
+        265
+      ],
+      "anchor": "bottom-left"
+    },
+    "jamb": {
+      "atlas": {
+        "x": 356,
+        "y": 0,
+        "w": 8,
+        "h": 48
+      },
+      "sourceCrop": [
+        422,
+        458,
+        434,
+        552
+      ],
+      "anchor": "bottom-left"
+    },
+    "top_cap": {
+      "atlas": {
+        "x": 366,
+        "y": 0,
+        "w": 64,
+        "h": 4
+      },
+      "sourceCrop": [
+        25,
+        148,
+        178,
+        157
+      ],
+      "anchor": "bottom-left"
+    },
+    "baseboard": {
+      "atlas": {
+        "x": 432,
+        "y": 0,
+        "w": 64,
+        "h": 12
+      },
+      "sourceCrop": [
+        25,
+        235,
+        178,
+        263
+      ],
+      "anchor": "bottom-left"
+    },
+    "wall_vertical": {
+      "atlas": {
+        "x": 0,
+        "y": 104,
+        "w": 24,
+        "h": 32
+      },
+      "source": "cap/plaster/navy trim from owner pack",
+      "anchor": "top-left"
+    },
+    "locker_closed": {
+      "atlas": {
+        "x": 26,
+        "y": 104,
+        "w": 132,
+        "h": 120
+      },
+      "sourceCrop": [
+        550,
+        649,
+        681,
+        769
+      ],
+      "anchor": "bottom-center",
+      "role": "locker-room furniture"
+    },
+    "locker_open": {
+      "atlas": {
+        "x": 160,
+        "y": 104,
+        "w": 132,
+        "h": 120
+      },
+      "sourceCrop": "closed bank with owner open-door crop (744,652,778,763)",
+      "anchor": "bottom-center",
+      "role": "locker-room furniture"
+    },
+    "changing_bench": {
+      "atlas": {
+        "x": 294,
+        "y": 104,
+        "w": 108,
+        "h": 44
+      },
+      "sourceCrop": [
+        553,
+        792,
+        675,
+        841
+      ],
+      "anchor": "bottom-center",
+      "role": "locker-room furniture"
+    },
+    "locker_bag": {
+      "atlas": {
+        "x": 404,
+        "y": 104,
+        "w": 28,
+        "h": 16
+      },
+      "sourceCrop": [
+        918,
+        647,
+        971,
+        678
+      ],
+      "anchor": "bottom-center",
+      "role": "locker-room furniture"
+    },
+    "locker_towels": {
+      "atlas": {
+        "x": 434,
+        "y": 104,
+        "w": 20,
+        "h": 13
+      },
+      "sourceCrop": [
+        931,
+        686,
+        966,
+        709
+      ],
+      "anchor": "bottom-center",
+      "role": "locker-room furniture"
+    }
+  },
+  "connections": {
+    "corner": [
+      "wall_plain",
+      "wall_vertical",
+      "top_cap"
+    ],
+    "t_junction": [
+      "wall_plain",
+      "wall_vertical",
+      "top_cap"
+    ],
+    "intersection": [
+      "wall_plain",
+      "wall_vertical",
+      "top_cap"
+    ],
+    "end": [
+      "end_cap"
+    ],
+    "door": "Reuse precinctDoors.plan jambs; preserve passage rectangle"
+  }
+}

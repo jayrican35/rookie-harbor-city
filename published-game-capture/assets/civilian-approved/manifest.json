@@ -1,0 +1,251 @@
+{
+  "title": "ROOKIE: Harbor City \u2014 Civilian Walk Cycles",
+  "format": "RGBA PNG",
+  "frame_size": [
+    128,
+    160
+  ],
+  "atlas_size": [
+    512,
+    640
+  ],
+  "directions": [
+    "down",
+    "left",
+    "right",
+    "up"
+  ],
+  "rows": {
+    "down": 0,
+    "left": 1,
+    "right": 2,
+    "up": 3
+  },
+  "frames_per_direction": 4,
+  "animation_fps": 7,
+  "anchor": [
+    64,
+    153
+  ],
+  "role_count": 30,
+  "exclusive_civilian_pack": true,
+  "source_provenance": "Approved original sprite poses and approved 30 civilian idle illustrations. Front is reposed from role art; side/back are configured from approved base walk with transferred hats and role-specific accessories. No police sprites.",
+  "quality_note": "Generated composites. Some profile/back costume contours are approximated and may benefit from a final hand-drawn refinement pass.",
+  "roles": {
+    "resident": {
+      "label": "Resident",
+      "walk_atlas": "atlases/resident_walk_4dir.png",
+      "idle_image": "source_idles/resident.png",
+      "role_props": "none",
+      "role_hat": "beanie"
+    },
+    "student": {
+      "label": "Student",
+      "walk_atlas": "atlases/student_walk_4dir.png",
+      "idle_image": "source_idles/student.png",
+      "role_props": "backpack",
+      "role_hat": "headphones"
+    },
+    "shopper": {
+      "label": "Shopper",
+      "walk_atlas": "atlases/shopper_walk_4dir.png",
+      "idle_image": "source_idles/shopper.png",
+      "role_props": "shopping_bag",
+      "role_hat": "cap"
+    },
+    "vendor": {
+      "label": "Vendor",
+      "walk_atlas": "atlases/vendor_walk_4dir.png",
+      "idle_image": "source_idles/vendor.png",
+      "role_props": "cup",
+      "role_hat": "cap"
+    },
+    "chef": {
+      "label": "Chef",
+      "walk_atlas": "atlases/chef_walk_4dir.png",
+      "idle_image": "source_idles/chef.png",
+      "role_props": "pan",
+      "role_hat": "chef"
+    },
+    "construction": {
+      "label": "Construction Worker",
+      "walk_atlas": "atlases/construction_walk_4dir.png",
+      "idle_image": "source_idles/construction.png",
+      "role_props": "hammer",
+      "role_hat": "hardhat"
+    },
+    "civilian_medic": {
+      "label": "Civilian Medic",
+      "walk_atlas": "atlases/civilian_medic_walk_4dir.png",
+      "idle_image": "source_idles/civilian_medic.png",
+      "role_props": "medical_kit",
+      "role_hat": "medcap"
+    },
+    "fisher": {
+      "label": "Fisher",
+      "walk_atlas": "atlases/fisher_walk_4dir.png",
+      "idle_image": "source_idles/fisher.png",
+      "role_props": "fishing_pole",
+      "role_hat": "brim"
+    },
+    "tourist": {
+      "label": "Tourist",
+      "walk_atlas": "atlases/tourist_walk_4dir.png",
+      "idle_image": "source_idles/tourist.png",
+      "role_props": "camera",
+      "role_hat": "brim"
+    },
+    "jogger": {
+      "label": "Jogger",
+      "walk_atlas": "atlases/jogger_walk_4dir.png",
+      "idle_image": "source_idles/jogger.png",
+      "role_props": "water_bottle",
+      "role_hat": "headband"
+    },
+    "office_worker": {
+      "label": "Office Worker",
+      "walk_atlas": "atlases/office_worker_walk_4dir.png",
+      "idle_image": "source_idles/office_worker.png",
+      "role_props": "briefcase",
+      "role_hat": "fedora"
+    },
+    "delivery": {
+      "label": "Delivery Worker",
+      "walk_atlas": "atlases/delivery_walk_4dir.png",
+      "idle_image": "source_idles/delivery.png",
+      "role_props": "parcel",
+      "role_hat": "cap"
+    },
+    "mail_clerk": {
+      "label": "Mail Clerk",
+      "walk_atlas": "atlases/mail_clerk_walk_4dir.png",
+      "idle_image": "source_idles/mail_clerk.png",
+      "role_props": "letters",
+      "role_hat": "cap"
+    },
+    "gardener": {
+      "label": "Gardener",
+      "walk_atlas": "atlases/gardener_walk_4dir.png",
+      "idle_image": "source_idles/gardener.png",
+      "role_props": "watering_can",
+      "role_hat": "cap"
+    },
+    "gardener_alt": {
+      "label": "Garden Helper",
+      "walk_atlas": "atlases/gardener_alt_walk_4dir.png",
+      "idle_image": "source_idles/gardener_alt.png",
+      "role_props": "spade",
+      "role_hat": "brim"
+    },
+    "musician": {
+      "label": "Musician",
+      "walk_atlas": "atlases/musician_walk_4dir.png",
+      "idle_image": "source_idles/musician.png",
+      "role_props": "guitar",
+      "role_hat": "cap"
+    },
+    "artist": {
+      "label": "Artist",
+      "walk_atlas": "atlases/artist_walk_4dir.png",
+      "idle_image": "source_idles/artist.png",
+      "role_props": "palette",
+      "role_hat": "beret"
+    },
+    "barista": {
+      "label": "Barista",
+      "walk_atlas": "atlases/barista_walk_4dir.png",
+      "idle_image": "source_idles/barista.png",
+      "role_props": "coffee",
+      "role_hat": "headband"
+    },
+    "store_clerk": {
+      "label": "Store Clerk",
+      "walk_atlas": "atlases/store_clerk_walk_4dir.png",
+      "idle_image": "source_idles/store_clerk.png",
+      "role_props": "small_bag",
+      "role_hat": "cap"
+    },
+    "waiter": {
+      "label": "Waiter",
+      "walk_atlas": "atlases/waiter_walk_4dir.png",
+      "idle_image": "source_idles/waiter.png",
+      "role_props": "tray",
+      "role_hat": "chef"
+    },
+    "librarian": {
+      "label": "Librarian",
+      "walk_atlas": "atlases/librarian_walk_4dir.png",
+      "idle_image": "source_idles/librarian.png",
+      "role_props": "book",
+      "role_hat": "brim"
+    },
+    "coach": {
+      "label": "Coach",
+      "walk_atlas": "atlases/coach_walk_4dir.png",
+      "idle_image": "source_idles/coach.png",
+      "role_props": "whistle",
+      "role_hat": "cap"
+    },
+    "hiker": {
+      "label": "Hiker",
+      "walk_atlas": "atlases/hiker_walk_4dir.png",
+      "idle_image": "source_idles/hiker.png",
+      "role_props": "backpack",
+      "role_hat": "brim"
+    },
+    "elder": {
+      "label": "Elder",
+      "walk_atlas": "atlases/elder_walk_4dir.png",
+      "idle_image": "source_idles/elder.png",
+      "role_props": "cane",
+      "role_hat": "beanie"
+    },
+    "kid": {
+      "label": "Child",
+      "walk_atlas": "atlases/kid_walk_4dir.png",
+      "idle_image": "source_idles/kid.png",
+      "role_props": "ball",
+      "role_hat": "propeller"
+    },
+    "beachgoer": {
+      "label": "Beachgoer",
+      "walk_atlas": "atlases/beachgoer_walk_4dir.png",
+      "idle_image": "source_idles/beachgoer.png",
+      "role_props": "sunglasses",
+      "role_hat": "brim"
+    },
+    "dock_worker": {
+      "label": "Dock Worker",
+      "walk_atlas": "atlases/dock_worker_walk_4dir.png",
+      "idle_image": "source_idles/dock_worker.png",
+      "role_props": "crate",
+      "role_hat": "cap"
+    },
+    "mechanic": {
+      "label": "Mechanic",
+      "walk_atlas": "atlases/mechanic_walk_4dir.png",
+      "idle_image": "source_idles/mechanic.png",
+      "role_props": "wrench",
+      "role_hat": "cap"
+    },
+    "business_citizen": {
+      "label": "Business Citizen",
+      "walk_atlas": "atlases/business_citizen_walk_4dir.png",
+      "idle_image": "source_idles/business_citizen.png",
+      "role_props": "briefcase",
+      "role_hat": "fedora"
+    },
+    "civilian_casual": {
+      "label": "Casual Resident",
+      "walk_atlas": "atlases/civilian_casual_walk_4dir.png",
+      "idle_image": "source_idles/civilian_casual.png",
+      "role_props": "phone",
+      "role_hat": "headphones"
+    }
+  },
+  "supplemental": {
+    "individual_frame_path": "frames/<role>/<direction>/<frame>.png",
+    "face_atlas": "faces/all_expressions_6x2.png",
+    "animated_preview": "previews/animated/<role>/<direction>.gif"
+  }
+}

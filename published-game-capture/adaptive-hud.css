@@ -1,0 +1,52 @@
+/* Compact controls, anchored to the existing world wrapper. No layout measurement loop. */
+body.adaptive-hud .stage-card .controls{position:absolute!important;inset:auto 0 0!important;height:0!important;padding:0!important;display:block!important;background:none!important;border:0!important;overflow:visible!important;z-index:24;pointer-events:none}
+body.adaptive-hud .controls .ctrl-right{position:static;display:block!important;pointer-events:none}
+body.adaptive-hud .controls .ctrl-right>button,body.adaptive-hud #hudVehicleTools button{position:absolute;pointer-events:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-sizing:border-box;border:1px solid #bcb996;border-radius:50%;width:48px;height:48px;min-width:44px!important;min-height:44px;padding:5px;background:#15394bed;color:#fff0cc;box-shadow:0 3px 0 #081e2b60,0 5px 8px #081e2b24;font:700 9px/1.1 'Barlow',sans-serif;letter-spacing:.025em;text-shadow:none;touch-action:none;user-select:none;transition:translate .08s,background .1s}
+body.adaptive-hud .controls button svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;pointer-events:none}
+body.adaptive-hud .controls button span{pointer-events:none}
+body.adaptive-hud .controls #btnInteract{right:max(14px,env(safe-area-inset-right,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px));width:82px;height:82px;border:2px solid #f3dc8b;background:#e6bd4c;color:#142d3b;box-shadow:0 3px 0 #6c551d,0 6px 10px #0b263944;font-size:10px;letter-spacing:.025em;padding:8px}
+body.adaptive-hud .controls #btnInteract svg{width:29px;height:29px}
+body.adaptive-hud .controls #btnMapTouch{right:calc(110px + env(safe-area-inset-right,0px));bottom:calc(17px + env(safe-area-inset-bottom,0px))}
+body.adaptive-hud .controls #hudMore{right:calc(110px + env(safe-area-inset-right,0px));bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+body.adaptive-hud .controls #btnEngineTouch{right:calc(164px + env(safe-area-inset-right,0px));bottom:calc(17px + env(safe-area-inset-bottom,0px));font-size:8px}
+body.adaptive-hud .controls button:disabled{opacity:.5;filter:saturate(.45);cursor:default}
+body.adaptive-hud .controls button:active:not(:disabled){translate:0 2px;background:#254e5a}
+body.adaptive-hud .controls #btnInteract:active:not(:disabled){background:#f2d46e}
+body.adaptive-hud .controls button:focus-visible,body.adaptive-hud .zoomctl button:focus-visible{outline:3px solid #fff3ce;outline-offset:3px}
+body.adaptive-hud .controls button[aria-pressed=true]{background:#236766;border:2px solid #f0d582}
+body.adaptive-hud #hudVehicleTools{position:absolute;right:max(14px,env(safe-area-inset-right,0px));bottom:calc(199px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:row;gap:8px;border:1px solid #829c9d;border-radius:18px;background:#102f40f5;box-shadow:0 4px 9px #09202f55;padding:9px;pointer-events:auto;max-width:calc(100% - 24px)}
+body.adaptive-hud #hudVehicleTools button{position:static;width:48px;height:48px}
+body.adaptive-hud.hud-driving .controls #btnInteract{bottom:calc(105px + env(safe-area-inset-bottom,0px));width:72px;height:72px;font-size:9px}
+body.adaptive-hud.hud-driving .controls #btnMapTouch{right:calc(96px + env(safe-area-inset-right,0px));bottom:calc(111px + env(safe-area-inset-bottom,0px))}
+body.adaptive-hud.hud-driving .controls #btnEngineTouch{right:calc(152px + env(safe-area-inset-right,0px));bottom:calc(111px + env(safe-area-inset-bottom,0px))}
+body.adaptive-hud.hud-driving .controls #hudMore{right:calc(208px + env(safe-area-inset-right,0px));bottom:calc(111px + env(safe-area-inset-bottom,0px))}
+body.adaptive-hud .stage-card #driveControls{z-index:23}
+body.adaptive-hud .stage-card #driveControls.show{height:90px;padding:0!important;border:0!important;background:transparent!important}
+body.adaptive-hud #driveControls .dc-grid{display:block!important}
+body.adaptive-hud #driveControls .dc-mid{display:none!important}
+body.adaptive-hud #driveControls .dc-steer,body.adaptive-hud #driveControls .dc-pedals{position:absolute;bottom:calc(14px + env(safe-area-inset-bottom,0px));display:flex;gap:7px}
+body.adaptive-hud #driveControls .dc-steer{left:max(14px,env(safe-area-inset-left,0px))}
+body.adaptive-hud #driveControls .dc-pedals{right:max(14px,env(safe-area-inset-right,0px))}
+body.adaptive-hud #driveControls .dc-steer .dc-btn,body.adaptive-hud #driveControls .dc-pedals .dc-btn{min-width:44px;width:54px;min-height:44px;height:66px;border:1px solid #a2b5b2;border-radius:20px;background:#15394bef;color:#fff0cc;box-shadow:0 3px 0 #081e2b60;font:700 12px/1.2 'Barlow',sans-serif;gap:3px;padding:6px}
+body.adaptive-hud #driveControls .dc-steer .dc-btn{font-size:23px}
+body.adaptive-hud #driveControls .dc-btn small{font-size:8px}
+body.adaptive-hud #driveControls .pedal-lines{width:17px;height:20px}
+body.adaptive-hud #driveControls .dc-btn.held{background:#296a6a;border-color:#f2d777;translate:0 2px}
+body.adaptive-hud .zoomctl{top:max(12px,env(safe-area-inset-top,0px))!important;left:max(12px,env(safe-area-inset-left,0px))!important;gap:7px!important}
+body.adaptive-hud .zoomctl button{width:44px!important;height:44px!important;min-width:44px;min-height:44px;border-radius:50%!important;background:#14364be8!important;border:1px solid #c9b879!important;box-shadow:0 3px 0 #0d263b40!important;color:#fff0cc;font-size:23px!important}
+body.adaptive-hud #walkJoystick{width:48%;max-width:300px;height:clamp(144px,38%,240px);max-height:45%;bottom:env(safe-area-inset-bottom,0px);z-index:20}
+body.adaptive-hud .joy-hint{left:25px;bottom:25px;width:38px;height:38px;border:1px solid #b7c3ad80;background:#15394b60;opacity:.55;box-shadow:none}
+body.adaptive-hud .joy-hint span{font-size:19px}.adaptive-hud .joy-hint small{display:none}
+body.adaptive-hud .joy-base{width:108px;height:108px;border:1px solid #d8ca9899;background:#15394b88;box-shadow:0 3px 8px #0c283839}
+body.adaptive-hud .joy-thumb{width:42px;height:42px;border:2px solid #e5d197;background:#2d6576;box-shadow:0 2px 5px #061c3366}
+body.adaptive-hud #walkJoystick.joy-fixed .joy-base{display:block;left:74px;top:calc(100% - 74px);opacity:.8}
+body.adaptive-hud #walkJoystick.joy-fixed .joy-hint{display:none}
+body.adaptive-hud .controls .dpad{position:absolute;left:14px;bottom:14px}
+body.adaptive-hud #hudJoystickMode{font:500 16px 'Barlow',sans-serif;min-height:44px;padding:6px;border:1px solid #9ba98f;border-radius:6px;background:#fff3d6;color:#183747;max-width:100%}
+body.adaptive-hud.hud-blocked .controls,body.adaptive-hud.hud-blocked #driveControls,body.adaptive-hud.hud-blocked #walkJoystick,body.adaptive-hud.hud-blocked .zoomctl{visibility:hidden!important;pointer-events:none!important}
+body.adaptive-hud.training-mode .controls,body.adaptive-hud.hale-tactical .controls{display:none!important}
+@media(pointer:coarse),(max-width:920px){body.adaptive-hud:not(.driving) #walkJoystick{display:block}.adaptive-hud .stage-card .controls .dpad{display:none}}
+@media(max-height:500px){body.adaptive-hud #walkJoystick{height:150px;max-height:65%}body.adaptive-hud #driveControls .dc-steer .dc-btn,body.adaptive-hud #driveControls .dc-pedals .dc-btn{height:56px}body.adaptive-hud.hud-driving .controls #btnInteract{bottom:calc(87px + env(safe-area-inset-bottom,0px));width:66px;height:66px}body.adaptive-hud.hud-driving .controls #btnMapTouch,body.adaptive-hud.hud-driving .controls #btnEngineTouch,body.adaptive-hud.hud-driving .controls #hudMore{bottom:calc(95px + env(safe-area-inset-bottom,0px))}body.adaptive-hud #hudVehicleTools{bottom:calc(165px + env(safe-area-inset-bottom,0px))}}
+@media(prefers-reduced-motion:reduce){body.adaptive-hud .controls button{transition:none}}
+body.adaptive-hud .controls #btnMapTouch,body.adaptive-hud .controls #hudMore,body.adaptive-hud .controls #btnEngineTouch{width:48px;height:48px;border-radius:50%;display:flex;background:#15394bed;box-shadow:0 3px 0 #081e2b60,0 5px 8px #081e2b24}
+body.adaptive-hud .controls #btnInteract{border-radius:50%;display:flex}

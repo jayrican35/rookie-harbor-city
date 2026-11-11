@@ -1,0 +1,25 @@
+/* V115 Phase 2 — experimental seamless campus overlay only. Never target Academy/Zombie UI. */
+#v115CampusLaunch{border:1px solid #e3bb65;background:#183957;color:#ffe6a1;border-radius:8px;padding:9px 13px;font:700 14px 'Barlow Condensed',sans-serif;letter-spacing:.03em;cursor:pointer}
+#v115Campus[hidden]{display:none!important}
+body.v115-campus-open{overflow:hidden}
+#v115Campus{position:fixed;inset:0;z-index:2147482000;background:#0b1e34;color:#f4f0dd;overflow:hidden;font-family:'Barlow',system-ui,sans-serif;touch-action:none}
+#v115CampusCanvas{display:block;width:100%;height:100%;touch-action:none;image-rendering:pixelated}
+#v115Campus button{cursor:pointer;font:700 13px 'Barlow Condensed',sans-serif;color:#fff4cf;background:#183b5c;border:1px solid rgba(237,207,135,.64);border-radius:9px;min-height:40px;padding:7px 12px;touch-action:manipulation}
+#v115Campus button:focus-visible{outline:3px solid #ffe19b;outline-offset:3px}
+.v115-campus-header{position:absolute;left:0;right:0;top:0;top:env(safe-area-inset-top,0px);display:flex;align-items:center;justify-content:space-between;gap:12px;background:linear-gradient(90deg,rgba(14,37,60,.96),rgba(17,43,68,.88));padding:12px 14px;border-bottom:2px solid #dcb566}
+.v115-campus-brand{font:800 clamp(16px,4vw,23px) 'Barlow Condensed',system-ui,sans-serif;letter-spacing:.04em;line-height:1.05}
+.v115-campus-brand span{display:block;font:500 10px 'Barlow',sans-serif;letter-spacing:.06em;color:#d5dfe5;margin-top:4px}
+.v115-campus-hud{position:absolute;left:12px;top:calc(env(safe-area-inset-top,0px) + 76px);background:rgba(11,28,48,.87);border:1px solid rgba(240,215,141,.55);border-radius:9px;max-width:min(85vw,550px);padding:9px 12px;pointer-events:none}
+.v115-campus-hud strong{display:block;color:#ffda8b;font-size:13px;letter-spacing:.03em}
+.v115-campus-hud small{display:block;color:#cad6df;font-size:10px;margin-top:4px;overflow-wrap:anywhere}
+.v115-campus-tools{position:absolute;top:calc(env(safe-area-inset-top,0px) + 78px);right:12px;display:flex;gap:5px}
+.v115-campus-note{position:absolute;top:calc(env(safe-area-inset-top,0px) + 127px);left:12px;right:12px;max-width:570px;background:rgba(15,29,42,.84);border-radius:8px;padding:7px 9px;color:#f6e1ae;font-size:11px;line-height:1.3;pointer-events:none}
+.v115-campus-pad{position:absolute;bottom:calc(53px + env(safe-area-inset-bottom,0px));left:18px;width:122px;height:122px;border-radius:50%;border:3px solid rgba(241,220,158,.52);background:rgba(14,44,67,.58);display:grid;place-items:center;touch-action:none;user-select:none}
+.v115-campus-pad::before{content:'✥';position:absolute;inset:0;display:grid;place-items:center;color:rgba(224,238,233,.45);font-size:39px}
+#v115CampusKnob{width:48px;height:48px;border:2px solid #eac66e;background:rgba(23,66,93,.89);border-radius:50%;box-shadow:0 2px 12px #091b2d;position:relative;pointer-events:none}
+#v115Campus .v115-campus-interact{position:absolute;right:18px;bottom:calc(72px + env(safe-area-inset-bottom,0px));max-width:180px;min-height:66px;line-height:1.1;border-radius:16px;background:rgba(23,57,83,.83)}
+.v115-campus-footer{position:absolute;left:12px;right:12px;bottom:calc(6px + env(safe-area-inset-bottom,0px));color:#edf3f6;background:rgba(13,33,50,.8);border-radius:6px;padding:7px;text-align:center;font-size:10px;pointer-events:none}
+@media(max-width:480px){.v115-campus-brand span{font-size:9px}.v115-campus-header{padding:8px}.v115-campus-note{top:calc(env(safe-area-inset-top,0px) + 157px);font-size:10px}.v115-campus-tools{top:calc(env(safe-area-inset-top,0px) + 116px)}}
+@media(prefers-reduced-motion:reduce){#v115Campus *{transition:none!important}}
+/* Existing story panels share the connected canvas stacking context. */
+#v115Campus>#hcAssignmentBoard,#v115Campus>#caperNotebook,#v115Campus>#hcCells,#v115Campus>.overlay-back,#v115Campus>.menu-page{z-index:100;touch-action:auto}

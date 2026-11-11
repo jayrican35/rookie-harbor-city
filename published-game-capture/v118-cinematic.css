@@ -1,0 +1,65 @@
+/* V118 cinematic connected-marina HUD. Progressive enhancement only.
+   Keep all four adventure actions keyboard accessible; minimize exploration clutter. */
+body.v116-play-mode #v116MarinaHUD.v118-ready .v116-identity{
+ left:8px;top:8px;width:132px;height:47px;gap:5px;padding:3px;
+ border-radius:9px;background:linear-gradient(135deg,rgba(24,51,69,.95),rgba(9,25,40,.90));
+}
+body.v116-play-mode #v116MarinaHUD.v118-ready .v116-identity img{width:38px;height:38px}
+body.v116-play-mode #v116MarinaHUD.v118-ready .v116-identity strong{font-size:16px}
+body.v116-play-mode #v116MarinaHUD.v118-ready .v116-identity small{font-size:9px}
+body.v116-play-mode #v116MarinaHUD.v118-ready .v116-identity i{font-size:7px;margin-top:2px}
+body.v116-play-mode #v116MarinaHUD.v118-ready .v116-minimap{
+ width:100px;right:8px;top:8px;padding:3px;border-radius:9px;
+ background:linear-gradient(#213e50e8,#0f2437eb);
+}
+body.v116-play-mode #v116MarinaHUD.v118-ready .v116-minimap>span{font-size:11px;line-height:13px}
+body.v116-play-mode #v116MarinaHUD.v118-ready .v116-minimap canvas{height:57px}
+body.v116-play-mode #v116MarinaHUD.v118-ready .v116-case{display:none}
+body.v116-play-mode #v116MarinaHUD.v118-ready .v116-actions{right:8px;bottom:8px;gap:4px}
+body.v116-play-mode #v116MarinaHUD.v118-ready .v116-actions button{
+ width:47px;height:47px;border-radius:10px;gap:0;font-size:9px!important;
+ background:linear-gradient(160deg,rgba(36,64,81,.92),rgba(9,27,43,.92));
+}
+body.v116-play-mode #v116MarinaHUD.v118-ready .v116-actions svg{width:27px;height:27px}
+body.v116-play-mode #v116MarinaHUD.v118-ready .v116-team{
+ top:91px;left:8px;gap:4px;
+ visibility:hidden;opacity:0;pointer-events:none;
+ transform:translateX(-7px);transition:opacity .15s ease,transform .15s ease;
+}
+body.v116-play-mode #v116MarinaHUD.v118-ready.v118-team-open .v116-team{
+ visibility:visible;opacity:1;pointer-events:auto;transform:none;
+}
+body.v116-play-mode #v116MarinaHUD.v118-ready .v116-team button{width:43px;height:46px}
+body.v116-play-mode #v116MarinaHUD.v118-ready .v118-team-toggle{
+ position:absolute;top:59px;left:8px;width:66px;min-height:26px;
+ border:1px solid #d6bd83;border-radius:8px;
+ background:rgba(13,37,54,.91);font:700 11px system-ui,sans-serif;
+ color:#f9ebc4;letter-spacing:.1px;
+}
+body.v116-play-mode #v116MarinaHUD.v118-ready .v118-team-toggle:after{content:' ▾'}
+body.v116-play-mode #v116MarinaHUD.v118-ready.v118-team-open .v118-team-toggle:after{content:' ▴'}
+body.v116-play-mode #v115Campus .v115-campus-header{left:150px;top:10px}
+body.v116-play-mode #v115Campus .v115-campus-tools{right:112px;top:49px}
+body.v116-play-mode #v115Campus .v115-campus-interact{right:9px;bottom:70px}
+@media(orientation:portrait) and (max-width:600px){
+ body.v116-play-mode #v116MarinaHUD.v118-ready .v116-identity{width:128px}
+ body.v116-play-mode #v116MarinaHUD.v118-ready .v116-minimap{width:89px}
+ body.v116-play-mode #v116MarinaHUD.v118-ready .v116-minimap canvas{height:51px}
+ body.v116-play-mode #v116MarinaHUD.v118-ready .v116-actions button{width:44px;height:47px}
+ body.v116-play-mode #v115Campus .v115-campus-header{left:146px;top:9px}
+ body.v116-play-mode #v115Campus .v115-campus-header button{max-width:61px}
+ body.v116-play-mode #v115Campus .v115-campus-tools{right:99px;top:50px}
+ body.v116-play-mode #v115Campus .v115-campus-interact{right:9px;bottom:69px}
+}
+@media(orientation:landscape) and (max-height:550px){
+ body.v116-play-mode #v116MarinaHUD.v118-ready .v116-minimap{width:88px}
+ body.v116-play-mode #v116MarinaHUD.v118-ready .v116-minimap canvas{height:43px}
+ body.v116-play-mode #v116MarinaHUD.v118-ready .v116-actions button{height:39px;width:43px}
+ body.v116-play-mode #v116MarinaHUD.v118-ready .v116-actions svg{height:23px;width:23px}
+ body.v116-play-mode #v116MarinaHUD.v118-ready .v118-team-toggle{top:56px}
+ body.v116-play-mode #v116MarinaHUD.v118-ready .v116-team{top:86px;flex-direction:row;max-width:65vw}
+ body.v116-play-mode #v115Campus .v115-campus-interact{bottom:61px}
+}
+@media(prefers-reduced-motion:reduce){
+ body.v116-play-mode #v116MarinaHUD.v118-ready .v116-team{transition:none}
+}

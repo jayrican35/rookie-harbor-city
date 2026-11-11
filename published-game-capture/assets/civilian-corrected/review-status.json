@@ -1,0 +1,9 @@
+{
+  "approvedForPlayback": true,
+  "status": "26-outfits-reviewed-four-source-hats-held",
+  "heldRoles": ["chef", "construction", "artist", "kid"],
+  "checks": ["complete glove and leg silhouettes", "transparent limb gaps on checkerboard", "all four directions", "whole-frame metadata and feet anchor", "candidate gameplay and protected cast"],
+  "sourceFrame": [192, 240],
+  "runtimeFrame": [128, 160],
+  "runtimeAnchor": [64, 150]
+}

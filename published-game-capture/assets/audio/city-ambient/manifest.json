@@ -1,0 +1,285 @@
+{
+  "name": "ROOKIE Harbor City Ambient SFX Starter",
+  "assetType": "audio",
+  "license": "Original procedural audio; provided for the user to use in their game",
+  "formats": [
+    "mp3",
+    "ogg"
+  ],
+  "sampleRate": 24000,
+  "clips": [
+    {
+      "id": "footstep_pavement_01",
+      "category": "footsteps",
+      "loop": false,
+      "files": {
+        "mp3": "audio/footstep_pavement_01.mp3",
+        "ogg": "audio/footstep_pavement_01.ogg"
+      },
+      "duration_s": 0.32,
+      "description": "pavement footstep variant 1",
+      "source": "Original procedural synthesis, no third-party samples"
+    },
+    {
+      "id": "footstep_pavement_02",
+      "category": "footsteps",
+      "loop": false,
+      "files": {
+        "mp3": "audio/footstep_pavement_02.mp3",
+        "ogg": "audio/footstep_pavement_02.ogg"
+      },
+      "duration_s": 0.32,
+      "description": "pavement footstep variant 2",
+      "source": "Original procedural synthesis, no third-party samples"
+    },
+    {
+      "id": "footstep_pavement_03",
+      "category": "footsteps",
+      "loop": false,
+      "files": {
+        "mp3": "audio/footstep_pavement_03.mp3",
+        "ogg": "audio/footstep_pavement_03.ogg"
+      },
+      "duration_s": 0.32,
+      "description": "pavement footstep variant 3",
+      "source": "Original procedural synthesis, no third-party samples"
+    },
+    {
+      "id": "footstep_grass_01",
+      "category": "footsteps",
+      "loop": false,
+      "files": {
+        "mp3": "audio/footstep_grass_01.mp3",
+        "ogg": "audio/footstep_grass_01.ogg"
+      },
+      "duration_s": 0.32,
+      "description": "grass footstep variant 1",
+      "source": "Original procedural synthesis, no third-party samples"
+    },
+    {
+      "id": "footstep_grass_02",
+      "category": "footsteps",
+      "loop": false,
+      "files": {
+        "mp3": "audio/footstep_grass_02.mp3",
+        "ogg": "audio/footstep_grass_02.ogg"
+      },
+      "duration_s": 0.32,
+      "description": "grass footstep variant 2",
+      "source": "Original procedural synthesis, no third-party samples"
+    },
+    {
+      "id": "footstep_grass_03",
+      "category": "footsteps",
+      "loop": false,
+      "files": {
+        "mp3": "audio/footstep_grass_03.mp3",
+        "ogg": "audio/footstep_grass_03.ogg"
+      },
+      "duration_s": 0.32,
+      "description": "grass footstep variant 3",
+      "source": "Original procedural synthesis, no third-party samples"
+    },
+    {
+      "id": "footstep_wood_01",
+      "category": "footsteps",
+      "loop": false,
+      "files": {
+        "mp3": "audio/footstep_wood_01.mp3",
+        "ogg": "audio/footstep_wood_01.ogg"
+      },
+      "duration_s": 0.32,
+      "description": "wood footstep variant 1",
+      "source": "Original procedural synthesis, no third-party samples"
+    },
+    {
+      "id": "footstep_wood_02",
+      "category": "footsteps",
+      "loop": false,
+      "files": {
+        "mp3": "audio/footstep_wood_02.mp3",
+        "ogg": "audio/footstep_wood_02.ogg"
+      },
+      "duration_s": 0.32,
+      "description": "wood footstep variant 2",
+      "source": "Original procedural synthesis, no third-party samples"
+    },
+    {
+      "id": "footstep_run_pavement",
+      "category": "footsteps",
+      "loop": false,
+      "files": {
+        "mp3": "audio/footstep_run_pavement.mp3",
+        "ogg": "audio/footstep_run_pavement.ogg"
+      },
+      "duration_s": 0.24,
+      "description": "Shorter pavement running step",
+      "source": "Original procedural synthesis, no third-party samples"
+    },
+    {
+      "id": "bird_chirp_01",
+      "category": "birds",
+      "loop": false,
+      "files": {
+        "mp3": "audio/bird_chirp_01.mp3",
+        "ogg": "audio/bird_chirp_01.ogg"
+      },
+      "duration_s": 0.32,
+      "description": "Single stylized bird call",
+      "source": "Original procedural synthesis, no third-party samples"
+    },
+    {
+      "id": "bird_chirp_02",
+      "category": "birds",
+      "loop": false,
+      "files": {
+        "mp3": "audio/bird_chirp_02.mp3",
+        "ogg": "audio/bird_chirp_02.ogg"
+      },
+      "duration_s": 0.5,
+      "description": "Single stylized bird call",
+      "source": "Original procedural synthesis, no third-party samples"
+    },
+    {
+      "id": "bird_chirp_03",
+      "category": "birds",
+      "loop": false,
+      "files": {
+        "mp3": "audio/bird_chirp_03.mp3",
+        "ogg": "audio/bird_chirp_03.ogg"
+      },
+      "duration_s": 0.34,
+      "description": "Single stylized bird call",
+      "source": "Original procedural synthesis, no third-party samples"
+    },
+    {
+      "id": "bird_chirp_04",
+      "category": "birds",
+      "loop": false,
+      "files": {
+        "mp3": "audio/bird_chirp_04.mp3",
+        "ogg": "audio/bird_chirp_04.ogg"
+      },
+      "duration_s": 0.58,
+      "description": "Single stylized bird call",
+      "source": "Original procedural synthesis, no third-party samples"
+    },
+    {
+      "id": "ambience_forest_birds",
+      "category": "ambience",
+      "loop": true,
+      "files": {
+        "mp3": "audio/ambience_forest_birds.mp3",
+        "ogg": "audio/ambience_forest_birds.ogg"
+      },
+      "duration_s": 14.0,
+      "description": "14s quiet forest bed with sparse bird calls; continuous loop",
+      "source": "Original procedural synthesis, no third-party samples"
+    },
+    {
+      "id": "car_passby_01",
+      "category": "vehicles",
+      "loop": false,
+      "files": {
+        "mp3": "audio/car_passby_01.mp3",
+        "ogg": "audio/car_passby_01.ogg"
+      },
+      "duration_s": 3.3,
+      "description": "Vehicle drive-by with engine and tire movement",
+      "source": "Original procedural synthesis, no third-party samples"
+    },
+    {
+      "id": "car_passby_02",
+      "category": "vehicles",
+      "loop": false,
+      "files": {
+        "mp3": "audio/car_passby_02.mp3",
+        "ogg": "audio/car_passby_02.ogg"
+      },
+      "duration_s": 3.7,
+      "description": "Second drive-by variant",
+      "source": "Original procedural synthesis, no third-party samples"
+    },
+    {
+      "id": "car_engine_idle_loop",
+      "category": "vehicles",
+      "loop": true,
+      "files": {
+        "mp3": "audio/car_engine_idle_loop.mp3",
+        "ogg": "audio/car_engine_idle_loop.ogg"
+      },
+      "duration_s": 3.0,
+      "description": "3s low engine idling loop; pitch via playbackRate",
+      "source": "Original procedural synthesis, no third-party samples"
+    },
+    {
+      "id": "car_engine_rev",
+      "category": "vehicles",
+      "loop": false,
+      "files": {
+        "mp3": "audio/car_engine_rev.mp3",
+        "ogg": "audio/car_engine_rev.ogg"
+      },
+      "duration_s": 3.8,
+      "description": "Short arcade engine accelerating/revving; one-shot",
+      "source": "Original procedural synthesis, no third-party samples"
+    },
+    {
+      "id": "car_horn_short",
+      "category": "vehicles",
+      "loop": false,
+      "files": {
+        "mp3": "audio/car_horn_short.mp3",
+        "ogg": "audio/car_horn_short.ogg"
+      },
+      "duration_s": 0.73,
+      "description": "Friendly short two-pulse city car horn",
+      "source": "Original procedural synthesis, no third-party samples"
+    },
+    {
+      "id": "ambience_city_traffic",
+      "category": "ambience",
+      "loop": true,
+      "files": {
+        "mp3": "audio/ambience_city_traffic.mp3",
+        "ogg": "audio/ambience_city_traffic.ogg"
+      },
+      "duration_s": 14.0,
+      "description": "14s low-volume city traffic bed; looping",
+      "source": "Original procedural synthesis, no third-party samples"
+    },
+    {
+      "id": "car_door_close",
+      "category": "vehicles",
+      "loop": false,
+      "files": {
+        "mp3": "audio/car_door_close.mp3",
+        "ogg": "audio/car_door_close.ogg"
+      },
+      "duration_s": 0.46,
+      "description": "Short automobile door closing click/thunk",
+      "source": "Original procedural synthesis, no third-party samples"
+    },
+    {
+      "id": "bird_gull_call",
+      "category": "birds",
+      "loop": false,
+      "files": {
+        "mp3": "audio/bird_gull_call.mp3",
+        "ogg": "audio/bird_gull_call.ogg"
+      },
+      "duration_s": 1.5,
+      "description": "Stylized coastal gull call",
+      "source": "Original procedural synthesis, no third-party samples"
+    }
+  ],
+  "recommendedMix": {
+    "footsteps": 0.18,
+    "bird_chirps": 0.16,
+    "ambience_forest_birds": 0.12,
+    "ambience_city_traffic": 0.14,
+    "car_engine_idle_loop": 0.2,
+    "car_horn_short": 0.32
+  },
+  "note": "This pack contains synthesized original audio, NOT downloaded Kenney/OpenGameArt recordings. See SOURCES_AND_OPTIONS.md for free third-party alternatives."
+}

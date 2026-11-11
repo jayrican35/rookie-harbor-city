@@ -1,0 +1,57 @@
+{
+  "name": "Chicken",
+  "id": "npc_chicken",
+  "format": "image/png",
+  "rendering": "pixelated nearest-neighbor",
+  "walk": {
+    "file": "sprites/atlas/chicken_walk_4x4.png",
+    "frameWidth": 112,
+    "frameHeight": 120,
+    "columns": 4,
+    "rows": 4,
+    "directions": [
+      "down",
+      "left",
+      "right",
+      "up"
+    ],
+    "framesPerDirection": 4,
+    "durationMsPerFrame": 170,
+    "footAnchor": [
+      56,
+      110
+    ],
+    "coordinates": "row-major, down left right up"
+  },
+  "argue": {
+    "file": "sprites/atlas/chicken_argue_4x1.png",
+    "frameWidth": 160,
+    "frameHeight": 160,
+    "columns": 4,
+    "rows": 1,
+    "durationMsPerFrame": 230,
+    "footAnchor": [
+      80,
+      155
+    ]
+  },
+  "portraits": {
+    "neutral": "portraits/chicken_neutral.png",
+    "talking": "portraits/chicken_talking.png",
+    "angry": "portraits/chicken_angry.png",
+    "surprised": "portraits/chicken_surprised.png",
+    "confused": "portraits/chicken_confused.png",
+    "laughing": "portraits/chicken_laughing.png",
+    "sad": "portraits/chicken_sad.png",
+    "determined": "portraits/chicken_determined.png"
+  },
+  "intro": {
+    "dialogueStyle": "comic",
+    "sampleLines": [
+      "OFFICER! THIS BANANA IS HARASSING ME!",
+      "HE STOLE MY PARKING SPOT!",
+      "SEE?! HE\u2019S DOING IT AGAIN!"
+    ]
+  },
+  "sourceNotes": "Extracted and matted from the accompanying concept illustration; inspect edge halos and any pose continuity before shipping. Not a hand-redrawn independent 16-frame atlas."
+}

@@ -1,0 +1,61 @@
+{
+  "source_url": "https://rookie-harbor-city-jay-20261014.satinyboot35.chatgpt.site/",
+  "status": "captured_not_verified",
+  "files": [
+    {
+      "path": "assets/embedded/8b8c5c482992868c3f2d.jpg",
+      "bytes": 234607
+    },
+    {
+      "path": "assets/embedded/e13885c67961b145c5df.webp",
+      "bytes": 706
+    },
+    {
+      "path": "assets/embedded/12ab5378318d13a985da.webp",
+      "bytes": 544
+    },
+    {
+      "path": "assets/embedded/8905ed44881d49aeeb5b.webp",
+      "bytes": 552
+    },
+    {
+      "path": "assets/embedded/6b14b987e9831e6e7dbf.webp",
+      "bytes": 360432
+    },
+    {
+      "path": "continuation.css_c1bd445570",
+      "bytes": 35258
+    },
+    {
+      "path": "controls.css_51dca35e99",
+      "bytes": 7873
+    },
+    {
+      "path": "adaptive-hud.css_51dca35e99",
+      "bytes": 8059
+    },
+    {
+      "path": "outbreak.css_b441e4c47c",
+      "bytes": 772
+    },
+    {
+      "path": "assets/embedded/b4844e95de2621af6d74.webp",
+      "bytes": 1349784
+    },
+    {
+      "path": "assets/embedded/6c3a84ea5873fd8e37a5.webp",
+      "bytes": 189906
+    },
+    {
+      "path": "game.js_1dfbf39ff3",
+      "bytes": 1507337
+    }
+  ],
+  "limitations": [
+    "A published-website capture is not the original editable Work project.",
+    "Runtime-fetched assets and logged-in content may not be included.",
+    "Offline gameplay has not been browser-tested."
+  ],
+  "html_sha256": "0d63dc8e7fe17b962906bce40ac1a7fe534251e2ab5aa86a89da651d7ec8d8d3",
+  "html_bytes": 90251
+}

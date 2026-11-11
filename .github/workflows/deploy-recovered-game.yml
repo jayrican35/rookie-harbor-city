@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - .github/workflows/deploy-recovered-game.yml
+      - published-game-capture/**
+      - tools/package_main_game.py
 
 permissions:
   contents: write
@@ -1651,6 +1653,22 @@ jobs:
           cmp -s game-backup/published-game-capture/game.js site/game.js
           cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
           echo 'PASS V140 actual Android and desktop approval screenshots and native entrance/roads without collision changes'
+
+      - name: Check out the main game release
+        uses: actions/checkout@v4
+        with:
+          path: main-game-release
+          persist-credentials: false
+
+      - name: Install the verified main game at the public root
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 main-game-release/tools/package_main_game.py
+          cp -a main-game-release/published-game-capture/. site/
+          cmp -s main-game-release/published-game-capture/index.html site/index.html
+          cmp -s main-game-release/published-game-capture/game-v115.bundle.js site/game-v115.bundle.js
+          cmp -s game-backup/published-game-capture/outbreak.css site/outbreak.css
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

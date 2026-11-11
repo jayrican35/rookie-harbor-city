@@ -1,0 +1,7 @@
+/* Small opt-in art pilot, no global HUD or gameplay changes. */
+#v115PilotLegend{position:fixed;bottom:138px;left:50%;transform:translateX(-50%);
+ color:#ffeac4;background:rgba(17,34,52,.91);border:1px solid #d1b979;
+ padding:4px 10px;border-radius:8px;pointer-events:none;z-index:2147483646;
+ font:700 11px system-ui,sans-serif;letter-spacing:.04em;white-space:nowrap;}
+/* Screenshots intentionally hide this indicator to compare unobstructed art. */
+body.pilot-capture #v115PilotLegend{display:none}

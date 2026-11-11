@@ -1,0 +1,124 @@
+{
+  "version": "owner-roadway-1",
+  "atlas": "roadway-atlas.png",
+  "sourceScale": 0.5,
+  "frames": {
+    "asphalt": {
+      "x": 0,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "sourceRect": [
+        180,
+        60,
+        244,
+        124
+      ],
+      "mask": null
+    },
+    "asphalt_worn": {
+      "x": 36,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "sourceRect": [
+        270,
+        60,
+        334,
+        124
+      ],
+      "mask": null
+    },
+    "curb_top": {
+      "x": 72,
+      "y": 0,
+      "w": 80,
+      "h": 9,
+      "sourceRect": [
+        24,
+        354,
+        184,
+        372
+      ],
+      "mask": null
+    },
+    "curb_bottom": {
+      "x": 156,
+      "y": 0,
+      "w": 80,
+      "h": 9,
+      "sourceRect": [
+        24,
+        470,
+        184,
+        488
+      ],
+      "mask": null
+    },
+    "curb_vertical": {
+      "x": 240,
+      "y": 0,
+      "w": 9,
+      "h": 63,
+      "sourceRect": [
+        1143,
+        356,
+        1161,
+        482
+      ],
+      "mask": null
+    },
+    "yellow_dashes": {
+      "x": 0,
+      "y": 67,
+      "w": 14,
+      "h": 4,
+      "sourceRect": [
+        66,
+        416,
+        94,
+        424
+      ],
+      "mask": "yellow"
+    },
+    "crosswalk": {
+      "x": 18,
+      "y": 67,
+      "w": 40,
+      "h": 31,
+      "sourceRect": [
+        1198,
+        568,
+        1278,
+        630
+      ],
+      "mask": "white"
+    },
+    "arrow": {
+      "x": 62,
+      "y": 67,
+      "w": 16,
+      "h": 35,
+      "sourceRect": [
+        1100,
+        212,
+        1132,
+        282
+      ],
+      "mask": "white"
+    },
+    "accessible": {
+      "x": 82,
+      "y": 67,
+      "w": 22,
+      "h": 38,
+      "sourceRect": [
+        1380,
+        208,
+        1424,
+        284
+      ],
+      "mask": "blue"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+/* V115 premium environmental art badge: development preview only. */
+#v115PremiumTag{position:absolute;z-index:6;right:14px;bottom:170px;
+  pointer-events:none;border:1px solid #ecd096;border-radius:7px;
+  background:rgba(12,36,55,.94);box-shadow:0 5px 15px #05152685;
+  color:#fff0c2;font:800 10px system-ui,sans-serif;letter-spacing:.055em;
+  padding:6px 10px;max-width:min(310px,85vw);text-align:right;}
+#v115ReferenceTag{display:none}
+@media(max-width:480px){#v115PremiumTag{bottom:192px;font-size:9px;right:12px;}}

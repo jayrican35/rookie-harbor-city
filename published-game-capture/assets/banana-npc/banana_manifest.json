@@ -1,0 +1,78 @@
+{
+  "name": "Banana",
+  "id": "npc_banana",
+  "format": "image/png",
+  "rendering": "pixelated nearest-neighbor",
+  "walk": {
+    "file": "sprites/atlas/banana_walk_4x4.png",
+    "frameWidth": 112,
+    "frameHeight": 120,
+    "columns": 4,
+    "rows": 4,
+    "directions": [
+      "down",
+      "left",
+      "right",
+      "up"
+    ],
+    "framesPerDirection": 4,
+    "durationMsPerFrame": 170,
+    "footAnchor": [
+      56,
+      110
+    ],
+    "coordinates": "row-major, down left right up"
+  },
+  "idle": {
+    "file": "sprites/atlas/banana_idle_4x1.png",
+    "frameWidth": 112,
+    "frameHeight": 120,
+    "columns": 4,
+    "rows": 1,
+    "durationMsPerFrame": 380,
+    "footAnchor": [
+      56,
+      110
+    ]
+  },
+  "talk": {
+    "file": "sprites/atlas/banana_talk_4x1.png",
+    "frameWidth": 112,
+    "frameHeight": 120,
+    "columns": 4,
+    "rows": 1,
+    "durationMsPerFrame": 220,
+    "footAnchor": [
+      56,
+      110
+    ]
+  },
+  "argue": {
+    "file": "sprites/atlas/banana_argue_4x1.png",
+    "frameWidth": 160,
+    "frameHeight": 160,
+    "columns": 4,
+    "rows": 1,
+    "durationMsPerFrame": 230,
+    "footAnchor": [
+      80,
+      155
+    ]
+  },
+  "portraits": {
+    "neutral": "portraits/banana_neutral.png",
+    "talking": "portraits/banana_talking.png",
+    "laughing": "portraits/banana_laughing.png",
+    "smug": "portraits/banana_smug.png",
+    "surprised": "portraits/banana_surprised.png",
+    "confused": "portraits/banana_confused.png",
+    "thinking": "portraits/banana_thinking.png",
+    "annoyed": "portraits/banana_annoyed.png"
+  },
+  "sampleLines": [
+    "Public parking, my feathery friend.",
+    "I’m simply standing here… appealing.",
+    "That’s a bold claim from someone dressed as poultry."
+  ],
+  "sourceNotes": "Extracted and transparent-matted from a generative concept illustration. Quality pilot; may need manual cleanup of dark edges/feet and timing, do not assume animation is hand-posed. Matches Chicken pack atlas dimensions, directions and anchors."
+}

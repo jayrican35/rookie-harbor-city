@@ -142,7 +142,15 @@
         ],
         "uniformExportScale": 0.675975554694356
       },
-      "sha256": "fa49a614ce7a932c5fa3bd666a16cfa65736bf7ae213e57fcd77a7b29b4ed668"
+      "sha256": "fa49a614ce7a932c5fa3bd666a16cfa65736bf7ae213e57fcd77a7b29b4ed668",
+      "brakeLamps": [
+        [
+          55,
+          159,
+          9,
+          15
+        ]
+      ]
     },
     {
       "index": 1,
@@ -272,7 +280,15 @@
         ],
         "uniformExportScale": 0.23006889508217665
       },
-      "sha256": "e2d51d80abf8bfe0d02ba5feac9e54817e802615b540d2e39c7b65d66697ef91"
+      "sha256": "e2d51d80abf8bfe0d02ba5feac9e54817e802615b540d2e39c7b65d66697ef91",
+      "brakeLamps": [
+        [
+          49,
+          173,
+          8,
+          16
+        ]
+      ]
     },
     {
       "index": 2,
@@ -414,7 +430,15 @@
         ],
         "uniformExportScale": 0.6603770883841197
       },
-      "sha256": "2aa792d060ee649ab5df248671d0a91d0cce0dc1bda4b2b69ff104ab0b82f1e9"
+      "sha256": "2aa792d060ee649ab5df248671d0a91d0cce0dc1bda4b2b69ff104ab0b82f1e9",
+      "brakeLamps": [
+        [
+          56,
+          164,
+          6,
+          16
+        ]
+      ]
     },
     {
       "index": 3,
@@ -556,7 +580,15 @@
         ],
         "uniformExportScale": 0.19965527114495785
       },
-      "sha256": "cb8cd3608ed950a278ed2236dcb75f34606e475a028d77a93ec66432690480e2"
+      "sha256": "cb8cd3608ed950a278ed2236dcb75f34606e475a028d77a93ec66432690480e2",
+      "brakeLamps": [
+        [
+          72,
+          151,
+          5,
+          15
+        ]
+      ]
     },
     {
       "index": 4,
@@ -658,7 +690,8 @@
         ],
         "uniformExportScale": 0.6882445171224637
       },
-      "sha256": "512f82a3508e7672d38910cf42d4687add82c29c95a14f0c7e400f373dd40fc0"
+      "sha256": "512f82a3508e7672d38910cf42d4687add82c29c95a14f0c7e400f373dd40fc0",
+      "brakeLamps": []
     },
     {
       "index": 5,
@@ -816,7 +849,15 @@
         ],
         "uniformExportScale": 0.22138222724033835
       },
-      "sha256": "b9f40596813933cb9244fa632a36dcfdf15d6587e59117b98d6bf7cfc3e940e6"
+      "sha256": "b9f40596813933cb9244fa632a36dcfdf15d6587e59117b98d6bf7cfc3e940e6",
+      "brakeLamps": [
+        [
+          185,
+          145,
+          5,
+          17
+        ]
+      ]
     },
     {
       "index": 6,
@@ -970,7 +1011,15 @@
         ],
         "uniformExportScale": 0.6935826721678142
       },
-      "sha256": "544f7da6b618d476305c62f73183bc9068ec2f043060bd81aedb50e53e4acdb4"
+      "sha256": "544f7da6b618d476305c62f73183bc9068ec2f043060bd81aedb50e53e4acdb4",
+      "brakeLamps": [
+        [
+          196,
+          144,
+          5,
+          14
+        ]
+      ]
     },
     {
       "index": 7,
@@ -1132,7 +1181,15 @@
         ],
         "uniformExportScale": 0.22540159909229926
       },
-      "sha256": "cdae8ba496b8c4773358652c1ac5304dab685e87a1f6002433cf5443f475eb8f"
+      "sha256": "cdae8ba496b8c4773358652c1ac5304dab685e87a1f6002433cf5443f475eb8f",
+      "brakeLamps": [
+        [
+          211,
+          168,
+          9,
+          17
+        ]
+      ]
     },
     {
       "index": 8,
@@ -1262,7 +1319,15 @@
         ],
         "uniformExportScale": 0.20720338597674787
       },
-      "sha256": "86d447207e00af65bd8b56a3535daaa5bcaf369781a7a2381d1f4cea86b2f125"
+      "sha256": "86d447207e00af65bd8b56a3535daaa5bcaf369781a7a2381d1f4cea86b2f125",
+      "brakeLamps": [
+        [
+          205,
+          160,
+          9,
+          17
+        ]
+      ]
     },
     {
       "index": 9,
@@ -1408,7 +1473,15 @@
         ],
         "uniformExportScale": 0.21941950452340492
       },
-      "sha256": "39fddb46fa348bb8cf54e10d8c9e9a88d0c9fdc5d4f27d9960e7e3bff5bc409b"
+      "sha256": "39fddb46fa348bb8cf54e10d8c9e9a88d0c9fdc5d4f27d9960e7e3bff5bc409b",
+      "brakeLamps": [
+        [
+          209,
+          183,
+          11,
+          17
+        ]
+      ]
     },
     {
       "index": 10,
@@ -1542,7 +1615,21 @@
         ],
         "uniformExportScale": 0.1968244477632936
       },
-      "sha256": "e72388159407dac8553b1ab6bed59d5fae56b0437de8cc97b35caa7d02035d3f"
+      "sha256": "e72388159407dac8553b1ab6bed59d5fae56b0437de8cc97b35caa7d02035d3f",
+      "brakeLamps": [
+        [
+          167,
+          208,
+          13,
+          15
+        ],
+        [
+          204,
+          178,
+          6,
+          17
+        ]
+      ]
     },
     {
       "index": 11,
@@ -1692,7 +1779,21 @@
         ],
         "uniformExportScale": 0.206498165773095
       },
-      "sha256": "cc9fcab54d585b9e9e30c0f4f1e5de370982a2da756a82ff1fa2226e533af265"
+      "sha256": "cc9fcab54d585b9e9e30c0f4f1e5de370982a2da756a82ff1fa2226e533af265",
+      "brakeLamps": [
+        [
+          119,
+          214,
+          17,
+          14
+        ],
+        [
+          182,
+          207,
+          14,
+          17
+        ]
+      ]
     },
     {
       "index": 12,
@@ -1806,7 +1907,21 @@
         ],
         "uniformExportScale": 0.6720448416544188
       },
-      "sha256": "b8c916891cbbc9a969b70c0b0053ead89f4a6b5519b7691120e135280eb18b21"
+      "sha256": "b8c916891cbbc9a969b70c0b0053ead89f4a6b5519b7691120e135280eb18b21",
+      "brakeLamps": [
+        [
+          99,
+          205,
+          15,
+          13
+        ],
+        [
+          158,
+          204,
+          15,
+          12
+        ]
+      ]
     },
     {
       "index": 13,
@@ -1940,7 +2055,21 @@
         ],
         "uniformExportScale": 0.19672228202034267
       },
-      "sha256": "e7c91c1f2216bceae4a94909eb3ce42afbfa467dd6de2d8dc49cae220b95896c"
+      "sha256": "e7c91c1f2216bceae4a94909eb3ce42afbfa467dd6de2d8dc49cae220b95896c",
+      "brakeLamps": [
+        [
+          137,
+          215,
+          17,
+          13
+        ],
+        [
+          78,
+          210,
+          15,
+          14
+        ]
+      ]
     },
     {
       "index": 14,
@@ -2098,7 +2227,21 @@
         ],
         "uniformExportScale": 0.6696825232876354
       },
-      "sha256": "9f4b56587ddf614599835ccaa625dbb12e7055eaa8162ebbe4f685d9243d8e97"
+      "sha256": "9f4b56587ddf614599835ccaa625dbb12e7055eaa8162ebbe4f685d9243d8e97",
+      "brakeLamps": [
+        [
+          115,
+          205,
+          16,
+          12
+        ],
+        [
+          64,
+          187,
+          10,
+          19
+        ]
+      ]
     },
     {
       "index": 15,
@@ -2220,7 +2363,15 @@
         ],
         "uniformExportScale": 0.6576759083126051
       },
-      "sha256": "96c7e374a5f5a597e57c83b46d9cb38aad8e5b414a8cf2b7d12fe74a262c0dac"
+      "sha256": "96c7e374a5f5a597e57c83b46d9cb38aad8e5b414a8cf2b7d12fe74a262c0dac",
+      "brakeLamps": [
+        [
+          69,
+          189,
+          11,
+          15
+        ]
+      ]
     }
   ],
   "atlasSha256": "cb259cf4649fc84f156d1894bce7df859b4310c8bc497b97fd6859f0b83ccec6"

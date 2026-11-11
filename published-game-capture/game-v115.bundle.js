@@ -10167,7 +10167,7 @@ function closeM5(){
 
     ["SGT. BROOKS", "Case 005: CLOSED. The label, the photograph, the threat note, the warehouse ledger, Ferris, and Voss's own harbor ledger — five cases, one chain, no guesses. That is how a campaign is supposed to end, Detective."],
 
-    ["JAY", "From a missing drive in Intake to a freighter at the dock. Same lesson every time: follow what's supported."]
+    ["JAY", (window.ROOKIE_MAIN_CITY_ACTIVE && window.HARBOR?.caper?.usesNewCase()) ? "From a missing sandwich in Intake to a freighter at the dock. Same lesson every time: follow what's supported." : "From a missing drive in Intake to a freighter at the dock. Same lesson every time: follow what's supported."]
 
   ], function(){ endShift("m5", showEnding); });
 
@@ -10207,7 +10207,9 @@ function showEnding(){
 
   host.innerHTML = "";
 
-  CASE_SUMMARY.forEach(function(c){
+  CASE_SUMMARY.forEach(function(c, i){
+    if((window.ROOKIE_MAIN_CITY_ACTIVE && window.HARBOR?.caper?.usesNewCase()) && i===0)c={n:"CASE 001 — THE GREAT SANDWICH CAPER",t:"Nobody stole it. Brooks moved his lunch in the cooler."};
+    if((window.ROOKIE_MAIN_CITY_ACTIVE && window.HARBOR?.caper?.usesNewCase()) && i===3)c={...c,t:c.t.replace("Patrol Officer → Detective","Detective")};
 
     var d = document.createElement("div"); d.className = "finding";
 
@@ -10220,6 +10222,7 @@ function showEnding(){
   });
 
   endOverlay.classList.add("show");
+  if(window.ROOKIE_MAIN_CITY_ACTIVE)document.getElementById("btnEndExplore").focus({preventScroll:true});
 
 }
 
@@ -10295,6 +10298,7 @@ function doEvShelf(){
 
   var lines = [["EVIDENCE SHELVES", "Locked evidence shelves. Every item is tagged, sealed and signed for \u2014 twice, since this morning's policy change."]];
 
+  if((window.ROOKIE_MAIN_CITY_ACTIVE && window.HARBOR?.caper?.usesNewCase()))return showLines([["EVIDENCE SHELVES","Locked evidence shelves. Every item is tagged, sealed and signed for."]],null);
   if(state.closed){
 
     lines.push(["EVIDENCE SHELVES", "Shelf A, slot 1: USB drive EV-001 \u2014 recovered from Intake Tray B, seal intact, transfer form TR-88 completed and countersigned. Case 001 property."]);
@@ -11439,7 +11443,10 @@ function renderManual(){
 
   var html = '<span class="man-chap">CHAPTER ' + (manCur.chap + 1) + " OF " + m.chapters.length + "</span><h3>" + ch.title + "</h3>";
 
-  ch.body.forEach(function(p){ html += "<p>" + p + "</p>"; });
+  ch.body.forEach(function(p){
+    if((window.ROOKIE_MAIN_CITY_ACTIVE && window.HARBOR?.caper?.usesNewCase()))p=p.replace("<b>Patrol Officer</b> after Case 001", "a first-case badge after Case 001").replace("001 The Missing Drive", "001 The Great Sandwich Caper");
+    html += "<p>" + p + "</p>";
+  });
 
   document.getElementById("manPage").innerHTML = html;
 
@@ -11898,6 +11905,7 @@ function endShift(endedId, afterFn){
   save(); renderPerf();
 
   shiftOverlay.classList.add("show");
+  if(window.ROOKIE_MAIN_CITY_ACTIVE)document.getElementById("btnShiftNext").focus({preventScroll:true});
 
 }
 
@@ -13819,7 +13827,17 @@ function renderDb(q){
 
   }
 
-  var rows = DB_RECORDS.filter(function(r){
+  var records = DB_RECORDS;
+  if((window.ROOKIE_MAIN_CITY_ACTIVE && window.HARBOR?.caper?.usesNewCase())){
+    var caperRecords={
+      "1042":{role:"Rookie Officer",detail:"First shift at Precinct 9. Assigned The Great Sandwich Caper."},
+      "2210":{detail:"Saw Officer Torres open the break-room fridge and Brooks carrying a cooler."},
+      "2231":{detail:"Moved Brooks’s cooler to Intake storage."},
+      "CASE-001":{name:"CASE 001 — THE GREAT SANDWICH CAPER",detail:"Brooks’s missing lunch. Check the fridge, hear all three witnesses, and find the physical clue."}
+    };
+    records=records.map(function(r){return caperRecords[r.badge]?{...r,...caperRecords[r.badge]}:r;});
+  }
+  var rows = records.filter(function(r){
 
     if(!q) return true;
 
@@ -25347,7 +25365,7 @@ var characterRenderers=(function(){
 
   function htmlEscape(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 
-  function chapter(){var a=arc();return !a.done&&a.started?CHAPTERS[a.index]:null;}
+  function chapter(){var a=arc();return !a.done&&a.started&&(!window.ROOKIE_MAIN_CITY_ACTIVE||campaignDone())?CHAPTERS[a.index]:null;}
 
   function arcSpot(i,j){return 'arc:'+i+':'+j;}
 
@@ -25359,7 +25377,7 @@ var characterRenderers=(function(){
 
   function beginChapter(){
 
-    var a=arc();if(!campaignDone()||a.done)return false;
+    var a=arc();if(!campaignDone()||a.done||a.started||!CHAPTERS[a.index])return false;
 
     a.tracked=null;a.started=true;state.perf.shift='arc:'+a.index;state.perf.shiftTotal=0;var c=CHAPTERS[a.index];state.rank=c.rank;a.scene=c.title;save();refreshPanels();showJournal('brief');return true;
 
@@ -25375,6 +25393,7 @@ var characterRenderers=(function(){
 
     else if(a.done){var finalGood=a.choices[7]===0;h+='<h3>'+ (finalGood?'Harbor Dawn · A City Returned':'Harbor Dawn · Another Command')+'</h3><p>'+htmlEscape(CHAPTERS[7].result[a.choices[7]||0])+'</p><p>'+ (a.trust>=6?'Your neighbors remember how you kept families and witnesses safe.':'Some choices hurt people along the way. The city can rebuild, but earning trust again will take time.')+'</p><p><b>13 / 13 chapters completed</b> · Public trust '+a.trust+' · Performance '+state.perf.total+'</p><p>Free exploration remains available. Export your save to keep this ending.</p>';}
 
+    else if(window.ROOKIE_MAIN_CITY_ACTIVE&&!a.started&&a.index>0&&CHAPTERS[a.index]){var nextChapter=CHAPTERS[a.index];h+='<h3>'+htmlEscape(nextChapter.title)+'</h3><button class="dbtn gold" id="hcBegin">Begin Chapter '+nextChapter.title.split(" · ")[0]+'</button>';}
     else if(!a.started){h+='<h3>Act I complete · Command awaits</h3><p>The Voss case is closed. The next chapters follow Jay through leadership, an unlawful break with City Hall, and a resistance against a fictional occupying coalition.</p><button class="dbtn gold" id="hcBegin">Begin Act II</button>';}
 
     else{
@@ -25489,9 +25508,9 @@ var characterRenderers=(function(){
 
   refreshPanels=function(){baseRefresh();var a=arc(),c=chapter();if(c||a.done){state.rank=a.done?'Harbor Citizen':c.rank;document.getElementById('rankLabel').textContent=a.done?'CITIZEN':c.rank.toUpperCase();var status=document.getElementById('caseStatus');status.textContent=a.done?'STORY COMPLETE':c.title.split(' · ')[0];}};
 
-  var storyBtn=document.createElement('button');storyBtn.className='hbtn goldbtn';storyBtn.textContent='Story';storyBtn.title='Campaign journal and next chapter';storyBtn.onclick=function(){showJournal();};document.querySelector('header.topbar').appendChild(storyBtn);
+  var storyBtn=document.createElement('button');storyBtn.className='hbtn goldbtn';storyBtn.textContent='Story';storyBtn.title='Campaign journal and next chapter';storyBtn.onclick=function(){if(window.ROOKIE_MAIN_CITY_ACTIVE)closeMenuPage();showJournal();};document.querySelector(window.ROOKIE_MAIN_CITY_ACTIVE?'.menu-actions':'header.topbar').appendChild(storyBtn);
 
-  var endingPrev=showEnding;showEnding=function(){endingPrev();var end=document.getElementById('endSummary'),next=document.createElement('button');next.className='dbtn gold';next.textContent='Continue Jay’s story · Act II';next.onclick=function(){document.getElementById('endOverlay').classList.remove('show');beginChapter();};end.appendChild(next);document.getElementById('endSub').textContent='Act I complete: five investigations solved. Jay’s story continues through Command, Outside the Law, and Harbor City.';};
+  var endingPrev=showEnding;showEnding=function(){endingPrev();var end=document.getElementById('endSummary'),next=document.createElement('button');next.className='dbtn gold';next.textContent='Continue Jay’s story · Act II';if(window.ROOKIE_MAIN_CITY_ACTIVE&&(arc().started||arc().index>0||arc().done))next.textContent='Open Story Journal';next.onclick=function(){document.getElementById('endOverlay').classList.remove('show');if(!window.ROOKIE_MAIN_CITY_ACTIVE||(!arc().started&&arc().index===0))beginChapter();else showJournal();};end.appendChild(next);document.getElementById('endSub').textContent='Act I complete: five investigations solved. Jay’s story continues through Command, Outside the Law, and Harbor City.';};
 
   // Base renderer constantly checks all spots; dormant arc spots must not hijack interaction.
 
@@ -44601,7 +44620,7 @@ var talks={rivera:TALKS.rivera,sergeant:TALKS.sergeant,witness:TALKS.witness,par
 
 var nearBefore=computeNear;computeNear=function(){cast();nearBefore();if(!active()||state.map!=='station'||isDriving())return;var best=null,dist=77;m.spots.forEach(function(s){if(s.id.indexOf('caper:')!==0)return;var d=Math.hypot(s.x-player.x-13,s.y-player.y-13);if(d<dist){dist=d;best=s;}});if(best)nearSpot=best;};
 
-var targetBefore=currentTargetId,destBefore=targetDest,spotBefore=targetSpotId;currentTargetId=function(){if(active())return 'caper';if(!H.academy.active()&&data().reward)return campObjective()?'camp':null;return targetBefore();};targetDest=function(id){return id==='caper'?obj():destBefore(id);};targetSpotId=function(id){return id==='caper'?obj().spot:spotBefore(id);};
+var targetBefore=currentTargetId,destBefore=targetDest,spotBefore=targetSpotId;currentTargetId=function(){if(window.ROOKIE_MAIN_CITY_ACTIVE&&H.objective())return 'arcLead';if(active())return 'caper';if(!H.academy.active()&&data().reward)return campObjective()?'camp':null;return targetBefore();};targetDest=function(id){return id==='caper'?obj():destBefore(id);};targetSpotId=function(id){return id==='caper'?obj().spot:spotBefore(id);};
 
 function notebookHTML(){var c=data();if(c.legacy&&c.legacy.closed&&!c.reward)return '<h3>The Great Sandwich Caper</h3><p>Your original Case 001 is complete. Your later cases and saved progress are safe.</p>';var html='<h3>🥪 The Great Sandwich Caper</h3><h4>PEOPLE</h4>';Object.keys(definition.witnesses).forEach(function(k){html+='<p><b>'+definition.witnesses[k].name+'</b> · '+(c.witnesses[k]?definition.witnesses[k].note:'Not questioned yet.')+'</p>';});html+='<h4>CLUES</h4>';Object.keys(definition.clues).forEach(function(k){if(c.clues[k])html+='<p><b>'+definition.clues[k][0]+'</b><br>'+definition.clues[k][1]+'</p>';});if(!Object.keys(c.clues).length)html+='<p>No clues yet. Talk to Brooks, then inspect the fridge.</p>';html+='<h4>CONCLUSION</h4><p>'+(c.complete?'Nobody stole it. Brooks moved his lunch in the cooler.':c.clues.bag?'Brooks’s named lunch bag was inside the cooler. Tell Brooks what you found.':'Keep checking what people saw.')+'</p>';if(c.reward)html+='<p>🏅 <b>'+c.reward.badge+'</b><br>📓 Detective Notebook</p>';if(c.legacy)html+='<p>Your earlier Missing Drive progress is safely archived.</p>';return html;}
 
@@ -44613,7 +44632,7 @@ function openNotebook(){close();closeInvPage();journal.innerHTML='<div class="ca
 
 var overlayBefore=overlayOpen;overlayOpen=function(){return journal.style.display!=='none'||overlayBefore();};
 
-var refreshBefore=refreshPanels;refreshPanels=function(){refreshBefore();if(!H.caper)return;if(notebookButton)notebookButton.style.display=H.academy.active()?'none':'';var c=data();if(c.legacy&&c.legacy.closed&&c.complete&&!c.reward)return;document.getElementById('notebook').innerHTML=notebookHTML();document.getElementById('nbCount').textContent=Object.keys(c.clues).length+' CLUES · '+Object.keys(c.witnesses).length+'/3 PEOPLE';if(!active()){if(c.reward&&!H.academy.active()){var next=campObjective();document.getElementById('objCount').textContent=next?'NEXT CASE':'COMPLETE';document.getElementById('objList').innerHTML='<li class="current"><span class="box">➜</span>'+(next?next.text:'All cases complete · Explore Harbor City')+'</li>';}return;}document.getElementById('objCount').textContent='CASE 001';document.getElementById('objList').innerHTML='<li class="current"><span class="box">➜</span>'+obj().text+'</li>';var stories=Object.keys(c.witnesses).map(function(k){return '<div class="finding"><h4>'+definition.witnesses[k].name+'</h4><p>'+definition.witnesses[k].note+'</p></div>';}).join('');document.getElementById('statements').innerHTML=stories||'<p>Talk to the three witnesses.</p>';document.getElementById('evidenceList').innerHTML=c.clues.bag?'<div class="finding"><h4>🥪 Brooks’s lunch bag</h4><p>Found inside the Intake cooler.</p></div>':'<p>Clues appear in your Detective Notebook.</p>';document.getElementById('evCount').textContent=c.clues.bag?'1 ITEM':'0 ITEMS';document.getElementById('rankLabel').textContent=child()?'JUNIOR DETECTIVE':who()==='rosa'?'COMMUNITY SUPPORT':'ROOKIE';document.getElementById('caseStatus').textContent='THE GREAT SANDWICH CAPER';var rec=DB_RECORDS.find(function(r){return r.badge==='CASE-001';});if(rec){rec.name='CASE 001 — THE GREAT SANDWICH CAPER';rec.detail='Brooks’s missing lunch. Check the fridge, hear all three witnesses, and find the physical clue.';}};
+var refreshBefore=refreshPanels;refreshPanels=function(){refreshBefore();if(!H.caper)return;if(notebookButton)notebookButton.style.display=H.academy.active()?'none':'';var c=data();if(c.legacy&&c.legacy.closed&&c.complete&&!c.reward)return;document.getElementById('notebook').innerHTML=notebookHTML();document.getElementById('nbCount').textContent=Object.keys(c.clues).length+' CLUES · '+Object.keys(c.witnesses).length+'/3 PEOPLE';if(!active()){if(c.reward&&!H.academy.active()){var next=(window.ROOKIE_MAIN_CITY_ACTIVE&&H.objective())||campObjective();document.getElementById('objCount').textContent=next?'NEXT CASE':'COMPLETE';document.getElementById('objList').innerHTML='<li class="current"><span class="box">➜</span>'+(next?next.text:'All cases complete · Explore Harbor City')+'</li>';}return;}document.getElementById('objCount').textContent='CASE 001';document.getElementById('objList').innerHTML='<li class="current"><span class="box">➜</span>'+obj().text+'</li>';var stories=Object.keys(c.witnesses).map(function(k){return '<div class="finding"><h4>'+definition.witnesses[k].name+'</h4><p>'+definition.witnesses[k].note+'</p></div>';}).join('');document.getElementById('statements').innerHTML=stories||'<p>Talk to the three witnesses.</p>';document.getElementById('evidenceList').innerHTML=c.clues.bag?'<div class="finding"><h4>🥪 Brooks’s lunch bag</h4><p>Found inside the Intake cooler.</p></div>':'<p>Clues appear in your Detective Notebook.</p>';document.getElementById('evCount').textContent=c.clues.bag?'1 ITEM':'0 ITEMS';document.getElementById('rankLabel').textContent=child()?'JUNIOR DETECTIVE':who()==='rosa'?'COMMUNITY SUPPORT':'ROOKIE';document.getElementById('caseStatus').textContent='THE GREAT SANDWICH CAPER';var rec=DB_RECORDS.find(function(r){return r.badge==='CASE-001';});if(rec&&!window.ROOKIE_MAIN_CITY_ACTIVE){rec.name='CASE 001 — THE GREAT SANDWICH CAPER';rec.detail='Brooks’s missing lunch. Check the fridge, hear all three witnesses, and find the physical clue.';}};
 
 var notebookButton=document.createElement('button');notebookButton.id='caperNotesButton';notebookButton.className='hbtn';notebookButton.textContent='📓 Case notebook';notebookButton.onclick=openNotebook;document.getElementById('invNotebookSlot').appendChild(notebookButton);
 
@@ -44663,7 +44682,7 @@ if(data().complete&&!(data().legacy&&data().legacy.closed)&&!state.camp.m4.done)
 
 var journalBefore=H.showJournal;H.showJournal=function(){if(active()||data().reward&&!state.camp.m2.brief)return openNotebook();return journalBefore.apply(this,arguments);};
 
-var storyButton=document.querySelector('button[title="Campaign journal and next chapter"]');if(storyButton){var storyBefore=storyButton.onclick;storyButton.onclick=function(){if(active()||data().reward&&!state.camp.m2.brief)return openNotebook();return storyBefore();};}
+var storyButton=document.querySelector('button[title="Campaign journal and next chapter"]');if(storyButton&&!window.ROOKIE_MAIN_CITY_ACTIVE){var storyBefore=storyButton.onclick;storyButton.onclick=function(){if(active()||data().reward&&!state.camp.m2.brief)return openNotebook();return storyBefore();};}
 
 cast();refreshPanels();
 
@@ -45194,13 +45213,23 @@ cast();refreshPanels();
 'use strict';
 const H=window.HARBOR,SPAWN=Object.freeze({x:1760,y:1568,angle:Math.PI/2});
 const controllerFactory=function(car,keys,window,carCollidesAt,saveThrottled,feedback){
-const driveKeys={},CAR_MAX=265,CAR_REV=-92,document={getElementById:()=>null},AC=null,traffic=[];
+const driveKeys={},document={getElementById:()=>null},AC=null,traffic=[];
 const syncPlayerToCar=()=>{},checkCarExits=()=>{},perfCollision=feedback,tone=()=>{},toast=()=>{};
+const HANDLING=Object.freeze({"maxSpeed":265,"reverseSpeed":92,"acceleration":165,"accelerationRolloff":0.35,"serviceBrake":128,"emergencyBrake":140,"reverseAcceleration":115,"reverseToForwardBrake":140,"coastDeceleration":30,"steeringResponseSeconds":0.085,"steeringLength":44,"steeringSpeedKnee":105,"steeringSpeedExponent":2,"maxYawRate":1.15,"steeringMinSpeed":0.5,"normalLateralGrip":18,"slidingLateralGrip":3.5,"driftSpeedThreshold":145,"driftSpeedFade":45,"driftDemandStart":115,"driftDemandFull":205,"gripLossResponse":4,"gripRecoveryResponse":8,"countersteerGrip":22,"countersteerMinLateralSpeed":3,"countersteerRecoverySeconds":0.35,"handbrakeGripLoss":0.75,"maxSlipAngle":0.5,"driftDeceleration":50,"driftingSlipAngle":0.1});
+const CAR_MAX=HANDLING.maxSpeed,CAR_REV=-HANDLING.reverseSpeed;
 var connectedSteer=0;
 var carReboundTime=0;
 function updateCar(dt, tNow){
   carReboundTime=Math.max(0,carReboundTime-dt);
   var previousAngle=car.angle;
+  // World velocity survives heading changes. A scalar speed adjustment by
+  // the existing impact bridge changes only its longitudinal component.
+  var oldCos=Math.cos(previousAngle),oldSin=Math.sin(previousAngle);
+  var driveVX=Number.isFinite(car.driveVelocityX)?car.driveVelocityX:oldCos*car.speed;
+  var driveVY=Number.isFinite(car.driveVelocityY)?car.driveVelocityY:oldSin*car.speed;
+  var longitudinalCorrection=car.speed-(driveVX*oldCos+driveVY*oldSin);
+  driveVX+=oldCos*longitudinalCorrection;driveVY+=oldSin*longitudinalCorrection;
+
   /* Stage A: the car cannot drive with its engine off. With the engine off
      the accelerator is dead and the car only rolls to a stop; steering,
      braking and the exit keys keep working. */
@@ -45210,32 +45239,60 @@ function updateCar(dt, tNow){
   // Connected Sporty Arcade steering: continuous signed speed, reduced
   // high-speed yaw and a short input response. No stationary rotation.
   var steer = (right ? 1 : 0) - (left ? 1 : 0);
-  connectedSteer += (steer-connectedSteer)*(1-Math.exp(-dt/.10));
-  if(Math.abs(car.speed)>.5){
-    var yaw=car.speed/48/(1+Math.pow(Math.abs(car.speed)/115,1.8));
-    car.angle += connectedSteer*Math.max(-1.2,Math.min(1.2,yaw))*dt;
+  connectedSteer += (steer-connectedSteer)*(1-Math.exp(-dt/HANDLING.steeringResponseSeconds));
+  if(Math.abs(car.speed)>HANDLING.steeringMinSpeed){
+    var yaw=car.speed/HANDLING.steeringLength/(1+Math.pow(Math.abs(car.speed)/HANDLING.steeringSpeedKnee,HANDLING.steeringSpeedExponent));
+    car.angle += connectedSteer*Math.max(-HANDLING.maxYawRate,Math.min(HANDLING.maxYawRate,yaw))*dt;
   }
   if(carReboundTime>0){gas=false;brk=false;}
   if(carCollidesAt(car.x,car.y,car.angle,car.map)&&!carCollidesAt(car.x,car.y,previousAngle,car.map))car.angle=previousAngle;
+  // The existing impact solver owns velocity/translation during contact.
+  var impactOwned=!!car.impactState,driveCos=Math.cos(car.angle),driveSin=Math.sin(car.angle);
+  if(!impactOwned)car.speed=driveVX*driveCos+driveVY*driveSin;
   // One mutually exclusive longitudinal integration per substep.
   var stop=!!(driveKeys.brake || window.__carSpace);
   if(carReboundTime>0){gas=false;brk=false;}
   if(stop){
-    car.speed=Math.sign(car.speed)*Math.max(0,Math.abs(car.speed)-360*dt) || 0;
+    car.speed=Math.sign(car.speed)*Math.max(0,Math.abs(car.speed)-HANDLING.emergencyBrake*dt) || 0;
   }else if(brk){
-    car.speed=car.speed>0?Math.max(0,car.speed-280*dt):Math.max(CAR_REV,car.speed-115*dt);
+    car.speed=car.speed>0?Math.max(0,car.speed-HANDLING.serviceBrake*dt):Math.max(CAR_REV,car.speed-HANDLING.reverseAcceleration*dt);
   }else if(gas){
-    if(car.speed<0)car.speed=Math.min(0,car.speed+230*dt);
-    else {var drag=185*.35/CAR_MAX;car.speed=CAR_MAX/.35+(car.speed-CAR_MAX/.35)*Math.exp(-drag*dt);}
+    if(car.speed<0)car.speed=Math.min(0,car.speed+HANDLING.reverseToForwardBrake*dt);
+    else {var rolloff=HANDLING.accelerationRolloff,drag=HANDLING.acceleration*rolloff/CAR_MAX;car.speed=CAR_MAX/rolloff+(car.speed-CAR_MAX/rolloff)*Math.exp(-drag*dt);}
   }else{
-    car.speed=Math.sign(car.speed)*Math.max(0,Math.abs(car.speed)-36*dt) || 0;
+    car.speed=Math.sign(car.speed)*Math.max(0,Math.abs(car.speed)-HANDLING.coastDeceleration*dt) || 0;
   }
   car.speed=Math.max(CAR_REV,Math.min(CAR_MAX,car.speed));
+  if(!impactOwned){
+    var lateral=-driveVX*driveSin+driveVY*driveCos,absSpeed=Math.abs(car.speed);
+    var yawRate=dt?(car.angle-previousAngle)/dt:0;
+    var countersteer=steer*lateral>HANDLING.countersteerMinLateralSpeed;
+    car.tractionRecovery=countersteer?HANDLING.countersteerRecoverySeconds:Math.max(0,(car.tractionRecovery||0)-dt);
+    var speedLoad=Math.max(0,Math.min(1,(absSpeed-HANDLING.driftSpeedThreshold)/HANDLING.driftSpeedFade));
+    var cornerLoad=Math.max(0,Math.min(1,(Math.abs(yawRate)*absSpeed-HANDLING.driftDemandStart)/(HANDLING.driftDemandFull-HANDLING.driftDemandStart)));
+    var targetLoss=speedLoad*Math.max(cornerLoad,stop?HANDLING.handbrakeGripLoss*Math.abs(connectedSteer):0);
+    if(car.tractionRecovery>0)targetLoss=0;
+    var loss=car.tractionLoss||0,response=targetLoss>loss?HANDLING.gripLossResponse:HANDLING.gripRecoveryResponse;
+    loss+=(targetLoss-loss)*(1-Math.exp(-response*dt));
+    var grip=HANDLING.normalLateralGrip+(HANDLING.slidingLateralGrip-HANDLING.normalLateralGrip)*loss;
+    if(car.tractionRecovery>0)grip=Math.max(grip,HANDLING.countersteerGrip);
+    lateral*=Math.exp(-grip*dt);
+    var limit=Math.max(absSpeed,HANDLING.driftSpeedFade)*Math.tan(HANDLING.maxSlipAngle);
+    lateral=Math.max(-limit,Math.min(limit,lateral));
+    car.speed=Math.sign(car.speed)*Math.max(0,absSpeed-HANDLING.driftDeceleration*loss*Math.min(1,Math.abs(lateral)/Math.max(absSpeed,1))*dt);
+    var total=Math.hypot(car.speed,lateral),cap=car.speed<0?-CAR_REV:CAR_MAX;
+    if(total>cap){car.speed*=cap/total;lateral*=cap/total;}
+    car.driveVelocityX=car.speed*driveCos-lateral*driveSin;
+    car.driveVelocityY=car.speed*driveSin+lateral*driveCos;
+    car.lateralSpeed=lateral;car.slipAngle=Math.atan2(lateral,Math.max(Math.abs(car.speed),1));
+    car.tractionLoss=loss;car.lateralGrip=grip;
+    car.drifting=Math.abs(car.slipAngle)>HANDLING.driftingSlipAngle&&total>HANDLING.driftSpeedThreshold&&loss>.1;
+  }
   car.wheelPhase = (car.wheelPhase || 0) + car.speed * dt * 0.085;
   if(Math.abs(car.speed) < 0.6 && !gas && !brk) car.speed = 0;
-  if(car.speed !== 0){
-    var nx = car.x + Math.cos(car.angle) * car.speed * dt;
-    var ny = car.y + Math.sin(car.angle) * car.speed * dt;
+  if(car.speed !== 0 || Math.abs(car.lateralSpeed||0)>.01){
+    var nx = car.x + (impactOwned?Math.cos(car.angle)*car.speed:car.driveVelocityX)*dt;
+    var ny = car.y + (impactOwned?Math.sin(car.angle)*car.speed:car.driveVelocityY)*dt;
     if(!carCollidesAt(nx, ny, car.angle, car.map)){ car.x = nx; car.y = ny; }
     else {
       /* Stage C: a genuine at-speed impact is an avoidable collision and
@@ -45275,6 +45332,9 @@ function updateCar(dt, tNow){
       }
       car.speed=away*Math.min(65,Math.max(28,Math.abs(impactSpeed)*.28));
       carReboundTime=.22;
+      car.driveVelocityX=Math.cos(car.angle)*car.speed;car.driveVelocityY=Math.sin(car.angle)*car.speed;
+      car.lateralSpeed=car.slipAngle=car.tractionLoss=car.tractionRecovery=0;car.drifting=false;
+
       tone(110,0.08,0,"square");
       if(hitTraffic && Date.now() - (window.__lastTrafficBump || 0) > 3200){
         window.__lastTrafficBump = Date.now();
@@ -45299,7 +45359,7 @@ function updateCar(dt, tNow){
 return updateCar;};
 function valid(v){return !!v&&v.id==='precinct-unit-9'&&Number.isFinite(v.x)&&Number.isFinite(v.y)&&Number.isFinite(v.angle)&&v.x>=-3100&&v.x<=9656&&v.y>=0&&v.y<=4680;}
 function restored(v){return {...(valid(v)?{x:v.x,y:v.y,angle:v.angle}:SPAWN),id:'precinct-unit-9',map:'harbor-main',speed:0,engine:false,lightMode:['off','red','blue','alternating'].includes(v?.lightMode)?v.lightMode:'off'};}
-H.connectedCruiser={install({campus,modal,blocked,actors,clearInput}){
+H.connectedCruiser={install({campus,modal,blocked,actors,clearInput,roadContact}){
  let owner=null,car=null,update=null,driving=false,lastSave=0,collisions=0,saveError=false,lastContact=null;
  const V=window.ROOKIE_CRUISER_VISUAL;let visual=V?.create(),lightHeld=false;
  const artOptions={candidate:new URLSearchParams(location.search).get('cruiserCandidate')==='1',legacy:new URLSearchParams(location.search).get('cruiserLegacy')==='1'};
@@ -45318,6 +45378,7 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput}){
  @media(min-width:900px){#connectedDriveControls{left:calc(50% - 270px);right:calc(50% - 270px)}}
  `;document.head.appendChild(style);
  function eligible(){return campus.open&&!H.academy?.active()&&!H.outbreak?.active();}
+ function clearMotion(){if(car){car.driveVelocityX=car.driveVelocityY=car.lateralSpeed=car.slipAngle=car.tractionLoss=car.tractionRecovery=0;car.drifting=false;}}
  function reset(){lightHeld=false;Object.keys(input).forEach(k=>input[k]=false);proxy.__carSpace=false;controls.querySelectorAll('button').forEach(b=>b.classList.remove('held'));}
  function ensure(){if(eligible()&&!loading){loading=true;V?.load();image.src='./assets/police-driving/cruiser-16-source.png';}if(owner===state)return;owner=state;car=restored(state.connectedCruiser);visual=V?.create();driving=false;reset();show();update=controllerFactory(car,input,proxy,collides,()=>persist(false),impact=>{collisions++;if(lastContact&&impact>3)window.ROOKIE_BANTER?.contact(lastContact,'vehicle-contact',performance.now());});}
  function persist(force=true){if(!owner||owner!==state||!eligible())return false;if(!force&&Date.now()-lastSave<700)return true;lastSave=Date.now();state.connectedCruiser={id:car.id,x:car.x,y:car.y,angle:car.angle,lightMode:car.lightMode};saveError=H.save()===false;if(saveError)message('Your cruiser could not be saved. Keep this page open and export your save from Menu.');return !saveError;}
@@ -45335,14 +45396,14 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput}){
  function message(text){const d=modal.querySelector('#v116Dialogue');if(d){d.hidden=false;d.textContent=text;}}
  function interact(){ensure();if(!eligible())return false;
   if(driving){
-   if(Math.max(Math.abs(car.speed),car.impactState?car.impactSpeed||0:0)>6){message('Brake to a complete stop before getting out.');return true;}
+   if(Math.max(Math.abs(car.speed),Math.hypot(car.driveVelocityX||0,car.driveVelocityY||0),car.impactState?car.impactSpeed||0:0)>6){message('Brake to a complete stop before getting out.');return true;}
    const c=Math.cos(car.angle),s=Math.sin(car.angle),tries=[door(),{x:car.x-s*58,y:car.y+c*58},{x:car.x+s*66,y:car.y-c*66},{x:car.x-c*76,y:car.y-s*76},{x:car.x+c*76,y:car.y+s*76}];
    const spot=tries.find(p=>!blocked(p.x,p.y,13,true)&&!obbHitsRect(car.x,car.y,car.angle,{x:p.x-12,y:p.y-12,w:24,h:24}));
    if(!spot){message('There is no clear place to step out. Move the cruiser slightly.');return true;}
-   driving=false;car.speed=0;car.engine=false;campus.x=spot.x;campus.y=spot.y;clearInput();reset();show();persist();return true;
+   driving=false;car.speed=0;car.engine=false;clearMotion();campus.x=spot.x;campus.y=spot.y;clearInput();reset();show();persist();return true;
   }
   if(!near())return false;
-  driving=true;car.engine=true;car.speed=0;clearInput();reset();campus.x=car.x;campus.y=car.y;campus.follow=true;show();persist();modal.querySelector('#v116Dialogue').hidden=true;return true;
+  driving=true;car.engine=true;car.speed=0;clearMotion();clearInput();reset();campus.x=car.x;campus.y=car.y;campus.follow=true;show();persist();modal.querySelector('#v116Dialogue').hidden=true;return true;
  }
  for(const b of controls.querySelectorAll('[data-car]')){
   let pointer=null;const release=e=>{if(e&&pointer!==e.pointerId)return;pointer=null;if(b.dataset.car==='brake')proxy.__carSpace=false;else input[b.dataset.car]=false;b.classList.remove('held');};
@@ -45353,11 +45414,12 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput}){
  function cycleLights(){const modes=['off','alternating','red','blue'];car.lightMode=modes[(modes.indexOf(car.lightMode)+1)%modes.length];controls.querySelector('#connectedCruiserLight').textContent='LIGHTS: '+car.lightMode.toUpperCase();persist();}
  controls.querySelector('#connectedCruiserLight').onclick=()=>{if(driving)cycleLights();};
  function key(k,down){if(!driving)return false;if(k==='l'){if(down&&!lightHeld)cycleLights();lightHeld=down;return true;}const map={w:'up',arrowup:'up',s:'down',arrowdown:'down',a:'left',arrowleft:'left',d:'right',arrowright:'right'};if(map[k]){input[map[k]]=down;return true;}if(k===' '){proxy.__carSpace=down;return true;}return false;}
+ function updateVisual(dt){if(visual)V.update(visual,car,dt,{up:input.up,down:input.down,brake:proxy.__carSpace,roadContact});}
  function step(dt){ensure();if(!eligible())return false;
   H.cityCollisions?.beforeControl(car);
   if(driving){const n=Math.max(1,Math.ceil(dt/(1/120)));for(let i=0;i<n;i++)update(dt/n,performance.now());campus.x=car.x;campus.y=car.y;campus.moved=false;const d=modal.querySelector('#v116Dialogue');if(Math.abs(car.speed)<=6&&d.textContent==='Brake to a complete stop before getting out.')d.hidden=true;controls.querySelector('output').textContent=(car.speed<-3?'REVERSE · ':'UNIT 9 · ')+Math.round(Math.abs(car.speed)*.22)+' mph · E / Exit · Space: stop'+(saveError?' · Save unavailable':'');}
   H.cityCollisions?.afterControl(car);
-  if(visual&&!H.cityCollisions)V.update(visual,car,dt,{down:input.down,brake:proxy.__carSpace});
+  if(!H.cityCollisions)updateVisual(dt);
   return driving;
  }
  function draw(g){ensure();if(!eligible())return;
@@ -45378,16 +45440,18 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput}){
  }
  window.addEventListener('blur',reset);window.addEventListener('pagehide',()=>persist());
  return Object.freeze({step,draw,bayMark,key,near,interact,reset,
-  stageForScene:p=>{ensure();if(!p||collides(p.x,p.y,p.angle||0))return false;driving=false;Object.assign(car,{x:p.x,y:p.y,angle:p.angle||0,speed:0,engine:false,lightMode:'alternating'});visual=V?.create();reset();show();persist();return true;},
+  stageForScene:p=>{ensure();if(!p||collides(p.x,p.y,p.angle||0))return false;driving=false;Object.assign(car,{x:p.x,y:p.y,angle:p.angle||0,speed:0,engine:false,lightMode:'alternating'});clearMotion();visual=V?.create();reset();show();persist();return true;},
   vehicleImpact:()=>{collisions++;},
   physicsBody:()=>{ensure();Object.assign(car,{kind:'patrol',length:96,width:48,driving});return car;},
-  syncImpact:dt=>{if(driving){campus.x=car.x;campus.y=car.y;}if(visual)V.update(visual,car,dt,{down:input.down,brake:proxy.__carSpace,impact:car.impactJolt||0,sliding:!!car.impactState});if(car.impactState)persist(false);},
-  audioState:()=>{ensure();return{x:car.x,y:car.y,speed:car.speed,engine:car.engine,driving,throttle:input.up||input.down&&car.speed<0};},
+  syncImpact:dt=>{if(driving){campus.x=car.x;campus.y=car.y;}updateVisual(dt);if(car.impactState)persist(false);},
+  cameraVelocity:()=>driving?{x:car.driveVelocityX??car.speed*Math.cos(car.angle),y:car.driveVelocityY??car.speed*Math.sin(car.angle)}:null,
+  audioState:()=>{ensure();return{x:car.x,y:car.y,speed:car.speed,engine:car.engine,driving,
+   acceleration:visual?.acceleration||0,throttle:!proxy.__carSpace&&(car.speed<0?input.down&&!input.up:input.up&&!input.down)};},
   active:()=>driving,position:()=>{ensure();return {x:car.x,y:car.y};},
   blocksWalker:(x,y,r)=>{ensure();return !driving&&obbHitsRect(car.x,car.y,car.angle,{x:x-r,y:y-r,w:r*2,h:r*2});},
   overlapsTraffic:tc=>{ensure();if(Math.abs(car.x-tc.x)>180||Math.abs(car.y-tc.y)>180)return false;if(Number.isFinite(tc.angle)&&window.ROOKIE_CITY_TRAFFIC)return window.ROOKIE_CITY_TRAFFIC.overlap({x:car.x,y:car.y,angle:car.angle,length:96,width:48},tc);const h=tc.dir==='left'||tc.dir==='right',w=h?(tc.kind==='delivery'?104:86):38,l=h?38:(tc.kind==='delivery'?104:86);return obbHitsRect(car.x,car.y,car.angle,{x:tc.x-w/2,y:tc.y-l/2,w,h:l});},
   yields:tc=>{ensure();const dx=car.x-tc.x,lateral=Math.abs(Math.sin(car.angle))*48+Math.abs(Math.cos(car.angle))*24+19;return Math.abs(car.y-tc.y)<lateral&&Math.abs(dx)<165&&(tc.dir==='left'?dx<0:dx>0);},
-  suspend:()=>{ensure();if(driving){car.speed=0;car.engine=false;interact();if(driving)return false;}reset();persist();return true;},
+  suspend:()=>{ensure();if(driving){car.speed=0;car.engine=false;clearMotion();interact();if(driving)return false;}reset();persist();return true;},
   snapshot:()=>{ensure();return {...car,driving,collisions,saveError,assetReady:image.complete&&image.naturalWidth>0,count:1,visual:visual?V.inspect(visual):null,art:V?.status()};},
   collisionAt:(x,y,a)=>{ensure();return collides(x,y,a);}
  });
@@ -45443,6 +45507,57 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput}){
       decors:original.decors.map(o=>o===oldBench[0]?{...o,x:relocatedX}:o),
       pedSolids:original.pedSolids.map(b=>b===oldSolid[0]?{...b,x:relocatedX-benchWidth/2}:b)
     };
+  }
+  // The live Maple collector divides the lower residential block. Keep No. 13
+  // east of the road and give all six homes the same visible body width.
+  // Move the corresponding foundations and doorstep with their artwork.
+  const maple=districtEntries.find(d=>d.id==='residential');
+  if(maple){
+    const m=maple.map,scale=.75,houseWidth=352;
+    const decorMoves=new Map(),solidMoves=new Map();
+    const moveSolid=(x,y,w,h,newBox)=>solidMoves.set([x,y,w,h].join(','),newBox);
+    for(const house of m.decors.filter(o=>o.t==='mchouse')){
+      const {cx,dy,bx,btop}=house,relocate=house.num==='13';
+      const center=relocate?1160:cx,front=relocate?1000:dy;
+      const placeX=x=>center+(x-cx)*scale,placeY=y=>front+(y-dy)*scale;
+      const oldFoot=house.bodyH?Math.round(dy-house.bodyH*.55):btop+4;
+      const foot=placeY(oldFoot);
+      moveSolid(bx+4,oldFoot,houseWidth-8,dy-oldFoot,{x:placeX(bx)+4,y:foot,w:houseWidth*scale-8,h:front-foot});
+      decorMoves.set(house,{...house,x:placeX(house.dx),dx:placeX(house.dx),y:placeY(house.dyTop),
+        dyTop:placeY(house.dyTop),dw:house.dw*scale,dh:house.dh*scale,cx:center,dy:front,bx:placeX(bx),btop:placeY(btop),
+        ...(house.bodyH?{bodyH:house.bodyH*scale}:{})});
+      for(const o of m.decors){
+        if(o.t!=='mcprop'||o.x<bx||o.x>=bx+houseWidth)continue;
+        const hedge=o.img==='hedge'&&o.y===dy-36;
+        const planter=o.img==='planter'&&o.y===(house.bodyH?dy-30:dy-32);
+        if(!hedge&&!planter)continue;
+        const [anchor,w,h]=hedge?[48,88,12]:[32,54,10];
+        const x=placeX(o.x+anchor)-anchor,delta=front-dy;
+        const oldY=o.y+(hedge?24:22),oldX=o.x+anchor-w/2;
+        moveSolid(oldX,oldY,w,h,{x:x+anchor-w/2,y:oldY+delta,w,h});
+        decorMoves.set(o,{...o,x,y:o.y+delta,dy:o.dy+delta});
+      }
+    }
+    for(const [match,dx,dy,solid] of [
+      [o=>o.t==='bigtree'&&o.x===1240&&o.y===760,132,36,[1232,754,16,14]],
+      [o=>o.t==='mcprop'&&o.img==='bench'&&o.x===1260&&o.y===900,140,-30,[1264,922,56,10]]
+    ]){
+      const o=m.decors.find(match);
+      if(!o)continue;
+      const [x,y,w,h]=solid;
+      decorMoves.set(o,{...o,x:o.x+dx,y:o.y+dy,...(Number.isFinite(o.dy)?{dy:o.dy+dy}:{})});
+      moveSolid(x,y,w,h,{x:x+dx,y:y+dy,w,h});
+    }
+    const relocateSolids=solids=>solids?.map(b=>solidMoves.get([b.x,b.y,b.w,b.h].join(','))||b);
+    maple.map={...m,decors:m.decors.map(o=>decorMoves.get(o)||o),
+      solids:relocateSolids(m.solids),pedSolids:relocateSolids(m.pedSolids),
+      spots:m.spots.map(o=>o.id==='door13'?{...o,x:1160,y:1020}:o),
+      ground:m.ground.map(r=>{
+        if(r.x===856&&r.y===636&&r.w===364)return {...r,x:1004,w:304};
+        if(r.x===820&&r.y===600&&r.w===36)return {...r,x:1004,y:621,w:28,h:378};
+        if(r.x===820&&r.y===962&&r.w===396)return {...r,x:1004,y:982,w:304};
+        return r;
+      })};
   }
   function inDistrict(d,x,y){return x>=d.x&&x<d.x+d.w&&y>=d.y&&y<d.y+d.h;}
   function districtAt(x,y){
@@ -45670,6 +45785,7 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput}){
   npcActors.push({id:'campus-npc:diaz',name:'OFCR. DIAZ',color:'#44557a',hat:true,x:PLX+960,y:PLY+640});
   for(const d of districtEntries){
     for(const sp of d.map.spots||[]){
+      if(sp.arcChapter!==undefined)continue;
       if(sp.to||!Number.isFinite(sp.x)||!Number.isFinite(sp.y))continue;
       worldSpots.push({id:d.id+':'+sp.id,areaId:d.id,x:d.x+sp.x,y:d.y+sp.y,label:sp.label||sp.id});
     }
@@ -45930,7 +46046,9 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput}){
   const campus={open:false,x:FRONT.x,y:FRONT.y+86,dir:'up',stride:0,moved:false,speed:0,
     camX:0,camY:0,zoom:1.15,autoZoom:true,follow:true,keys:new Set(),stick:null,runHeld:false,frame:0,last:0,
     paintCosts:[],paintCount:0,near:null,firstPaint:true,doorCrossings:0,previousRoom:null,visibleChunks:[]};
-  const priorOverlay=overlayOpen;
+  const nativeOverlay=overlayOpen;
+  const priorOverlay=()=>nativeOverlay()||(window.ROOKIE_MAIN_CITY_ACTIVE&&
+    ['shiftOverlay','resetModal'].some(id=>document.getElementById(id)?.classList.contains('show')));
   overlayOpen=function(){return campus.open&&!storyDispatch||priorOverlay();};
   const modal=document.createElement('section');modal.id='v115Campus';modal.hidden=true;
   modal.setAttribute('aria-label','V115 seamless precinct and grounds development preview');
@@ -45949,7 +46067,8 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput}){
     <button id="v115CampusInteract" class="v115-campus-interact" type="button">Action</button>
     <footer class="v115-campus-footer">Continuous city streets · joystick / WASD · all districts one canvas · Unit 9 parking saved per player</footer>`;
   document.body.appendChild(modal);
-  cruiser=H.connectedCruiser?.install({campus,modal,blocked,actors:()=>npcActors.concat(window.ROOKIE_V133_PRECINCT?.actors?.(performance.now()).filter(a=>!story?.duplicate(a))||[]),clearInput});
+  cruiser=H.connectedCruiser?.install({campus,modal,blocked,actors:()=>npcActors.concat(window.ROOKIE_V133_PRECINCT?.actors?.(performance.now()).filter(a=>!story?.duplicate(a))||[]),clearInput,
+    roadContact:(x,y)=>links.some(r=>x>=r.x&&x<r.x+r.w&&y>=r.y&&y<r.y+r.h)});
   const cv=modal.querySelector('canvas'),g=cv.getContext('2d',{alpha:false});
   const storyFurnitureCache=new Map();
   const storyFactory=/* Local connected-world adapter. Canonical case handlers, cast artwork and
@@ -45957,12 +46076,13 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput}){
 (function connectedStory(o){
  'use strict';
  const {H,ST,MAPS,STX,STY,PLX,PLY,campus,modal,npcActors,worldSpots,districtEntries}=o;
- let sourceActors=null,spotKey='',profile='',resumeActivity=false;
+ let sourceActors=null,spotKey='',arcKey='',profile='',resumeActivity=false;
  const interiors=[],buildingOwners=new WeakMap(),clearedProps=[];let interiorsReady=false,clearClock=0,clearAttempts=0;
  const familyNames={jay:'PAPI',rosa:'ROSA',kaleb:'KALEB',gigi:'GIGI',lingling:'SARITAH'};
  const seats={jay:[625,854],rosa:[700,850],kaleb:[1480,220],gigi:[1500,130],lingling:[1690,250]};
  const familyKey=n=>n==='PAPI'||n==='GUIDE JAY'?'jay':n==='SARITAH'?'lingling':H.family?.key(n,false);
  const nativePanels=['hcAssignmentBoard','caperNotebook','dbOverlay','lockerOverlay','hcCells','hcStoryOverlay','invPage','manualOverlay'];
+ if(window.ROOKIE_MAIN_CITY_ACTIVE)nativePanels.push('shiftOverlay','endOverlay','resetModal');
  // Reparent the existing panels so their own callbacks/focus handling work
  // above this canvas. Restore their original homes when leaving the city.
  const homes=new Map();
@@ -45971,23 +46091,25 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput}){
  function sync(){
   if(H.academy?.active()||H.outbreak?.active())return;
   hostPanels();const current=H.profiles.current();
-  const currentSpots=ST.spots,key=currentSpots.map(s=>s.id).join('|');
+  const currentSpots=ST.spots.filter(s=>s.arcChapter===undefined),key=currentSpots.map(s=>s.id).join('|');
   if(sourceActors===ST.npcs&&spotKey===key&&profile===current)return;
   sourceActors=ST.npcs;spotKey=key;profile=current;
   for(let i=npcActors.length-1;i>=0;i--)if(npcActors[i].storyStation)npcActors.splice(i,1);
   for(let i=worldSpots.length-1;i>=0;i--)if(worldSpots[i].areaId==='station'||worldSpots[i].storyStation)worldSpots.splice(i,1);
   const actors=ST.npcs.slice();for(const n of H.connectedOriginalStation||[])if(!actors.some(a=>a.name===n.name))actors.push({...n,legacy:true});const seen=new Set(actors.map(a=>a.familyId||familyKey(a.name)).filter(Boolean));
   for(const [id,name] of Object.entries(familyNames))if(id!==current&&!seen.has(id))actors.push({name,familyId:id,x:seats[id][0],y:seats[id][1],talk:'caperFamily'+id});
+  const placedFamily=new Set([current]);
   for(const [i,n] of actors.entries()){
-   const key=n.familyId||familyKey(n.name);if(key===current)continue;
+   const key=n.familyId||familyKey(n.name);
+   if(key){if(placedFamily.has(key))continue;placedFamily.add(key);}
    const a={...n,id:'station-npc:'+i,source:n,storyStation:true,familyId:key,x:n.x+STX,y:n.y+STY};if(n.legacy&&o.blocked(a.x,a.y)){const room=ST.rooms.find(r=>n.x>=r.x&&n.x<r.x+r.w&&n.y>=r.y&&n.y<r.y+r.h);let found=false;for(let r=16;r<=112&&!found;r+=16)for(let dx=-r;dx<=r&&!found;dx+=16)for(let dy=-r;dy<=r;dy+=16){const x=n.x+dx,y=n.y+dy;if(room&&(x<room.x+16||x>room.x+room.w-16||y<room.y+16||y>room.y+room.h-16))continue;if(!o.blocked(x+STX,y+STY)){a.x=x+STX;a.y=y+STY;found=true;break;}}}npcActors.push(a);
-   if(n.talk)worldSpots.push({id:a.id,x:a.x,y:a.y+18,label:'Talk to '+n.name,nativeMap:'station',nativeId:n.legacy&&['chen','park'].includes(n.talk)?'legacy:'+n.talk:!H.caper?.active()&&n.talk.startsWith('caperFamily')?'family:'+key:'npc:'+n.talk,nativeX:n.x,nativeY:n.y,storyStation:true});
+   if(n.talk)worldSpots.push({id:a.id,x:a.x,y:a.y+18,label:'Talk to '+n.name,nativeMap:'station',nativeId:n.legacy&&['chen','park'].includes(n.talk)?'legacy:'+n.talk:!H.caper?.active()&&n.talk.startsWith('caperFamily')?'family:'+key:'npc:'+n.talk,nativeX:n.x,nativeY:n.y,storyStation:true,sourceActor:n});
   }
   for(const s of currentSpots)if(!s.to)worldSpots.push({...s,id:'station:'+s.id,areaId:'station',x:s.x+STX,y:s.y+STY,nativeMap:'station',nativeId:s.id,nativeX:s.x,nativeY:s.y,storyStation:true});
   initInteriors();
  }
- function duplicate(a){return npcActors.some(n=>n.storyStation&&n.name===a.name);}
- function drawActor(a){if(!a.storyStation&&!a.storyInterior)return false;if(a.storyStation&&!o.actorVisible(a.source))return true;if(a.storyInterior&&!available(a,campus.x,campus.y))return true;if(H.connectedTactics&&!H.connectedTactics.actorVisible(a))return true;if(window.ROOKIE_CIVILIANS?.draw(g,a))return true;o.paintActor(a);return true;}
+ function duplicate(a){const id=a.familyId||familyKey(a.name);return id===profile||npcActors.some(n=>n.storyStation&&(n.name===a.name||id&&n.familyId===id));}
+ function drawActor(a){if(!a.storyStation&&!a.storyInterior)return false;if(!o.actorVisible(a.source)||!available(a,campus.x,campus.y))return true;if(H.connectedTactics&&!H.connectedTactics.actorVisible(a))return true;if(window.ROOKIE_CIVILIANS?.draw(g,a))return true;o.paintActor(a);return true;}
  function drawPlayer(p){const id=H.profiles.current();if(id==='jay')return false;o.paintActor({...p,name:familyNames[id],dir:campus.dir,moving:campus.moved,distance:campus.stride/.055,source:{x:p.x,y:p.y}},true);return true;}
  function interact(sp){
   if(!sp?.nativeMap||H.academy?.active()||H.outbreak?.active())return false;
@@ -46015,7 +46137,7 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput}){
     buildingOwners.set(match.object,b);const left=door.x-32,right=door.x+32;
     b.walls=[{x:floor.x,y:floor.y,w:floor.w,h:6},{x:floor.x,y:floor.y,w:6,h:floor.h},{x:floor.x+floor.w-6,y:floor.y,w:6,h:floor.h},{x:floor.x,y:door.y-6,w:left-floor.x,h:6},{x:right,y:door.y-6,w:floor.x+floor.w-right,h:6}];
    }
-   const clues=native.spots.filter(p=>!p.to),roles={storeCamera:'desk',storeShelf:'shelf',storeRear:'cabinet',haleNote:'counter',halePhoto:'table',haleKey:'desk',whCrates:'crate',whManifest:'desk',whDock:'crate',harborLog:'desk',shedGoods:'crate',shedDesk:'table'};
+   const clues=native.spots.filter(p=>!p.to&&p.arcChapter===undefined),roles={storeCamera:'desk',storeShelf:'shelf',storeRear:'cabinet',haleNote:'counter',halePhoto:'table',haleKey:'desk',whCrates:'crate',whManifest:'desk',whDock:'crate',harborLog:'desk',shedGoods:'crate',shedDesk:'table'};
    for(const [i,p] of clues.entries()){
     const x=floor.x+34+(floor.w-68)*(clues.length===1?.5:i/(clues.length-1)),y=floor.y+Math.min(48,floor.h*.37);
     const sp={id:'story:'+map+':'+p.id,label:p.label,x,y,nativeMap:map,nativeId:p.id,nativeX:p.x,nativeY:p.y,storyRoom:map};
@@ -46025,7 +46147,7 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput}){
    }
    for(const [i,n] of native.npcs.entries()){
     const a={...n,id:'story:'+map+':npc:'+i,source:n,storyInterior:true,storyRoom:map,x:floor.x+floor.w*(.35+(i%2)*.3),y:floor.y+Math.min(floor.h-45,80+Math.floor(i/2)*64),dir:'down'};npcActors.push(a);
-    worldSpots.push({id:a.id,label:'Talk to '+n.name,x:a.x,y:a.y+15,nativeMap:map,nativeId:'npc:'+n.talk,nativeX:n.x,nativeY:n.y,storyRoom:map});
+    worldSpots.push({id:a.id,label:'Talk to '+n.name,x:a.x,y:a.y+15,nativeMap:map,nativeId:'npc:'+n.talk,nativeX:n.x,nativeY:n.y,storyRoom:map,sourceActor:n});
    }
    // Exterior entry remains inspectable for locked houses/sheds, preserving
    // the original authorization dialogue before those thresholds open.
@@ -46033,12 +46155,57 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput}){
    if(sp){Object.assign(sp,{x:door.x,y:door.y+20,nativeMap:d.id,nativeId:s.id,nativeX:s.x,nativeY:s.y});}
   }
   // Outdoor case witnesses retain their canonical talks and save callbacks.
-  for(const s of MAPS.plaza.spots||[])if(!s.to)worldSpots.push({id:'plaza:'+s.id,areaId:'plaza',x:PLX+s.x,y:PLY+s.y,label:s.label,nativeMap:'plaza',nativeId:s.id,nativeX:s.x,nativeY:s.y});
+  for(const s of MAPS.plaza.spots||[])if(!s.to&&s.arcChapter===undefined)worldSpots.push({id:'plaza:'+s.id,areaId:'plaza',x:PLX+s.x,y:PLY+s.y,label:s.label,nativeMap:'plaza',nativeId:s.id,nativeX:s.x,nativeY:s.y});
   const diaz=npcActors.find(n=>n.id==='campus-npc:diaz'),nativeDiaz=MAPS.plaza.npcs.find(n=>n.talk==='diaz');
   if(diaz&&nativeDiaz){diaz.source=nativeDiaz;diaz.storyInterior=true;worldSpots.push({id:'plaza:npc:diaz',x:diaz.x,y:diaz.y+15,label:'Talk to '+diaz.name,nativeMap:'plaza',nativeId:'npc:diaz',nativeX:nativeDiaz.x,nativeY:nativeDiaz.y});}
   for(const d of districtEntries){
    for(const [i,n] of (d.map.npcs||[]).entries())if(n.talk){const a=npcActors.find(a=>a.id===d.id+':npc:'+i);if(a){a.source=n;a.storyInterior=true;worldSpots.push({id:a.id,label:'Talk to '+n.name,x:a.x,y:a.y+15,nativeMap:d.id,nativeId:'npc:'+n.talk,nativeX:n.x,nativeY:n.y});}}
    for(const s of d.map.spots||[]){const sp=worldSpots.find(p=>p.id===d.id+':'+s.id);if(sp&&!s.to&&!sp.nativeMap)Object.assign(sp,{nativeMap:d.id,nativeId:s.id,nativeX:s.x,nativeY:s.y});}
+  }
+ }
+ // Only the connected placement is owned here. The original Story journal
+ // still owns chapter gates, questions, evidence, decisions and save flags.
+ const arcAnchors={
+  'arc:0:0':['whManifest',0,34],
+  'arc:0:1':['npc:marco',0,36],
+  'arc:2:1':['whCrates',0,34],
+  'arc:3:1':['npc:almeida',0,36],
+  'arc:5:1':['npc:ana',0,34],
+  'arc:6:0':['npc:sergeant',0,36]
+ };
+ function arcPosition(map,nativeX,nativeY,anchor){
+  const room=interiors.find(b=>b.map===map),d=districtEntries.find(b=>b.id===map);
+  const npc=anchor&&worldSpots.find(s=>s.nativeMap===map&&s.nativeId===anchor[0]);
+  const origin=npc?{x:npc.x+anchor[1],y:npc.y+anchor[2]}:room?{
+   x:room.floor.x+room.floor.w*nativeX/MAPS[map].w,
+   y:room.floor.y+room.floor.h*nativeY/MAPS[map].h
+  }:locate(map,nativeX,nativeY);
+  if(!origin)return null;
+  const fits=(x,y)=>(!room||roomAt(x,y)===room)&&
+   (!d||(x>d.x+12&&y>d.y+12&&x<d.x+d.w-12&&y<d.y+d.h-12))&&
+   !worldSpots.some(s=>!s.ambientActor&&!s.campaignHidden&&Math.hypot(s.x-x,s.y-y)<24)&&
+   !o.blocked(x,y,16,true,false,true);
+  if(fits(origin.x,origin.y))return origin;
+  for(let r=12;r<=144;r+=12)for(const [dx,dy] of [[0,r],[r,0],[-r,0],[0,-r],[r,r],[-r,r],[r,-r],[-r,-r]]){
+   const x=origin.x+dx,y=origin.y+dy;
+   if(fits(x,y))return {x,y};
+  }
+  return null;
+ }
+ function syncArc(){
+  if(!window.ROOKIE_MAIN_CITY_ACTIVE||!interiorsReady)return;
+  const a=H.arc(),chapter=H.objective()?H.chapters[a.index]:null;
+  const key=chapter?profile+':'+a.index+':'+a.steps.join(','):'';
+  if(key===arcKey)return;
+  arcKey=key;
+  for(let i=worldSpots.length-1;i>=0;i--)if(worldSpots[i].connectedArc)worldSpots.splice(i,1);
+  if(!chapter)return;
+  for(const [j,[map,nativeX,nativeY,label]] of chapter.steps.entries()){
+   if(a.steps.includes(j))continue;
+   const nativeId='arc:'+a.index+':'+j;
+   const p=arcPosition(map,nativeX,nativeY,arcAnchors[nativeId]);
+   if(p)worldSpots.push({...p,id:map+':'+nativeId,label,nativeMap:map,nativeId,nativeX,nativeY,
+    connectedArc:true,storyRoom:interiors.some(b=>b.map===map)?map:null});
   }
  }
  function clearEntrances(){
@@ -46050,11 +46217,11 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput}){
   }
  }
  function roomAt(x,y){return interiors.find(b=>x>b.floor.x+6&&x<b.floor.x+b.floor.w-6&&y>b.floor.y+6&&y<b.door.y)||null;}
- function available(sp,x,y){return !sp.campaignHidden&&(!sp.storyRoom||roomAt(x,y)?.map===sp.storyRoom);}
- function step(dt){initInteriors();clearClock+=dt;if(clearClock>.5&&clearAttempts<8){clearClock=0;clearAttempts++;clearEntrances();}for(const b of interiors){const near=Math.abs(campus.x-b.door.x)<b.door.w/2&&Math.abs(campus.y-b.door.y)<24;const target=roomAt(campus.x,campus.y)===b||near?0:1;b.roof+=(target-b.roof)*(1-Math.exp(-12*dt));}}
+ function available(sp,x,y){return !sp.campaignHidden&&(!sp.sourceActor||o.actorVisible(sp.sourceActor))&&(!sp.storyRoom||roomAt(x,y)?.map===sp.storyRoom);}
+ function step(dt){initInteriors();syncArc();clearClock+=dt;if(clearClock>.5&&clearAttempts<8){clearClock=0;clearAttempts++;clearEntrances();}for(const b of interiors){const near=Math.abs(campus.x-b.door.x)<b.door.w/2&&Math.abs(campus.y-b.door.y)<24;const target=roomAt(campus.x,campus.y)===b||near?0:1;b.roof+=(target-b.roof)*(1-Math.exp(-12*dt));}}
  function ownsSolid(r){if(clearedProps.some(p=>r.w<=p.w+12&&r.h<=p.h+12&&r.x<p.x+p.w&&r.x+r.w>p.x&&r.y<p.y+p.h&&r.y+r.h>p.y))return true;return interiors.some(b=>!b.existing&&r.x>=b.exterior.x-18&&r.y>=b.exterior.y-18&&r.x+r.w<=b.exterior.x+b.exterior.w+18&&r.y+r.h<=b.exterior.y+b.exterior.h+18&&r.w>b.exterior.w*.45&&r.h>b.exterior.h*.4);}
  function collides(x,y,r){if(x>=STX+768&&x<=STX+1148&&y>=STY+796&&y<=STY+1040&&(ST.pedSolids||ST.solids).some(p=>p.x>=780&&p.x<1140&&p.y>=808&&o.circleHitsRect(x,y,r,{...p,x:p.x+STX,y:p.y+STY})))return true;return interiors.some(b=>[...b.walls,...b.furniture,...(!o.canEnter(b.map)?[{x:b.door.x-b.door.w/2,y:b.door.y-6,w:b.door.w,h:12}]:[])].some(p=>o.circleHitsRect(x,y,r,p)));}
- function objective(){const goal=H.caper?.active()?H.caper.objective():window.ROOKIE.objective();if(!goal)return null;const sp=worldSpots.find(s=>s.nativeMap===goal.map&&s.nativeId===goal.spot);if(!sp)return null;const b=interiors.find(b=>b.map===sp.storyRoom);return b&&roomAt(campus.x,campus.y)!==b?{x:b.door.x,y:b.door.y+22}:sp;}
+ function objective(){const goal=H.objective()||(H.caper?.active()?H.caper.objective():window.ROOKIE.objective());if(!goal)return null;const sp=worldSpots.find(s=>s.nativeMap===goal.map&&s.nativeId===goal.spot);if(!sp)return null;const b=interiors.find(b=>b.map===sp.storyRoom);return b&&roomAt(campus.x,campus.y)!==b?{x:b.door.x,y:b.door.y+22}:sp;}
  function ground(g){const target=objective();if(target){g.save();g.strokeStyle='#ffdc76';g.lineWidth=3;g.beginPath();g.arc(target.x,target.y,14,0,Math.PI*2);g.stroke();g.restore();}for(const b of interiors)if(!b.existing&&b.roof<.995){const f=b.floor;g.save();g.fillStyle=b.map==='warehouse'?'#727d7e':'#d6c7aa';g.fillRect(f.x,f.y,f.w,f.h);g.strokeStyle='#9c947f';g.lineWidth=1;for(let y=f.y;y<f.y+f.h;y+=24){g.beginPath();g.moveTo(f.x,y);g.lineTo(f.x+f.w,y);g.stroke();}for(let x=f.x;x<f.x+f.w;x+=24){g.beginPath();g.moveTo(x,f.y);g.lineTo(x,f.y+f.h);g.stroke();}for(const w of b.walls){g.fillStyle='#405262';g.fillRect(w.x,w.y-12,w.w,w.h+12);}g.restore();for(const f of b.furniture)o.drawFurniture(f);}}
  function roofFor(object){return buildingOwners.get(object)?.roof??1;}
  function locate(map,x,y){
@@ -46087,7 +46254,12 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput}){
     dispatch:(map,x,y,id)=>{state.map=map;player.x=x-player.w/2;player.y=y-player.h/2;player.dir=campus.dir;
       nearSpot={id,x,y};storyDispatch=true;try{if(id.startsWith('legacy:')){window.ROOKIE_CONNECTED_STORY_UNREPLACED=true;(id==='legacy:chen'?H.connectedLegacyReception:H.connectedLegacyPark)?.();}else if(id.startsWith('family:'))H.caper?.connectedFamilyTalk(id.slice(7));else interact();}finally{storyDispatch=false;window.ROOKIE_CONNECTED_STORY_UNREPLACED=false;}},
     paintActor:(a,isPlayer=false)=>withOriginalContext(g,()=>{const prior=state.map;state.map='station';g.save();
-      try{g.translate(a.x-a.source.x,a.y-a.source.y);drawPerson(a.source.x,a.source.y,a.color,a.hat,a.name,a.dir||'down',isPlayer,true,0,a.moving?a.distance/22:null);}
+      try{
+        // Family identity is stable even when Saritah's story display name
+        // differs from the sprite key and the Sandwich Caper is finished.
+        if(a.familyId&&H.family.paint(a.familyId,a.x,a.y,a.dir||'down',0,a.moving?a.distance/22:null))return;
+        g.translate(a.x-a.source.x,a.y-a.source.y);drawPerson(a.source.x,a.source.y,a.color,a.hat,a.name,a.dir||'down',isPlayer,true,0,a.moving?a.distance/22:null);
+      }
       finally{g.restore();state.map=prior;}}),
     drawFurniture:drawStoryFurniture,nativeProp:nativeDistrictProp,drawDecor:d=>withOriginalContext(g,()=>drawDecor(d,performance.now())),
     actorVisible:n=>npcVisible(n),blocked,circleHitsRect,buildingBox:districtBuildingBox});
@@ -46182,15 +46354,24 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput}){
     // Replaced after any original bitmap finishes decoding.
     cache=off;cacheValid=true;legacyAssetEpoch=epoch;return off;
   }
+  let driveLeadX=0,driveLeadY=0;
   function cameraFollow(dt){
     const shot=H.campaignScenes?.camera()||window.ROOKIE_PARKING_ENCOUNTER?.camera();
     if(shot)campus.zoom+=(shot.zoom-campus.zoom)*(1-Math.exp(-6*Math.max(.001,dt)));
     const zw=tw/campus.zoom,zh=th/campus.zoom;
     if(campus.follow||shot){
-      const wantedX=(shot?shot.x:campus.x)-zw/2,wantedY=(shot?shot.y:campus.y)-zh/2;
-      const ease=1-Math.exp(-(shot?shot.ease:9)*Math.max(.001,dt));
+      const velocity=!shot&&cruiser?.cameraVelocity();
+      const ease=1-Math.exp(-(shot?shot.ease:velocity?14:9)*Math.max(.001,dt));
+      if(shot)driveLeadX=driveLeadY=0;
+      else{
+        const limitX=Math.min(74,zw*.13),limitY=Math.min(64,zh*.13);
+        const leadEase=1-Math.exp(-Math.max(0,dt)*9);
+        driveLeadX+=(clamp((velocity?.x||0)*.34,-limitX,limitX)-driveLeadX)*leadEase;
+        driveLeadY+=(clamp((velocity?.y||0)*.34,-limitY,limitY)-driveLeadY)*leadEase;
+      }
+      const wantedX=(shot?shot.x:campus.x+driveLeadX)-zw/2,wantedY=(shot?shot.y:campus.y+driveLeadY)-zh/2;
       campus.camX+=(wantedX-campus.camX)*ease;campus.camY+=(wantedY-campus.camY)*ease;
-    }
+    }else driveLeadX=driveLeadY=0;
     campus.camX=zw>=W-MIN_X?MIN_X+(W-MIN_X-zw)/2:clamp(campus.camX,MIN_X,W-zw);
     campus.camY=zh>=HGT-MIN_Y?MIN_Y+(HGT-MIN_Y-zh)/2:clamp(campus.camY,MIN_Y,HGT-zh);
   }

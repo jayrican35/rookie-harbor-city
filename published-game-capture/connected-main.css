@@ -8,6 +8,13 @@ body.rookie-main-city #v115Campus>#menuPage,
 body.rookie-main-city #v115Campus>#mapOverlay,
 body.rookie-main-city #v115Campus>#tutOverlay,
 body.rookie-main-city #v115Campus>#avOverlay{z-index:200;touch-action:auto}
+body.rookie-main-city #v115Campus>#shiftOverlay,
+body.rookie-main-city #v115Campus>#endOverlay,
+body.rookie-main-city #v115Campus>#resetModal{z-index:200;touch-action:auto}
+body.rookie-main-city #v115Campus #shiftOverlay .overlay-card,
+body.rookie-main-city #v115Campus #endOverlay .overlay-card{max-height:calc(100dvh - 24px);overflow-y:auto;touch-action:pan-y;overscroll-behavior:contain}
+body.rookie-main-city #v115Campus #shiftOverlay button,
+body.rookie-main-city #v115Campus #endOverlay button{min-height:44px;touch-action:manipulation}
 body.connected-cinematic #v115CampusPad,
 body.connected-cinematic #v125CampusSprint,
 body.connected-cinematic #v115CampusInteract{visibility:hidden!important;pointer-events:none!important}

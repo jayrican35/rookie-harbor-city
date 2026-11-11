@@ -356,8 +356,92 @@ function preparePerspectivePilot(view){
   im.onload=()=>resolve({m,im});im.onerror=()=>reject(Error('Perspective pilot atlas unavailable'));im.src='./assets/perspective-pilot/'+m.atlas;
  })).then(({m,im})=>{pilotManifest=m;pilotImage=im;}).catch(e=>{pilotError=e.message;console.warn(e.message);});
 }
+// The unified sprites use the same fixed orthographic camera as Unit 9.
+// Match the live 86-unit family sedan at its east-facing 116px silhouette.
+const fleetParams=new URLSearchParams(window.location?.search);
+const fleetMode=fleetParams.get('fleetArt'),fleetQA=fleetParams.get('pilotQA')==='1';
+const fleetStep=Math.PI/16,fleetScale=86/116,fleetGroundY=.6268256892,fleetRise=7.894587536;
+const fleetPaints=['sand','slate','marina_blue','sage_green','cherry_red','ivory','midnight'];
+const fleetBodies=['compact_sedan','family_sedan','family_sedan','crossover_suv'];
+const fleetImages=new Map(),fleetAppearance=new WeakMap(),fleetRetry=new Map(),fleetSamples=new Map();
+const fleetLimit=8;
+let fleetLoading=false,fleetLoads=0,fleetEvictions=0;
+function fleetStyle(car){
+ let art=fleetAppearance.get(car);
+ if(art)return art;
+ const key=car.id||[car.x,car.y,car.color].join('/');
+ let hash=2166136261;
+ for(let i=0;i<key.length;i++)hash=Math.imul(hash^key.charCodeAt(i),16777619);
+ hash>>>=0;
+ const model=car.kind==='delivery'?(hash%3===0?'pickup_truck':'delivery_van'):
+  car.parked&&car.length<78?'compact_sedan':fleetBodies[hash%fleetBodies.length];
+ art=model+'_'+fleetPaints[(hash>>>8)%fleetPaints.length];
+ fleetAppearance.set(car,art);
+ return art;
+}
+function fleetImage(art,now){
+ const cached=fleetImages.get(art);
+ if(cached){cached.seen=now;return cached.image;}
+ if(fleetLoading||now<(fleetRetry.get(art)||0))return null;
+ if(fleetImages.size>=fleetLimit){
+  let stale=null,oldest=now-650;
+  for(const [key,entry] of fleetImages)if(entry.seen<oldest){stale=key;oldest=entry.seen;}
+  if(stale===null)return null;
+  fleetImages.delete(stale);fleetEvictions++;
+ }
+ fleetLoading=true;
+ queueMicrotask(()=>{
+  const image=new Image();image.decoding='async';
+  const failed=()=>{fleetLoading=false;fleetRetry.set(art,performance.now()+15000);};
+  image.onload=async()=>{
+   if(image.naturalWidth!==1536||image.naturalHeight!==656){failed();return;}
+   try{await image.decode();}catch{failed();return;}
+   fleetRetry.delete(art);fleetImages.set(art,{image,seen:performance.now()});fleetLoading=false;fleetLoads++;
+  };
+  image.onerror=failed;
+  image.src='./assets/civilian-fleet/'+art+'_32dir.png';
+ });
+ return null;
+}
+const trafficHeadings={right:0,down:Math.PI/2,left:Math.PI,up:-Math.PI/2};
+function trafficHeading(car){
+ return Number.isFinite(car.angle)?car.angle:trafficHeadings[car.dir]||0;
+}
+function trafficShadow(g,car,heading,length,width,groundY=1){
+ g.save();g.fillStyle='rgba(7,18,30,.22)';g.translate(car.x+2,car.y+2);
+ g.scale(1,groundY);g.beginPath();g.ellipse(0,0,length/2,width/2,heading,0,Math.PI*2);g.fill();g.restore();
+}
+function drawUnifiedTraffic(g,car){
+ const patrol=car.kind==='patrol';
+ if(!window.ROOKIE_MAIN_CITY_ACTIVE||fleetMode==='previous'||(!patrol&&car.kind!=='civilian'&&car.kind!=='delivery'))return false;
+ if(fleetMode==='pilot'&&car.kind!=='civilian')return false;
+ // Patrol cars share the already loaded cruiser atlas. Traffic retains its own
+ // position, heading, collision response, and existing unlit roof bar.
+ const atlas=patrol?window.ROOKIE_CRUISER_VISUAL?.trafficAtlas():null;
+ if(patrol&&!atlas)return false;
+ const art=patrol?'patrol_interceptor':fleetMode==='pilot'?'family_sedan_sand':fleetStyle(car);
+ const image=atlas?.image||fleetImage(art,performance.now());if(!image)return false;
+ const m=atlas?.manifest,count=m?.directionCount||32,step=m?Math.PI*2/count:fleetStep;
+ const heading=trafficHeading(car),nearest=Math.round(heading/step);
+ const index=patrol?((nearest%count)+count)%count:((3-nearest)%32+32)%32;
+ const frame=m?.frames[index],groundY=m?m.groundScaleY||1:fleetGroundY;
+ const scale=m?.renderScale||fleetScale,rise=m?-(m.renderOffsetY||0):fleetRise;
+ const residual=Math.max(-.067,Math.min(.067,(heading-nearest*step)*.60));
+ const length=car.length??(car.kind==='delivery'?104:86),width=car.width??38;
+ trafficShadow(g,car,heading,length,width,groundY);
+ g.save();g.imageSmoothingEnabled=false;g.translate(car.x,car.y-rise-(car.impactJolt||0)*.8);
+ g.scale(1,groundY);g.rotate(residual);g.scale(scale,scale/groundY);
+ if(frame){
+  const [sx,sy,w,h]=frame.rect;
+  g.drawImage(image,sx,sy,w,h,-frame.anchor[0],-frame.anchor[1],w,h);
+ }else g.drawImage(image,index%8*192,Math.floor(index/8)*164,192,164,-96,-82,192,164);
+ g.restore();
+ if(fleetQA&&car.id)fleetSamples.set(car.id,{art,index:frame?.sourceIndex??index,heading,x:car.x,y:car.y,parked:!!car.parked});
+ return true;
+}
 function drawPilotVehicle(g,car){
  if(!pilotAllowed()||!window.ROOKIE_CITY_PERSPECTIVE_ACTIVE&&(car.x<pilotBounds.x||car.x>pilotBounds.x+pilotBounds.w||car.y<pilotBounds.y||car.y>pilotBounds.y+pilotBounds.h))return false;
+ if(drawUnifiedTraffic(g,car))return true;
  preparePerspectivePilot();if(!pilotImage)return false;
  const family=car.kind==='patrol'?'police':car.kind==='delivery'?'van':'sedan';
  const direction=['up','down','left','right'].includes(car.dir)?car.dir:'right';
@@ -374,13 +458,12 @@ function drawPilotVehicle(g,car){
  const reference=pilotManifest.frames[family+'.'+color+'right']||pilotManifest.frames[family+'.right'];
  const referenceWidth=reference.bounds[2]-reference.bounds[0];
  const scale=length/referenceWidth;
- const heading=Number.isFinite(car.angle)?car.angle:({right:0,down:Math.PI/2,left:Math.PI,up:-Math.PI/2}[direction]);
+ const heading=trafficHeading(car);
  const verticalWeight=Math.sin(heading)**2;
  const w=sw*scale,h=sh*scale,bottom=car.y+width/2*(1-verticalWeight)+length*.35*verticalWeight;
- g.save();g.imageSmoothingEnabled=false;g.fillStyle='rgba(7,18,30,.22)';g.beginPath();
- g.ellipse(car.x+2,car.y+2,length/2,width/2,heading,0,Math.PI*2);g.fill();
- // The fleet has four authored views. A bounded residual follows physical
- // yaw between them; Unit 9 continues to use its genuine 16-view renderer.
+ trafficShadow(g,car,heading,length,width);
+ g.save();g.imageSmoothingEnabled=false;
+ // The fallback has four authored views. Follow the physical yaw between them.
  const cardinal={right:0,down:Math.PI/2,left:Math.PI,up:-Math.PI/2}[direction],residual=Math.atan2(Math.sin(heading-cardinal),Math.cos(heading-cardinal));
  g.translate(car.x,car.y);g.rotate(residual);g.drawImage(pilotImage,f.x+b[0],f.y+b[1],sw,sh,Math.round(-w/2),Math.round(bottom-car.y-h-(car.impactJolt||0)*.8),Math.round(w),Math.round(h));g.restore();
  pilotMetrics.draws++;pilotMetrics.byFamily[family]=(pilotMetrics.byFamily[family]||0)+1;
@@ -408,6 +491,7 @@ window.ROOKIE_V135_WALL_KIT=Object.freeze({
  drawTest,drawFacadeWindow,drawEntranceStatic,drawEntranceDoors,drawGroundSprite,fillGround,drawCommunitySprite,prepareCommunityAssets,fillCommunityGround,drawCommunityBorder,
  drawRoadNetwork,fillRoadMaterial,drawRoadDecal,
  preparePerspectivePilot,drawPilotVehicle,
+ fleetQA:()=>fleetQA?{limit:fleetLimit,loaded:[...fleetImages.keys()],loads:fleetLoads,evictions:fleetEvictions,samples:Object.fromEntries(fleetSamples)}:null,
  prepareInteriorWalls,drawInteriorModule,
  interiorWalls:()=>({loaded:!!interiorSheet,error:interiorError,frames:Object.keys(interiorManifest?.frames||{}).length,draws:interiorDraws}),
  perspectivePilot:()=>({active:pilotAllowed(),citywide:!!window.ROOKIE_CITY_PERSPECTIVE_ACTIVE,loaded:!!pilotImage,error:pilotError,bounds:window.ROOKIE_CITY_PERSPECTIVE_ACTIVE?null:{...pilotBounds},frames:Object.keys(pilotManifest?.frames||{}).length,...JSON.parse(JSON.stringify(pilotMetrics))}),

@@ -48,6 +48,57 @@
       pedSolids:original.pedSolids.map(b=>b===oldSolid[0]?{...b,x:relocatedX-benchWidth/2}:b)
     };
   }
+  // The live Maple collector divides the lower residential block. Keep No. 13
+  // east of the road and give all six homes the same visible body width.
+  // Move the corresponding foundations and doorstep with their artwork.
+  const maple=districtEntries.find(d=>d.id==='residential');
+  if(maple){
+    const m=maple.map,scale=.75,houseWidth=352;
+    const decorMoves=new Map(),solidMoves=new Map();
+    const moveSolid=(x,y,w,h,newBox)=>solidMoves.set([x,y,w,h].join(','),newBox);
+    for(const house of m.decors.filter(o=>o.t==='mchouse')){
+      const {cx,dy,bx,btop}=house,relocate=house.num==='13';
+      const center=relocate?1160:cx,front=relocate?1000:dy;
+      const placeX=x=>center+(x-cx)*scale,placeY=y=>front+(y-dy)*scale;
+      const oldFoot=house.bodyH?Math.round(dy-house.bodyH*.55):btop+4;
+      const foot=placeY(oldFoot);
+      moveSolid(bx+4,oldFoot,houseWidth-8,dy-oldFoot,{x:placeX(bx)+4,y:foot,w:houseWidth*scale-8,h:front-foot});
+      decorMoves.set(house,{...house,x:placeX(house.dx),dx:placeX(house.dx),y:placeY(house.dyTop),
+        dyTop:placeY(house.dyTop),dw:house.dw*scale,dh:house.dh*scale,cx:center,dy:front,bx:placeX(bx),btop:placeY(btop),
+        ...(house.bodyH?{bodyH:house.bodyH*scale}:{})});
+      for(const o of m.decors){
+        if(o.t!=='mcprop'||o.x<bx||o.x>=bx+houseWidth)continue;
+        const hedge=o.img==='hedge'&&o.y===dy-36;
+        const planter=o.img==='planter'&&o.y===(house.bodyH?dy-30:dy-32);
+        if(!hedge&&!planter)continue;
+        const [anchor,w,h]=hedge?[48,88,12]:[32,54,10];
+        const x=placeX(o.x+anchor)-anchor,delta=front-dy;
+        const oldY=o.y+(hedge?24:22),oldX=o.x+anchor-w/2;
+        moveSolid(oldX,oldY,w,h,{x:x+anchor-w/2,y:oldY+delta,w,h});
+        decorMoves.set(o,{...o,x,y:o.y+delta,dy:o.dy+delta});
+      }
+    }
+    for(const [match,dx,dy,solid] of [
+      [o=>o.t==='bigtree'&&o.x===1240&&o.y===760,132,36,[1232,754,16,14]],
+      [o=>o.t==='mcprop'&&o.img==='bench'&&o.x===1260&&o.y===900,140,-30,[1264,922,56,10]]
+    ]){
+      const o=m.decors.find(match);
+      if(!o)continue;
+      const [x,y,w,h]=solid;
+      decorMoves.set(o,{...o,x:o.x+dx,y:o.y+dy,...(Number.isFinite(o.dy)?{dy:o.dy+dy}:{})});
+      moveSolid(x,y,w,h,{x:x+dx,y:y+dy,w,h});
+    }
+    const relocateSolids=solids=>solids?.map(b=>solidMoves.get([b.x,b.y,b.w,b.h].join(','))||b);
+    maple.map={...m,decors:m.decors.map(o=>decorMoves.get(o)||o),
+      solids:relocateSolids(m.solids),pedSolids:relocateSolids(m.pedSolids),
+      spots:m.spots.map(o=>o.id==='door13'?{...o,x:1160,y:1020}:o),
+      ground:m.ground.map(r=>{
+        if(r.x===856&&r.y===636&&r.w===364)return {...r,x:1004,w:304};
+        if(r.x===820&&r.y===600&&r.w===36)return {...r,x:1004,y:621,w:28,h:378};
+        if(r.x===820&&r.y===962&&r.w===396)return {...r,x:1004,y:982,w:304};
+        return r;
+      })};
+  }
   function inDistrict(d,x,y){return x>=d.x&&x<d.x+d.w&&y>=d.y&&y<d.y+d.h;}
   function districtAt(x,y){
     for(const d of districtEntries)if(inDistrict(d,x,y))return d;
@@ -274,6 +325,7 @@
   npcActors.push({id:'campus-npc:diaz',name:'OFCR. DIAZ',color:'#44557a',hat:true,x:PLX+960,y:PLY+640});
   for(const d of districtEntries){
     for(const sp of d.map.spots||[]){
+      if(sp.arcChapter!==undefined)continue;
       if(sp.to||!Number.isFinite(sp.x)||!Number.isFinite(sp.y))continue;
       worldSpots.push({id:d.id+':'+sp.id,areaId:d.id,x:d.x+sp.x,y:d.y+sp.y,label:sp.label||sp.id});
     }
@@ -534,7 +586,9 @@
   const campus={open:false,x:FRONT.x,y:FRONT.y+86,dir:'up',stride:0,moved:false,speed:0,
     camX:0,camY:0,zoom:1.15,autoZoom:true,follow:true,keys:new Set(),stick:null,runHeld:false,frame:0,last:0,
     paintCosts:[],paintCount:0,near:null,firstPaint:true,doorCrossings:0,previousRoom:null,visibleChunks:[]};
-  const priorOverlay=overlayOpen;
+  const nativeOverlay=overlayOpen;
+  const priorOverlay=()=>nativeOverlay()||(window.ROOKIE_MAIN_CITY_ACTIVE&&
+    ['shiftOverlay','resetModal'].some(id=>document.getElementById(id)?.classList.contains('show')));
   overlayOpen=function(){return campus.open&&!storyDispatch||priorOverlay();};
   const modal=document.createElement('section');modal.id='v115Campus';modal.hidden=true;
   modal.setAttribute('aria-label','V115 seamless precinct and grounds development preview');
@@ -553,7 +607,8 @@
     <button id="v115CampusInteract" class="v115-campus-interact" type="button">Action</button>
     <footer class="v115-campus-footer">Continuous city streets · joystick / WASD · all districts one canvas · Unit 9 parking saved per player</footer>`;
   document.body.appendChild(modal);
-  cruiser=H.connectedCruiser?.install({campus,modal,blocked,actors:()=>npcActors.concat(window.ROOKIE_V133_PRECINCT?.actors?.(performance.now()).filter(a=>!story?.duplicate(a))||[]),clearInput});
+  cruiser=H.connectedCruiser?.install({campus,modal,blocked,actors:()=>npcActors.concat(window.ROOKIE_V133_PRECINCT?.actors?.(performance.now()).filter(a=>!story?.duplicate(a))||[]),clearInput,
+    roadContact:(x,y)=>links.some(r=>x>=r.x&&x<r.x+r.w&&y>=r.y&&y<r.y+r.h)});
   const cv=modal.querySelector('canvas'),g=cv.getContext('2d',{alpha:false});
   const storyFurnitureCache=new Map();
   const storyFactory=/* CONNECTED_STORY */null;
@@ -563,7 +618,12 @@
     dispatch:(map,x,y,id)=>{state.map=map;player.x=x-player.w/2;player.y=y-player.h/2;player.dir=campus.dir;
       nearSpot={id,x,y};storyDispatch=true;try{if(id.startsWith('legacy:')){window.ROOKIE_CONNECTED_STORY_UNREPLACED=true;(id==='legacy:chen'?H.connectedLegacyReception:H.connectedLegacyPark)?.();}else if(id.startsWith('family:'))H.caper?.connectedFamilyTalk(id.slice(7));else interact();}finally{storyDispatch=false;window.ROOKIE_CONNECTED_STORY_UNREPLACED=false;}},
     paintActor:(a,isPlayer=false)=>withOriginalContext(g,()=>{const prior=state.map;state.map='station';g.save();
-      try{g.translate(a.x-a.source.x,a.y-a.source.y);drawPerson(a.source.x,a.source.y,a.color,a.hat,a.name,a.dir||'down',isPlayer,true,0,a.moving?a.distance/22:null);}
+      try{
+        // Family identity is stable even when Saritah's story display name
+        // differs from the sprite key and the Sandwich Caper is finished.
+        if(a.familyId&&H.family.paint(a.familyId,a.x,a.y,a.dir||'down',0,a.moving?a.distance/22:null))return;
+        g.translate(a.x-a.source.x,a.y-a.source.y);drawPerson(a.source.x,a.source.y,a.color,a.hat,a.name,a.dir||'down',isPlayer,true,0,a.moving?a.distance/22:null);
+      }
       finally{g.restore();state.map=prior;}}),
     drawFurniture:drawStoryFurniture,nativeProp:nativeDistrictProp,drawDecor:d=>withOriginalContext(g,()=>drawDecor(d,performance.now())),
     actorVisible:n=>npcVisible(n),blocked,circleHitsRect,buildingBox:districtBuildingBox});
@@ -658,15 +718,24 @@
     // Replaced after any original bitmap finishes decoding.
     cache=off;cacheValid=true;legacyAssetEpoch=epoch;return off;
   }
+  let driveLeadX=0,driveLeadY=0;
   function cameraFollow(dt){
     const shot=H.campaignScenes?.camera()||window.ROOKIE_PARKING_ENCOUNTER?.camera();
     if(shot)campus.zoom+=(shot.zoom-campus.zoom)*(1-Math.exp(-6*Math.max(.001,dt)));
     const zw=tw/campus.zoom,zh=th/campus.zoom;
     if(campus.follow||shot){
-      const wantedX=(shot?shot.x:campus.x)-zw/2,wantedY=(shot?shot.y:campus.y)-zh/2;
-      const ease=1-Math.exp(-(shot?shot.ease:9)*Math.max(.001,dt));
+      const velocity=!shot&&cruiser?.cameraVelocity();
+      const ease=1-Math.exp(-(shot?shot.ease:velocity?14:9)*Math.max(.001,dt));
+      if(shot)driveLeadX=driveLeadY=0;
+      else{
+        const limitX=Math.min(74,zw*.13),limitY=Math.min(64,zh*.13);
+        const leadEase=1-Math.exp(-Math.max(0,dt)*9);
+        driveLeadX+=(clamp((velocity?.x||0)*.34,-limitX,limitX)-driveLeadX)*leadEase;
+        driveLeadY+=(clamp((velocity?.y||0)*.34,-limitY,limitY)-driveLeadY)*leadEase;
+      }
+      const wantedX=(shot?shot.x:campus.x+driveLeadX)-zw/2,wantedY=(shot?shot.y:campus.y+driveLeadY)-zh/2;
       campus.camX+=(wantedX-campus.camX)*ease;campus.camY+=(wantedY-campus.camY)*ease;
-    }
+    }else driveLeadX=driveLeadY=0;
     campus.camX=zw>=W-MIN_X?MIN_X+(W-MIN_X-zw)/2:clamp(campus.camX,MIN_X,W-zw);
     campus.camY=zh>=HGT-MIN_Y?MIN_Y+(HGT-MIN_Y-zh)/2:clamp(campus.camY,MIN_Y,HGT-zh);
   }

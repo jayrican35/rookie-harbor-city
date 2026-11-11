@@ -525,7 +525,16 @@ jobs:
         run: |
           set -euo pipefail
           npm install --no-save playwright@1.56.1
-          npx playwright install --with-deps chromium
+          npx playwright install chromium
+          # Use the hosted runner's browser libraries when Chromium can launch.
+          # Package mirrors are only needed when those libraries are missing.
+          chromium_smoke() {
+            node -e 'require("playwright").chromium.launch().then(browser => browser.close()).catch(error => { console.error(error.message); process.exitCode = 1; })'
+          }
+          if ! chromium_smoke; then
+            timeout 180s npx playwright install-deps chromium
+            chromium_smoke
+          fi
           python3 -m http.server 8765 --directory site >/tmp/rookie-pilot-http.log 2>&1 &
           for i in $(seq 1 40); do
             if curl -fsS http://127.0.0.1:8765/preview/v115-pilot/ >/dev/null; then break; fi

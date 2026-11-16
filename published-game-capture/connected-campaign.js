@@ -5,6 +5,7 @@
  let scene=null,owner=null,replay=false,snapshot=null,pan=null,worldCamera=false,beat=null,presenting=false,starts=0,trafficOffset=null,planning=false;
  const trace=[],names={jay:'JAY',rosa:'ROSA',kaleb:'KALEB',gigi:'GIGI',lingling:'LINGLING'};
  const actorRefs={officer:{},brooks:{},driver:{}};
+ let commandFrame=null;
  const originalStages={locker:introStageLocker,briefing:introStageBriefing,corridor:introStageCorridor,officer:introOfficerIn};
  const trafficVehicle={id:'story-traffic-sedan',kind:'civilian',color:'#a66852',length:78,width:38,parked:true,angle:0,cos:1,sin:0,dir:'right'};
  function record(event,detail={}){trace.push({event,profile:H.profiles.current(),beat,world:'harbor-main',...detail});if(trace.length>140)trace.shift();}
@@ -26,12 +27,49 @@
  dawnPlatesStart=function(){if(!scene)return oldDawnStart();csPlate.on=false;};
  dawnPlatesEnd=function(){pan=null;if(!scene)return oldDawnEnd();csPlate.on=false;};
  function sourceSteps(isReplay){return originalBuild(isReplay).map(st=>{if(st.t!=='say')return st;const stale=st.lines.some(l=>l[1].includes('Case 001 \u2014 The Missing Drive'));
-   const lines=stale?[H.caper.openingWelcome(),st.lines[1]]:st.lines.filter(l=>!l[1].includes("A drive isn't where")&&!l[1].startsWith('Start there. Tell me'));
-   return{...st,lines:lines.map(l=>[l[0]==='JAY'?names[H.profiles.current()]:l[0],l[1].replace('tap INTERACT','tap Action')])};});}
+   const lines=stale?[H.caper.openingWelcome(),['SGT. BROOKS','Meet me in the briefing room. Look for the gold marker when you’re ready.']]:st.lines.filter(l=>!l[1].includes("A drive isn't where")&&!l[1].startsWith('Start there. Tell me'));
+   const profile=H.profiles.current();
+   return{...st,lines:lines.map(([speaker,text,button,metadata])=>[
+    speaker==='JAY'?names[profile]:speaker,text.replace('tap INTERACT','tap Action'),button,
+    speaker==='JAY'?{speakerId:profile}:speaker==='PAPI'?{speakerId:'jay'}:metadata
+   ])};});}
  function begin(id){if(!api.isOpen()||H.academy.active()||H.outbreak.active())return false;scene=id;owner=state;pan=null;beat=id==='intro'?'opening':id;record('begin',{id});document.body.classList.add('connected-cinematic');o.clearInput();return true;}
- function finish(){const id=scene;scene=null;pan=null;worldCamera=false;document.body.classList.remove('connected-cinematic');H.caper.presenting=presenting;
+ function finish(){const id=scene;restoreCommandFrame();scene=null;pan=null;worldCamera=false;document.body.classList.remove('connected-cinematic');H.caper.presenting=presenting;
   if(owner===state){if(id==='intro'&&!replay){state.intro={done:true,playing:false,setupApplied:true};state.connectedEvents={...state.connectedEvents,firstShiftComplete:true};}campus.follow=snapshot?.campus.follow??true;campus.zoom=snapshot?.campus.zoom||.9;campus.moved=false;o.clearInput();H.mainCity?.save();}record('finish',{id,replay});snapshot=null;owner=null;replay=false;}
  csPlay=function(id,steps,done){if(!api.isOpen()||H.academy.active()||H.outbreak.active())return originalPlay.apply(this,arguments);if(csActive)return false;begin(id);return originalPlay(id,steps,function(){try{done?.();}finally{finish();}});};
+ function restoreCommandFrame(){
+  if(!commandFrame)return;
+  const {camera,actor,direction,dir}=commandFrame;
+  if(actor)actor.dir=direction;
+  if(owner===state){Object.assign(campus,camera);campus.dir=dir;}
+  commandFrame=null;
+ }
+ function commandBeat(id,lines,done){
+  if(!api.isOpen()||scene||csActive||o.cruiser?.active()||H.academy.active()||H.outbreak.active())return false;
+  const isOrtiz=id==='command-ortiz';
+  const actor=o.npcActors.find(a=>(isOrtiz?(a.talk==='marco'||a.source?.talk==='marco'||/\bORTIZ\b/i.test(a.name)):
+   a.storyStation&&/^SGT\.?\s+BROOKS$/i.test(a.name))&&Math.hypot(a.x-campus.x,a.y-campus.y)<200);
+  if(isOrtiz&&!actor)return false;
+  const x=actor?(actor.x+campus.x)/2:campus.x;
+  const y=actor?(actor.y+campus.y)/2:campus.y;
+  const camera={zoom:campus.zoom,follow:campus.follow,camX:campus.camX,camY:campus.camY};
+  commandFrame={camera,actor,direction:actor?.dir,dir:campus.dir};
+  snapshot={campus:camera};
+  presenting=!!H.caper.presenting;
+  H.caper.presenting=true;
+  if(actor){
+   const dx=campus.x-actor.x,dy=campus.y-actor.y;
+   const horizontal=Math.abs(dx)>Math.abs(dy);
+   actor.dir=horizontal?(dx>0?'right':'left'):(dy>0?'down':'up');
+   campus.dir=horizontal?(dx>0?'left':'right'):(dy>0?'up':'down');
+  }
+  const speech=!actor&&lines?lines.map(([name,line])=>[name==='SGT. BROOKS'?'SGT. BROOKS · RADIO':name,line]):lines;
+  return csPlay(id,[
+   {t:'letterbox',on:true},
+   {t:'cam',world:true,x,y:y-35,zoom:Math.max(camera.zoom,1.05),dur:.45},
+   speech?{t:'say',lines:speech}:{t:'wait',dur:.45}
+  ],done);
+ }
  csRunStep=function(st){if(!scene)return originalRun(st);if(st.t==='plate'){
    const shots={docks:[[3585,4020],[3760,3970],.8],street:[[2600,1790],[2820,1790],.85],precinct:[[948,1320],[948,1130],.85]},s=shots[st.src];
    if(s){beat=st.src;pan={from:s[0],to:s[1],zoom:s[2],start:performance.now(),dur:st.dur*1000};record('shot',{from:s[0],to:s[1]});}csNext();return;
@@ -63,10 +101,11 @@
  function syncTraffic(){if(!planTraffic())return;if(!scene&&!csActive){if(tsStage()==='arrival'){tsHandoff();record('traffic-recovered',{stage:'encounter'});}else if(tsStage()==='outcome'){applyTrafficOutcome();record('traffic-recovered',{stage:'done'});}}
   for(let i=o.worldSpots.length-1;i>=0;i--)if(o.worldSpots[i].campaignTraffic)o.worldSpots.splice(i,1);const start=o.worldSpots.find(s=>s.nativeId==='trafficStop');if(start){Object.assign(start,locate(TS.map,TS.sedan.x,TS.sedan.y-42));start.campaignHidden=tsStage()!=='idle';}if(tsStage()!=='encounter')return;for(const sp of TS_SPOTS){const p=safe(locate(TS.map,sp.x,sp.y));if(p)o.worldSpots.push({...sp,...p,id:'campaign:'+sp.id,nativeId:sp.id,nativeMap:TS.map,nativeX:sp.x,nativeY:sp.y,campaignTraffic:true});}}
  function vehicles(){if(planning||!trafficOffset||!api.isOpen()||tsStage()==='done')return[];const p=locate(TS.map,TS.sedan.x,TS.sedan.y);if(!p)return[];Object.assign(trafficVehicle,p);return[trafficVehicle];}
- function abort(){if(replay&&owner===state)introRestore();csStopAll();introActorsHide();scene=null;pan=null;document.body.classList.remove('connected-cinematic');H.caper.presenting=presenting;snapshot=null;owner=null;replay=false;record('cancel');}
- function tick(dt){if(!scene){syncTraffic();return;}if(owner!==state||!csActive){abort();return;}const x=campus.x,y=campus.y;updateCutscene(dt);if(!scene)return;const raw=locate(state.map,player.x+player.w/2,player.y+player.h/2),p=raw&&(scene.startsWith('traffic')?safe(raw):raw);if(p){campus.x=p.x;campus.y=p.y;campus.dir=player.dir;campus.moved=!!player.moving;const distance=Math.hypot(p.x-x,p.y-y);if(campus.moved&&distance<30)campus.stride+=distance*.055;}syncTraffic();}
+ function abort(){if(replay&&owner===state)introRestore();restoreCommandFrame();csStopAll();introActorsHide();scene=null;pan=null;document.body.classList.remove('connected-cinematic');H.caper.presenting=presenting;snapshot=null;owner=null;replay=false;record('cancel');}
+ function tick(dt){if(!scene){syncTraffic();return;}if(owner!==state||!csActive){abort();return;}const x=campus.x,y=campus.y;updateCutscene(dt);if(!scene||commandFrame)return;const raw=locate(state.map,player.x+player.w/2,player.y+player.h/2),p=raw&&(scene.startsWith('traffic')?safe(raw):raw);if(p){campus.x=p.x;campus.y=p.y;campus.dir=player.dir;campus.moved=!!player.moving;const distance=Math.hypot(p.x-x,p.y-y);if(campus.moved&&distance<30)campus.stride+=distance*.055;}syncTraffic();}
  function camera(){if(!scene)return null;if(pan){const u=Math.min(1,Math.max(0,(performance.now()-pan.start)/pan.dur)),t=u*u*(3-2*u);return{x:pan.from[0]+(pan.to[0]-pan.from[0])*t,y:pan.from[1]+(pan.to[1]-pan.from[1])*t,zoom:pan.zoom,ease:6};}if(csCam.on){const p=worldCamera?{x:csCam.cx,y:csCam.cy}:locate(state.map,csCam.cx,csCam.cy);if(p)return{...p,zoom:csCam.zoom,ease:6};}return{x:campus.x,y:campus.y,zoom:campus.zoom,ease:9};}
  startIntro=isReplay=>start(!!isReplay);window.ROOKIE.cutscene.startIntro=startIntro;window.ROOKIE.cutscene.play=csPlay;const oldSkip=H.skipIntro;H.skipIntro=()=>scene?skipCutscene():oldSkip();
  H.mainOpening=Object.freeze({start,maybeStart,orient,active:()=>scene==='intro',inspect:()=>({active:scene==='intro',starts,beat,source:'First Shift',trace:trace.slice()})});
- H.campaignScenes=Object.freeze({active:()=>!!scene,suspend:()=>{if(scene){snapshot=null;replay=false;abort();}},tick,camera,actors,vehicles,resolve:name=>{const n=String(name).toUpperCase(),a=actors().find(a=>n===a.name.toUpperCase()||n.startsWith(a.name.toUpperCase()+' — '));return a?{ref:a,kind:'connected'}:null;},vehicleBlocks:(x,y,r)=>vehicles().some(v=>Math.max(0,Math.abs(x-v.x)-v.length/2)**2+Math.max(0,Math.abs(y-v.y)-v.width/2)**2<r*r),suppress:a=>!a.openingActor&&scene==='intro'&&INTRO_ACTORS.brooks.on&&/SGT\.?\s*BROOKS/i.test(a.name||''),drawActor:a=>{if(!a.openingActor)return false;if(!window.ROOKIE_CIVILIANS?.draw(g,a))o.paintActor(a);return true;},startTraffic:(sp,dispatch)=>{if(scene||H.speech.current()||!planTraffic())return false;if(tsStage()!=='idle'){dispatch();return true;}const p=locate(TS.map,TS.unit.x,TS.unit.y);if(!p||!o.cruiser.stageForScene({...p,angle:0})){record('traffic-staging-blocked',{point:p});toast('Move clear of the traffic-stop staging area first.');return false;}dispatch();return true;},inspect:()=>({scene,beat,starts,world:'harbor-main',trace:trace.slice()})});
+ H.commandBeat=commandBeat;
+ H.campaignScenes=Object.freeze({active:()=>!!scene,suspend:()=>{if(scene){snapshot=null;replay=false;abort();}},tick,camera,actors,vehicles,resolve:name=>{const n=String(name).toUpperCase();const staged=commandFrame?.actor&&n===(scene==='command-ortiz'?'FOREMAN ORTIZ':'SGT. BROOKS')?commandFrame.actor:null;const a=staged||actors().find(a=>n===a.name.toUpperCase()||n.startsWith(a.name.toUpperCase()+' — '));return a?{ref:a,kind:'connected'}:null;},vehicleBlocks:(x,y,r)=>vehicles().some(v=>Math.max(0,Math.abs(x-v.x)-v.length/2)**2+Math.max(0,Math.abs(y-v.y)-v.width/2)**2<r*r),suppress:a=>!a.openingActor&&scene==='intro'&&INTRO_ACTORS.brooks.on&&/SGT\.?\s*BROOKS/i.test(a.name||''),drawActor:a=>{if(!a.openingActor)return false;if(!window.ROOKIE_CIVILIANS?.draw(g,a))o.paintActor(a);return true;},startTraffic:(sp,dispatch)=>{if(scene||H.speech.current()||!planTraffic())return false;if(tsStage()!=='idle'){dispatch();return true;}const p=locate(TS.map,TS.unit.x,TS.unit.y);if(!p||!o.cruiser.stageForScene({...p,angle:0})){record('traffic-staging-blocked',{point:p});toast('Move clear of the traffic-stop staging area first.');return false;}dispatch();return true;},inspect:()=>({scene,beat,starts,world:'harbor-main',trace:trace.slice()})});
 })

@@ -40,3 +40,13 @@ body.rookie-main-city #v115Campus #haleTools button,
 body.rookie-main-city #v115Campus #tacticalTools button{font-size:12px;min-height:36px;padding:6px 10px}
 body.rookie-main-city #v115Campus #haleAim{position:relative;inset:auto;width:100%;height:42px;min-height:42px;margin-top:6px;border:1px dashed #d8bb79;border-radius:8px;touch-action:none}
 body.rookie-main-city #v115Campus #haleFire{position:static;float:right;width:auto;height:auto;min-height:36px;margin:6px 0 0 8px}
+
+/* Chapter 006 evidence comparison */
+.command-evidence{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;margin:.5rem 0}
+.command-evidence figure{margin:0;min-width:0;text-align:center}
+.command-evidence img{display:block;width:100%;height:clamp(72px,24vh,210px);object-fit:contain;image-rendering:pixelated}
+.command-evidence strong{display:block;color:#ffdf9d}
+.command-order{margin:.5rem auto;max-width:420px;background:#ecdfb9;color:#192d3c;border:4px double #a79469;padding:.45rem}
+.command-order-header{height:auto;aspect-ratio:512/260;overflow:hidden}
+.command-order-header img{display:block;width:100%;image-rendering:pixelated}
+#hcStoryBody .command-order blockquote{margin:.4rem .75rem .8rem;padding:.55rem;color:#192d3c;background:transparent;border:0;font-weight:600}

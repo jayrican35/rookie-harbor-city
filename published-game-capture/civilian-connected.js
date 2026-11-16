@@ -21,6 +21,7 @@ const protectedNames=/\b(?:JAY|ROSA|KALEB|GIGI|LING\s?LING|MAYA|SARITAH?|ELIAS\s
 function protectedActor(a){
  if(!a)return true;
  const id=String(a.id||''),name=String(a.name||'');
+ if(a.storyStation&&/^(ELIAS REED|FERRIS)$/.test(name)&&!a.isPlayer&&!a.police)return false;
  // Maya is civilian intake staff. Her station ID must not force the old
  // block-person fallback used before the connected citizen pack was added.
  if(a.storyStation&&name.toUpperCase()==='MAYA'&&!a.isPlayer&&!a.police)return false;
@@ -36,6 +37,7 @@ function requestedRole(a){
  const parts=String(a.id||'').split(':');
  if(parts[0]==='ambient'&&districtRoles[parts[1]]){const pool=districtRoles[parts[1]];return pool[(Number(parts[2])||0)%pool.length];}
  const n=String(a.name||'').toUpperCase();
+ if(a.storyStation&&/^(ELIAS REED|FERRIS)$/.test(n))return 'delivery';
  if(n==='MAYA')return 'office_worker';
  if(/OLD TOM|FISHER|ANGLER/.test(n))return 'fisher';
  if(/BARISTA/.test(n))return 'barista';

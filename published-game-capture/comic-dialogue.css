@@ -33,3 +33,17 @@ body.comic-dialogue-enabled #csCaption.show{background:#fff9e9!important;color:#
    touch and keyboard access without drawing a slider in the artwork. */
 #dlgPanel.hc-speech.comic-balloon,#dlgPanel.comic-balloon #dlgActions{scrollbar-width:none!important}
 #dlgPanel.comic-balloon::-webkit-scrollbar,#dlgPanel.comic-balloon #dlgActions::-webkit-scrollbar{width:0!important;height:0!important;display:none!important}
+
+#dlgPanel.comic-balloon .comic-family-portrait {
+  width: clamp(48px, 13vw, 72px);
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: contain;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 9px;
+  border: 2px solid #18283b;
+  border-radius: 14px;
+  background: #18283b;
+  box-shadow: 0 0 0 1px #d4aa53;
+}

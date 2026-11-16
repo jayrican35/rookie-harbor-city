@@ -15,6 +15,7 @@
  fridgeHint.innerHTML='<strong>Find the fridge</strong><span></span>';
  if(window.ROOKIE_MAIN_CITY_ACTIVE)modal.appendChild(fridgeHint);
  const fridgeInstruction=fridgeHint.querySelector('span');
+ const leadTitle=fridgeHint.querySelector('strong');
  const touchControls=matchMedia('(pointer: coarse)');
  // Reparent the existing panels so their own callbacks/focus handling work
  // above this canvas. Restore their original homes when leaving the city.
@@ -35,8 +36,13 @@
   for(const [i,n] of actors.entries()){
    const key=n.familyId||familyKey(n.name);
    if(key){if(placedFamily.has(key))continue;placedFamily.add(key);}
-   const a={...n,id:'station-npc:'+i,source:n,storyStation:true,familyId:key,x:n.x+STX,y:n.y+STY};if(n.legacy&&o.blocked(a.x,a.y)){const room=ST.rooms.find(r=>n.x>=r.x&&n.x<r.x+r.w&&n.y>=r.y&&n.y<r.y+r.h);let found=false;for(let r=16;r<=112&&!found;r+=16)for(let dx=-r;dx<=r&&!found;dx+=16)for(let dy=-r;dy<=r;dy+=16){const x=n.x+dx,y=n.y+dy;if(room&&(x<room.x+16||x>room.x+room.w-16||y<room.y+16||y>room.y+room.h-16))continue;if(!o.blocked(x+STX,y+STY)){a.x=x+STX;a.y=y+STY;found=true;break;}}}npcActors.push(a);
-   if(n.talk)worldSpots.push({id:a.id,x:a.x,y:a.y+18,label:'Talk to '+n.name,nativeMap:'station',nativeId:n.legacy&&['chen','park'].includes(n.talk)?'legacy:'+n.talk:!H.caper?.active()&&n.talk.startsWith('caperFamily')?'family:'+key:'npc:'+n.talk,nativeX:n.x,nativeY:n.y,storyStation:true,sourceActor:n});
+   // Position the detainees' feet past the front bars and clear of the bunks.
+   // Keep the authored NPC and interaction coordinates for case dispatch.
+   const cellIndex=n.name==='ELIAS REED'?0:n.name==='FERRIS'?1:-1;
+   const cell=H.cellblock?.cells[cellIndex];
+   const a={...n,id:'station-npc:'+i,source:n,storyStation:true,familyId:key,
+    x:(cell?cell.x+cell.w-38:n.x)+STX,y:(cell?905:n.y)+STY};if(n.legacy&&o.blocked(a.x,a.y)){const room=ST.rooms.find(r=>n.x>=r.x&&n.x<r.x+r.w&&n.y>=r.y&&n.y<r.y+r.h);let found=false;for(let r=16;r<=112&&!found;r+=16)for(let dx=-r;dx<=r&&!found;dx+=16)for(let dy=-r;dy<=r;dy+=16){const x=n.x+dx,y=n.y+dy;if(room&&(x<room.x+16||x>room.x+room.w-16||y<room.y+16||y>room.y+room.h-16))continue;if(!o.blocked(x+STX,y+STY)){a.x=x+STX;a.y=y+STY;found=true;break;}}}npcActors.push(a);
+   if(n.talk)worldSpots.push({id:a.id,x:cell?n.x+STX:a.x,y:(cell?n.y+STY:a.y)+18,label:'Talk to '+n.name,nativeMap:'station',nativeId:n.legacy&&['chen','park'].includes(n.talk)?'legacy:'+n.talk:!H.caper?.active()&&n.talk.startsWith('caperFamily')?'family:'+key:'npc:'+n.talk,nativeX:n.x,nativeY:n.y,storyStation:true,sourceActor:n});
   }
   for(const s of currentSpots)if(!s.to)worldSpots.push({...s,id:'station:'+s.id,areaId:'station',x:s.x+STX,y:s.y+STY,nativeMap:'station',nativeId:s.id,nativeX:s.x,nativeY:s.y,storyStation:true});
   initInteriors();
@@ -154,12 +160,42 @@
  function step(dt){initInteriors();syncArc();clearClock+=dt;if(clearClock>.5&&clearAttempts<8){clearClock=0;clearAttempts++;clearEntrances();}for(const b of interiors){const near=Math.abs(campus.x-b.door.x)<b.door.w/2&&Math.abs(campus.y-b.door.y)<24;const target=roomAt(campus.x,campus.y)===b||near?0:1;b.roof+=(target-b.roof)*(1-Math.exp(-12*dt));}}
  function ownsSolid(r){if(clearedProps.some(p=>r.w<=p.w+12&&r.h<=p.h+12&&r.x<p.x+p.w&&r.x+r.w>p.x&&r.y<p.y+p.h&&r.y+r.h>p.y))return true;return interiors.some(b=>!b.existing&&r.x>=b.exterior.x-18&&r.y>=b.exterior.y-18&&r.x+r.w<=b.exterior.x+b.exterior.w+18&&r.y+r.h<=b.exterior.y+b.exterior.h+18&&r.w>b.exterior.w*.45&&r.h>b.exterior.h*.4);}
  function collides(x,y,r){if(x>=STX+768&&x<=STX+1148&&y>=STY+796&&y<=STY+1040&&(ST.pedSolids||ST.solids).some(p=>p.x>=780&&p.x<1140&&p.y>=808&&o.circleHitsRect(x,y,r,{...p,x:p.x+STX,y:p.y+STY})))return true;return interiors.some(b=>[...b.walls,...b.furniture,...(!o.canEnter(b.map)?[{x:b.door.x-b.door.w/2,y:b.door.y-6,w:b.door.w,h:12}]:[])].some(p=>o.circleHitsRect(x,y,r,p)));}
- function objective(){const goal=H.objective()||(H.caper?.active()?H.caper.objective():window.ROOKIE.objective());if(!goal)return null;const sp=worldSpots.find(s=>s.nativeMap===goal.map&&s.nativeId===goal.spot);if(!sp)return null;const b=interiors.find(b=>b.map===sp.storyRoom);return b&&roomAt(campus.x,campus.y)!==b?{x:b.door.x,y:b.door.y+22}:sp;}
+ function objective(goal=H.objective()||(H.caper?.active()?H.caper.objective():window.ROOKIE.objective())){if(!goal)return null;const sp=worldSpots.find(s=>s.nativeMap===goal.map&&s.nativeId===goal.spot);if(!sp)return null;const b=interiors.find(b=>b.map===sp.storyRoom);return b&&roomAt(campus.x,campus.y)!==b?{x:b.door.x,y:b.door.y+22,doorway:true}:sp;}
+ function nextStepGuide(g,view,goal,target){
+  const near=campus.near?.nativeId===goal.spot;
+  const dx=target.x-campus.x,dy=target.y-campus.y;
+  const arrow=Math.abs(dx)>Math.abs(dy)?(dx<0?'←':'→'):(dy<0?'↑':'↓');
+  const button=document.getElementById('v115CampusInteract');
+  const action=button?.textContent.trim()||'Action';
+  const instruction=near?(touchControls.matches?'Tap '+action+'.':'Press E or click '+action+'.'):
+   arrow+' '+goal.where+(target.doorway?' · front door':'');
+  if(leadTitle.textContent!==goal.text)leadTitle.textContent=goal.text;
+  if(fridgeInstruction.textContent!==instruction)fridgeInstruction.textContent=instruction;
+  if(target.x<view.x||target.x>view.x+view.w||target.y<view.y||target.y>view.y+view.h)return;
+  g.save();
+  g.strokeStyle='#182537';g.lineWidth=5/view.zoom;
+  g.beginPath();g.arc(target.x,target.y,17,0,Math.PI*2);g.stroke();
+  g.strokeStyle='#ffe079';g.lineWidth=2.5/view.zoom;g.stroke();
+  g.restore();
+ }
  function fridgeGuide(g,view,inside,free){
-  const searching=window.ROOKIE_MAIN_CITY_ACTIVE&&H.caper?.active()&&H.caper.stage()===1;
-  const show=searching&&free;
+  const main=window.ROOKIE_MAIN_CITY_ACTIVE&&free;
+  const caper=main&&H.caper?.active()?H.caper.objective():null;
+  const searching=caper?.spot==='caper:fridge';
+  const goal=main&&!searching?(caper||H.objective()||window.ROOKIE.objective()):null;
+  const target=goal&&objective(goal);
+  const decision=goal?.spot==='arcDecision';
+  const show=main&&(searching||!!target||decision);
   if(fridgeHint.hidden===show)fridgeHint.hidden=!show;
   if(!show)return;
+  if(target){nextStepGuide(g,view,goal,target);return;}
+  if(decision){
+   if(leadTitle.textContent!=='Time to make a choice')leadTitle.textContent='Time to make a choice';
+   const path='Menu → Settings → Story';
+   if(fridgeInstruction.textContent!==path)fridgeInstruction.textContent=path;
+   return;
+  }
+  if(leadTitle.textContent!=='Find the fridge')leadTitle.textContent='Find the fridge';
   const near=campus.near?.nativeId==='caper:fridge';
   const inBreakRoom=inside&&campus.x>=STX+1560&&campus.x<STX+1924&&campus.y<STY+636;
   const instruction=near?(touchControls.matches?'Tap Check Fridge.':'Press E or select Check Fridge.'):

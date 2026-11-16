@@ -5,12 +5,14 @@
 const T=Object.freeze({restitution:.20,bounceThreshold:14,friction:.24,mass:Object.freeze({compact:.8,civilian:1,sedan:1,patrol:1.25,suv:1.5,delivery:1.85}),angularResponse:1,linearDamping:.65,angularDamping:1.7,tireGrip:2.6,parkedDrag:2.7,maxSpeed:360,maxAngularSpeed:3.2,slop:.25,correction:.55,maxCorrection:2.5,substep:1/120,iterations:3,minRecovery:.65,rejoinSpeed:24,rejoinSpin:.22,offscreenRecovery:20,particleIntensity:1,cameraIntensity:1});
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),wrap=a=>Math.atan2(Math.sin(a),Math.cos(a));
 function dimensions(b){return[b.length||86,b.width||38];}
+function contactDimensions(b){return window.ROOKIE_V135_WALL_KIT?.trafficContactSize?.(b)||dimensions(b);}
 function axes(b){return[{x:Math.cos(b.angle),y:Math.sin(b.angle)},{x:-Math.sin(b.angle),y:Math.cos(b.angle)}];}
-function radius(b,n){const a=axes(b),[l,w]=dimensions(b);return Math.abs(a[0].x*n.x+a[0].y*n.y)*l/2+Math.abs(a[1].x*n.x+a[1].y*n.y)*w/2;}
-function contact(a,b){let depth=Infinity,n=null;const dx=b.x-a.x,dy=b.y-a.y;
- for(const axis of [...axes(a),...axes(b)]){const projection=dx*axis.x+dy*axis.y,overlap=radius(a,axis)+radius(b,axis)-Math.abs(projection);if(overlap<=0)return null;if(overlap<depth){depth=overlap;const sign=projection<0?-1:1;n={x:axis.x*sign,y:axis.y*sign};}}
+function radius(a,[l,w],n){return Math.abs(a[0].x*n.x+a[0].y*n.y)*l/2+Math.abs(a[1].x*n.x+a[1].y*n.y)*w/2;}
+function contact(a,b){let depth=Infinity,n=null;const dx=b.x-a.x,dy=b.y-a.y,aa=axes(a),ba=axes(b),ad=contactDimensions(a),bd=contactDimensions(b);
+ const ar=n=>radius(aa,ad,n),br=n=>radius(ba,bd,n);
+ for(const axis of [...aa,...ba]){const projection=dx*axis.x+dy*axis.y,overlap=ar(axis)+br(axis)-Math.abs(projection);if(overlap<=0)return null;if(overlap<depth){depth=overlap;const sign=projection<0?-1:1;n={x:axis.x*sign,y:axis.y*sign};}}
  const t={x:-n.y,y:n.x},an=a.x*n.x+a.y*n.y,bn=b.x*n.x+b.y*n.y,at=a.x*t.x+a.y*t.y,bt=b.x*t.x+b.y*t.y;
- const along=(an+radius(a,n)+bn-radius(b,n))/2,side=(Math.max(at-radius(a,t),bt-radius(b,t))+Math.min(at+radius(a,t),bt+radius(b,t)))/2;
+ const along=(an+ar(n)+bn-br(n))/2,side=(Math.max(at-ar(t),bt-br(t))+Math.min(at+ar(t),bt+br(t)))/2;
  return{nx:n.x,ny:n.y,depth,x:n.x*along+t.x*side,y:n.y*along+t.y*side};
 }
 function create(io){

@@ -15,6 +15,45 @@
  });
  let context=null,meta=null,lastAmbient=0,ambientSerial=0,decorated=null,lastTail='',cameraKey='',originalHome=null,lastFrame=-1000;
  const cooldowns=new WeakMap(),art=new WeakMap(),playerActor={name:'JAY',x:0,y:0,head:66};
+ const family=new Map([['jay','jay'],['officer jay','jay'],['cadet jay','jay'],['guide jay','jay'],['papi','jay'],['rosa','rosa'],['kaleb','kaleb'],['gigi','gigi'],['lingling','lingling'],['saritah','lingling']]);
+ const expressions=new Set(['neutral','happy','surprised','worried','thinking','determined','laughing']);
+ const failedPortraits=new Set();
+ let lineMetadata=null;
+ function withLine(metadata,render){
+  const previous=lineMetadata;
+  lineMetadata=metadata;
+  try{return render();}finally{lineMetadata=previous;}
+ }
+ function familyPortrait(active,panel){
+  const name=panel.querySelector('#dlgSpeaker');
+  let pic=name.querySelector('.comic-family-portrait');
+  const id=active.familyLine?.speakerId??family.get(active.speaker.trim().toLowerCase());
+  if(!connected()||!window.ROOKIE_MAIN_CITY_ACTIVE||!active.familyLine||!family.has(id)){pic?.remove();return;}
+  const emotion=active.familyLine.emotion;
+  // The LingLing expression crops contain remnants of the source board.
+  const expression=id!=='lingling'&&expressions.has(emotion)?emotion:'neutral';
+  const base='./assets/family-dialogue/'+id+'/'+id+'_';
+  const candidates=[base+expression+'.png',base+'neutral.png','./assets/family-v1/'+id+'-portrait.webp'];
+  const src=candidates.find(path=>!failedPortraits.has(path));
+  if(!src){pic?.remove();return;}
+  if(!pic){
+   pic=document.createElement('img');
+   pic.className='comic-family-portrait';
+   pic.alt='';
+   pic.width=pic.height=64;
+   pic.addEventListener('error',()=>{
+    failedPortraits.add(pic.getAttribute('src'));
+    pic.remove();
+    const current=window.HARBOR.speech.current();
+    if(current)current.dirty=true;
+   });
+   name.prepend(pic);
+  }
+  if(pic.getAttribute('src')!==src){
+   pic.src=src;active.dirty=true;
+   if(!matchMedia('(prefers-reduced-motion: reduce)').matches)pic.animate([{opacity:.55},{opacity:1}],{duration:140});
+  }
+ }
  const mascots=[{id:'comic:chicken',name:'Chicken',x:732,y:1376,head:24,asset:'chicken'},
   {id:'comic:banana',name:'Banana',x:698,y:1300,head:24,asset:'bananas'}];
  function enabled(){const h=window.HARBOR;return !query.has('comicLegacy')&&!!h&&!h.outbreak?.active?.()&&!h.academy?.active?.()&&window.ROOKIE?.state?.()?.map!=='training';}
@@ -28,6 +67,11 @@
  function style(el,type){const a=balloon(el);if(el.dataset.comicStyle===type)return;a.shadow.setAttribute('d',shapes[type]||shapes.normal);a.body.setAttribute('d',shapes[type]||shapes.normal);a.body.setAttribute('stroke',type==='angry'?'#933e29':ink);a.body.setAttribute('stroke-dasharray',type==='whisper'?'2 7':'none');el.dataset.comicStyle=type;}
  function settings(full){if(!enabled())return null;const v=viewport(),width=Math.min(meta?.quietText&&meta.quietText===(full??window.HARBOR?.speech?.current()?.full)?288:354,Math.max(160,(v?.right||innerWidth-8)-(v?.left||8)));return{width,lines:innerHeight<420?2:innerWidth<500?3:4};}
  function viewport(){if(!connected())return null;const r=context.canvas.getBoundingClientRect(),v=window.visualViewport;return{r,left:Math.max(8,r.left+8,v?.offsetLeft+6||0),top:Math.max(8,r.top+8,v?.offsetTop+6||0),right:Math.min(innerWidth-8,r.right-8),bottom:Math.min(innerHeight-8,r.bottom-8)};}
+ function familyTop(active,v){
+  if(!active.familyLine||innerWidth>=500)return v.top;
+  const hud=['#v116MarinaHUD .v116-identity','#v116MarinaHUD .v116-minimap','#v125HudMenu'];
+  return Math.max(v.top,...hud.map(s=>document.querySelector(s)?.getBoundingClientRect().bottom+8||0));
+ }
  function screen(p){if(!connected()||!p.connected)return null;const r=context.canvas.getBoundingClientRect(),v=context.view;return{x:r.left+(p.x-v.x)/v.w*r.width,y:r.top+(p.y-v.y)/v.h*r.height,head:p.head/v.h*r.height};}
  function resolve(name){if(!connected())return null;const norm=n=>String(n||'').toUpperCase().replace(/^(OFFICER|OFCR\.|SERGEANT|SGT\.)\s+/,'').replace(/^PAPI$/,'JAY').replace(/^SARITAH$/,'LINGLING');
   const staged=window.HARBOR?.campaignScenes?.resolve(name);if(staged)return staged;
@@ -35,10 +79,12 @@
   const actor=meta?.actors?.find(a=>norm(a.name)===norm(name))||context.actors.find(a=>norm(a.name)===norm(name));return actor?{ref:actor,kind:'connected'}:null;}
  function present(a){return connected()&&(a.ref===playerActor||mascots.includes(a.ref)||context.actors.includes(a.ref)||!!a.ref.vehicle&&context.traffic?.includes(a.ref.vehicle))&&context.visible(a.ref);}
  function point(a){return{x:a.ref.x,y:a.ref.y,head:a.ref.head||58,connected:true};}
- function decorate(active,panel){if(!enabled()){panel.classList.remove('comic-balloon');return;}if(!active)return;
+ function decorate(active,panel){if(!enabled()){panel.classList.remove('comic-balloon');panel.querySelector('.comic-family-portrait')?.remove();return;}if(!active)return;
   if(connected()&&panel.parentElement!==context.host){originalHome={parent:panel.parentNode,next:panel.nextSibling};context.host.appendChild(panel);}
   panel.classList.add('comic-balloon');document.body.classList.add('comic-dialogue-enabled');
-  const type=meta?.stylesByText?.[active.full]||meta?.styles?.[active.speaker]||meta?.style||(/!{2,}|^[A-Z\s!?.]{8,}$/.test(active.full)?'excited':'normal');style(panel,type);
+  if(decorated!==active)active.familyLine=lineMetadata;
+  familyPortrait(active,panel);
+  const type=active.familyLine?.tone||meta?.stylesByText?.[active.full]||meta?.styles?.[active.speaker]||meta?.style||(/!{2,}|^[A-Z\s!?.]{8,}$/.test(active.full)?'excited':'normal');style(panel,type);
   const portrait=window.ROOKIE_CHICKEN?.portrait(active,type)||window.ROOKIE_BANANA?.portrait(active,type);let pic=panel.querySelector('.comic-npc-portrait');if(portrait){if(!pic){pic=document.createElement('img');pic.className='comic-npc-portrait';pic.alt='';pic.width=pic.height=44;panel.querySelector('#dlgSpeaker').prepend(pic);}if(pic.getAttribute('src')!==portrait)pic.src=portrait;}else pic?.remove();
   if(decorated!==active){decorated=active;lastTail='';panel.classList.remove('comic-pop');void panel.offsetWidth;panel.classList.add('comic-pop');}
  }
@@ -55,13 +101,13 @@
   if(active&&panel){decorate(active,panel);
    // Native H.speech owns pagination, measurement and collision-aware placement.
    // This pass only attaches the curved artwork to that authoritative anchor.
-   if(connected())panel.style.visibility=active.actor?.kind==='connected'&&!present(active.actor)?'hidden':'visible';
+   if(connected())panel.style.visibility=!panel.querySelector('.comic-family-portrait')&&active.actor?.kind==='connected'&&!present(active.actor)?'hidden':'visible';
    const r=panel.getBoundingClientRect();tail(panel,active.comicAnchor||null,{x:r.x,y:r.y});
   }else if(art.has(panel))art.get(panel).tail.style.display='none';
   const small=document.getElementById('hcAmbientSpeech');if(ambient&&small){if(connected()&&small.parentNode!==context.host)context.host.appendChild(small);small.classList.add('comic-reaction');small.classList.toggle('comic-banter',!!ambient.actor.ref.comicBanter);style(small,ambient.actor.ref.comicMood||'thought');small.style.visibility=ambient.actor.kind==='connected'&&!present(ambient.actor)?'hidden':'visible';const p=ambient.actor.kind==='connected'?screen(point(ambient.actor)):null;const r=small.getBoundingClientRect();tail(small,p,{x:r.x,y:r.y});}else if(art.has(small))art.get(small).tail.style.display='none';
  }
  function dismiss(){const item=art.get(document.getElementById('dlgPanel'));if(item)item.tail.style.display='none';document.querySelectorAll('.comic-dismiss').forEach(n=>n.remove());const panel=document.getElementById('dlgPanel');if(panel?.classList.contains('comic-balloon')&&!matchMedia('(prefers-reduced-motion: reduce)').matches){const ghost=document.createElement('div'),r=panel.getBoundingClientRect();ghost.className='comic-dismiss';ghost.style.cssText=`left:${r.x}px;top:${r.y}px;width:${r.width}px;height:${r.height}px`;ghost.appendChild(balloon(panel).svg.cloneNode(true));(connected()?context.host:document.body).appendChild(ghost);ghost.addEventListener('animationend',()=>ghost.remove(),{once:true});}
-  meta=null;decorated=null;cameraKey='';if(panel)panel.style.visibility='';}
+  meta=null;decorated=null;cameraKey='';panel?.querySelector('.comic-family-portrait')?.remove();if(panel)panel.style.visibility='';}
  function converse(sp,actors){if(!connected())return false;if(modalActive()){advance();return true;}if(context.driving)return false;const a=sp?.ambientActor||actors?.find(a=>a.id===sp?.id);if(!a||!sp.text)return false;meta={actors:[a],style:'normal'};window.HARBOR.comicDialogue.lines([[a.name,sp.text]]);return true;}
  function advance(){const h=window.HARBOR;if(!h?.speech.current())return;if(!h.speech.advancePage()){const n=document.getElementById('dlgNext')||document.getElementById('dlgContinue');n?.click();}}
  function sequence(lines,options,done){if(!connected()||modalActive()||context.driving)return false;meta=options;window.HARBOR.comicDialogue.lines(lines,done);return true;}
@@ -81,7 +127,7 @@
  }
  function drawProps(g){if(!enabled()||stage==='civilian')return;const living=window.HARBOR?.livingCity;for(const a of mascots){if(a.asset==='chicken'&&window.ROOKIE_CHICKEN?.actor())continue;if(a.asset==='bananas'&&window.ROOKIE_BANANA?.actor())continue;const im=living?.art?.[a.asset];if(im?.complete&&im.naturalWidth){g.drawImage(im,a.x-im.naturalWidth,a.y-im.naturalHeight*2,im.naturalWidth*2,im.naturalHeight*2);}}}
  function close(){window.ROOKIE_BANTER?.reset();window.HARBOR?.comicDialogue?.close();const panel=document.getElementById('dlgPanel');if(originalHome&&panel){originalHome.parent.insertBefore(panel,originalHome.next?.parentNode===originalHome.parent?originalHome.next:null);originalHome=null;}const small=document.getElementById('hcAmbientSpeech');if(small){small.style.display='none';if(art.has(small))art.get(small).tail.style.display='none';document.body.appendChild(small);}context=null;meta=null;}
- window.ROOKIE_COMIC=Object.freeze({enabled,modalActive,settings,viewport,screen,resolve,present,point,decorate,afterLayout,dismiss,converse,advance,comedy,sequence,reaction,frame,drawProps,close,
+ window.ROOKIE_COMIC=Object.freeze({enabled,modalActive,settings,viewport,screen,resolve,present,point,decorate,afterLayout,dismiss,converse,advance,comedy,sequence,reaction,frame,drawProps,close,withLine,familyTop,
   blocks:a=>connected()?obstacles(a?.ref||context.player):null,
   cameraChanged:()=>{if(!connected())return false;const v=context.view,key=[v.x,v.y,v.w,v.h].join(',');if(key===cameraKey)return false;cameraKey=key;return true;},
   ambientAllowed:()=>connected()&&(!context.driving||!!window.ROOKIE_BANTER&&query.get('banter')!=='off')&&context.ambientFree&&!window.ROOKIE_V116_HUD?.blocked(),

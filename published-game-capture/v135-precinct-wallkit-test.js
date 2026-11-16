@@ -363,6 +363,10 @@ const fleetMode=fleetParams.get('fleetArt'),fleetQA=fleetParams.get('pilotQA')==
 const fleetStep=Math.PI/16,fleetScale=86/116,fleetGroundY=.6268256892,fleetRise=7.894587536;
 const fleetPaints=['sand','slate','marina_blue','sage_green','cherry_red','ivory','midnight'];
 const fleetBodies=['compact_sedan','family_sedan','family_sedan','crossover_suv'];
+const fleetContactSizes={
+ compact_sedan:[73,34],family_sedan:[86,36],crossover_suv:[82,38],
+ pickup_truck:[95,38],delivery_van:[93,38]
+};
 const fleetImages=new Map(),fleetAppearance=new WeakMap(),fleetRetry=new Map(),fleetSamples=new Map();
 const fleetLimit=8;
 let fleetLoading=false,fleetLoads=0,fleetEvictions=0;
@@ -402,6 +406,13 @@ function fleetImage(art,now){
   image.src='./assets/civilian-fleet/'+art+'_32dir.png';
  });
  return null;
+}
+function trafficContactSize(car){
+ if(!window.ROOKIE_MAIN_CITY_ACTIVE||fleetMode==='previous'||(car.kind!=='civilian'&&car.kind!=='delivery'))return null;
+ if(fleetMode==='pilot'&&car.kind!=='civilian')return null;
+ const model=fleetMode==='pilot'?'family_sedan':fleetStyle(car).split('_',2).join('_');
+ const [length,width]=fleetContactSizes[model];
+ return [Math.min(car.length||length,length),Math.min(car.width||width,width)];
 }
 const trafficHeadings={right:0,down:Math.PI/2,left:Math.PI,up:-Math.PI/2};
 function trafficHeading(car){
@@ -490,7 +501,7 @@ window.ROOKIE_V135_WALL_KIT=Object.freeze({
  version:'v135-phase1-wall-kit',
  drawTest,drawFacadeWindow,drawEntranceStatic,drawEntranceDoors,drawGroundSprite,fillGround,drawCommunitySprite,prepareCommunityAssets,fillCommunityGround,drawCommunityBorder,
  drawRoadNetwork,fillRoadMaterial,drawRoadDecal,
- preparePerspectivePilot,drawPilotVehicle,
+ preparePerspectivePilot,drawPilotVehicle,trafficContactSize,
  fleetQA:()=>fleetQA?{limit:fleetLimit,loaded:[...fleetImages.keys()],loads:fleetLoads,evictions:fleetEvictions,samples:Object.fromEntries(fleetSamples)}:null,
  prepareInteriorWalls,drawInteriorModule,
  interiorWalls:()=>({loaded:!!interiorSheet,error:interiorError,frames:Object.keys(interiorManifest?.frames||{}).length,draws:interiorDraws}),

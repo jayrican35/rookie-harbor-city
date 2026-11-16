@@ -30,6 +30,7 @@ def inventory():
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--import-build', type=Path, help='Promote an already verified assembled main build')
 parser.add_argument('--output', type=Path, help='Copy the verified committed package to an empty destination')
+parser.add_argument('--refresh-manifest', action='store_true', help='Explicitly record reviewed changes made to the canonical package')
 args = parser.parse_args()
 assert digest(GAME / 'game.js') == ENGINE_HASH, 'Protected original engine differs'
 
@@ -60,10 +61,13 @@ if args.import_build:
         shutil.copyfile(p, target)
         changes.append(relative.as_posix())
     subprocess.run(['node', '--check', str(GAME / 'game-v115.bundle.js')], check=True)
+    print('Promoted existing runtime files: ' + ', '.join(changes))
+
+if args.import_build or args.refresh_manifest:
+    subprocess.run(['node', '--check', str(GAME / 'game-v115.bundle.js')], check=True)
     MANIFEST.write_text(json.dumps({'schema': 1, 'entry': 'index.html',
         'world': 'harbor-main', 'hashConvention': 'SHA256; text CRLF normalized to LF', 'engineSHA256': ENGINE_HASH,
         'files': inventory()}, indent=2) + '\n', encoding='utf-8')
-    print('Promoted existing runtime files: ' + ', '.join(changes))
 
 manifest = json.loads(MANIFEST.read_text('utf-8'))
 assert manifest['files'] == inventory(), 'Package inventory differs; review and explicitly reimport the assembled build'

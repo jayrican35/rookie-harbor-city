@@ -314,8 +314,73 @@
     [{...r,h:194},{...r,y:270,h:378}]:[r]).concat([{x:1924,y:0,w:12,h:648},{x:1560,y:636,w:364,h:12}]);
   const roomRects=stationRooms.map(r=>rect(r,STX,STY));
   const walls=stationWalls.map(r=>rect(r,STX,STY));
-  const furniture=ST.furn.filter(f=>f.solid).map(f=>rect(f,STX,STY));
+  const isBreakRoomTable=f=>f.type==='table'&&f.x===1640&&f.y===145;
+  const breakRoomTable=[{x:1684,y:112,w:112,h:55},{x:1722,y:91,w:36,h:21},{x:1722,y:167,w:36,h:30}];
+  const furniture=ST.furn.filter(f=>f.solid)
+    .flatMap(f=>isBreakRoomTable(f)?breakRoomTable:[f]).map(f=>rect(f,STX,STY));
   const collision=walls.concat(furniture,[{x:STX+1780,y:STY+64,w:106,h:30},{x:STX+1600,y:STY+64,w:30,h:26},{x:STX+1690,y:STY+330,w:132,h:52},{x:STX+1785,y:STY+420,w:90,h:34}]);
+  function drawBreakRoomTable(g){
+    const [table,...chairs]=breakRoomTable;
+    const paint=(color,x,y,w,h)=>{g.fillStyle=color;g.fillRect(STX+x,STY+y,w,h);};
+    for(const {x,y,w,h} of chairs){
+      paint('#172733',x,y,w,h);
+      paint('#3c586a',x+3,y+3,w-6,h-7);
+      paint('#587183',x+5,y+4,w-10,2);
+      paint('#243b4a',x+5,y+h-9,w-10,5);
+    }
+    const {x,y,w,h}=table;
+    paint('#24323a',x+4,y+h-10,7,20);
+    paint('#24323a',x+w-11,y+h-10,7,20);
+    paint('#392c27',x,y,w,h-5);
+    paint('#82583c',x+3,y+3,w-6,h-13);
+    paint('#a57853',x+3,y+3,w-6,3);
+    for(let i=1;i<4;i++)paint('#704b36',x+4,y+8+i*9,w-8,1);
+    paint('#553c30',x+3,y+h-10,w-6,5);
+  }
+  const breakRoomAppliances={
+    fridge:{file:'breakroom_fridge_closed.png',x:1777,y:14},
+    coffee:{file:'breakroom_coffee_station.png',x:1580,y:45}
+  };
+  for(const prop of Object.values(breakRoomAppliances)){
+    prop.image=new Image();
+    prop.image.src='./assets/breakroom-appliances/'+prop.file;
+  }
+  function paintBreakRoomAppliance(kind){
+    const {image,x,y}=breakRoomAppliances[kind];
+    if(!image.complete||!image.naturalWidth)return false;
+    ctx.imageSmoothingEnabled=false;
+    ctx.drawImage(image,x,y);
+    return true;
+  }
+  const isCoffeeCabinet=f=>f.x===1580&&f.y===82;
+  function drawBreakRoomProp(kind){
+    ctx.save();
+    ctx.translate(kind==='fridge'?1780:1880,kind==='fridge'?60:217);
+    const paint=(color,x,y,w,h)=>{ctx.fillStyle=color;ctx.fillRect(x,y,w,h);};
+    if(kind==='fridge'){
+      paint('#2e3e48',-2,-43,110,79);
+      paint('#607782',2,-45,103,76);
+      paint('#a2b3b7',5,-44,94,72);
+      paint('#c9d0ce',5,-44,94,4);
+      paint('#84999f',6,-38,91,23);
+      paint('#b2c0c0',6,-10,91,34);
+      paint('#425c69',4,-15,96,4);
+      paint('#536a76',86,-34,5,13);
+      paint('#536a76',86,-6,5,17);
+      paint('#d9c28b',16,-5,21,14);
+      paint('#83714f',20,0,12,1);
+      paint('#455961',8,28,89,5);
+    }else{
+      paint('#253d43',-13,-13,26,28);
+      paint('#50696d',-10,-10,20,22);
+      paint('#72888a',-8,-8,3,17);
+      paint('#344f54',6,-8,4,17);
+      paint('#71898b',-15,-16,30,7);
+      paint('#2d444a',-8,-15,16,3);
+      paint('#c1ac74',-3,-18,6,2);
+    }
+    ctx.restore();
+  }
   const worldSpots=ST.spots.filter(s=>s.id!=='stationDoor'&&s.id!=='garageDoor')
     .map(s=>({id:'station:'+s.id,areaId:'station',x:STX+s.x,y:STY+s.y,label:s.label}));
   worldSpots.push({id:'campus:front',areaId:'precinct-campus',x:FRONT.x,y:FRONT.y+54,label:'Precinct 9 front entrance'},
@@ -693,6 +758,7 @@
           }else if(!previous?.room(c,r))drawRoom(r);
         });
         ST.furn.forEach(f=>{
+          if(isBreakRoomTable(f)||H.caper?.active()&&isCoffeeCabinet(f)&&breakRoomAppliances.coffee.image.naturalWidth)return;
           if(previous?.interiorFurnitureActive?.(f,ST.rooms))return;
           if(!previous?.furniture(c,f))drawFurn(f);
         });
@@ -704,7 +770,7 @@
       c.fillStyle='#253953';c.fillRect(0,0,ST.w,ST.h);
       withOriginalContext(c,()=>{
         stationRooms.forEach(r=>drawRoom(r));
-        ST.furn.forEach(f=>{if(!previous?.interiorFurnitureActive?.(f,ST.rooms))drawFurn(f);});
+        ST.furn.forEach(f=>{if(!isBreakRoomTable(f)&&!(H.caper?.active()&&isCoffeeCabinet(f)&&breakRoomAppliances.coffee.image.naturalWidth)&&!previous?.interiorFurnitureActive?.(f,ST.rooms))drawFurn(f);});
       });
     }
     c.fillStyle='rgba(10,25,44,.36)';
@@ -1258,9 +1324,10 @@
     for(const wall of bridge?.interiorDepthProps?.(stationWalls,stationRooms,ST.furn,view)||[])
       entries.push({y:wall.depthY,interiorWall:wall});
     const showCaperFridge=H.caper?.active();
-    for(const f of ST.furn)if(!(showCaperFridge&&f.x===1780&&f.y===60)&&
+    for(const f of ST.furn)if(!isBreakRoomTable(f)&&!(showCaperFridge&&isCoffeeCabinet(f)&&breakRoomAppliances.coffee.image.naturalWidth)&&!(showCaperFridge&&f.x===1780&&f.y===60)&&
       bridge?.interiorFurnitureActive?.(f,ST.rooms)&&nearViewport(STX+f.x-100,STY+f.y-140,f.w+200,f.h+240))
       entries.push({y:STY+f.y+f.h,stationFurniture:f});
+    if(nearViewport(STX+1684,STY+91,112,106))entries.push({y:STY+197,breakRoomTable:true});
     for(const d of ST.decors)if(d.t==='cellInterior')entries.push({y:STY+(d.dy??d.y),stationDecor:d});
     // Approved city pass: existing district silhouettes join the SAME queue
     // as actors. No new geometry, projection, camera or building instances.
@@ -1324,6 +1391,7 @@
         bridge.drawInteriorWall(g,entry.interiorWall,{room:ST.rooms.find(r=>r.label===interiorRoom(campus.x,campus.y)),
           player:{x:campus.x-STX,y:campus.y-STY},roofAlpha:roofAlpha()});continue;
       }
+      if(entry.breakRoomTable){drawBreakRoomTable(g);continue;}
       if(entry.stationFurniture){
         g.save();g.translate(STX,STY);
         withOriginalContext(g,()=>{if(!bridge.furniture(g,entry.stationFurniture))drawFurn(entry.stationFurniture);});
@@ -1472,10 +1540,10 @@
     // disappears behind the wall. Interior actors remain behind the facade
     // until the SAME original roof cutaway reveals the rooms.
     // Native clue props use their original coordinates and handlers.
-    if(nearViewport(STX+1558,STY+12,366,624))withOriginalContext(g,()=>{const prior=state.map;state.map='station';g.save();g.translate(STX,STY);try{drawDecor({t:'caperFridge',x:1780,y:60},t);drawDecor({t:'caperCoffee',x:1608,y:82},t);drawFurn({x:1690,y:330,w:132,h:52,type:'table'});drawFurn({x:1785,y:420,w:90,h:34,type:'sofa'});}finally{g.restore();state.map=prior;}});
+    if(nearViewport(STX+1558,STY+12,366,624))withOriginalContext(g,()=>{const prior=state.map;state.map='station';g.save();g.translate(STX,STY);try{if(H.caper?.active()){if(!paintBreakRoomAppliance('fridge'))drawBreakRoomProp('fridge');if(!paintBreakRoomAppliance('coffee'))drawDecor({t:'caperCoffee',x:1608,y:82},t);}drawFurn({x:1690,y:330,w:132,h:52,type:'table'});drawFurn({x:1785,y:420,w:90,h:34,type:'sofa'});}finally{g.restore();state.map=prior;}});
     cruiser?.bayMark(g);
     story?.ground(g);
-    if(H.caper?.active())withOriginalContext(g,()=>{const prior=state.map;state.map='station';g.save();g.translate(STX,STY);try{for(const d of ST.decors)if(d.t.startsWith('caper'))drawDecor(d.t==='caperBreakSign'?{...d,x:1708}:d,t);}finally{g.restore();state.map=prior;}});
+    if(H.caper?.active())withOriginalContext(g,()=>{const prior=state.map;state.map='station';g.save();g.translate(STX,STY);try{for(const d of ST.decors)if(d.t==='caperTrash')drawBreakRoomProp('trash');else if(d.t.startsWith('caper'))drawDecor(d.t==='caperBreakSign'?{...d,x:1708}:d,t);}finally{g.restore();state.map=prior;}});
     window.ROOKIE_COMIC?.drawProps(g);
     drawEntityHighlights(t);
     // Contact flashes/debug labels must follow the cached road and actor

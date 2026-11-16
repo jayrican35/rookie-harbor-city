@@ -304,11 +304,11 @@ var MISSION_OBJS = {
 
     {id:"camera", spot:"storeCamera", map:"store", where:"QuickMart — Camera Monitor", text:"Review the wobbly-pickle security video at 02:07", done:function(){ return evGot("m2camera"); }},
 
-    {id:"db", spot:"database", map:"station", where:"Records Room — Precinct 9", text:"Check the truck's partial plate in Records: Voss / 4417", done:function(){ return state.camp.m2.db; }},
+    {id:"db", spot:"database", map:"station", where:"Records Room — Precinct 9", text:"Go to Records. Search for the truck plate ending in 4417.", done:function(){ return state.camp.m2.db; }},
 
-    {id:"ret", spot:"evshelf", map:"station", where:"Evidence Room — Precinct 9", text:"Log the pickle case evidence in the Evidence Room", done:function(){ return state.camp.m2.returned; }},
+    {id:"ret", spot:"evshelf", map:"station", where:"Evidence Room — Precinct 9", text:"Take your QuickMart clues to the Evidence Room.", done:function(){ return state.camp.m2.returned; }},
 
-    {id:"lead", spot:"sergeant", map:"station", where:"Sgt. Brooks' Office — Precinct 9", text:"Tell Brooks what REALLY happened (no seagull arrests)", done:function(){ return state.camp.m2.done; }}
+    {id:"lead", spot:"sergeant", map:"station", where:"Sgt. Brooks' Office — Precinct 9", text:"Tell Brooks what your QuickMart clues show.", done:function(){ return state.camp.m2.done; }}
 
   ],
 
@@ -316,7 +316,7 @@ var MISSION_OBJS = {
 
     {id:"brief", spot:"sergeant", map:"station", where:"Sgt. Brooks' Office — Precinct 9", text:"Get the Case 003 briefing from Sgt. Brooks", done:function(){ return state.camp.m3.brief; }},
 
-    {id:"almeida", spot:"npc:almeida", map:"residential", where:"Maple Court — Mrs. Almeida", text:"Take Mrs. Almeida's statement on Maple Court", done:function(){ return stGot("m3almeida"); }},
+    {id:"almeida", spot:"npc:almeida", map:"residential", where:"Maple Court — Mrs. Almeida", text:"Ask Mrs. Almeida what she saw on Maple Court.", done:function(){ return stGot("m3almeida"); }},
 
     {id:"note", spot:"haleNote", map:"hale", where:"8 Maple Court — Hale's House", text:"Search Hale's house — check the kitchen", done:function(){ return evGot("m3note"); }},
 
@@ -340,9 +340,9 @@ var MISSION_OBJS = {
 
     {id:"marco", spot:"npc:marco", map:"industrial", where:"Industrial District — Foreman Ortiz", text:"Interview Foreman Marco Ortiz at the freight yard", done:function(){ return stGot("m4marco"); }},
 
-    {id:"crates", spot:"whCrates", map:"warehouse", where:"Harbor Freight Warehouse — Bay 3", text:"Search the warehouse — the opened crate row in bay 3", done:function(){ return evGot("m4crates"); }},
+    {id:"crates", spot:"whCrates", map:"warehouse", where:"Harbor Freight Warehouse — Bay 3", text:"Check the open crates in warehouse Bay 3.", done:function(){ return evGot("m4crates"); }},
 
-    {id:"ledger", spot:"whManifest", map:"warehouse", where:"Harbor Freight Warehouse — Foreman's Desk", text:"Check the foreman's desk ledger in the warehouse", done:function(){ return evGot("m4ledger"); }},
+    {id:"ledger", spot:"whManifest", map:"warehouse", where:"Harbor Freight Warehouse — Foreman's Desk", text:"Read the record book on the warehouse desk.", done:function(){ return evGot("m4ledger"); }},
 
     {id:"reyes", spot:"npc:reyes", map:"warehouse", where:"Harbor Freight Warehouse — Night Watchman", text:"Interview Night Watchman Reyes in the warehouse", done:function(){ return stGot("m4reyes"); }},
 
@@ -358,17 +358,17 @@ var MISSION_OBJS = {
 
     {id:"brief", spot:"sergeant", map:"station", where:"Sgt. Brooks' Office — Precinct 9", text:"Get the Case 005 briefing from Sgt. Brooks", done:function(){ return state.camp.m5.brief; }},
 
-    {id:"tom", spot:"npc:tom", map:"waterfront", where:"Waterfront — Old Tom", text:"Take Old Tom's statement at the waterfront", done:function(){ return stGot("m5tom"); }},
+    {id:"tom", spot:"npc:tom", map:"waterfront", where:"Waterfront — Old Tom", text:"Ask Old Tom what he saw at the waterfront.", done:function(){ return stGot("m5tom"); }},
 
     {id:"log", spot:"harborLog", map:"marina", where:"Marina Office — Harbor Log", text:"Check the Harbor Log at the Marina Office", done:function(){ return state.camp.m5.log; }},
 
     {id:"goods", spot:"shedGoods", map:"shedint", where:"Boat Shed B — Waterfront", text:"Open Boat Shed B with Hale's key and search it", done:function(){ return evGot("m5goods"); }},
 
-    {id:"book", spot:"shedDesk", map:"shedint", where:"Boat Shed B — Waterfront", text:"Recover the harbor ledger from the shed desk", done:function(){ return evGot("m5book"); }},
+    {id:"book", spot:"shedDesk", map:"shedint", where:"Boat Shed B — Waterfront", text:"Pick up the harbor record book on the shed desk.", done:function(){ return evGot("m5book"); }},
 
     {id:"ret", spot:"evshelf", map:"station", where:"Evidence Room — Precinct 9", text:"Return the Case 005 evidence to the Evidence Room", done:function(){ return state.camp.m5.returned; }},
 
-    {id:"final", spot:"sergeant", map:"station", where:"Sgt. Brooks' Office — Precinct 9", text:"Final report to Sgt. Brooks — name who runs the ring", done:function(){ return state.camp.m5.done; }}
+    {id:"final", spot:"sergeant", map:"station", where:"Sgt. Brooks' Office — Precinct 9", text:"Tell Brooks who’s behind the stolen shipments.", done:function(){ return state.camp.m5.done; }}
 
   ]
 
@@ -9381,11 +9381,15 @@ function showLines(lines, onDone){
 
     var last = i === lines.length-1;
 
-    setDialogue(L[0], L[1],
+    var renderLine = () => setDialogue(L[0], L[1],
 
       '<button type="button" class="dbtn' + (last ? " gold" : "") + '" id="dlgNext">' +
 
       (last ? (L[2] || "Done") : "Next \u25B8") + "</button>");
+
+    if (L[3] && window.ROOKIE_MAIN_CITY_ACTIVE && window.ROOKIE_COMIC) {
+      window.ROOKIE_COMIC.withLine(L[3], renderLine);
+    } else renderLine();
 
     document.getElementById("dlgNext").addEventListener("click", function(){
 
@@ -9877,7 +9881,7 @@ var BRIEFINGS = {
 
     ["SGT. BROOKS", "QuickMart's mascot, Mr. Pickles, has disappeared. The back door was forced, snack crates are gone, and someone left a rubber chicken at the scene. The chicken has declined to comment."],
 
-    ["SGT. BROOKS", "Talk to Omar, check the rear door and stockroom, watch the security video, check Records, and log your evidence. Remember: being suspiciously silly isn't proof of a crime."],
+    ["SGT. BROOKS", "Start with Omar at QuickMart. Ask him what went missing. The gold marker will show you where to go."],
 
   ],
 
@@ -10029,7 +10033,7 @@ function doMissionConclusion(m){
 
   if(m === "m2"){
 
-    showLines([["SGT. BROOKS", "You found Mr. Pickles! The poor foam fellow was stuck behind cereal boxes. But the real snack crates are still missing. Which lead is supported by your evidence?"]],
+    showLines([["SGT. BROOKS", "Mr. Pickles was stuck behind cereal boxes. Rough day to be a pickle. The snack crates are still missing. What do your clues tell you?"]],
 
       function(){case2ConclusionChoices();});
 
@@ -25371,7 +25375,7 @@ var characterRenderers=(function(){
 
   CHAPTERS.forEach(function(c,i){c.steps.forEach(function(s,j){var map=MAPS[s[0]];function free(x,y){return x>24&&y>24&&x<map.w-24&&y<map.h-24&&!map.solids.some(function(v){return overlaps({x:x-13,y:y-13,w:26,h:26},v);});}if(!free(s[1],s[2])){var found=false;for(var rad=20;rad<=240&&!found;rad+=20)for(var dx=-rad;dx<=rad&&!found;dx+=20)for(var dy=-rad;dy<=rad&&!found;dy+=20)if(free(s[1]+dx,s[2]+dy)){s[1]+=dx;s[2]+=dy;found=true;}}var sp={id:arcSpot(i,j),x:s[1],y:s[2],label:s[3],arcChapter:i,arcStep:j};map.spots.push(sp);});});
 
-  function arcObjective(){var a=arc(),c=chapter();if(!c)return null;var order=[0,1,2];if(a.tracked!==null)order.sort(function(x,y){return x===a.tracked?-1:y===a.tracked?1:0;});for(var k=0;k<order.length;k++){var j=order[k];if(a.steps.indexOf(j)<0){var s=c.steps[j];return {map:s[0],spot:arcSpot(a.index,j),where:locById(s[0]).name,text:s[3]};}}return {map:'plaza',spot:'arcDecision',where:'Story journal',text:'Review the evidence and choose the chapter outcome in Story'};}
+  function arcObjective(){var a=arc(),c=chapter();if(!c)return null;var order=[0,1,2];if(a.tracked!==null)order.sort(function(x,y){return x===a.tracked?-1:y===a.tracked?1:0;});for(var k=0;k<order.length;k++){var j=order[k];if(a.steps.indexOf(j)<0){var s=c.steps[j];return {map:s[0],spot:arcSpot(a.index,j),where:locById(s[0]).name,text:s[3]};}}return {map:'plaza',spot:'arcDecision',where:'Story journal',text:'Open Story and choose what to do with your clues'};}
 
   var oldShiftId=perfShiftId,oldShiftLabel=perfShiftLabel;perfShiftId=function(){return chapter()?'arc:'+arc().index:oldShiftId();};perfShiftLabel=function(){return chapter()?chapter().title:oldShiftLabel();};
 
@@ -25379,7 +25383,14 @@ var characterRenderers=(function(){
 
     var a=arc();if(!campaignDone()||a.done||a.started||!CHAPTERS[a.index])return false;
 
-    a.tracked=null;a.started=true;state.perf.shift='arc:'+a.index;state.perf.shiftTotal=0;var c=CHAPTERS[a.index];state.rank=c.rank;a.scene=c.title;save();refreshPanels();showJournal('brief');return true;
+    a.tracked=null;a.started=true;state.perf.shift='arc:'+a.index;state.perf.shiftTotal=0;var c=CHAPTERS[a.index];state.rank=c.rank;a.scene=c.title;save();refreshPanels();
+    if(a.index===0&&window.ROOKIE_MAIN_CITY_ACTIVE){
+      closeStory();
+      const lines=[['SGT. BROOKS','Medical kits are missing!'],
+        ['DISPATCH',c.intro.slice('Medical kits are missing! '.length)]];
+      if(window.HARBOR.commandBeat?.('command-briefing',lines,()=>showJournal('brief')))return true;
+    }
+    showJournal('brief');return true;
 
   }
 
@@ -25389,11 +25400,11 @@ var characterRenderers=(function(){
 
     var a=arc(),c=chapter(),h='<p class="hc-kicker">'+release+'</p>';
 
-    if(!campaignDone()){h+='<h3>Act I · The Rookie</h3><p>Complete the original five investigations to unlock Command, Outside the Law, and Harbor City. Open Assignments to track your current case. Inventory holds your equipment and evidence.</p><p>13 chapters · choices carried into the ending.</p>';}
+    if(!campaignDone()){h+='<h3>Act I · The Rookie</h3><p>Follow the gold marker to your next clue. Need a reminder? Open Assignments to see what to do next.</p><p>13 chapters · choices carried into the ending.</p>';}
 
     else if(a.done){var finalGood=a.choices[7]===0;h+='<h3>'+ (finalGood?'Harbor Dawn · A City Returned':'Harbor Dawn · Another Command')+'</h3><p>'+htmlEscape(CHAPTERS[7].result[a.choices[7]||0])+'</p><p>'+ (a.trust>=6?'Your neighbors remember how you kept families and witnesses safe.':'Some choices hurt people along the way. The city can rebuild, but earning trust again will take time.')+'</p><p><b>13 / 13 chapters completed</b> · Public trust '+a.trust+' · Performance '+state.perf.total+'</p><p>Free exploration remains available. Export your save to keep this ending.</p>';}
 
-    else if(window.ROOKIE_MAIN_CITY_ACTIVE&&!a.started&&a.index>0&&CHAPTERS[a.index]){var nextChapter=CHAPTERS[a.index];h+='<h3>'+htmlEscape(nextChapter.title)+'</h3><button class="dbtn gold" id="hcBegin">Begin Chapter '+nextChapter.title.split(" · ")[0]+'</button>';}
+    else if(window.ROOKIE_MAIN_CITY_ACTIVE&&!a.started&&a.index>0&&CHAPTERS[a.index]){var nextChapter=CHAPTERS[a.index];h+='<h3>'+htmlEscape(nextChapter.title)+'</h3>';if(a.index===1&&(a.choices[0]===0||a.choices[0]===1))h+='<p>'+htmlEscape(CHAPTERS[0].result[a.choices[0]])+'</p>';h+='<button class="dbtn gold" id="hcBegin">Begin Chapter '+nextChapter.title.split(" · ")[0]+'</button>';}
     else if(!a.started){h+='<h3>Act I complete · Command awaits</h3><p>The Voss case is closed. The next chapters follow Jay through leadership, an unlawful break with City Hall, and a resistance against a fictional occupying coalition.</p><button class="dbtn gold" id="hcBegin">Begin Act II</button>';}
 
     else{
@@ -25402,9 +25413,9 @@ var characterRenderers=(function(){
 
       h+='</ol><p>'+a.steps.length+' of '+c.steps.length+' findings recorded.</p><button class="dbtn" id="hcAssignments">Open Assignments</button>';
 
-      if(a.steps.length===3){h+='<h4>Your decision</h4><p>Your choice changes what happens next and how much people trust you.</p>';c.choices.forEach(function(v,i){h+='<button class="choice-btn hc-decision" data-choice="'+i+'">'+htmlEscape(v)+'</button>';});}
+      if(a.steps.length===3){h+='<h4>Your decision</h4><p>Read both choices. What you pick changes what happens next and how much people trust you.</p>';c.choices.forEach(function(v,i){h+='<button class="choice-btn hc-decision" data-choice="'+i+'">'+htmlEscape(v)+'</button>';});}
 
-      else{h+='<p>Follow the leads on Assignments. Visit the marked places and check each clue. You choose where to start.</p>';}
+      else{h+='<p>Follow the gold marker to your next clue. To pick a different clue, open Assignments and choose Follow this clue.</p>';}
 
     }
 
@@ -25428,7 +25439,17 @@ var characterRenderers=(function(){
 
     if(a.index===CHAPTERS.length){a.done=true;state.rank='Harbor Citizen';}
 
-    save();refreshPanels();showJournal();return true;
+    save();refreshPanels();
+    if(c===CHAPTERS[0]&&window.ROOKIE_MAIN_CITY_ACTIVE){
+      closeStory();
+      const result=c.result[choice];
+      const lines=choice===0?[['DISPATCH',result]]:[
+        ['DISPATCH',result.slice(0,result.indexOf(' Brooks says'))],
+        ['SGT. BROOKS',result.slice(result.indexOf('“')+1,result.lastIndexOf('”'))]
+      ];
+      if(window.HARBOR.commandBeat?.('command-consequence',lines,()=>showJournal()))return true;
+    }
+    showJournal();return true;
 
   }
 
@@ -25456,13 +25477,19 @@ var characterRenderers=(function(){
 
   }
 
-  function askInterview(kind){if(!interview)return false;var step=CHAPTERS[interview.i].steps[interview.j];if(kind==='timeline'){interview.timeline=true;interview.response=step[4];}else if(kind==='corroboration'){interview.corroboration=true;interview.response='We can compare this story with the papers and places you check. A story is a clue. It still needs checking.';}else if(kind==='evidence'){var notes=arc().journal.filter(function(e){return CHAPTERS[interview.i].steps.some(function(t){return t[3]===e.title;});});interview.response=notes.length?notes.map(function(e){return e.title+': '+e.text;}).join(' '):'You have not saved any other clues yet. Follow another lead, then come back.';}else if(kind==='accuse'){var key='arc-interview:'+interview.i+':'+interview.j;if(!state.perf.flags[key]){awardScore(key,'Unsupported accusation',-10,'A witness was accused without evidence.');arc().trust--;save();}interview.response='Blaming someone is not proof. You can still ask questions and check the clues. Try again.';}else return false;renderInterview();return true;}
+  function askInterview(kind){if(!interview)return false;var step=CHAPTERS[interview.i].steps[interview.j];if(kind==='timeline'){interview.timeline=true;interview.response=step[4];
+    if(window.ROOKIE_MAIN_CITY_ACTIVE&&interview.i===0&&interview.j===1){
+      story.classList.remove('show');
+      if(window.HARBOR.commandBeat?.('command-ortiz',[['FOREMAN ORTIZ',step[4]]],renderInterview))return true;
+    }}else if(kind==='corroboration'){interview.corroboration=true;interview.response='We can compare this story with the papers and places you check. A story is a clue. It still needs checking.';}else if(kind==='evidence'){var notes=arc().journal.filter(function(e){return CHAPTERS[interview.i].steps.some(function(t){return t[3]===e.title;});});interview.response=notes.length?notes.map(function(e){return e.title+': '+e.text;}).join(' '):'You have not saved any other clues yet. Follow another lead, then come back.';}else if(kind==='accuse'){var key='arc-interview:'+interview.i+':'+interview.j;if(!state.perf.flags[key]){awardScore(key,'Unsupported accusation',-10,'A witness was accused without evidence.');arc().trust--;save();}interview.response='Blaming someone is not proof. You can still ask questions and check the clues. Try again.';}else return false;renderInterview();return true;}
 
   function finishInterview(){if(!interview||!interview.timeline||!interview.corroboration)return false;var v=interview;interview=null;closeStory();document.getElementById('hcStoryTitle').textContent='Harbor City · Story Journal';return recordArcFinding(v.i,v.j);}
 
   var activity=null;
 
   function activityKind(text){if(/Interview|Hear |Meet |Check the clinic/.test(text))return'interview';if(/Deliver|broadcast|Receive|evacuation|relief/i.test(text))return'dispatch';if(/assembly|protection|shelter|Return to the precinct/i.test(text))return'community';return'document';}
+
+  function commandLists(){return window.ROOKIE_MAIN_CITY_ACTIVE&&activity?.i===0&&activity.j===0;}
 
   function renderActivity(){if(!activity)return;var c=CHAPTERS[activity.i],s=c.steps[activity.j],k=activity.kind;
 
@@ -25472,9 +25499,24 @@ var characterRenderers=(function(){
 
     var options=k==='document'?[s[4],'Everyone involved must be guilty. We do not need to check anything else.']:k==='dispatch'?['Send the checked clue to the person who needs it. Leave out private details they do not need.','Tell everyone all the names, addresses and guesses on the open radio.']:['Listen to people. Write down what they need. Make the plan with them.','Make the plan without listening. Everyone probably needs the same thing.'];
 
+    var clue='<blockquote>'+htmlEscape(s[4])+'</blockquote>';
+    if(commandLists()){
+      title='COMPARE THE SUPPLY LISTS';
+      question='How many medical kits are missing?';
+      options=['16 kits','24 kits'];
+      clue='<div class="command-evidence">'+
+        '<figure><img src="assets/chapter-006/ordered.png" alt=""><figcaption>Delivery list <strong>40 kits listed</strong></figcaption></figure>'+
+        '<figure><img src="assets/chapter-006/received.png" alt=""><figcaption>Warehouse list <strong>24 kits received</strong></figcaption></figure></div>';
+    }
+    if(window.ROOKIE_MAIN_CITY_ACTIVE&&activity.i===0&&activity.j===2){
+      title='MUNICIPAL RECORD';
+      clue='<article class="command-order" aria-label="Municipal signed order">'+
+        '<div class="command-order-header"><img src="assets/chapter-006/signed_order.png" alt=""></div>'+
+        '<blockquote>'+htmlEscape(s[4])+'</blockquote></article>';
+    }
     var right=(activity.i+activity.j)%2;activity.correct=right;var arranged=right===0?options:[options[1],options[0]];
 
-    document.getElementById('hcStoryTitle').textContent=title;var h='<p class="hc-kicker">'+htmlEscape(c.title)+'</p><h3>'+htmlEscape(s[3])+'</h3><blockquote>'+htmlEscape(s[4])+'</blockquote><p>'+question+'</p>';
+    document.getElementById('hcStoryTitle').textContent=title;var h='<p class="hc-kicker">'+htmlEscape(c.title)+'</p><h3>'+htmlEscape(s[3])+'</h3>'+clue+'<p>'+question+'</p>';
 
     if(activity.feedback)h+='<p role="status">'+htmlEscape(activity.feedback)+'</p>';
 
@@ -25482,9 +25524,11 @@ var characterRenderers=(function(){
 
   }
 
-  function answerActivity(n){if(!activity||(n!==0&&n!==1))return false;if(n!==activity.correct){activity.feedback=activity.kind==='document'?'That guesses too much. Read the clue and try again!':activity.kind==='dispatch'?'That would share secrets and spread guesses. Can you find a safer way?':'Start by listening to the people who need help. Try again!';renderActivity();return false;}var v=activity;activity=null;closeStory();return recordArcFinding(v.i,v.j);}
+  function answerActivity(n){if(!activity||(n!==0&&n!==1))return false;if(n!==activity.correct){activity.feedback=commandLists()?'Start with 40. Take away the 24 kits that arrived.':activity.kind==='document'?'That guesses too much. Read the clue and try again!':activity.kind==='dispatch'?'That would share secrets and spread guesses. Can you find a safer way?':'Start by listening to the people who need help. Try again!';renderActivity();return false;}var v=activity;activity=null;closeStory();return recordArcFinding(v.i,v.j);}
 
-  function gatherArc(i,j){var c=chapter();if(!c||i!==arc().index||!Number.isInteger(j)||j<0||j>=c.steps.length||arc().steps.indexOf(j)>=0||activity||interview)return false;var kind=activityKind(c.steps[j][3]);if(kind==='interview'){interview={i:i,j:j,timeline:false,corroboration:false,response:''};renderInterview();return true;}activity={i:i,j:j,kind:kind,feedback:''};renderActivity();return true;}
+  function gatherArc(i,j){var c=chapter();if(!c||i!==arc().index||!Number.isInteger(j)||j<0||j>=c.steps.length||arc().steps.indexOf(j)>=0||activity||interview)return false;var kind=activityKind(c.steps[j][3]);if(kind==='interview'){interview={i:i,j:j,timeline:false,corroboration:false,response:''};
+    if(window.ROOKIE_MAIN_CITY_ACTIVE&&i===0&&j===1&&window.HARBOR.commandBeat?.('command-ortiz',null,renderInterview))return true;
+    renderInterview();return true;}activity={i:i,j:j,kind:kind,feedback:''};renderActivity();return true;}
 
   var baseInteract=interact;
 
@@ -25506,7 +25550,9 @@ var characterRenderers=(function(){
 
   var baseRefresh=refreshPanels;
 
-  refreshPanels=function(){baseRefresh();var a=arc(),c=chapter();if(c||a.done){state.rank=a.done?'Harbor Citizen':c.rank;document.getElementById('rankLabel').textContent=a.done?'CITIZEN':c.rank.toUpperCase();var status=document.getElementById('caseStatus');status.textContent=a.done?'STORY COMPLETE':c.title.split(' · ')[0];}};
+  refreshPanels=function(){baseRefresh();var a=arc(),c=chapter();if(c||a.done){state.rank=a.done?'Harbor Citizen':c.rank;const junior=window.ROOKIE_MAIN_CITY_ACTIVE&&c===CHAPTERS[0]&&
+      ['kaleb','gigi','lingling'].includes(window.HARBOR?.profiles?.current());
+    document.getElementById('rankLabel').textContent=junior?'JUNIOR DETECTIVE':a.done?'CITIZEN':c.rank.toUpperCase();var status=document.getElementById('caseStatus');status.textContent=a.done?'STORY COMPLETE':c.title.split(' · ')[0];}};
 
   var storyBtn=document.createElement('button');storyBtn.className='hbtn goldbtn';storyBtn.textContent='Story';storyBtn.title='Campaign journal and next chapter';storyBtn.onclick=function(){if(window.ROOKIE_MAIN_CITY_ACTIVE)closeMenuPage();showJournal();};document.querySelector(window.ROOKIE_MAIN_CITY_ACTIVE?'.menu-actions':'header.topbar').appendChild(storyBtn);
 
@@ -27262,7 +27308,7 @@ window.HARBOR.landscape={spec:spec,placed:placed,cache:cache};})();
 
  }
 
- function render(){var current=currentCase(),a=window.HARBOR.arc();var h='<section class="hc-board-shell"><header><div><small>PRECINCT 9 · SHIFT DESK</small><h2>Assignments</h2></div><button id="boardClose">Return ×</button></header><nav class="hc-case-tabs"><button data-case="001">001 · '+(window.HARBOR.caper&&window.HARBOR.caper.usesNewCase()?'Sandwich Caper':'Missing Drive')+'</button>';MISSION_ORDER.forEach(function(k){h+='<button data-case="'+k+'">'+esc(MISSIONS[k].num+' · '+MISSIONS[k].name)+(current!==k&&!state.camp[k].done?' · Locked':'')+'</button>';});window.HARBOR.chapters.forEach(function(c,i){h+='<button data-case="arc:'+i+'">'+esc(c.title)+(i>a.index||i===a.index&&!a.started?' · Locked':'')+'</button>';});h+='</nav><div class="hc-board-filters"><button data-filter="open">Open tasks</button><button data-filter="all">All tasks</button><button data-filter="done">Completed</button></div><div class="hc-board-cork">';var list=tasks().filter(function(t){return filter==='all'||(filter==='done'?t.done:!t.done);});if(!list.length)h+='<article class="hc-board-note">'+(caseId!==current?'This assignment is handled in story order. Open Story for the next chapter briefing.':'No tasks in this view. Review Story for a chapter decision or speak with Brooks.')+'</article>';list.forEach(function(t){h+='<article class="hc-board-note"><span class="hc-note-pin"></span><small>'+(t.done?'✓ COMPLETED':'OPEN TASK')+'</small><h3>'+esc(t.text)+'</h3><p>'+esc(t.where||'Precinct 9')+'</p>'+(!t.done&&t.canTrack?'<button data-track="'+t.id+'">Track objective</button>':'')+'</article>';});h+='</div><footer>Assignments tracks tasks. Story holds briefings and decisions. Inventory holds equipment and evidence.</footer></section>';root.innerHTML=h;document.getElementById('boardClose').onclick=close;root.querySelectorAll('[data-case]').forEach(function(b){b.onclick=function(){caseId=b.getAttribute('data-case');render();};});root.querySelectorAll('[data-filter]').forEach(function(b){b.onclick=function(){filter=b.getAttribute('data-filter');render();};});root.querySelectorAll('[data-track]').forEach(function(b){b.onclick=function(){track(b.getAttribute('data-track'));};});}
+ function render(){var current=currentCase(),a=window.HARBOR.arc();var h='<section class="hc-board-shell"><header><div><small>PRECINCT 9 · SHIFT DESK</small><h2>Assignments</h2></div><button id="boardClose">Return ×</button></header><nav class="hc-case-tabs"><button data-case="001">001 · '+(window.HARBOR.caper&&window.HARBOR.caper.usesNewCase()?'Sandwich Caper':'Missing Drive')+'</button>';MISSION_ORDER.forEach(function(k){h+='<button data-case="'+k+'">'+esc(MISSIONS[k].num+' · '+MISSIONS[k].name)+(current!==k&&!state.camp[k].done?' · Locked':'')+'</button>';});window.HARBOR.chapters.forEach(function(c,i){h+='<button data-case="arc:'+i+'">'+esc(c.title)+(i>a.index||i===a.index&&!a.started?' · Locked':'')+'</button>';});h+='</nav><div class="hc-board-filters"><button data-filter="open">Open tasks</button><button data-filter="all">All tasks</button><button data-filter="done">Completed</button></div><div class="hc-board-cork">';var list=tasks().filter(function(t){return filter==='all'||(filter==='done'?t.done:!t.done);});if(!list.length)h+='<article class="hc-board-note">'+(caseId!==current?'This assignment is handled in story order. Open Story for the next chapter briefing.':'No tasks in this view. Review Story for a chapter decision or speak with Brooks.')+'</article>';list.forEach(function(t){h+='<article class="hc-board-note"><span class="hc-note-pin"></span><small>'+(t.done?'✓ COMPLETED':'OPEN TASK')+'</small><h3>'+esc(t.text)+'</h3><p>'+esc(t.where||'Precinct 9')+'</p>'+(!t.done&&t.canTrack?'<button data-track="'+t.id+'">Follow this clue</button>':'')+'</article>';});h+='</div><footer>Assignments shows where to go. Story is where you make choices. Inventory holds your gear and clues.</footer></section>';root.innerHTML=h;document.getElementById('boardClose').onclick=close;root.querySelectorAll('[data-case]').forEach(function(b){b.onclick=function(){caseId=b.getAttribute('data-case');render();};});root.querySelectorAll('[data-filter]').forEach(function(b){b.onclick=function(){filter=b.getAttribute('data-filter');render();};});root.querySelectorAll('[data-track]').forEach(function(b){b.onclick=function(){track(b.getAttribute('data-track'));};});}
 
  function open(){closeInvPage();closeMenuPage();window.HARBOR.closeJournal();active=true;caseId=currentCase();filter='open';root.style.display='flex';clearHeldInputs();render();}
 
@@ -35255,7 +35301,7 @@ window.HARBOR.landscape={spec:spec,placed:placed,cache:cache};})();
 
  var dialogue=setDialogue;setDialogue=function(s,t,a){return dialogue(s,simplify(t),a);};
 
- var lines=showLines;showLines=function(items,done){var cards=[];items.forEach(function(l){var parts=chunks(l[1]);parts.forEach(function(t,i){cards.push([l[0],t,i===parts.length-1?l[2]:undefined]);});});return lines(cards,done);};
+ var lines=showLines;showLines=function(items,done){var cards=[];items.forEach(function(l){var parts=chunks(l[1]);parts.forEach(function(t,i){cards.push([l[0],t,i===parts.length-1?l[2]:undefined,l[3]]);});});return lines(cards,done);};
 
  var choices=showChoices;showChoices=function(s,t,list){return choices(s,simplify(t),list.map(function(c){return Object.assign({},c,{label:simplify(c.label)});}));};
 
@@ -38935,7 +38981,9 @@ window.HARBOR.comicDialogue={
  function layout(){window.ROOKIE_COMIC?.decorate(active,panel);
   if(!active||panel.style.display==='none')return;
   if(active.map!==state.map){hideDlgPanel();return;}
-  var v=viewport();if(v.right-v.left<100||v.bottom-v.top<80)return;
+  var v=viewport();
+  if(active.familyLine&&window.ROOKIE_COMIC)v.top=Math.min(v.bottom-80,window.ROOKIE_COMIC.familyTop(active,v));
+  if(v.right-v.left<100||v.bottom-v.top<80)return;
   if(window.ROOKIE_COMIC?.cameraChanged())active.dirty=true;var actor=present(active.actor)?active.actor:null,ap=actor?point(actor):null;var snap=active.snapshot;if(!active.dirty&&snap&&snap.cx===cam.x&&snap.cy===cam.y&&snap.z===effZoom()&&snap.left===v.left&&snap.top===v.top&&snap.right===v.right&&snap.bottom===v.bottom&&snap.ax===(ap&&ap.x)&&snap.ay===(ap&&ap.y))return;active.snapshot={cx:cam.x,cy:cam.y,z:effZoom(),left:v.left,top:v.top,right:v.right,bottom:v.bottom,ax:ap&&ap.x,ay:ap&&ap.y};
   var conf=settings();if(conf.width!==active.width||conf.lines!==active.lines){var rest=active.pages.slice(active.page).join('');active.pages=active.pages.slice(0,active.page).concat(paginate(rest,conf.width-(window.ROOKIE_COMIC?.inset()||32),conf.lines));active.width=conf.width;active.lines=conf.lines;finishType();}
   if(active.dirty){panel.style.width=active.width+'px';panel.style.setProperty('--choice-height',Math.max(44,Math.min(240,(v.bottom-v.top)-130))+'px');panel.style.setProperty('max-height',Math.floor(v.bottom-v.top)+'px','important');panel.style.setProperty('overflow-y','auto','important');active.height=Math.min(v.bottom-v.top,panel.getBoundingClientRect().height);if(panel.scrollHeight<=v.bottom-v.top)panel.style.setProperty('overflow-y','visible','important');active.dirty=false;}
@@ -44498,7 +44546,7 @@ window.HARBOR.comicDialogue={
 
 var H=window.HARBOR,m=MAPS.station,ids=['jay','rosa','kaleb','gigi','lingling'],names={jay:'Jay',rosa:'Rosa',kaleb:'Kaleb',gigi:'Gigi',lingling:'Saritah'},speakers={jay:'PAPI',rosa:'ROSA',kaleb:'KALEB',gigi:'GIGI',lingling:'SARITAH'};
 
-var definition={id:'sandwich-001',version:1,title:'Case 001 · The Great Sandwich Caper',stages:['Talk to Sergeant Brooks in Briefing','Inspect the break room fridge','Talk to the three witnesses','Inspect the cooler in Intake','Explain what happened to Brooks','Case complete · Review your badge'],clues:{fridge:['🧊 Empty fridge','Brooks’s lunch was not on the shelf.'],cooler:['📦 Brooks carried a cooler','Rivera saw Brooks carrying a cooler.'],intake:['📍 Cooler moved to Intake','Maya put the cooler in Intake storage.'],bag:['🥪 Misplaced lunch bag','Brooks’s named lunch bag was inside the cooler.']},witnesses:{rivera:{name:'OFFICER RIVERA',note:'Rivera saw Torres open the fridge. He did not see her take anything.'},torres:{name:'OFFICER TORRES',note:'Torres was putting her own lunch away. Brooks rushed past with a cooler.'},maya:{name:'MAYA',note:'Maya put Brooks’s delivery in Intake storage.'}},rewards:{adult:'First Case Badge',child:'Junior Detective · First Case Badge',notebook:'Detective Notebook'}};
+var definition={id:'sandwich-001',version:1,title:'Case 001 · The Great Sandwich Caper',stages:['Talk to Sergeant Brooks','Check the fridge','Talk to three people','Open the cooler','Tell Brooks what you found','Case complete · Review your badge'],clues:{fridge:['🧊 Empty fridge','Brooks’s lunch was not on the shelf.'],cooler:['📦 Brooks carried a cooler','Rivera saw Brooks carrying a cooler.'],intake:['📍 Cooler moved to Intake','Maya put the cooler in Intake storage.'],bag:['🥪 Misplaced lunch bag','Brooks’s named lunch bag was inside the cooler.']},witnesses:{rivera:{name:'OFFICER RIVERA',note:'Rivera saw Torres open the fridge. He did not see her take anything.'},torres:{name:'OFFICER TORRES',note:'Torres was putting her own lunch away. Brooks rushed past with a cooler.'},maya:{name:'MAYA',note:'Maya put Brooks’s delivery in Intake storage.'}},rewards:{adult:'First Case Badge',child:'Junior Detective · First Case Badge',notebook:'Detective Notebook'}};
 
 var points={brooks:{x:1210,y:242,label:'Talk to Sergeant Brooks'},fridge:{x:1825,y:123,label:'Inspect refrigerator'},rivera:{x:1560,y:245,label:'Talk to Officer Rivera'},torres:{x:556,y:230,label:'Talk to Officer Torres'},maya:{x:280,y:806,label:'Talk to Maya · Intake'},cooler:{x:304,y:884,label:'Inspect cooler'},coffee:{x:1609,y:126,label:'Coffee machine'},table:{x:1738,y:220,label:'Lunch table'},trash:{x:1880,y:245,label:'Trash can'},notice:{x:1690,y:105,label:'Staff noticeboard'}};
 
@@ -44522,7 +44570,7 @@ function active(){return !H.academy.active()&&!state.closed&&!data().complete;}
 
 function stage(){var c=data();return c.complete?5:!c.briefed?0:!c.clues.fridge?1:!['rivera','torres','maya'].every(function(k){return c.witnesses[k];})?2:!c.clues.bag?3:4;}
 
-function obj(){var n=stage(),key=n===0?'brooks':n===1?'fridge':n===2?['rivera','torres','maya'].find(function(k){return !data().witnesses[k];}):n===3?'cooler':'brooks';return{map:'station',spot:'caper:'+key,where:key==='cooler'||key==='maya'?'Intake':key==='torres'?'Records':'Briefing & break room',text:n===2?'Talk to '+definition.witnesses[key].name.replace('OFFICER','Officer')+' · '+Object.keys(data().witnesses).length+'/3 witnesses':definition.stages[n],key:key};}
+function obj(){var n=stage(),key=n===0?'brooks':n===1?'fridge':n===2?['rivera','torres','maya'].find(function(k){return !data().witnesses[k];}):n===3?'cooler':'brooks';return{map:'station',spot:'caper:'+key,where:key==='cooler'||key==='maya'?'Intake':key==='torres'?'Records':key==='fridge'?'Break Room':key==='rivera'?'Hall by the Break Room':'Briefing Room',text:n===2?'Talk to '+definition.witnesses[key].name.replace('OFFICER','Officer')+' · '+Object.keys(data().witnesses).length+' of 3 people talked to':definition.stages[n],key:key};}
 
 function persist(){save();cast();refreshPanels();lastPromptKey='';computeNear();updatePrompt();}
 
@@ -44584,27 +44632,27 @@ function choice(speaker,text,list){var owner=state,profile=who(),used=false;show
 
 function playerSpeaker(){return who()==='lingling'?'LINGLING':names[who()].toUpperCase();}
 
-function familyReaction(list){return list.filter(function(l){var n=m.npcs.find(function(n){return n.familyId===l[0];});return l[0]!==who()&&n&&Math.hypot(n.x-player.x-13,n.y-player.y-13)<650;}).map(function(l){return[speakers[l[0]],l[1]];});}
+function familyReaction(list){return list.filter(function(l){var n=m.npcs.find(function(n){return n.familyId===l[0];});return l[0]!==who()&&n&&Math.hypot(n.x-player.x-13,n.y-player.y-13)<650;}).map(function(l){return[speakers[l[0]],l[1],null,{speakerId:l[0],emotion:l[2]}];});}
 
 function orientation(){if(window.ROOKIE_MAIN_CITY_ACTIVE)return window.HARBOR.mainOpening?.orient()||false;if(!active()||data().orientation)return;var p=who()==='jay'?nearby(1390,520):who()==='rosa'?nearby(655,850):nearby(570,850);state.map='station';state.inCar=false;player.x=p.x-13;player.y=p.y-13;state.intro={done:true,playing:false,setupApplied:true};data().orientation=true;save();csStopAll();updateCam();var t=child()?'Welcome, Junior Detective '+names[who()]+'! Papi and the team are here to help. Let’s meet Brooks in Briefing.':who()==='rosa'?'Welcome, Rosa! The community-support team needs your listening skills. Meet Brooks in Briefing.':'First assignment, Jay. Your locker is here. Brooks is waiting in Briefing.';lines([[child()?'PAPI':'DISPATCH',t]],function(){persist();});return true;}
 
-function briefing(){if(data().briefed)return conclusion();choice('SGT. BROOKS','Everybody, listen up! We have a Code Red situation!',[{label:'Is somebody hurt?',fn:function(){opening('Everyone is safe. My sandwich is missing!');}},{label:'What happened?',fn:function(){opening('My sandwich is missing!');}},{label:'Did the coffee machine explode again?',fn:function(){opening('Not this time. My sandwich is missing!');}}]);}
+function briefing(){if(data().briefed)return conclusion();choice('SGT. BROOKS','Code Red! And by red, I mean tomato.',[{label:'Is somebody hurt?',fn:function(){opening('Everyone is safe. Except my sandwich. It’s missing!');}},{label:'What happened?',fn:function(){opening('My sandwich is missing!');}},{label:'Did the coffee machine explode again?',fn:function(){opening('The coffee machine has an alibi. My sandwich is missing!');}}]);}
 
-function opening(first){var jokes=familyReaction([['kaleb',"That’s not a Code Red."],['gigi','Maybe it ran away.'],['lingling','Did anybody check under the bread?']]);var ls=[['SGT. BROOKS',first]];if(jokes[0])ls.push(jokes[0]);ls.push(['SGT. BROOKS','It had EXTRA BACON!']);if(jokes[1])ls.push(jokes[1]);if(jokes[2])ls.push(jokes[2],['SGT. BROOKS','That’s not how sandwiches work!']);ls.push(['SGT. BROOKS','I left my lunch in the fridge. Now it’s gone.'],[playerSpeaker(),'When did you last see it?'],['SGT. BROOKS','Early this morning, before I carried some things to Intake. Rivera says Torres was near the fridge.']);ls=ls.concat(familyReaction([['jay','Let’s find out what actually happened.'],['rosa','And stop accusing people before breakfast.']]));ls.push(['SGT. BROOKS',child()?'Junior Detective, Papi and the team are supervising. Start at the fridge. Please don’t eat the clues.':who()==='rosa'?'Rosa, start at the fridge. Please don’t eat the clues.':'Find my sandwich, Rookie. Please don’t eat the clues.']);lines(ls,function(){data().briefed=true;persist();});}
+function opening(first){var jokes=familyReaction([['kaleb',"That’s not a Code Red.",'thinking'],['gigi','Maybe it ran away.','happy'],['lingling','Did anybody check under the bread?','thinking']]);var ls=[['SGT. BROOKS',first]];if(jokes[0])ls.push(jokes[0]);ls.push(['SGT. BROOKS','Extra bacon. I need everyone to understand the stakes.']);if(jokes[1])ls.push(jokes[1]);if(jokes[2])ls.push(jokes[2],['SGT. BROOKS','That’s not how sandwiches work!']);ls.push(['SGT. BROOKS','I left my lunch in the fridge. Now it’s gone.'],[playerSpeaker(),'When did you last see it?',null,{speakerId:who(),emotion:'thinking'}],['SGT. BROOKS','This morning. Then I took some stuff to Intake. Rivera saw Torres near the fridge.']);ls=ls.concat(familyReaction([['jay','Let’s find out what actually happened.','determined'],['rosa','And stop accusing people before breakfast.','worried']]));ls.push(['SGT. BROOKS',child()?'Junior Detective, you’re up. Check the fridge in the break room. And please don’t eat the clues.':who()==='rosa'?'Rosa, check the break room fridge first. Please don’t eat the clues.':'Rookie, check the break room fridge first. Please don’t eat the clues.']);lines(ls,function(){data().briefed=true;persist();});}
 
-function inspect(k){var c=data();if(!c.briefed)return lines([['CASE NOTE','Talk to Brooks in Briefing first.']],null);if(k==='fridge'){return lines([[playerSpeaker(),'An empty shelf. No sandwich. Let’s ask who was here.'],['CLUE FOUND','🧊 Empty fridge shelf · Added to your notebook.']],function(){c.clues.fridge=true;persist();});}if(k==='cooler'){if(!c.clues.fridge||!['rivera','torres','maya'].every(function(w){return c.witnesses[w];}))return lines([['MAYA','That cooler is for the morning transfer. Check the fridge and hear all three stories first; then we’ll open it together.']],null);coolerOpen=true;return lines([['MAYA','Ready? I’ll open the transport cooler. It carries sealed office supplies, not dangerous items.'],['INSIDE THE COOLER','A lunch bag, a napkin, and a sandwich container. The note says: BROOKS — DO NOT TOUCH.'],[playerSpeaker(),'Well, that explains a lot.']].concat(familyReaction([['gigi','The sandwich was hiding!'],['kaleb','Technically, it was misplaced.'],['lingling','So… is the sandwich under arrest?'],['jay','I think the sandwich has suffered enough.'],['rosa','Let’s return it before Brooks calls the mayor.']])),function(){c.clues.bag=true;c.flags.FoundPhysicalEvidence=true;persist();});}var jokes={coffee:'The machine sounds like a dying lawnmower.',table:'A crumb, a spoon, and somebody’s crossword. No sandwich.',trash:'Three coffee cups, a banana peel, and a note: PLEASE STOP PUTTING BANANAS IN HERE.',notice:'Label your lunches. Last week’s yogurt incident is still under investigation.'};return lines([[k==='coffee'?'COFFEE MACHINE':'BREAK ROOM',jokes[k]]],null);}
+function inspect(k){var c=data();if(!c.briefed)return lines([['CASE NOTE','Talk to Brooks in Briefing first.']],null);if(k==='fridge'){return lines([[playerSpeaker(),'The shelf is empty. Next up: ask Rivera what he saw.'],['CLUE FOUND','🧊 Empty fridge shelf · Added to your notebook.']],function(){c.clues.fridge=true;persist();});}if(k==='cooler'){if(!c.clues.fridge||!['rivera','torres','maya'].every(function(w){return c.witnesses[w];}))return lines([['MAYA','That cooler is for the morning transfer. Check the fridge and hear all three stories first; then we’ll open it together.']],null);coolerOpen=true;return lines([['MAYA','Let’s open the cooler. If his sandwich is in here, it better be paying rent.'],['INSIDE THE COOLER','A lunch bag, a napkin, and a sandwich container. The note says: BROOKS — DO NOT TOUCH.'],[playerSpeaker(),'The lunch bag has Brooks’s name on it. Let’s tell him what we found.']].concat(familyReaction([['gigi','The sandwich was hiding!'],['kaleb','Technically, it was misplaced.'],['lingling','So… is the sandwich under arrest?'],['jay','I think the sandwich has suffered enough.'],['rosa','Let’s return it before Brooks calls the mayor.']])),function(){c.clues.bag=true;c.flags.FoundPhysicalEvidence=true;persist();});}var jokes={coffee:'The machine sounds like a dying lawnmower.',table:'A crumb, a spoon, and somebody’s crossword. No sandwich.',trash:'Three coffee cups, a banana peel, and a note: PLEASE STOP PUTTING BANANAS IN HERE.',notice:'Label your lunches. Last week’s yogurt incident is still under investigation.'};return lines([[k==='coffee'?'COFFEE MACHINE':'BREAK ROOM',jokes[k]]],null);}
 
-function witness(k){var c=data();if(!c.clues.fridge)return lines([[definition.witnesses[k].name,'Start at the fridge. We should check what’s missing first.']],null);if(k==='maya')return lines([['MAYA','Morning! Please tell me you’re not here about the sandwich.'],[playerSpeaker(),'How did you know?'],['MAYA','Brooks already asked four times! He brought a cooler for a transfer. I put it in Intake storage.'],['CLUE FOUND','📍 Cooler moved to Intake · Added to your notebook.']],function(){c.witnesses.maya=true;c.clues.intake=true;persist();});var opts=k==='rivera'?['So Torres stole it?','Did you see Torres take the sandwich?','What else happened this morning?']:['Rivera thinks you did.','What were you doing near the fridge?','Can you help me understand?'];choice(definition.witnesses[k].name,k==='rivera'?'I saw Torres open the fridge. Then Brooks started yelling.':'I didn’t take anybody’s sandwich.',opts.map(function(t,i){return{label:t,fn:function(){answerWitness(k,i);}};}));}
+function witness(k){var c=data();if(!c.clues.fridge)return lines([[definition.witnesses[k].name,'Start at the fridge. We should check what’s missing first.']],null);if(k==='maya')return lines([['MAYA','Morning! Please tell me you’re not here about the sandwich.'],[playerSpeaker(),'How did you know?'],['MAYA','Brooks asked FOUR times. I put the cooler he brought in Intake storage. It’s right here.'],['CLUE FOUND','📍 Cooler moved to Intake · Added to your notebook.']],function(){c.witnesses.maya=true;c.clues.intake=true;persist();});var opts=k==='rivera'?['So Torres stole it?','Did you see Torres take the sandwich?','What else happened this morning?']:['Rivera thinks you did.','What were you doing near the fridge?','Can you help me understand?'];choice(definition.witnesses[k].name,k==='rivera'?'I saw Torres open the fridge. Then Brooks gave a whole speech about bacon.':'I didn’t take anybody’s sandwich.',opts.map(function(t,i){return{label:t,fn:function(){answerWitness(k,i);}};}));}
 
-function answerWitness(k,i){var c=data();c.questions[k]=['a','b','c'][i];if(i===0)c.flags.AccusedWithoutEvidence=true;else c.flags.AskedRespectfulQuestions=true;save();var response=k==='rivera'?['Well… no. I only saw her open the fridge.','No. I saw her put something inside.','Brooks carried a cooler. He almost dropped it on my foot!'][i]:['Rivera also thinks the vending machine is haunted.','Putting my own lunch away.','I was putting my lunch away. Brooks rushed past with a cooler and nearly knocked over my coffee.'][i];var ls=[[definition.witnesses[k].name,response]];if(k==='rivera'&&i!==2)ls.push(['RIVERA','One more thing: Brooks carried a cooler earlier. Nearly dropped it on my foot.']);if(k==='torres'&&i!==2)ls.push(['OFFICER TORRES','Brooks hurried past with a cooler. That’s what I actually saw.']);lines(ls,function(){c.witnesses[k]=true;if(k==='rivera')c.clues.cooler=true;persist();});}
+function answerWitness(k,i){var c=data();c.questions[k]=['a','b','c'][i];if(i===0)c.flags.AccusedWithoutEvidence=true;else c.flags.AskedRespectfulQuestions=true;save();var response=k==='rivera'?['Well… no. I only saw her open the fridge.','No. I saw her put something inside.','Okay, here’s the tea. Brooks carried a cooler and almost dropped it on my foot.'][i]:['Rivera also thinks the vending machine is haunted. It just owes him a dollar.','Putting my own lunch away.','I was putting my lunch away. Brooks rushed past with a cooler and nearly knocked over my coffee.'][i];var ls=[[definition.witnesses[k].name,response]];if(k==='rivera'&&i!==2)ls.push(['RIVERA','One more thing: Brooks carried a cooler earlier. Nearly dropped it on my foot.']);if(k==='torres'&&i!==2)ls.push(['OFFICER TORRES','Brooks hurried past with a cooler. That’s what I actually saw.']);lines(ls,function(){c.witnesses[k]=true;if(k==='rivera')c.clues.cooler=true;persist();});}
 
-function conclusion(){choice('SGT. BROOKS','Well? Who took it?',[{label:'Officer Torres took it.',fn:function(){data().flags.AccusedWithoutEvidence=true;persist();lines([['SGT. BROOKS','What proof do you have? Let’s check before blaming someone.'],['OFFICER TORRES','Can I finish my coffee before being accused?']],function(){choice(playerSpeaker(),'What will you say?',[{label:'You’re right. I’m sorry.',fn:function(){data().flags.CorrectedMistake=true;persist();lines([['OFFICER TORRES','Apology accepted. Now help me find my coffee.']],conclusion);}},{label:'Let me check my clues.',fn:function(){close();}}]);});}},{label:'I don’t know yet. I need more clues.',fn:function(){lines([['SGT. BROOKS','Fair enough. Better to be certain than blame the wrong person.']],function(){if(data().clues.bag)choice(playerSpeaker(),'Your notebook has the lunch bag clue.',[{label:'Actually, I found something.',fn:function(){explain();}},{label:'Review my notebook.',fn:openNotebook}]);else close();});}},{label:'Nobody stole it. You accidentally moved it.',fn:function(){explain();}}]);}
+function conclusion(){choice('SGT. BROOKS','Okay, spill the tea. What did you find?',[{label:'Officer Torres took it.',fn:function(){data().flags.AccusedWithoutEvidence=true;persist();lines([['SGT. BROOKS','What proof do you have? Let’s check before blaming someone.'],['OFFICER TORRES','Can I finish my coffee before being accused?']],function(){choice(playerSpeaker(),'What will you say?',[{label:'You’re right. I’m sorry.',fn:function(){data().flags.CorrectedMistake=true;persist();lines([['OFFICER TORRES','Apology accepted. Now help me find my coffee.']],conclusion);}},{label:'Let me check my clues.',fn:function(){close();}}]);});}},{label:'I don’t know yet. I need more clues.',fn:function(){lines([['SGT. BROOKS','Fair enough. Better to be certain than blame the wrong person.']],function(){if(data().clues.bag)choice(playerSpeaker(),'Your notebook has the lunch bag clue.',[{label:'Actually, I found something.',fn:function(){explain();}},{label:'Review my notebook.',fn:openNotebook}]);else close();});}},{label:'Nobody stole it. You accidentally moved it.',fn:function(){explain();}}]);}
 
-function explain(){if(!data().clues.bag)return lines([['SGT. BROOKS','That could explain it. Now find something that proves it.']],function(){close();});lines([[playerSpeaker(),'You carried your lunch bag to Intake in the transfer cooler.'],['SGT. BROOKS','Impossible.'],[playerSpeaker(),'Your name is on the bag.'],['SGT. BROOKS','…That does sound like me. So the suspect was me?']].concat(familyReaction([['gigi','CASE CLOSED!'],['lingling','Do we arrest the sandwich?']])),function(){resolve();});}
+function explain(){if(!data().clues.bag)return lines([['SGT. BROOKS','Could be! Check the cooler in Intake for something that proves it.']],function(){close();});lines([[playerSpeaker(),'You took your own lunch to Intake. It was inside the cooler.'],['SGT. BROOKS','Impossible.'],[playerSpeaker(),'Your name is on the bag.'],['SGT. BROOKS','Plot twist. I was my own suspect.']].concat(familyReaction([['gigi','CASE CLOSED!'],['lingling','Do we arrest the sandwich?']])),function(){resolve();});}
 
-function resolve(){var c=data();if(c.complete)return;var ls=[['SGT. BROOKS','Absolutely not. It has suffered enough. Excellent work, '+(child()?'Junior Detective':names[who()])+'.'],['SGT. BROOKS','And for the record, nobody mentions this to the captain.'],['CAPTAIN · FROM THE HALL','Too late.'],['SGT. BROOKS','I need a vacation.']];if(c.flags.AccusedWithoutEvidence&&!c.flags.CorrectedMistake)ls.push(['OFFICER TORRES','Next time, ask before accusing me.'],[playerSpeaker(),'You’re right. I’m sorry.'],['OFFICER TORRES','Apology accepted. Now, where’s my coffee?']);lines(ls,function(){c.complete=true;c.flags.CompletedCase=true;if(c.flags.AccusedWithoutEvidence)c.flags.CorrectedMistake=true;c.reward={badge:child()?definition.rewards.child:definition.rewards.adult,notebook:definition.rewards.notebook};state.closed=true;state.rank=c.legacy&&c.legacy.closed?c.legacy.resumeRank||c.legacy.rank:child()?'Junior Detective':who()==='rosa'?'Community Investigator':'Rookie Officer';if(state.gear.where.notebook==='locker')state.gear.where.notebook='inv';persist();choice('CASE 001 COMPLETE',c.reward.badge+' · Detective Notebook earned. Case 002 is available when you’re ready.',[{label:'Review case journal',fn:openNotebook},{label:'Keep exploring',fn:close}]);});}
+function resolve(){var c=data();if(c.complete)return;var ls=[['SGT. BROOKS','Absolutely not. It has suffered enough. Excellent work, '+(child()?'Junior Detective':names[who()])+'.'],['SGT. BROOKS','And for the record, nobody mentions this to the captain.'],['CAPTAIN · FROM THE HALL','Too late.'],['SGT. BROOKS','I need a vacation. And a second sandwich.']];if(c.flags.AccusedWithoutEvidence&&!c.flags.CorrectedMistake)ls.push(['OFFICER TORRES','Next time, ask before accusing me.'],[playerSpeaker(),'You’re right. I’m sorry.'],['OFFICER TORRES','Apology accepted. Now, where’s my coffee?']);lines(ls,function(){c.complete=true;c.flags.CompletedCase=true;if(c.flags.AccusedWithoutEvidence)c.flags.CorrectedMistake=true;c.reward={badge:child()?definition.rewards.child:definition.rewards.adult,notebook:definition.rewards.notebook};state.closed=true;state.rank=c.legacy&&c.legacy.closed?c.legacy.resumeRank||c.legacy.rank:child()?'Junior Detective':who()==='rosa'?'Community Investigator':'Rookie Officer';if(state.gear.where.notebook==='locker')state.gear.where.notebook='inv';persist();choice('CASE 001 COMPLETE',c.reward.badge+' · You earned a Detective Notebook! Talk to Brooks again to start Case 002.',[{label:'Review case journal',fn:openNotebook},{label:'Keep exploring',fn:close}]);});}
 
-function family(id){data().family[id]=true;persist();lines([[speakers[id],familyLine(id)]],null);}
+function family(id){data().family[id]=true;persist();lines([[speakers[id],familyLine(id),null,{speakerId:id}]],null);}
 
 function interactCase(id){if(id==='brooks')return briefing();if(id.indexOf('family:')===0)return family(id.slice(7));if(definition.witnesses[id])return witness(id);return inspect(id);}
 
@@ -44672,7 +44720,7 @@ var css=document.createElement('style');css.textContent='#caperNotebook{position
 
 document.addEventListener('keydown',function(e){if(e.code==='Escape'&&journal.style.display!=='none')journal.style.display='none';});
 
-H.caper={openingWelcome:function(){return [child()?'PAPI':'DISPATCH',child()?'Welcome, Junior Detective '+names[who()]+'! Papi and the team are here to help. Let’s meet Brooks in Briefing.':who()==='rosa'?'Welcome, Rosa! The community-support team needs your listening skills. Meet Brooks in Briefing.':'First assignment, Jay. Your locker is here. Brooks is waiting in Briefing.'];},openingSpawn:function(){return who()==='jay'?{x:1390,y:520}:who()==='rosa'?{x:655,y:850}:{x:570,y:850};},openingSetup:function(){data().orientation=true;save();},connectedFamilyTalk:function(id){if(ids.indexOf(id)>=0&&id!==who())return lines([[speakers[id],familyLine(id)]],null);},usesNewCase:function(){var c=data();return !(c.legacy&&c.legacy.closed&&c.complete&&!c.reward);},onProfileChosen:profileChosen,definition:definition,presenting:false,active:active,status:function(){return clone(data());},stage:stage,objective:obj,points:points,cast:function(){return m.npcs.filter(function(n){return n.familyId;}).map(function(n){return{familyId:n.familyId,x:n.x,y:n.y};});},notebook:openNotebook,use:use,ui:function(){return{shown:shown,scene:scene,lines:clone(pageLines),choices:uiChoices.map(function(c){return c.label;})};}};
+H.caper={openingWelcome:function(){return [child()?'PAPI':'DISPATCH',child()?'Welcome, Junior Detective '+names[who()]+'! Papi and the team are here to help. Let’s meet Brooks in Briefing.':who()==='rosa'?'Welcome, Rosa! The community-support team needs your listening skills. Meet Brooks in Briefing.':'First assignment, Jay. Your locker is here. Brooks is waiting in Briefing.'];},openingSpawn:function(){return who()==='jay'?{x:1390,y:520}:who()==='rosa'?{x:655,y:850}:{x:570,y:850};},openingSetup:function(){data().orientation=true;save();},connectedFamilyTalk:function(id){if(ids.indexOf(id)>=0&&id!==who())return lines([[speakers[id],familyLine(id),null,{speakerId:id}]],null);},usesNewCase:function(){var c=data();return !(c.legacy&&c.legacy.closed&&c.complete&&!c.reward);},onProfileChosen:profileChosen,definition:definition,presenting:false,active:active,status:function(){return clone(data());},stage:stage,objective:obj,points:points,cast:function(){return m.npcs.filter(function(n){return n.familyId;}).map(function(n){return{familyId:n.familyId,x:n.x,y:n.y};});},notebook:openNotebook,use:use,ui:function(){return{shown:shown,scene:scene,lines:clone(pageLines),choices:uiChoices.map(function(c){return c.label;})};}};
 
 // Keep legacy entry points routed to the single active case, including integrations.
 
@@ -45774,8 +45822,73 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput,roadContact}
     [{...r,h:194},{...r,y:270,h:378}]:[r]).concat([{x:1924,y:0,w:12,h:648},{x:1560,y:636,w:364,h:12}]);
   const roomRects=stationRooms.map(r=>rect(r,STX,STY));
   const walls=stationWalls.map(r=>rect(r,STX,STY));
-  const furniture=ST.furn.filter(f=>f.solid).map(f=>rect(f,STX,STY));
+  const isBreakRoomTable=f=>f.type==='table'&&f.x===1640&&f.y===145;
+  const breakRoomTable=[{x:1684,y:112,w:112,h:55},{x:1722,y:91,w:36,h:21},{x:1722,y:167,w:36,h:30}];
+  const furniture=ST.furn.filter(f=>f.solid)
+    .flatMap(f=>isBreakRoomTable(f)?breakRoomTable:[f]).map(f=>rect(f,STX,STY));
   const collision=walls.concat(furniture,[{x:STX+1780,y:STY+64,w:106,h:30},{x:STX+1600,y:STY+64,w:30,h:26},{x:STX+1690,y:STY+330,w:132,h:52},{x:STX+1785,y:STY+420,w:90,h:34}]);
+  function drawBreakRoomTable(g){
+    const [table,...chairs]=breakRoomTable;
+    const paint=(color,x,y,w,h)=>{g.fillStyle=color;g.fillRect(STX+x,STY+y,w,h);};
+    for(const {x,y,w,h} of chairs){
+      paint('#172733',x,y,w,h);
+      paint('#3c586a',x+3,y+3,w-6,h-7);
+      paint('#587183',x+5,y+4,w-10,2);
+      paint('#243b4a',x+5,y+h-9,w-10,5);
+    }
+    const {x,y,w,h}=table;
+    paint('#24323a',x+4,y+h-10,7,20);
+    paint('#24323a',x+w-11,y+h-10,7,20);
+    paint('#392c27',x,y,w,h-5);
+    paint('#82583c',x+3,y+3,w-6,h-13);
+    paint('#a57853',x+3,y+3,w-6,3);
+    for(let i=1;i<4;i++)paint('#704b36',x+4,y+8+i*9,w-8,1);
+    paint('#553c30',x+3,y+h-10,w-6,5);
+  }
+  const breakRoomAppliances={
+    fridge:{file:'breakroom_fridge_closed.png',x:1777,y:14},
+    coffee:{file:'breakroom_coffee_station.png',x:1580,y:45}
+  };
+  for(const prop of Object.values(breakRoomAppliances)){
+    prop.image=new Image();
+    prop.image.src='./assets/breakroom-appliances/'+prop.file;
+  }
+  function paintBreakRoomAppliance(kind){
+    const {image,x,y}=breakRoomAppliances[kind];
+    if(!image.complete||!image.naturalWidth)return false;
+    ctx.imageSmoothingEnabled=false;
+    ctx.drawImage(image,x,y);
+    return true;
+  }
+  const isCoffeeCabinet=f=>f.x===1580&&f.y===82;
+  function drawBreakRoomProp(kind){
+    ctx.save();
+    ctx.translate(kind==='fridge'?1780:1880,kind==='fridge'?60:217);
+    const paint=(color,x,y,w,h)=>{ctx.fillStyle=color;ctx.fillRect(x,y,w,h);};
+    if(kind==='fridge'){
+      paint('#2e3e48',-2,-43,110,79);
+      paint('#607782',2,-45,103,76);
+      paint('#a2b3b7',5,-44,94,72);
+      paint('#c9d0ce',5,-44,94,4);
+      paint('#84999f',6,-38,91,23);
+      paint('#b2c0c0',6,-10,91,34);
+      paint('#425c69',4,-15,96,4);
+      paint('#536a76',86,-34,5,13);
+      paint('#536a76',86,-6,5,17);
+      paint('#d9c28b',16,-5,21,14);
+      paint('#83714f',20,0,12,1);
+      paint('#455961',8,28,89,5);
+    }else{
+      paint('#253d43',-13,-13,26,28);
+      paint('#50696d',-10,-10,20,22);
+      paint('#72888a',-8,-8,3,17);
+      paint('#344f54',6,-8,4,17);
+      paint('#71898b',-15,-16,30,7);
+      paint('#2d444a',-8,-15,16,3);
+      paint('#c1ac74',-3,-18,6,2);
+    }
+    ctx.restore();
+  }
   const worldSpots=ST.spots.filter(s=>s.id!=='stationDoor'&&s.id!=='garageDoor')
     .map(s=>({id:'station:'+s.id,areaId:'station',x:STX+s.x,y:STY+s.y,label:s.label}));
   worldSpots.push({id:'campus:front',areaId:'precinct-campus',x:FRONT.x,y:FRONT.y+54,label:'Precinct 9 front entrance'},
@@ -46073,6 +46186,10 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput,roadContact}
   const storyFurnitureCache=new Map();
   const storyFactory=/* Local connected-world adapter. Canonical case handlers, cast artwork and
  * profile saves remain authoritative. Compiled inside the existing campus. */
+/* Local connected-world adapter. Canonical case handlers, cast artwork and
+ * profile saves remain authoritative. Compiled inside the existing campus. */
+/* Local connected-world adapter. Canonical case handlers, cast artwork and
+ * profile saves remain authoritative. Compiled inside the existing campus. */
 (function connectedStory(o){
  'use strict';
  const {H,ST,MAPS,STX,STY,PLX,PLY,campus,modal,npcActors,worldSpots,districtEntries}=o;
@@ -46088,6 +46205,7 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput,roadContact}
  fridgeHint.innerHTML='<strong>Find the fridge</strong><span></span>';
  if(window.ROOKIE_MAIN_CITY_ACTIVE)modal.appendChild(fridgeHint);
  const fridgeInstruction=fridgeHint.querySelector('span');
+ const leadTitle=fridgeHint.querySelector('strong');
  const touchControls=matchMedia('(pointer: coarse)');
  // Reparent the existing panels so their own callbacks/focus handling work
  // above this canvas. Restore their original homes when leaving the city.
@@ -46108,8 +46226,13 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput,roadContact}
   for(const [i,n] of actors.entries()){
    const key=n.familyId||familyKey(n.name);
    if(key){if(placedFamily.has(key))continue;placedFamily.add(key);}
-   const a={...n,id:'station-npc:'+i,source:n,storyStation:true,familyId:key,x:n.x+STX,y:n.y+STY};if(n.legacy&&o.blocked(a.x,a.y)){const room=ST.rooms.find(r=>n.x>=r.x&&n.x<r.x+r.w&&n.y>=r.y&&n.y<r.y+r.h);let found=false;for(let r=16;r<=112&&!found;r+=16)for(let dx=-r;dx<=r&&!found;dx+=16)for(let dy=-r;dy<=r;dy+=16){const x=n.x+dx,y=n.y+dy;if(room&&(x<room.x+16||x>room.x+room.w-16||y<room.y+16||y>room.y+room.h-16))continue;if(!o.blocked(x+STX,y+STY)){a.x=x+STX;a.y=y+STY;found=true;break;}}}npcActors.push(a);
-   if(n.talk)worldSpots.push({id:a.id,x:a.x,y:a.y+18,label:'Talk to '+n.name,nativeMap:'station',nativeId:n.legacy&&['chen','park'].includes(n.talk)?'legacy:'+n.talk:!H.caper?.active()&&n.talk.startsWith('caperFamily')?'family:'+key:'npc:'+n.talk,nativeX:n.x,nativeY:n.y,storyStation:true,sourceActor:n});
+   // Position the detainees' feet past the front bars and clear of the bunks.
+   // Keep the authored NPC and interaction coordinates for case dispatch.
+   const cellIndex=n.name==='ELIAS REED'?0:n.name==='FERRIS'?1:-1;
+   const cell=H.cellblock?.cells[cellIndex];
+   const a={...n,id:'station-npc:'+i,source:n,storyStation:true,familyId:key,
+    x:(cell?cell.x+cell.w-38:n.x)+STX,y:(cell?905:n.y)+STY};if(n.legacy&&o.blocked(a.x,a.y)){const room=ST.rooms.find(r=>n.x>=r.x&&n.x<r.x+r.w&&n.y>=r.y&&n.y<r.y+r.h);let found=false;for(let r=16;r<=112&&!found;r+=16)for(let dx=-r;dx<=r&&!found;dx+=16)for(let dy=-r;dy<=r;dy+=16){const x=n.x+dx,y=n.y+dy;if(room&&(x<room.x+16||x>room.x+room.w-16||y<room.y+16||y>room.y+room.h-16))continue;if(!o.blocked(x+STX,y+STY)){a.x=x+STX;a.y=y+STY;found=true;break;}}}npcActors.push(a);
+   if(n.talk)worldSpots.push({id:a.id,x:cell?n.x+STX:a.x,y:(cell?n.y+STY:a.y)+18,label:'Talk to '+n.name,nativeMap:'station',nativeId:n.legacy&&['chen','park'].includes(n.talk)?'legacy:'+n.talk:!H.caper?.active()&&n.talk.startsWith('caperFamily')?'family:'+key:'npc:'+n.talk,nativeX:n.x,nativeY:n.y,storyStation:true,sourceActor:n});
   }
   for(const s of currentSpots)if(!s.to)worldSpots.push({...s,id:'station:'+s.id,areaId:'station',x:s.x+STX,y:s.y+STY,nativeMap:'station',nativeId:s.id,nativeX:s.x,nativeY:s.y,storyStation:true});
   initInteriors();
@@ -46227,12 +46350,42 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput,roadContact}
  function step(dt){initInteriors();syncArc();clearClock+=dt;if(clearClock>.5&&clearAttempts<8){clearClock=0;clearAttempts++;clearEntrances();}for(const b of interiors){const near=Math.abs(campus.x-b.door.x)<b.door.w/2&&Math.abs(campus.y-b.door.y)<24;const target=roomAt(campus.x,campus.y)===b||near?0:1;b.roof+=(target-b.roof)*(1-Math.exp(-12*dt));}}
  function ownsSolid(r){if(clearedProps.some(p=>r.w<=p.w+12&&r.h<=p.h+12&&r.x<p.x+p.w&&r.x+r.w>p.x&&r.y<p.y+p.h&&r.y+r.h>p.y))return true;return interiors.some(b=>!b.existing&&r.x>=b.exterior.x-18&&r.y>=b.exterior.y-18&&r.x+r.w<=b.exterior.x+b.exterior.w+18&&r.y+r.h<=b.exterior.y+b.exterior.h+18&&r.w>b.exterior.w*.45&&r.h>b.exterior.h*.4);}
  function collides(x,y,r){if(x>=STX+768&&x<=STX+1148&&y>=STY+796&&y<=STY+1040&&(ST.pedSolids||ST.solids).some(p=>p.x>=780&&p.x<1140&&p.y>=808&&o.circleHitsRect(x,y,r,{...p,x:p.x+STX,y:p.y+STY})))return true;return interiors.some(b=>[...b.walls,...b.furniture,...(!o.canEnter(b.map)?[{x:b.door.x-b.door.w/2,y:b.door.y-6,w:b.door.w,h:12}]:[])].some(p=>o.circleHitsRect(x,y,r,p)));}
- function objective(){const goal=H.objective()||(H.caper?.active()?H.caper.objective():window.ROOKIE.objective());if(!goal)return null;const sp=worldSpots.find(s=>s.nativeMap===goal.map&&s.nativeId===goal.spot);if(!sp)return null;const b=interiors.find(b=>b.map===sp.storyRoom);return b&&roomAt(campus.x,campus.y)!==b?{x:b.door.x,y:b.door.y+22}:sp;}
+ function objective(goal=H.objective()||(H.caper?.active()?H.caper.objective():window.ROOKIE.objective())){if(!goal)return null;const sp=worldSpots.find(s=>s.nativeMap===goal.map&&s.nativeId===goal.spot);if(!sp)return null;const b=interiors.find(b=>b.map===sp.storyRoom);return b&&roomAt(campus.x,campus.y)!==b?{x:b.door.x,y:b.door.y+22,doorway:true}:sp;}
+ function nextStepGuide(g,view,goal,target){
+  const near=campus.near?.nativeId===goal.spot;
+  const dx=target.x-campus.x,dy=target.y-campus.y;
+  const arrow=Math.abs(dx)>Math.abs(dy)?(dx<0?'←':'→'):(dy<0?'↑':'↓');
+  const button=document.getElementById('v115CampusInteract');
+  const action=button?.textContent.trim()||'Action';
+  const instruction=near?(touchControls.matches?'Tap '+action+'.':'Press E or click '+action+'.'):
+   arrow+' '+goal.where+(target.doorway?' · front door':'');
+  if(leadTitle.textContent!==goal.text)leadTitle.textContent=goal.text;
+  if(fridgeInstruction.textContent!==instruction)fridgeInstruction.textContent=instruction;
+  if(target.x<view.x||target.x>view.x+view.w||target.y<view.y||target.y>view.y+view.h)return;
+  g.save();
+  g.strokeStyle='#182537';g.lineWidth=5/view.zoom;
+  g.beginPath();g.arc(target.x,target.y,17,0,Math.PI*2);g.stroke();
+  g.strokeStyle='#ffe079';g.lineWidth=2.5/view.zoom;g.stroke();
+  g.restore();
+ }
  function fridgeGuide(g,view,inside,free){
-  const searching=window.ROOKIE_MAIN_CITY_ACTIVE&&H.caper?.active()&&H.caper.stage()===1;
-  const show=searching&&free;
+  const main=window.ROOKIE_MAIN_CITY_ACTIVE&&free;
+  const caper=main&&H.caper?.active()?H.caper.objective():null;
+  const searching=caper?.spot==='caper:fridge';
+  const goal=main&&!searching?(caper||H.objective()||window.ROOKIE.objective()):null;
+  const target=goal&&objective(goal);
+  const decision=goal?.spot==='arcDecision';
+  const show=main&&(searching||!!target||decision);
   if(fridgeHint.hidden===show)fridgeHint.hidden=!show;
   if(!show)return;
+  if(target){nextStepGuide(g,view,goal,target);return;}
+  if(decision){
+   if(leadTitle.textContent!=='Time to make a choice')leadTitle.textContent='Time to make a choice';
+   const path='Menu → Settings → Story';
+   if(fridgeInstruction.textContent!==path)fridgeInstruction.textContent=path;
+   return;
+  }
+  if(leadTitle.textContent!=='Find the fridge')leadTitle.textContent='Find the fridge';
   const near=campus.near?.nativeId==='caper:fridge';
   const inBreakRoom=inside&&campus.x>=STX+1560&&campus.x<STX+1924&&campus.y<STY+636;
   const instruction=near?(touchControls.matches?'Tap Check Fridge.':'Press E or select Check Fridge.'):
@@ -46364,6 +46517,7 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput,roadContact}
           }else if(!previous?.room(c,r))drawRoom(r);
         });
         ST.furn.forEach(f=>{
+          if(isBreakRoomTable(f)||H.caper?.active()&&isCoffeeCabinet(f)&&breakRoomAppliances.coffee.image.naturalWidth)return;
           if(previous?.interiorFurnitureActive?.(f,ST.rooms))return;
           if(!previous?.furniture(c,f))drawFurn(f);
         });
@@ -46375,7 +46529,7 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput,roadContact}
       c.fillStyle='#253953';c.fillRect(0,0,ST.w,ST.h);
       withOriginalContext(c,()=>{
         stationRooms.forEach(r=>drawRoom(r));
-        ST.furn.forEach(f=>{if(!previous?.interiorFurnitureActive?.(f,ST.rooms))drawFurn(f);});
+        ST.furn.forEach(f=>{if(!isBreakRoomTable(f)&&!(H.caper?.active()&&isCoffeeCabinet(f)&&breakRoomAppliances.coffee.image.naturalWidth)&&!previous?.interiorFurnitureActive?.(f,ST.rooms))drawFurn(f);});
       });
     }
     c.fillStyle='rgba(10,25,44,.36)';
@@ -46929,9 +47083,10 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput,roadContact}
     for(const wall of bridge?.interiorDepthProps?.(stationWalls,stationRooms,ST.furn,view)||[])
       entries.push({y:wall.depthY,interiorWall:wall});
     const showCaperFridge=H.caper?.active();
-    for(const f of ST.furn)if(!(showCaperFridge&&f.x===1780&&f.y===60)&&
+    for(const f of ST.furn)if(!isBreakRoomTable(f)&&!(showCaperFridge&&isCoffeeCabinet(f)&&breakRoomAppliances.coffee.image.naturalWidth)&&!(showCaperFridge&&f.x===1780&&f.y===60)&&
       bridge?.interiorFurnitureActive?.(f,ST.rooms)&&nearViewport(STX+f.x-100,STY+f.y-140,f.w+200,f.h+240))
       entries.push({y:STY+f.y+f.h,stationFurniture:f});
+    if(nearViewport(STX+1684,STY+91,112,106))entries.push({y:STY+197,breakRoomTable:true});
     for(const d of ST.decors)if(d.t==='cellInterior')entries.push({y:STY+(d.dy??d.y),stationDecor:d});
     // Approved city pass: existing district silhouettes join the SAME queue
     // as actors. No new geometry, projection, camera or building instances.
@@ -46995,6 +47150,7 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput,roadContact}
         bridge.drawInteriorWall(g,entry.interiorWall,{room:ST.rooms.find(r=>r.label===interiorRoom(campus.x,campus.y)),
           player:{x:campus.x-STX,y:campus.y-STY},roofAlpha:roofAlpha()});continue;
       }
+      if(entry.breakRoomTable){drawBreakRoomTable(g);continue;}
       if(entry.stationFurniture){
         g.save();g.translate(STX,STY);
         withOriginalContext(g,()=>{if(!bridge.furniture(g,entry.stationFurniture))drawFurn(entry.stationFurniture);});
@@ -47143,10 +47299,10 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput,roadContact}
     // disappears behind the wall. Interior actors remain behind the facade
     // until the SAME original roof cutaway reveals the rooms.
     // Native clue props use their original coordinates and handlers.
-    if(nearViewport(STX+1558,STY+12,366,624))withOriginalContext(g,()=>{const prior=state.map;state.map='station';g.save();g.translate(STX,STY);try{drawDecor({t:'caperFridge',x:1780,y:60},t);drawDecor({t:'caperCoffee',x:1608,y:82},t);drawFurn({x:1690,y:330,w:132,h:52,type:'table'});drawFurn({x:1785,y:420,w:90,h:34,type:'sofa'});}finally{g.restore();state.map=prior;}});
+    if(nearViewport(STX+1558,STY+12,366,624))withOriginalContext(g,()=>{const prior=state.map;state.map='station';g.save();g.translate(STX,STY);try{if(H.caper?.active()){if(!paintBreakRoomAppliance('fridge'))drawBreakRoomProp('fridge');if(!paintBreakRoomAppliance('coffee'))drawDecor({t:'caperCoffee',x:1608,y:82},t);}drawFurn({x:1690,y:330,w:132,h:52,type:'table'});drawFurn({x:1785,y:420,w:90,h:34,type:'sofa'});}finally{g.restore();state.map=prior;}});
     cruiser?.bayMark(g);
     story?.ground(g);
-    if(H.caper?.active())withOriginalContext(g,()=>{const prior=state.map;state.map='station';g.save();g.translate(STX,STY);try{for(const d of ST.decors)if(d.t.startsWith('caper'))drawDecor(d.t==='caperBreakSign'?{...d,x:1708}:d,t);}finally{g.restore();state.map=prior;}});
+    if(H.caper?.active())withOriginalContext(g,()=>{const prior=state.map;state.map='station';g.save();g.translate(STX,STY);try{for(const d of ST.decors)if(d.t==='caperTrash')drawBreakRoomProp('trash');else if(d.t.startsWith('caper'))drawDecor(d.t==='caperBreakSign'?{...d,x:1708}:d,t);}finally{g.restore();state.map=prior;}});
     window.ROOKIE_COMIC?.drawProps(g);
     drawEntityHighlights(t);
     // Contact flashes/debug labels must follow the cached road and actor
@@ -47513,6 +47669,7 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput,roadContact}
  let scene=null,owner=null,replay=false,snapshot=null,pan=null,worldCamera=false,beat=null,presenting=false,starts=0,trafficOffset=null,planning=false;
  const trace=[],names={jay:'JAY',rosa:'ROSA',kaleb:'KALEB',gigi:'GIGI',lingling:'LINGLING'};
  const actorRefs={officer:{},brooks:{},driver:{}};
+ let commandFrame=null;
  const originalStages={locker:introStageLocker,briefing:introStageBriefing,corridor:introStageCorridor,officer:introOfficerIn};
  const trafficVehicle={id:'story-traffic-sedan',kind:'civilian',color:'#a66852',length:78,width:38,parked:true,angle:0,cos:1,sin:0,dir:'right'};
  function record(event,detail={}){trace.push({event,profile:H.profiles.current(),beat,world:'harbor-main',...detail});if(trace.length>140)trace.shift();}
@@ -47534,12 +47691,49 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput,roadContact}
  dawnPlatesStart=function(){if(!scene)return oldDawnStart();csPlate.on=false;};
  dawnPlatesEnd=function(){pan=null;if(!scene)return oldDawnEnd();csPlate.on=false;};
  function sourceSteps(isReplay){return originalBuild(isReplay).map(st=>{if(st.t!=='say')return st;const stale=st.lines.some(l=>l[1].includes('Case 001 \u2014 The Missing Drive'));
-   const lines=stale?[H.caper.openingWelcome(),st.lines[1]]:st.lines.filter(l=>!l[1].includes("A drive isn't where")&&!l[1].startsWith('Start there. Tell me'));
-   return{...st,lines:lines.map(l=>[l[0]==='JAY'?names[H.profiles.current()]:l[0],l[1].replace('tap INTERACT','tap Action')])};});}
+   const lines=stale?[H.caper.openingWelcome(),['SGT. BROOKS','Meet me in the briefing room. Look for the gold marker when you’re ready.']]:st.lines.filter(l=>!l[1].includes("A drive isn't where")&&!l[1].startsWith('Start there. Tell me'));
+   const profile=H.profiles.current();
+   return{...st,lines:lines.map(([speaker,text,button,metadata])=>[
+    speaker==='JAY'?names[profile]:speaker,text.replace('tap INTERACT','tap Action'),button,
+    speaker==='JAY'?{speakerId:profile}:speaker==='PAPI'?{speakerId:'jay'}:metadata
+   ])};});}
  function begin(id){if(!api.isOpen()||H.academy.active()||H.outbreak.active())return false;scene=id;owner=state;pan=null;beat=id==='intro'?'opening':id;record('begin',{id});document.body.classList.add('connected-cinematic');o.clearInput();return true;}
- function finish(){const id=scene;scene=null;pan=null;worldCamera=false;document.body.classList.remove('connected-cinematic');H.caper.presenting=presenting;
+ function finish(){const id=scene;restoreCommandFrame();scene=null;pan=null;worldCamera=false;document.body.classList.remove('connected-cinematic');H.caper.presenting=presenting;
   if(owner===state){if(id==='intro'&&!replay){state.intro={done:true,playing:false,setupApplied:true};state.connectedEvents={...state.connectedEvents,firstShiftComplete:true};}campus.follow=snapshot?.campus.follow??true;campus.zoom=snapshot?.campus.zoom||.9;campus.moved=false;o.clearInput();H.mainCity?.save();}record('finish',{id,replay});snapshot=null;owner=null;replay=false;}
  csPlay=function(id,steps,done){if(!api.isOpen()||H.academy.active()||H.outbreak.active())return originalPlay.apply(this,arguments);if(csActive)return false;begin(id);return originalPlay(id,steps,function(){try{done?.();}finally{finish();}});};
+ function restoreCommandFrame(){
+  if(!commandFrame)return;
+  const {camera,actor,direction,dir}=commandFrame;
+  if(actor)actor.dir=direction;
+  if(owner===state){Object.assign(campus,camera);campus.dir=dir;}
+  commandFrame=null;
+ }
+ function commandBeat(id,lines,done){
+  if(!api.isOpen()||scene||csActive||o.cruiser?.active()||H.academy.active()||H.outbreak.active())return false;
+  const isOrtiz=id==='command-ortiz';
+  const actor=o.npcActors.find(a=>(isOrtiz?(a.talk==='marco'||a.source?.talk==='marco'||/\bORTIZ\b/i.test(a.name)):
+   a.storyStation&&/^SGT\.?\s+BROOKS$/i.test(a.name))&&Math.hypot(a.x-campus.x,a.y-campus.y)<200);
+  if(isOrtiz&&!actor)return false;
+  const x=actor?(actor.x+campus.x)/2:campus.x;
+  const y=actor?(actor.y+campus.y)/2:campus.y;
+  const camera={zoom:campus.zoom,follow:campus.follow,camX:campus.camX,camY:campus.camY};
+  commandFrame={camera,actor,direction:actor?.dir,dir:campus.dir};
+  snapshot={campus:camera};
+  presenting=!!H.caper.presenting;
+  H.caper.presenting=true;
+  if(actor){
+   const dx=campus.x-actor.x,dy=campus.y-actor.y;
+   const horizontal=Math.abs(dx)>Math.abs(dy);
+   actor.dir=horizontal?(dx>0?'right':'left'):(dy>0?'down':'up');
+   campus.dir=horizontal?(dx>0?'left':'right'):(dy>0?'up':'down');
+  }
+  const speech=!actor&&lines?lines.map(([name,line])=>[name==='SGT. BROOKS'?'SGT. BROOKS · RADIO':name,line]):lines;
+  return csPlay(id,[
+   {t:'letterbox',on:true},
+   {t:'cam',world:true,x,y:y-35,zoom:Math.max(camera.zoom,1.05),dur:.45},
+   speech?{t:'say',lines:speech}:{t:'wait',dur:.45}
+  ],done);
+ }
  csRunStep=function(st){if(!scene)return originalRun(st);if(st.t==='plate'){
    const shots={docks:[[3585,4020],[3760,3970],.8],street:[[2600,1790],[2820,1790],.85],precinct:[[948,1320],[948,1130],.85]},s=shots[st.src];
    if(s){beat=st.src;pan={from:s[0],to:s[1],zoom:s[2],start:performance.now(),dur:st.dur*1000};record('shot',{from:s[0],to:s[1]});}csNext();return;
@@ -47571,12 +47765,13 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput,roadContact}
  function syncTraffic(){if(!planTraffic())return;if(!scene&&!csActive){if(tsStage()==='arrival'){tsHandoff();record('traffic-recovered',{stage:'encounter'});}else if(tsStage()==='outcome'){applyTrafficOutcome();record('traffic-recovered',{stage:'done'});}}
   for(let i=o.worldSpots.length-1;i>=0;i--)if(o.worldSpots[i].campaignTraffic)o.worldSpots.splice(i,1);const start=o.worldSpots.find(s=>s.nativeId==='trafficStop');if(start){Object.assign(start,locate(TS.map,TS.sedan.x,TS.sedan.y-42));start.campaignHidden=tsStage()!=='idle';}if(tsStage()!=='encounter')return;for(const sp of TS_SPOTS){const p=safe(locate(TS.map,sp.x,sp.y));if(p)o.worldSpots.push({...sp,...p,id:'campaign:'+sp.id,nativeId:sp.id,nativeMap:TS.map,nativeX:sp.x,nativeY:sp.y,campaignTraffic:true});}}
  function vehicles(){if(planning||!trafficOffset||!api.isOpen()||tsStage()==='done')return[];const p=locate(TS.map,TS.sedan.x,TS.sedan.y);if(!p)return[];Object.assign(trafficVehicle,p);return[trafficVehicle];}
- function abort(){if(replay&&owner===state)introRestore();csStopAll();introActorsHide();scene=null;pan=null;document.body.classList.remove('connected-cinematic');H.caper.presenting=presenting;snapshot=null;owner=null;replay=false;record('cancel');}
- function tick(dt){if(!scene){syncTraffic();return;}if(owner!==state||!csActive){abort();return;}const x=campus.x,y=campus.y;updateCutscene(dt);if(!scene)return;const raw=locate(state.map,player.x+player.w/2,player.y+player.h/2),p=raw&&(scene.startsWith('traffic')?safe(raw):raw);if(p){campus.x=p.x;campus.y=p.y;campus.dir=player.dir;campus.moved=!!player.moving;const distance=Math.hypot(p.x-x,p.y-y);if(campus.moved&&distance<30)campus.stride+=distance*.055;}syncTraffic();}
+ function abort(){if(replay&&owner===state)introRestore();restoreCommandFrame();csStopAll();introActorsHide();scene=null;pan=null;document.body.classList.remove('connected-cinematic');H.caper.presenting=presenting;snapshot=null;owner=null;replay=false;record('cancel');}
+ function tick(dt){if(!scene){syncTraffic();return;}if(owner!==state||!csActive){abort();return;}const x=campus.x,y=campus.y;updateCutscene(dt);if(!scene||commandFrame)return;const raw=locate(state.map,player.x+player.w/2,player.y+player.h/2),p=raw&&(scene.startsWith('traffic')?safe(raw):raw);if(p){campus.x=p.x;campus.y=p.y;campus.dir=player.dir;campus.moved=!!player.moving;const distance=Math.hypot(p.x-x,p.y-y);if(campus.moved&&distance<30)campus.stride+=distance*.055;}syncTraffic();}
  function camera(){if(!scene)return null;if(pan){const u=Math.min(1,Math.max(0,(performance.now()-pan.start)/pan.dur)),t=u*u*(3-2*u);return{x:pan.from[0]+(pan.to[0]-pan.from[0])*t,y:pan.from[1]+(pan.to[1]-pan.from[1])*t,zoom:pan.zoom,ease:6};}if(csCam.on){const p=worldCamera?{x:csCam.cx,y:csCam.cy}:locate(state.map,csCam.cx,csCam.cy);if(p)return{...p,zoom:csCam.zoom,ease:6};}return{x:campus.x,y:campus.y,zoom:campus.zoom,ease:9};}
  startIntro=isReplay=>start(!!isReplay);window.ROOKIE.cutscene.startIntro=startIntro;window.ROOKIE.cutscene.play=csPlay;const oldSkip=H.skipIntro;H.skipIntro=()=>scene?skipCutscene():oldSkip();
  H.mainOpening=Object.freeze({start,maybeStart,orient,active:()=>scene==='intro',inspect:()=>({active:scene==='intro',starts,beat,source:'First Shift',trace:trace.slice()})});
- H.campaignScenes=Object.freeze({active:()=>!!scene,suspend:()=>{if(scene){snapshot=null;replay=false;abort();}},tick,camera,actors,vehicles,resolve:name=>{const n=String(name).toUpperCase(),a=actors().find(a=>n===a.name.toUpperCase()||n.startsWith(a.name.toUpperCase()+' — '));return a?{ref:a,kind:'connected'}:null;},vehicleBlocks:(x,y,r)=>vehicles().some(v=>Math.max(0,Math.abs(x-v.x)-v.length/2)**2+Math.max(0,Math.abs(y-v.y)-v.width/2)**2<r*r),suppress:a=>!a.openingActor&&scene==='intro'&&INTRO_ACTORS.brooks.on&&/SGT\.?\s*BROOKS/i.test(a.name||''),drawActor:a=>{if(!a.openingActor)return false;if(!window.ROOKIE_CIVILIANS?.draw(g,a))o.paintActor(a);return true;},startTraffic:(sp,dispatch)=>{if(scene||H.speech.current()||!planTraffic())return false;if(tsStage()!=='idle'){dispatch();return true;}const p=locate(TS.map,TS.unit.x,TS.unit.y);if(!p||!o.cruiser.stageForScene({...p,angle:0})){record('traffic-staging-blocked',{point:p});toast('Move clear of the traffic-stop staging area first.');return false;}dispatch();return true;},inspect:()=>({scene,beat,starts,world:'harbor-main',trace:trace.slice()})});
+ H.commandBeat=commandBeat;
+ H.campaignScenes=Object.freeze({active:()=>!!scene,suspend:()=>{if(scene){snapshot=null;replay=false;abort();}},tick,camera,actors,vehicles,resolve:name=>{const n=String(name).toUpperCase();const staged=commandFrame?.actor&&n===(scene==='command-ortiz'?'FOREMAN ORTIZ':'SGT. BROOKS')?commandFrame.actor:null;const a=staged||actors().find(a=>n===a.name.toUpperCase()||n.startsWith(a.name.toUpperCase()+' — '));return a?{ref:a,kind:'connected'}:null;},vehicleBlocks:(x,y,r)=>vehicles().some(v=>Math.max(0,Math.abs(x-v.x)-v.length/2)**2+Math.max(0,Math.abs(y-v.y)-v.width/2)**2<r*r),suppress:a=>!a.openingActor&&scene==='intro'&&INTRO_ACTORS.brooks.on&&/SGT\.?\s*BROOKS/i.test(a.name||''),drawActor:a=>{if(!a.openingActor)return false;if(!window.ROOKIE_CIVILIANS?.draw(g,a))o.paintActor(a);return true;},startTraffic:(sp,dispatch)=>{if(scene||H.speech.current()||!planTraffic())return false;if(tsStage()!=='idle'){dispatch();return true;}const p=locate(TS.map,TS.unit.x,TS.unit.y);if(!p||!o.cruiser.stageForScene({...p,angle:0})){record('traffic-staging-blocked',{point:p});toast('Move clear of the traffic-stop staging area first.');return false;}dispatch();return true;},inspect:()=>({scene,beat,starts,world:'harbor-main',trace:trace.slice()})});
 })
 ;
   if(window.ROOKIE_MAIN_CITY_ACTIVE)campaignFactory?.({H,api,campus,STX,STY,worldSpots,npcActors,cruiser,clearInput,streetGraph:()=>trafficRouter?.graph,paintActor:a=>withOriginalContext(g,()=>drawPerson(a.x,a.y,a.color,a.hat,a.name,a.dir||'down',false,true,0,a.moving?a.distance/22:null))});

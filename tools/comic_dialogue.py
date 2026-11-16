@@ -1,4 +1,38 @@
 """Optional presentation hooks in the LOCAL connected build; canonical game stays intact."""
+
+def apply_family_lines(bundle):
+    replacements = {
+        '    setDialogue(L[0], L[1],': '    var renderLine = () => setDialogue(L[0], L[1],',
+        '    document.getElementById("dlgNext").addEventListener("click", function(){':
+            '''    if (L[3] && window.ROOKIE_MAIN_CITY_ACTIVE && window.ROOKIE_COMIC) {
+      window.ROOKIE_COMIC.withLine(L[3], renderLine);
+    } else renderLine();
+
+    document.getElementById("dlgNext").addEventListener("click", function(){''',
+        'return[speakers[l[0]],l[1]];': 'return[speakers[l[0]],l[1],null,{speakerId:l[0],emotion:l[2]}];',
+        'cards.push([l[0],t,i===parts.length-1?l[2]:undefined]);':
+            'cards.push([l[0],t,i===parts.length-1?l[2]:undefined,l[3]]);',
+        '  var v=viewport();if(v.right-v.left<100||v.bottom-v.top<80)return;':
+            '''  var v=viewport();
+  if(active.familyLine&&window.ROOKIE_COMIC)v.top=Math.min(v.bottom-80,window.ROOKIE_COMIC.familyTop(active,v));
+  if(v.right-v.left<100||v.bottom-v.top<80)return;''',
+        'lines([[speakers[id],familyLine(id)]],null);':
+            'lines([[speakers[id],familyLine(id),null,{speakerId:id}]],null);',
+        '''['kaleb',"That’s not a Code Red."],['gigi','Maybe it ran away.'],['lingling','Did anybody check under the bread?']''':
+            '''['kaleb',"That’s not a Code Red.",'thinking'],['gigi','Maybe it ran away.','happy'],['lingling','Did anybody check under the bread?','thinking']''',
+        '''[playerSpeaker(),'When did you last see it?']''':
+            '''[playerSpeaker(),'When did you last see it?',null,{speakerId:who(),emotion:'thinking'}]''',
+        '''['jay','Let’s find out what actually happened.'],['rosa','And stop accusing people before breakfast.']''':
+            '''['jay','Let’s find out what actually happened.','determined'],['rosa','And stop accusing people before breakfast.','worried']''',
+    }
+    for before, after in replacements.items():
+        if after in bundle:
+            continue
+        expected = 2 if before == 'lines([[speakers[id],familyLine(id)]],null);' else 1
+        assert bundle.count(before) == expected, before
+        bundle = bundle.replace(before, after)
+    return bundle
+
 def apply_comic_hooks(bundle, engine):
     # Restore just the canonical presentation IIFE before applying optional hooks.
     # Local builds are repeatable, including builds made by older hook revisions.
@@ -12,11 +46,12 @@ def apply_comic_hooks(bundle, engine):
         ' function blocks(v,actor){': ' function blocks(v,actor){var comic=window.ROOKIE_COMIC?.blocks(actor);if(comic)return comic;',
         'var actor=present(active.actor)?active.actor:null,ap=actor?point(actor):null;': 'if(window.ROOKIE_COMIC?.cameraChanged())active.dirty=true;var actor=present(active.actor)?active.actor:null,ap=actor?point(actor):null;',
 
-        "var full=text.textContent;typeText(full);prepare();finishType();": "var full=window.ROOKIE_COMIC?.enabled()&&active?active.full:text.textContent;typeText(full);prepare();finishType();",
+        "var full=text.textContent;typeText(full);prepare();finishType();": "var full=String(t||'');typeText(full);prepare();finishType();",
         "var pos=p?place(p,w,h,v,blocks(v,a),active.side)": "active.comicAnchor=p;var pos=p?place(p,w,h,v,blocks(v,a),active.side)",
         "if(!active||panel.style.display==='none'||overlayOpen())return;": "if(!active||panel.style.display==='none'||(overlayOpen()&&!window.ROOKIE_COMIC?.modalActive()))return;",
         "if(dlgOpen||csActive||overlayOpen()||(H.profiles": "if(dlgOpen||csActive||(overlayOpen()&&!window.ROOKIE_COMIC?.ambientAllowed())||(H.profiles",
         "||!present(ambient.actor)||csActive||overlayOpen())": "||!present(ambient.actor)||csActive||(overlayOpen()&&!window.ROOKIE_COMIC?.ambientAllowed()))",
+        "small.style.left=clamp(p.x-r.width/2,v.left,v.right-r.width)+'px';small.style.top=clamp(p.y-p.head-r.height-10,v.top,v.bottom-r.height)+'px';": "var bp=ambient.actor.ref.comicBanter?place(p,r.width,r.height,v,blocks(v,ambient.actor),null):null;small.style.left=(bp?bp.x:clamp(p.x-r.width/2,v.left,v.right-r.width))+'px';small.style.top=(bp?bp.y:clamp(p.y-p.head-r.height-10,v.top,v.bottom-r.height))+'px';",
 
         ' function resolve(speaker){': ' function resolve(speaker){\n  var comic=window.ROOKIE_COMIC?.resolve(speaker);if(comic)return comic;',
         ' function present(a){': " function present(a){if(a?.kind==='connected')return !!window.ROOKIE_COMIC?.present(a);",

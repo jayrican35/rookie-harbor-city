@@ -261,7 +261,22 @@ function furniture(g,f){
     // The source sprite replaces its old flat vector placeholder; the
     // official furniture rectangle/collision/interaction is unchanged.
     g.drawImage(im,Math.round(x),Math.round(y),Math.round(w),Math.round(h));
-    if(type==='desk'&&ready(source('chair'))&&f.y<850&&f.x<1400)
+    if(type==='desk'&&((f.x===880&&f.y===380)||(f.x===800&&f.y===678))){
+      const cx=Math.round(f.x+f.w/2),y=f.y+f.h+8;
+      const part=(color,x,dy,w,h)=>{g.fillStyle=color;g.fillRect(cx+x,y+dy,w,h);};
+      part('rgba(22,35,43,.22)',-19,41,38,6);
+      part('#25333e',-3,30,6,13);
+      part('#25333e',-15,41,30,3);
+      part('#192832',-17,43,5,4);
+      part('#192832',12,43,5,4);
+      part('#182934',-19,20,38,11);
+      part('#486172',-15,19,30,10);
+      part('#172630',-15,1,30,22);
+      part('#344d60',-12,3,24,16);
+      part('#587286',-10,4,20,2);
+      part('#20323e',-19,15,4,11);
+      part('#20323e',15,15,4,11);
+    }else if(type==='desk'&&ready(source('chair'))&&f.y<850&&f.x<1400)
       g.drawImage(source('chair'),Math.round(f.x+f.w/2-15),
         Math.round(f.y+f.h+1),30,40);
     g.restore();

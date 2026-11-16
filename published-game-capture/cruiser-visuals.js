@@ -33,7 +33,12 @@ function load(root){
 }
 function create(){
  return {angle:null,index:null,directions:0,time:0,pitch:0,roll:0,brake:0,acceleration:0,slip:0,
-  draws:0,frameChanges:0,effects:[],previous:null,rear:null,fxTime:0,puffSide:0,lastDraw:null};
+  draws:0,frameChanges:0,effects:[],pool:[],previous:null,rear:null,fxTime:0,puffSide:0,lastDraw:null};
+}
+function emit(v,kind,a,b,load,road,life){
+ const e=v.pool.pop()||(v.effects.length>=72?v.effects.shift():{});
+ Object.assign(e,{kind,a,b,load,road,life,max:life});
+ v.effects.push(e);
 }
 function approach(value,target,rate,dt){return value+(target-value)*(1-Math.exp(-dt*rate));}
 function rear(car,side){
@@ -65,15 +70,16 @@ function update(v,car,dt,input={}){
  v.pitch=approach(v.pitch,clamp(longitudinal/155,-1,1),11,dt);
  v.roll=approach(v.roll,clamp(-lateral/205,-1,1),9,dt);
  v.brake=approach(v.brake,braking?clamp(.24+deceleration/165,.24,1):0,22,dt);
- v.slip=clamp((Math.abs(car.lateralSpeed||0)-12)/35,0,1);
+ const rearSpin=car.rearWheelSlip||0;
+ v.slip=car.burnout?1:Math.max(rearSpin,clamp((Math.abs(car.lateralSpeed||0)-12)/35,0,1));
  v.previous={x:car.x,y:car.y,vx,vy,speed,forward:car.speed};
- if(displaced){v.effects.length=0;v.rear=null;v.fxTime=0;}
+ if(displaced){v.pool.push(...v.effects);v.effects.length=0;v.rear=null;v.fxTime=0;}
  for(let i=v.effects.length-1;i>=0;i--){
   v.effects[i].life-=dt;
-  if(v.effects[i].life<=0)v.effects.splice(i,1);
+  if(v.effects[i].life<=0)v.pool.push(v.effects.splice(i,1)[0]);
  }
  const brakeScrub=braking?clamp((deceleration-90)/100,0,.5):0;
- const load=Math.max(v.slip,brakeScrub)*clamp((speed-55)/80,0,1);
+ const load=car.burnout?1:Math.max(rearSpin*.8,Math.max(v.slip,brakeScrub)*clamp((speed-30)/80,0,1));
  if(load<.12||!continuous){v.rear=null;v.fxTime=0;return;}
  v.fxTime+=dt;
  if(v.rear&&v.fxTime<.05)return;
@@ -82,13 +88,11 @@ function update(v,car,dt,input={}){
   v.puffSide=1-v.puffSide;
   for(let i=0;i<2;i++){
   const a=v.rear[i],b=wheels[i],distance=Math.hypot(b.x-a.x,b.y-a.y);
-  if(distance<1||distance>25)continue;
   const road=!input.roadContact||input.roadContact(b.x,b.y);
-  if(road&&(!input.roadContact||input.roadContact(a.x,a.y)))v.effects.push({kind:'skid',a,b,load,life:2.6,max:2.6});
-  if(load>.24&&i===v.puffSide)v.effects.push({kind:'puff',a:b,load,road,life:.5,max:.5});
+  if(distance>=1&&distance<=25&&road&&(!input.roadContact||input.roadContact(a.x,a.y)))emit(v,'skid',a,b,load,road,2.6);
+  if(load>.24&&i===v.puffSide&&(rearSpin>.35||car.burnout||distance>=1&&distance<=25))emit(v,'puff',b,null,load,road,.65);
   }
  }
- if(v.effects.length>72)v.effects.splice(0,v.effects.length-72);
  v.rear=wheels;v.fxTime=0;
 }
 function effects(g,v){

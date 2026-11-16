@@ -2,6 +2,10 @@
 import re
 def bind_campaign(bundle):
     assert '/* authoritative connected campaign */' not in bundle
+    # Cell 1 stays occupied in the connected campaign after Case 002.
+    reed = "currentMission()==='m2'&&!state.camp.m2.done?'Elias Reed':null"
+    assert bundle.count(reed) == 1
+    bundle = bundle.replace(reed, "(currentMission()==='m2'&&!state.camp.m2.done||window.ROOKIE_MAIN_CITY_ACTIVE&&state.camp.m2.done)?'Elias Reed':null")
     token='(function introBoot(){'
     assert bundle.count(token)==1
     bundle=bundle.replace(token,token+'if(window.ROOKIE_MAIN_CITY_ACTIVE)return;',1)

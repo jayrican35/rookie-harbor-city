@@ -7,7 +7,7 @@ const H=window.HARBOR,SPAWN=Object.freeze({x:1760,y:1568,angle:Math.PI/2});
 const controllerFactory=function(car,keys,window,carCollidesAt,saveThrottled,feedback){
 const driveKeys={},document={getElementById:()=>null},AC=null,traffic=[];
 const syncPlayerToCar=()=>{},checkCarExits=()=>{},perfCollision=feedback,tone=()=>{},toast=()=>{};
-const HANDLING=Object.freeze({"maxSpeed":265,"reverseSpeed":92,"acceleration":165,"accelerationRolloff":0.35,"serviceBrake":128,"emergencyBrake":140,"reverseAcceleration":115,"reverseToForwardBrake":140,"coastDeceleration":30,"steeringResponseSeconds":0.085,"steeringLength":44,"steeringSpeedKnee":105,"steeringSpeedExponent":2,"maxYawRate":1.15,"steeringMinSpeed":0.5,"normalLateralGrip":18,"slidingLateralGrip":3.5,"driftSpeedThreshold":145,"driftSpeedFade":45,"driftDemandStart":115,"driftDemandFull":205,"gripLossResponse":4,"gripRecoveryResponse":8,"countersteerGrip":22,"countersteerMinLateralSpeed":3,"countersteerRecoverySeconds":0.35,"handbrakeGripLoss":0.75,"maxSlipAngle":0.5,"driftDeceleration":50,"driftingSlipAngle":0.1});
+const HANDLING=Object.freeze({"maxSpeed":265,"performanceSpeedMultiplier":1.62,"performanceTorque":1.85,"performanceReleaseDrag":72,"handbrakeDeceleration":58,"handbrakeYawRate":2.65,"handbrakeFullSpeed":135,"handbrakeLateralGrip":0.85,"handbrakeRecoveryRate":4,"burnoutMaxSpeed":16,"rearSpinResponse":11,"rearSpinRecovery":5,"rearLaunchSpinSpeed":85,"rearSpinSpeed":160,"rearPowerOversteer":0.42,"rearPowerGripLoss":0.85,"reverseSpeed":92,"acceleration":165,"accelerationRolloff":0.35,"serviceBrake":128,"emergencyBrake":140,"reverseAcceleration":115,"reverseToForwardBrake":140,"coastDeceleration":30,"steeringResponseSeconds":0.07,"steeringLength":37,"steeringSpeedKnee":105,"steeringSpeedExponent":2,"maxYawRate":1.32,"steeringMinSpeed":0.5,"normalLateralGrip":18,"slidingLateralGrip":3.5,"driftSpeedThreshold":145,"driftSpeedFade":45,"driftDemandStart":115,"driftDemandFull":205,"gripLossResponse":4,"gripRecoveryResponse":8,"countersteerGrip":22,"countersteerMinLateralSpeed":3,"countersteerRecoverySeconds":0.35,"handbrakeGripLoss":0.75,"maxSlipAngle":0.5,"driftDeceleration":50,"driftingSlipAngle":0.1});
 const CAR_MAX=HANDLING.maxSpeed,CAR_REV=-HANDLING.reverseSpeed;
 var connectedSteer=0;
 var carReboundTime=0;
@@ -31,10 +31,27 @@ function updateCar(dt, tNow){
   // Connected Sporty Arcade steering: continuous signed speed, reduced
   // high-speed yaw and a short input response. No stationary rotation.
   var steer = (right ? 1 : 0) - (left ? 1 : 0);
+  var boost=!!keys.performance&&car.engine&&!brk&&carReboundTime<=0;
+  var handbrake=!!keys.handbrake&&!car.impactState;
+  var groundSpeed=Math.hypot(driveVX,driveVY);
+  car.handbrakeDirection=handbrake?(car.handbrakeDirection||(car.speed<-4?-1:1)):0;
+  car.burnout=boost&&handbrake&&groundSpeed<HANDLING.burnoutMaxSpeed;
+  gas=gas||boost;
   connectedSteer += (steer-connectedSteer)*(1-Math.exp(-dt/HANDLING.steeringResponseSeconds));
-  if(Math.abs(car.speed)>HANDLING.steeringMinSpeed){
+  // Rear tire speed can exceed road speed while the front axle still steers.
+  var powerSlide=boost&&!handbrake&&!car.impactState?Math.abs(connectedSteer)*Math.min(1,groundSpeed/120):0;
+  var launchSlip=boost&&!handbrake&&!car.impactState?Math.max(0,1-groundSpeed/HANDLING.rearLaunchSpinSpeed)*.65:0;
+  var spinTarget=car.burnout?1:Math.max(launchSlip,powerSlide*.8);
+  var rearSpin=car.rearWheelSlip||0;
+  rearSpin+=(spinTarget-rearSpin)*(1-Math.exp(-dt*(spinTarget>rearSpin?HANDLING.rearSpinResponse:HANDLING.rearSpinRecovery)));
+  car.rearWheelSlip=rearSpin;
+  car.rearWheelSpeed=groundSpeed+rearSpin*HANDLING.rearSpinSpeed;
+  if(!car.impactState&&groundSpeed>HANDLING.steeringMinSpeed&&!car.burnout){
     var yaw=car.speed/HANDLING.steeringLength/(1+Math.pow(Math.abs(car.speed)/HANDLING.steeringSpeedKnee,HANDLING.steeringSpeedExponent));
-    car.angle += connectedSteer*Math.max(-HANDLING.maxYawRate,Math.min(HANDLING.maxYawRate,yaw))*dt;
+    var turn=Math.max(-HANDLING.maxYawRate,Math.min(HANDLING.maxYawRate,yaw));
+    if(steer*(-driveVX*oldSin+driveVY*oldCos)<=HANDLING.countersteerMinLateralSpeed)turn+=powerSlide*rearSpin*HANDLING.rearPowerOversteer;
+    if(handbrake)turn=HANDLING.handbrakeYawRate*Math.min(1,groundSpeed/HANDLING.handbrakeFullSpeed)*car.handbrakeDirection;
+    car.angle += connectedSteer*turn*dt;
   }
   if(carReboundTime>0){gas=false;brk=false;}
   if(carCollidesAt(car.x,car.y,car.angle,car.map)&&!carCollidesAt(car.x,car.y,previousAngle,car.map))car.angle=previousAngle;
@@ -43,18 +60,28 @@ function updateCar(dt, tNow){
   if(!impactOwned)car.speed=driveVX*driveCos+driveVY*driveSin;
   // One mutually exclusive longitudinal integration per substep.
   var stop=!!(driveKeys.brake || window.__carSpace);
+  var top=CAR_MAX*HANDLING.performanceSpeedMultiplier,target=boost?top:CAR_MAX;
   if(carReboundTime>0){gas=false;brk=false;}
-  if(stop){
+  if(car.burnout){
+    car.speed*=Math.exp(-12*dt);
+  }else if(stop){
     car.speed=Math.sign(car.speed)*Math.max(0,Math.abs(car.speed)-HANDLING.emergencyBrake*dt) || 0;
+  }else if(handbrake){
+    car.speed*=Math.max(0,1-HANDLING.handbrakeDeceleration*dt/Math.max(groundSpeed,1));
   }else if(brk){
     car.speed=car.speed>0?Math.max(0,car.speed-HANDLING.serviceBrake*dt):Math.max(CAR_REV,car.speed-HANDLING.reverseAcceleration*dt);
   }else if(gas){
     if(car.speed<0)car.speed=Math.min(0,car.speed+HANDLING.reverseToForwardBrake*dt);
-    else {var rolloff=HANDLING.accelerationRolloff,drag=HANDLING.acceleration*rolloff/CAR_MAX;car.speed=CAR_MAX/rolloff+(car.speed-CAR_MAX/rolloff)*Math.exp(-drag*dt);}
+    else if(car.speed<target){
+      var torque=HANDLING.acceleration*(boost?HANDLING.performanceTorque*(1-.15*rearSpin):1);
+      car.speed=Math.min(target,car.speed+torque*(1-HANDLING.accelerationRolloff*car.speed/target)*dt);
+    }
   }else{
     car.speed=Math.sign(car.speed)*Math.max(0,Math.abs(car.speed)-HANDLING.coastDeceleration*dt) || 0;
   }
-  car.speed=Math.max(CAR_REV,Math.min(CAR_MAX,car.speed));
+  if(!boost&&car.speed>CAR_MAX)car.speed=Math.max(CAR_MAX,car.speed-HANDLING.performanceReleaseDrag*dt);
+  // Preserve the longitudinal component through a rotating handbrake slide.
+  if(!handbrake)car.speed=Math.max(CAR_REV,Math.min(top,car.speed));
   if(!impactOwned){
     var lateral=-driveVX*driveSin+driveVY*driveCos,absSpeed=Math.abs(car.speed);
     var yawRate=dt?(car.angle-previousAngle)/dt:0;
@@ -62,17 +89,26 @@ function updateCar(dt, tNow){
     car.tractionRecovery=countersteer?HANDLING.countersteerRecoverySeconds:Math.max(0,(car.tractionRecovery||0)-dt);
     var speedLoad=Math.max(0,Math.min(1,(absSpeed-HANDLING.driftSpeedThreshold)/HANDLING.driftSpeedFade));
     var cornerLoad=Math.max(0,Math.min(1,(Math.abs(yawRate)*absSpeed-HANDLING.driftDemandStart)/(HANDLING.driftDemandFull-HANDLING.driftDemandStart)));
-    var targetLoss=speedLoad*Math.max(cornerLoad,stop?HANDLING.handbrakeGripLoss*Math.abs(connectedSteer):0);
-    if(car.tractionRecovery>0)targetLoss=0;
+    var targetLoss=Math.max(speedLoad*cornerLoad,powerSlide*rearSpin*HANDLING.rearPowerGripLoss);
+    if(handbrake)targetLoss=Math.max(targetLoss,HANDLING.handbrakeGripLoss*Math.min(1,groundSpeed/45));
+    if(car.tractionRecovery>0&&!handbrake)targetLoss=0;
     var loss=car.tractionLoss||0,response=targetLoss>loss?HANDLING.gripLossResponse:HANDLING.gripRecoveryResponse;
     loss+=(targetLoss-loss)*(1-Math.exp(-response*dt));
     var grip=HANDLING.normalLateralGrip+(HANDLING.slidingLateralGrip-HANDLING.normalLateralGrip)*loss;
-    if(car.tractionRecovery>0)grip=Math.max(grip,HANDLING.countersteerGrip);
+    if(handbrake)grip=HANDLING.normalLateralGrip+(HANDLING.handbrakeLateralGrip-HANDLING.normalLateralGrip)*Math.min(1,loss/HANDLING.handbrakeGripLoss);
+    else if(car.tractionRecovery>0)grip=Math.max(grip,HANDLING.countersteerGrip);
+    if(car.burnout)grip=18;
     lateral*=Math.exp(-grip*dt);
-    var limit=Math.max(absSpeed,HANDLING.driftSpeedFade)*Math.tan(HANDLING.maxSlipAngle);
+    // A pivot can pass through 90 degrees of slip. Clipping the lateral
+    // component each substep there would erase the slide's momentum.
+    var limit=handbrake?top:Math.max(absSpeed,HANDLING.driftSpeedFade)*Math.tan(HANDLING.maxSlipAngle);
+    if(!handbrake&&car.wasHandbraking)car.slideRecovery=1;
+    car.wasHandbraking=handbrake;
+    car.slideRecovery=Math.max(0,(car.slideRecovery||0)-dt*HANDLING.handbrakeRecoveryRate);
+    if(car.slideRecovery>0)limit=Math.max(limit,Math.abs(lateral)*car.slideRecovery);
     lateral=Math.max(-limit,Math.min(limit,lateral));
     car.speed=Math.sign(car.speed)*Math.max(0,absSpeed-HANDLING.driftDeceleration*loss*Math.min(1,Math.abs(lateral)/Math.max(absSpeed,1))*dt);
-    var total=Math.hypot(car.speed,lateral),cap=car.speed<0?-CAR_REV:CAR_MAX;
+    var total=Math.hypot(car.speed,lateral),cap=car.speed<0&&!handbrake&&loss<.2?-CAR_REV:top;
     if(total>cap){car.speed*=cap/total;lateral*=cap/total;}
     car.driveVelocityX=car.speed*driveCos-lateral*driveSin;
     car.driveVelocityY=car.speed*driveSin+lateral*driveCos;
@@ -155,23 +191,30 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput,roadContact}
  let owner=null,car=null,update=null,driving=false,lastSave=0,collisions=0,saveError=false,lastContact=null;
  const V=window.ROOKIE_CRUISER_VISUAL;let visual=V?.create(),lightHeld=false;
  const artOptions={candidate:new URLSearchParams(location.search).get('cruiserCandidate')==='1',legacy:new URLSearchParams(location.search).get('cruiserLegacy')==='1'};
- const input={up:false,down:false,left:false,right:false},proxy={__carSpace:false};
+ const input={up:false,down:false,left:false,right:false,performance:false,handbrake:false},proxy={__carSpace:false};
+ const heldKeys=new Map(),heldPointers=new Map();
+ function syncControl(action){
+  const held=[...heldKeys.values(),...heldPointers.values()].includes(action);
+  if(action==='brake')proxy.__carSpace=held;else input[action]=held;
+  controls.querySelector('[data-car="'+action+'"]')?.classList.toggle('held',held);
+ }
  const image=new Image();let loading=false;
  const controls=document.createElement('div');controls.id='connectedDriveControls';controls.hidden=true;
- controls.innerHTML='<div class="drive-meta"><output aria-live="off"></output><button id="connectedCruiserLight" type="button">LIGHTS: OFF</button></div><div><button data-car="left" aria-label="Hold to steer left">◀</button><button data-car="right" aria-label="Hold to steer right">▶</button><button data-car="brake" aria-label="Hold to stop">STOP</button><button data-car="down" aria-label="Hold to brake then reverse">BRAKE / R</button><button data-car="up" aria-label="Hold to accelerate">GAS</button></div>';
+ controls.innerHTML='<div class="drive-meta"><output aria-live="off"></output><button id="connectedCruiserLight" type="button">LIGHTS: OFF</button></div><div><button data-car="left" aria-label="Hold to steer left">◀</button><button data-car="right" aria-label="Hold to steer right">▶</button><button data-car="brake" aria-label="Hold to stop">STOP</button><button data-car="down" aria-label="Hold to brake then reverse">BRAKE / R</button><button data-car="up" aria-label="Hold to cruise">GAS</button></div><div class="drive-performance"><button data-car="performance" type="button">ACCELERATOR</button><button data-car="handbrake" type="button">HANDBRAKE</button></div>';
  modal.appendChild(controls);
  const style=document.createElement('style');style.textContent=`
  #connectedDriveControls{position:absolute;bottom:22px;left:20px;right:20px;pointer-events:none;z-index:18;color:#fff0c5;font:700 13px system-ui}
  #connectedDriveControls[hidden]{display:none}#connectedDriveControls output{display:block;text-align:center;text-shadow:1px 2px #102238;margin-bottom:12px}
  #connectedDriveControls>div{display:flex;gap:6px;justify-content:space-between}#connectedDriveControls button{pointer-events:auto;touch-action:none;flex:1;min-width:40px;min-height:66px;background:#193c50ed;color:#fff0c5;border:3px solid #d9bc77;border-radius:18px;font:800 12px system-ui;box-shadow:0 4px #0b2332}
  #connectedDriveControls .drive-meta{align-items:center;margin-bottom:10px}#connectedDriveControls .drive-meta output{flex:1;margin:0;font-size:11px}#connectedDriveControls #connectedCruiserLight{flex:0 0 96px;min-height:32px;border-width:2px;border-radius:10px;font-size:10px}
+ #connectedDriveControls .drive-performance{margin-top:6px}#connectedDriveControls .drive-performance button{min-height:48px;font-size:clamp(11px,3.4vw,14px)}
  #connectedDriveControls button.held{background:#b58b35;color:#102238}body.v116-play-mode #v115Campus.connected-cruiser-driving #v115CampusPad,body.v116-play-mode #v115Campus.connected-cruiser-driving #v125CampusSprint{display:none!important}
- body.v116-play-mode #v115Campus.connected-cruiser-driving #v115CampusInteract{top:auto!important;bottom:155px!important;right:16px!important;transform:none!important;z-index:30!important}
+ body.v116-play-mode #v115Campus.connected-cruiser-driving #v115CampusInteract{top:auto!important;bottom:211px!important;right:16px!important;transform:none!important;z-index:30!important}
  @media(min-width:900px){#connectedDriveControls{left:calc(50% - 270px);right:calc(50% - 270px)}}
  `;document.head.appendChild(style);
  function eligible(){return campus.open&&!H.academy?.active()&&!H.outbreak?.active();}
- function clearMotion(){if(car){car.driveVelocityX=car.driveVelocityY=car.lateralSpeed=car.slipAngle=car.tractionLoss=car.tractionRecovery=0;car.drifting=false;}}
- function reset(){lightHeld=false;Object.keys(input).forEach(k=>input[k]=false);proxy.__carSpace=false;controls.querySelectorAll('button').forEach(b=>b.classList.remove('held'));}
+ function clearMotion(){if(car){car.driveVelocityX=car.driveVelocityY=car.lateralSpeed=car.slipAngle=car.tractionLoss=car.tractionRecovery=car.handbrakeDirection=car.slideRecovery=0;car.rearWheelSlip=car.rearWheelSpeed=0;car.drifting=car.burnout=car.wasHandbraking=false;}}
+ function reset(){lightHeld=false;heldKeys.clear();heldPointers.clear();Object.keys(input).forEach(k=>input[k]=false);proxy.__carSpace=false;controls.querySelectorAll('button').forEach(b=>b.classList.remove('held'));}
  function ensure(){if(eligible()&&!loading){loading=true;V?.load();image.src='./assets/police-driving/cruiser-16-source.png';}if(owner===state)return;owner=state;car=restored(state.connectedCruiser);visual=V?.create();driving=false;reset();show();update=controllerFactory(car,input,proxy,collides,()=>persist(false),impact=>{collisions++;if(lastContact&&impact>3)window.ROOKIE_BANTER?.contact(lastContact,'vehicle-contact',performance.now());});}
  function persist(force=true){if(!owner||owner!==state||!eligible())return false;if(!force&&Date.now()-lastSave<700)return true;lastSave=Date.now();state.connectedCruiser={id:car.id,x:car.x,y:car.y,angle:car.angle,lightMode:car.lightMode};saveError=H.save()===false;if(saveError)message('Your cruiser could not be saved. Keep this page open and export your save from Menu.');return !saveError;}
  function collides(x,y,angle){
@@ -198,18 +241,31 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput,roadContact}
   driving=true;car.engine=true;car.speed=0;clearMotion();clearInput();reset();campus.x=car.x;campus.y=car.y;campus.follow=true;show();persist();modal.querySelector('#v116Dialogue').hidden=true;return true;
  }
  for(const b of controls.querySelectorAll('[data-car]')){
-  let pointer=null;const release=e=>{if(e&&pointer!==e.pointerId)return;pointer=null;if(b.dataset.car==='brake')proxy.__carSpace=false;else input[b.dataset.car]=false;b.classList.remove('held');};
-  b.addEventListener('pointerdown',e=>{if(!driving||window.ROOKIE_V116_HUD?.blocked())return;e.preventDefault();pointer=e.pointerId;b.setPointerCapture?.(pointer);if(b.dataset.car==='brake')proxy.__carSpace=true;else input[b.dataset.car]=true;b.classList.add('held');});
-  for(const t of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(t,release);
+  const action=b.dataset.car;
+  b.addEventListener('pointerdown',e=>{
+   if(!driving||window.ROOKIE_V116_HUD?.blocked()||heldPointers.has(e.pointerId))return;
+   e.preventDefault();
+   heldPointers.set(e.pointerId,action);
+   b.setPointerCapture?.(e.pointerId);syncControl(action);
+  });
+  for(const type of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(type,e=>{
+   if(heldPointers.get(e.pointerId)!==action)return;
+   heldPointers.delete(e.pointerId);syncControl(action);
+  });
  }
  function bayMark(g){g.save();g.fillStyle='#f5db98';g.textAlign='center';g.font='bold 14px system-ui';g.fillText('UNIT 9',1760,1641);g.restore();}
  function cycleLights(){const modes=['off','alternating','red','blue'];car.lightMode=modes[(modes.indexOf(car.lightMode)+1)%modes.length];controls.querySelector('#connectedCruiserLight').textContent='LIGHTS: '+car.lightMode.toUpperCase();persist();}
  controls.querySelector('#connectedCruiserLight').onclick=()=>{if(driving)cycleLights();};
- function key(k,down){if(!driving)return false;if(k==='l'){if(down&&!lightHeld)cycleLights();lightHeld=down;return true;}const map={w:'up',arrowup:'up',s:'down',arrowdown:'down',a:'left',arrowleft:'left',d:'right',arrowright:'right'};if(map[k]){input[map[k]]=down;return true;}if(k===' '){proxy.__carSpace=down;return true;}return false;}
- function updateVisual(dt){if(visual)V.update(visual,car,dt,{up:input.up,down:input.down,brake:proxy.__carSpace,roadContact});}
+ const bindings={w:'up',arrowup:'up',s:'down',arrowdown:'down',a:'left',arrowleft:'left',d:'right',arrowright:'right',shift:'performance',' ':'handbrake'};
+ function key(k,down){if(!driving)return false;if(k==='l'){if(down&&!lightHeld)cycleLights();lightHeld=down;return true;}
+  const action=bindings[k];if(!action)return false;
+  if(down)heldKeys.set(k,action);else heldKeys.delete(k);
+  syncControl(action);return true;
+ }
+ function updateVisual(dt){if(visual)V.update(visual,car,dt,{up:input.up||input.performance,down:input.down,brake:proxy.__carSpace,roadContact});}
  function step(dt){ensure();if(!eligible())return false;
   H.cityCollisions?.beforeControl(car);
-  if(driving){const n=Math.max(1,Math.ceil(dt/(1/120)));for(let i=0;i<n;i++)update(dt/n,performance.now());campus.x=car.x;campus.y=car.y;campus.moved=false;const d=modal.querySelector('#v116Dialogue');if(Math.abs(car.speed)<=6&&d.textContent==='Brake to a complete stop before getting out.')d.hidden=true;controls.querySelector('output').textContent=(car.speed<-3?'REVERSE · ':'UNIT 9 · ')+Math.round(Math.abs(car.speed)*.22)+' mph · E / Exit · Space: stop'+(saveError?' · Save unavailable':'');}
+  if(driving){const n=Math.max(1,Math.ceil(dt/(1/120)));for(let i=0;i<n;i++)update(dt/n,performance.now());campus.x=car.x;campus.y=car.y;campus.moved=false;const d=modal.querySelector('#v116Dialogue');if(Math.abs(car.speed)<=6&&d.textContent==='Brake to a complete stop before getting out.')d.hidden=true;controls.querySelector('output').textContent=(car.speed<-3?'REVERSE · ':'UNIT 9 · ')+Math.round(Math.abs(car.speed)*.22)+' mph · E / Exit · Shift: accelerator · Space: handbrake'+(saveError?' · Save unavailable':'');}
   H.cityCollisions?.afterControl(car);
   if(!H.cityCollisions)updateVisual(dt);
   return driving;
@@ -236,9 +292,16 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput,roadContact}
   vehicleImpact:()=>{collisions++;},
   physicsBody:()=>{ensure();Object.assign(car,{kind:'patrol',length:96,width:48,driving});return car;},
   syncImpact:dt=>{if(driving){campus.x=car.x;campus.y=car.y;}updateVisual(dt);if(car.impactState)persist(false);},
-  cameraVelocity:()=>driving?{x:car.driveVelocityX??car.speed*Math.cos(car.angle),y:car.driveVelocityY??car.speed*Math.sin(car.angle)}:null,
+  cameraVelocity:()=>{
+   if(!driving)return null;
+   const c=Math.cos(car.angle),s=Math.sin(car.angle);
+   const launch=input.performance&&!input.handbrake&&car.speed>0&&car.speed<85
+    ?Math.min(22,Math.max(0,(visual?.acceleration||0)*.12)):0;
+   return{x:(car.driveVelocityX??car.speed*c)+c*launch,y:(car.driveVelocityY??car.speed*s)+s*launch};
+  },
   audioState:()=>{ensure();return{x:car.x,y:car.y,speed:car.speed,engine:car.engine,driving,
-   acceleration:visual?.acceleration||0,throttle:!proxy.__carSpace&&(car.speed<0?input.down&&!input.up:input.up&&!input.down)};},
+   acceleration:visual?.acceleration||0,burnout:car.burnout,slip:visual?.slip||0,
+   throttle:!proxy.__carSpace&&(car.speed<0?input.down&&!input.up:(input.up||input.performance)&&!input.down&&!input.handbrake)};},
   active:()=>driving,position:()=>{ensure();return {x:car.x,y:car.y};},
   blocksWalker:(x,y,r)=>{ensure();return !driving&&obbHitsRect(car.x,car.y,car.angle,{x:x-r,y:y-r,w:r*2,h:r*2});},
   overlapsTraffic:tc=>{ensure();if(Math.abs(car.x-tc.x)>180||Math.abs(car.y-tc.y)>180)return false;if(Number.isFinite(tc.angle)&&window.ROOKIE_CITY_TRAFFIC)return window.ROOKIE_CITY_TRAFFIC.overlap({x:car.x,y:car.y,angle:car.angle,length:96,width:48},tc);const h=tc.dir==='left'||tc.dir==='right',w=h?(tc.kind==='delivery'?104:86):38,l=h?38:(tc.kind==='delivery'?104:86);return obbHitsRect(car.x,car.y,car.angle,{x:tc.x-w/2,y:tc.y-l/2,w,h:l});},

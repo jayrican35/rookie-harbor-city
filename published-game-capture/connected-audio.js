@@ -11,7 +11,13 @@ window.ROOKIE_CITY_AUDIO_FACTORY=function cityAudio(o){
  const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
  const allowed=()=>unlocked&&focused&&!document.hidden&&o.allowed()&&o.context()?.state==='running'&&o.gain()>0;
  function record(id,detail){history.push({id,at:now,...detail});if(history.length>64)history.shift();}
- function sharedBus(){const c=o.context();if(!c)return null;if(bound!==c){stop();bound=c;bus=c.createGain();bus.gain.value=0;bus.connect(c.destination);}return bus;}
+ function sharedBus(){const c=o.context();if(!c)return null;if(bound!==c){stop();bound=c;bus=c.createGain();bus.gain.value=0;bus.connect(c.destination);
+  // The city audio pack has no tire-squeal sample. Cache one short seamless
+  // tone with a lightly modulated harmonic on the existing audio bus.
+  const n=Math.round(c.sampleRate*.25),sample=c.createBuffer(1,n,c.sampleRate),data=sample.getChannelData(0);
+  for(let i=0;i<n;i++){const a=2*Math.PI*i/n;data[i]=.22*Math.sin(194*a+1.2*Math.sin(7*a))+.075*Math.sin(389*a);}
+  buffers.set('car_tire_squeal',sample);
+ }return bus;}
  function pump(){const c=o.context();if(!c||!unlocked||!o.allowed())return;
   while(decoding<2&&jobs.length){const {id,resolve}=jobs.shift(),entry=spec.get(id);decoding++;
    const formats=[preferred,preferred==='ogg'?'mp3':'ogg'];
@@ -55,11 +61,15 @@ window.ROOKIE_CITY_AUDIO_FACTORY=function cityAudio(o){
   if(previousDrive!==null&&previousDrive!==!!vehicle?.driving)play('car_door_close',.20,vehicle,1,600);
   previousDrive=!!vehicle?.driving;
   if(vehicle?.driving&&vehicle.engine){
-   const speed=Math.abs(vehicle.speed),ratio=clamp(speed/265,0,1);
+   const speed=Math.abs(vehicle.speed);
+   const lower=speed<65?0:speed<125?65:speed<195?125:speed<265?195:265;
+   const ratio=vehicle.burnout?1:clamp(.27+(speed-lower)/(lower===265?93:70)*.65,0,1);
    const load=vehicle.throttle?clamp(.35+vehicle.acceleration/220,0,1):0;
    loop('engine','car_engine_idle_loop',.095+.07*ratio+.06*load,vehicle,.8+.64*ratio+.19*load);
    if(vehicle.throttle&&vehicle.acceleration>45&&speed>12&&t>=nextRev&&play('car_engine_rev',.10,vehicle,1,5000))nextRev=t+5000;
   }
+  const scrub=vehicle?.driving?(vehicle.burnout?1:vehicle.slip||0):0;
+  loop('tires',scrub>.27?'car_tire_squeal':null,.09*scrub,vehicle,.86+.28*scrub);
   if(!vehicle?.throttle||!vehicle.engine)for(const v of voices)if(v.id==='car_engine_rev')stopVoice(v,.12);
  }
  function tick(t){now=t;const p=o.player();listener={x:p.x,y:p.y};

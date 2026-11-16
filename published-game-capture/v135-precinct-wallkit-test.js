@@ -414,6 +414,12 @@ function trafficContactSize(car){
  const [length,width]=fleetContactSizes[model];
  return [Math.min(car.length||length,length),Math.min(car.width||width,width)];
 }
+function trafficGroundScale(car){
+ if(!window.ROOKIE_MAIN_CITY_ACTIVE)return 1;
+ if(car.kind==='patrol')return window.ROOKIE_CRUISER_VISUAL?.manifest()?.groundScaleY||1;
+ if(fleetMode==='previous'||fleetMode==='pilot'&&car.kind!=='civilian')return 1;
+ return car.kind==='civilian'||car.kind==='delivery'?fleetGroundY:1;
+}
 const trafficHeadings={right:0,down:Math.PI/2,left:Math.PI,up:-Math.PI/2};
 function trafficHeading(car){
  return Number.isFinite(car.angle)?car.angle:trafficHeadings[car.dir]||0;
@@ -501,7 +507,7 @@ window.ROOKIE_V135_WALL_KIT=Object.freeze({
  version:'v135-phase1-wall-kit',
  drawTest,drawFacadeWindow,drawEntranceStatic,drawEntranceDoors,drawGroundSprite,fillGround,drawCommunitySprite,prepareCommunityAssets,fillCommunityGround,drawCommunityBorder,
  drawRoadNetwork,fillRoadMaterial,drawRoadDecal,
- preparePerspectivePilot,drawPilotVehicle,trafficContactSize,
+ preparePerspectivePilot,drawPilotVehicle,trafficContactSize,trafficGroundScale,
  fleetQA:()=>fleetQA?{limit:fleetLimit,loaded:[...fleetImages.keys()],loads:fleetLoads,evictions:fleetEvictions,samples:Object.fromEntries(fleetSamples)}:null,
  prepareInteriorWalls,drawInteriorModule,
  interiorWalls:()=>({loaded:!!interiorSheet,error:interiorError,frames:Object.keys(interiorManifest?.frames||{}).length,draws:interiorDraws}),

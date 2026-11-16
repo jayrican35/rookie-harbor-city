@@ -11,23 +11,30 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput,roadContact}
  let owner=null,car=null,update=null,driving=false,lastSave=0,collisions=0,saveError=false,lastContact=null;
  const V=window.ROOKIE_CRUISER_VISUAL;let visual=V?.create(),lightHeld=false;
  const artOptions={candidate:new URLSearchParams(location.search).get('cruiserCandidate')==='1',legacy:new URLSearchParams(location.search).get('cruiserLegacy')==='1'};
- const input={up:false,down:false,left:false,right:false},proxy={__carSpace:false};
+ const input={up:false,down:false,left:false,right:false,performance:false,handbrake:false},proxy={__carSpace:false};
+ const heldKeys=new Map(),heldPointers=new Map();
+ function syncControl(action){
+  const held=[...heldKeys.values(),...heldPointers.values()].includes(action);
+  if(action==='brake')proxy.__carSpace=held;else input[action]=held;
+  controls.querySelector('[data-car="'+action+'"]')?.classList.toggle('held',held);
+ }
  const image=new Image();let loading=false;
  const controls=document.createElement('div');controls.id='connectedDriveControls';controls.hidden=true;
- controls.innerHTML='<div class="drive-meta"><output aria-live="off"></output><button id="connectedCruiserLight" type="button">LIGHTS: OFF</button></div><div><button data-car="left" aria-label="Hold to steer left">◀</button><button data-car="right" aria-label="Hold to steer right">▶</button><button data-car="brake" aria-label="Hold to stop">STOP</button><button data-car="down" aria-label="Hold to brake then reverse">BRAKE / R</button><button data-car="up" aria-label="Hold to accelerate">GAS</button></div>';
+ controls.innerHTML='<div class="drive-meta"><output aria-live="off"></output><button id="connectedCruiserLight" type="button">LIGHTS: OFF</button></div><div><button data-car="left" aria-label="Hold to steer left">◀</button><button data-car="right" aria-label="Hold to steer right">▶</button><button data-car="brake" aria-label="Hold to stop">STOP</button><button data-car="down" aria-label="Hold to brake then reverse">BRAKE / R</button><button data-car="up" aria-label="Hold to cruise">GAS</button></div><div class="drive-performance"><button data-car="performance" type="button">ACCELERATOR</button><button data-car="handbrake" type="button">HANDBRAKE</button></div>';
  modal.appendChild(controls);
  const style=document.createElement('style');style.textContent=`
  #connectedDriveControls{position:absolute;bottom:22px;left:20px;right:20px;pointer-events:none;z-index:18;color:#fff0c5;font:700 13px system-ui}
  #connectedDriveControls[hidden]{display:none}#connectedDriveControls output{display:block;text-align:center;text-shadow:1px 2px #102238;margin-bottom:12px}
  #connectedDriveControls>div{display:flex;gap:6px;justify-content:space-between}#connectedDriveControls button{pointer-events:auto;touch-action:none;flex:1;min-width:40px;min-height:66px;background:#193c50ed;color:#fff0c5;border:3px solid #d9bc77;border-radius:18px;font:800 12px system-ui;box-shadow:0 4px #0b2332}
  #connectedDriveControls .drive-meta{align-items:center;margin-bottom:10px}#connectedDriveControls .drive-meta output{flex:1;margin:0;font-size:11px}#connectedDriveControls #connectedCruiserLight{flex:0 0 96px;min-height:32px;border-width:2px;border-radius:10px;font-size:10px}
+ #connectedDriveControls .drive-performance{margin-top:6px}#connectedDriveControls .drive-performance button{min-height:48px;font-size:clamp(11px,3.4vw,14px)}
  #connectedDriveControls button.held{background:#b58b35;color:#102238}body.v116-play-mode #v115Campus.connected-cruiser-driving #v115CampusPad,body.v116-play-mode #v115Campus.connected-cruiser-driving #v125CampusSprint{display:none!important}
- body.v116-play-mode #v115Campus.connected-cruiser-driving #v115CampusInteract{top:auto!important;bottom:155px!important;right:16px!important;transform:none!important;z-index:30!important}
+ body.v116-play-mode #v115Campus.connected-cruiser-driving #v115CampusInteract{top:auto!important;bottom:211px!important;right:16px!important;transform:none!important;z-index:30!important}
  @media(min-width:900px){#connectedDriveControls{left:calc(50% - 270px);right:calc(50% - 270px)}}
  `;document.head.appendChild(style);
  function eligible(){return campus.open&&!H.academy?.active()&&!H.outbreak?.active();}
- function clearMotion(){if(car){car.driveVelocityX=car.driveVelocityY=car.lateralSpeed=car.slipAngle=car.tractionLoss=car.tractionRecovery=0;car.drifting=false;}}
- function reset(){lightHeld=false;Object.keys(input).forEach(k=>input[k]=false);proxy.__carSpace=false;controls.querySelectorAll('button').forEach(b=>b.classList.remove('held'));}
+ function clearMotion(){if(car){car.driveVelocityX=car.driveVelocityY=car.lateralSpeed=car.slipAngle=car.tractionLoss=car.tractionRecovery=car.handbrakeDirection=car.slideRecovery=0;car.rearWheelSlip=car.rearWheelSpeed=0;car.drifting=car.burnout=car.wasHandbraking=false;}}
+ function reset(){lightHeld=false;heldKeys.clear();heldPointers.clear();Object.keys(input).forEach(k=>input[k]=false);proxy.__carSpace=false;controls.querySelectorAll('button').forEach(b=>b.classList.remove('held'));}
  function ensure(){if(eligible()&&!loading){loading=true;V?.load();image.src='./assets/police-driving/cruiser-16-source.png';}if(owner===state)return;owner=state;car=restored(state.connectedCruiser);visual=V?.create();driving=false;reset();show();update=controllerFactory(car,input,proxy,collides,()=>persist(false),impact=>{collisions++;if(lastContact&&impact>3)window.ROOKIE_BANTER?.contact(lastContact,'vehicle-contact',performance.now());});}
  function persist(force=true){if(!owner||owner!==state||!eligible())return false;if(!force&&Date.now()-lastSave<700)return true;lastSave=Date.now();state.connectedCruiser={id:car.id,x:car.x,y:car.y,angle:car.angle,lightMode:car.lightMode};saveError=H.save()===false;if(saveError)message('Your cruiser could not be saved. Keep this page open and export your save from Menu.');return !saveError;}
  function collides(x,y,angle){
@@ -54,18 +61,31 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput,roadContact}
   driving=true;car.engine=true;car.speed=0;clearMotion();clearInput();reset();campus.x=car.x;campus.y=car.y;campus.follow=true;show();persist();modal.querySelector('#v116Dialogue').hidden=true;return true;
  }
  for(const b of controls.querySelectorAll('[data-car]')){
-  let pointer=null;const release=e=>{if(e&&pointer!==e.pointerId)return;pointer=null;if(b.dataset.car==='brake')proxy.__carSpace=false;else input[b.dataset.car]=false;b.classList.remove('held');};
-  b.addEventListener('pointerdown',e=>{if(!driving||window.ROOKIE_V116_HUD?.blocked())return;e.preventDefault();pointer=e.pointerId;b.setPointerCapture?.(pointer);if(b.dataset.car==='brake')proxy.__carSpace=true;else input[b.dataset.car]=true;b.classList.add('held');});
-  for(const t of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(t,release);
+  const action=b.dataset.car;
+  b.addEventListener('pointerdown',e=>{
+   if(!driving||window.ROOKIE_V116_HUD?.blocked()||heldPointers.has(e.pointerId))return;
+   e.preventDefault();
+   heldPointers.set(e.pointerId,action);
+   b.setPointerCapture?.(e.pointerId);syncControl(action);
+  });
+  for(const type of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(type,e=>{
+   if(heldPointers.get(e.pointerId)!==action)return;
+   heldPointers.delete(e.pointerId);syncControl(action);
+  });
  }
  function bayMark(g){g.save();g.fillStyle='#f5db98';g.textAlign='center';g.font='bold 14px system-ui';g.fillText('UNIT 9',1760,1641);g.restore();}
  function cycleLights(){const modes=['off','alternating','red','blue'];car.lightMode=modes[(modes.indexOf(car.lightMode)+1)%modes.length];controls.querySelector('#connectedCruiserLight').textContent='LIGHTS: '+car.lightMode.toUpperCase();persist();}
  controls.querySelector('#connectedCruiserLight').onclick=()=>{if(driving)cycleLights();};
- function key(k,down){if(!driving)return false;if(k==='l'){if(down&&!lightHeld)cycleLights();lightHeld=down;return true;}const map={w:'up',arrowup:'up',s:'down',arrowdown:'down',a:'left',arrowleft:'left',d:'right',arrowright:'right'};if(map[k]){input[map[k]]=down;return true;}if(k===' '){proxy.__carSpace=down;return true;}return false;}
- function updateVisual(dt){if(visual)V.update(visual,car,dt,{up:input.up,down:input.down,brake:proxy.__carSpace,roadContact});}
+ const bindings={w:'up',arrowup:'up',s:'down',arrowdown:'down',a:'left',arrowleft:'left',d:'right',arrowright:'right',shift:'performance',' ':'handbrake'};
+ function key(k,down){if(!driving)return false;if(k==='l'){if(down&&!lightHeld)cycleLights();lightHeld=down;return true;}
+  const action=bindings[k];if(!action)return false;
+  if(down)heldKeys.set(k,action);else heldKeys.delete(k);
+  syncControl(action);return true;
+ }
+ function updateVisual(dt){if(visual)V.update(visual,car,dt,{up:input.up||input.performance,down:input.down,brake:proxy.__carSpace,roadContact});}
  function step(dt){ensure();if(!eligible())return false;
   H.cityCollisions?.beforeControl(car);
-  if(driving){const n=Math.max(1,Math.ceil(dt/(1/120)));for(let i=0;i<n;i++)update(dt/n,performance.now());campus.x=car.x;campus.y=car.y;campus.moved=false;const d=modal.querySelector('#v116Dialogue');if(Math.abs(car.speed)<=6&&d.textContent==='Brake to a complete stop before getting out.')d.hidden=true;controls.querySelector('output').textContent=(car.speed<-3?'REVERSE · ':'UNIT 9 · ')+Math.round(Math.abs(car.speed)*.22)+' mph · E / Exit · Space: stop'+(saveError?' · Save unavailable':'');}
+  if(driving){const n=Math.max(1,Math.ceil(dt/(1/120)));for(let i=0;i<n;i++)update(dt/n,performance.now());campus.x=car.x;campus.y=car.y;campus.moved=false;const d=modal.querySelector('#v116Dialogue');if(Math.abs(car.speed)<=6&&d.textContent==='Brake to a complete stop before getting out.')d.hidden=true;controls.querySelector('output').textContent=(car.speed<-3?'REVERSE · ':'UNIT 9 · ')+Math.round(Math.abs(car.speed)*.22)+' mph · E / Exit · Shift: accelerator · Space: handbrake'+(saveError?' · Save unavailable':'');}
   H.cityCollisions?.afterControl(car);
   if(!H.cityCollisions)updateVisual(dt);
   return driving;
@@ -92,9 +112,16 @@ H.connectedCruiser={install({campus,modal,blocked,actors,clearInput,roadContact}
   vehicleImpact:()=>{collisions++;},
   physicsBody:()=>{ensure();Object.assign(car,{kind:'patrol',length:96,width:48,driving});return car;},
   syncImpact:dt=>{if(driving){campus.x=car.x;campus.y=car.y;}updateVisual(dt);if(car.impactState)persist(false);},
-  cameraVelocity:()=>driving?{x:car.driveVelocityX??car.speed*Math.cos(car.angle),y:car.driveVelocityY??car.speed*Math.sin(car.angle)}:null,
+  cameraVelocity:()=>{
+   if(!driving)return null;
+   const c=Math.cos(car.angle),s=Math.sin(car.angle);
+   const launch=input.performance&&!input.handbrake&&car.speed>0&&car.speed<85
+    ?Math.min(22,Math.max(0,(visual?.acceleration||0)*.12)):0;
+   return{x:(car.driveVelocityX??car.speed*c)+c*launch,y:(car.driveVelocityY??car.speed*s)+s*launch};
+  },
   audioState:()=>{ensure();return{x:car.x,y:car.y,speed:car.speed,engine:car.engine,driving,
-   acceleration:visual?.acceleration||0,throttle:!proxy.__carSpace&&(car.speed<0?input.down&&!input.up:input.up&&!input.down)};},
+   acceleration:visual?.acceleration||0,burnout:car.burnout,slip:visual?.slip||0,
+   throttle:!proxy.__carSpace&&(car.speed<0?input.down&&!input.up:(input.up||input.performance)&&!input.down&&!input.handbrake)};},
   active:()=>driving,position:()=>{ensure();return {x:car.x,y:car.y};},
   blocksWalker:(x,y,r)=>{ensure();return !driving&&obbHitsRect(car.x,car.y,car.angle,{x:x-r,y:y-r,w:r*2,h:r*2});},
   overlapsTraffic:tc=>{ensure();if(Math.abs(car.x-tc.x)>180||Math.abs(car.y-tc.y)>180)return false;if(Number.isFinite(tc.angle)&&window.ROOKIE_CITY_TRAFFIC)return window.ROOKIE_CITY_TRAFFIC.overlap({x:car.x,y:car.y,angle:car.angle,length:96,width:48},tc);const h=tc.dir==='left'||tc.dir==='right',w=h?(tc.kind==='delivery'?104:86):38,l=h?38:(tc.kind==='delivery'?104:86);return obbHitsRect(car.x,car.y,car.angle,{x:tc.x-w/2,y:tc.y-l/2,w,h:l});},

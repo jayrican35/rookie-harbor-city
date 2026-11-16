@@ -6,11 +6,21 @@ const T=Object.freeze({restitution:.20,bounceThreshold:14,friction:.24,mass:Obje
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),wrap=a=>Math.atan2(Math.sin(a),Math.cos(a));
 function dimensions(b){return[b.length||86,b.width||38];}
 function contactDimensions(b){return window.ROOKIE_V135_WALL_KIT?.trafficContactSize?.(b)||dimensions(b);}
-function axes(b){return[{x:Math.cos(b.angle),y:Math.sin(b.angle)},{x:-Math.sin(b.angle),y:Math.cos(b.angle)}];}
+function axes(b){
+ const y=window.ROOKIE_V135_WALL_KIT?.trafficGroundScale?.(b)||1,c=Math.cos(b.angle),s=Math.sin(b.angle);
+ return[{x:c,y:s*y},{x:-s,y:c*y}];
+}
 function radius(a,[l,w],n){return Math.abs(a[0].x*n.x+a[0].y*n.y)*l/2+Math.abs(a[1].x*n.x+a[1].y*n.y)*w/2;}
 function contact(a,b){let depth=Infinity,n=null;const dx=b.x-a.x,dy=b.y-a.y,aa=axes(a),ba=axes(b),ad=contactDimensions(a),bd=contactDimensions(b);
  const ar=n=>radius(aa,ad,n),br=n=>radius(ba,bd,n);
- for(const axis of [...aa,...ba]){const projection=dx*axis.x+dy*axis.y,overlap=ar(axis)+br(axis)-Math.abs(projection);if(overlap<=0)return null;if(overlap<depth){depth=overlap;const sign=projection<0?-1:1;n={x:axis.x*sign,y:axis.y*sign};}}
+ // A projected rectangle is a parallelogram. Test its edge normals
+ // after normalizing so penetration is measured in world units.
+ for(const edge of [...aa,...ba]){
+  const length=Math.hypot(edge.x,edge.y),axis={x:-edge.y/length,y:edge.x/length};
+  const projection=dx*axis.x+dy*axis.y,overlap=ar(axis)+br(axis)-Math.abs(projection);
+  if(overlap<=0)return null;
+  if(overlap<depth){depth=overlap;const sign=projection<0?-1:1;n={x:axis.x*sign,y:axis.y*sign};}
+ }
  const t={x:-n.y,y:n.x},an=a.x*n.x+a.y*n.y,bn=b.x*n.x+b.y*n.y,at=a.x*t.x+a.y*t.y,bt=b.x*t.x+b.y*t.y;
  const along=(an+ar(n)+bn-br(n))/2,side=(Math.max(at-ar(t),bt-br(t))+Math.min(at+ar(t),bt+br(t)))/2;
  return{nx:n.x,ny:n.y,depth,x:n.x*along+t.x*side,y:n.y*along+t.y*side};

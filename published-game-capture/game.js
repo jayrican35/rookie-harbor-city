@@ -2902,6 +2902,7 @@ function updateCar(dt, tNow){
      speed steering felt dead; the wheel now answers from a crawl while
      top-speed authority is unchanged in feel (rate eased in by speed). */
   var steer = 0; if(left) steer -= 1; if(right) steer += 1;
+  if(window.__steerWheel&&window.__steerWheel.active)steer=window.__steerWheel.value;
   if(steer !== 0 && Math.abs(car.speed) > 4){
     var dirSign = car.speed >= 0 ? 1 : -1;
     car.angle += steer * dirSign * 1.95 * dt * Math.min(1, 0.38 + Math.abs(car.speed)/95);
@@ -15628,9 +15629,24 @@ window.HARBOR.landscape={spec:spec,placed:placed,cache:cache};})();
  window.addEventListener('pagehide',clearInputs);window.addEventListener('blur',clearInputs);window.addEventListener('resize',reset);document.addEventListener('visibilitychange',function(){if(document.hidden)clearInputs();});
  var priorOverlay=overlayOpen;overlayOpen=function(){syncBlocked();return districtArtBusy()||priorOverlay();};
  var last=null,previousUI=updateDriveUI;updateDriveUI=function(){var driving=isDriving();if(last!==driving){clearInputs();last=driving;}previousUI();zone.style.display=driving?'none':'';};
- var steer=document.querySelector('.dc-steer'),pedals=document.querySelector('.dc-pedals');steer.querySelector('[data-drive="left"]').innerHTML='◀<small>LEFT</small>';steer.querySelector('[data-drive="right"]').innerHTML='▶<small>RIGHT</small>';
+ var pedals=document.querySelector('.dc-pedals');
  pedals.querySelector('[data-drive="up"]').innerHTML='<span class="pedal-lines" aria-hidden="true"></span><strong>GAS</strong>';pedals.querySelector('[data-drive="down"]').innerHTML='<span class="pedal-lines" aria-hidden="true"></span><strong>BRAKE</strong><small>HOLD TO REVERSE</small>';
  document.getElementById('btnExitCar').innerHTML='EXIT<small>STOP FIRST</small>';document.getElementById('btnMapDrive').innerHTML='MAP';document.getElementById('btnLightsTouch').innerHTML='LIGHTS';document.getElementById('btnSirenTouch').innerHTML='SIREN';
+ var wheelEl=document.getElementById('steerWheel'),wheelRim=wheelEl?wheelEl.querySelector('.wheel-rim'):null;
+ window.__steerWheel={active:false,value:0};
+ var wPointer=null,wStartX=0,wStartValue=0,wAnim=null;
+ function wRender(){if(wheelRim)wheelRim.style.transform='rotate('+(window.__steerWheel.value*120)+'deg)';if(wheelEl)wheelEl.setAttribute('aria-valuenow',String(Math.round(window.__steerWheel.value*100)));}
+ function wApply(){var v=window.__steerWheel.value;window.__steerWheel.active=true;driveKeys.left=v<-0.12;driveKeys.right=v>0.12;wRender();}
+ function wCenter(){if(wAnim)cancelAnimationFrame(wAnim);wAnim=null;wPointer=null;window.__steerWheel.value=0;window.__steerWheel.active=false;if(!keys.left)driveKeys.left=false;if(!keys.right)driveKeys.right=false;wRender();}
+ function wSettle(){if(wAnim)cancelAnimationFrame(wAnim);var step=function(){window.__steerWheel.value*=0.78;if(Math.abs(window.__steerWheel.value)<0.02){wCenter();return;}wApply();wAnim=requestAnimationFrame(step);};wAnim=requestAnimationFrame(step);}
+ if(wheelEl){
+ wheelEl.addEventListener('pointerdown',function(e){if(wPointer!==null||!isDriving())return;e.preventDefault();ensureAudio();if(wAnim)cancelAnimationFrame(wAnim);wAnim=null;wPointer=e.pointerId;wStartX=e.clientX;wStartValue=window.__steerWheel.value;try{wheelEl.setPointerCapture(wPointer);}catch(err){}wApply();});
+ wheelEl.addEventListener('pointermove',function(e){if(e.pointerId!==wPointer)return;e.preventDefault();window.__steerWheel.value=Math.max(-1,Math.min(1,wStartValue+(e.clientX-wStartX)/80));wApply();});
+ ['pointerup','pointercancel','lostpointercapture'].forEach(function(t){wheelEl.addEventListener(t,function(e){if(e.pointerId===wPointer){wPointer=null;wSettle();}});});
+ wheelEl.addEventListener('contextmenu',function(e){e.preventDefault();});
+ heldInputResets.push(wCenter);
+ }
+
  window.HARBOR.mobileControls={vector:vector,reset:reset,clear:clearInputs,setPinching:function(on){pinching=!!on;if(on)reset();},setFixed:function(on){fixed=!!on;reset();zone.classList.toggle('joy-fixed',fixed);base.style.left='74px';base.style.top='calc(100% - 74px)';try{localStorage.setItem('rookie-joystick-mode',fixed?'fixed':'floating');}catch(e){}},isFixed:function(){return fixed;},sync:function(){updateDriveUI();syncBlocked();},state:function(){return{pointer:pointer,origin:{x:origin.x,y:origin.y},pinching:pinching,fixed:fixed,active:walkStick.active,x:walkStick.x,y:walkStick.y,driving:isDriving(),dialogue:dlgOpen,cutscene:csActive,overlay:districtArtBusy()||priorOverlay()};}};
  updateDriveUI();
 })();

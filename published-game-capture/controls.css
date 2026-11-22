@@ -12,7 +12,8 @@ body.driving .stage-card #driveControls.show{display:block;padding:8px 12px calc
 .stage-card #driveControls .dc-title{display:none}
 .stage-card #driveControls .dc-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto;gap:14px 10px;align-items:end}
 .stage-card #driveControls .dc-mid{grid-column:1 / -1;grid-row:1;display:flex;gap:6px;align-items:center;justify-content:flex-start}
-.stage-card #driveControls .dc-mid .dc-btn{width:auto;min-width:44px;min-height:44px;height:44px;padding:5px 8px;font-size:12px;border-radius:10px}
+.stage-card #driveControls .dc-mid .dc-btn{width:auto;min-width:44px;min-height:40px;height:40px;padding:4px 8px;font-size:12px;border-radius:10px}
+.stage-card #driveControls #btnExitCar{border-color:rgba(255,132,96,.95);background:rgba(96,32,22,.55);color:#ffd9c9}
 .stage-card #driveControls #btnEngineTouch{font-size:10px;min-width:53px}.stage-card #driveControls #btnEngineTouch small{font-size:8px}
 .stage-card #driveControls #btnExitCar{margin-left:auto}.stage-card #driveControls #btnExitCar small{font-size:8px}
 .stage-card #driveControls .dc-steer,.stage-card #driveControls .dc-pedals{grid-row:2;display:flex;gap:8px;width:auto}
@@ -22,6 +23,15 @@ body.driving .stage-card #driveControls.show{display:block;padding:8px 12px calc
 .stage-card #driveControls .dc-btn{border:2px solid rgba(235,203,111,.8);background:rgba(15,35,55,.48);color:#fff1cc;touch-action:none;user-select:none}
 .stage-card #driveControls .dc-btn.held,.stage-card #driveControls .dc-btn:active{background:rgba(208,173,57,.66);border-color:#ffdf83;transform:translateY(2px)}
 .stage-card #driveControls .dc-btn small{display:block;font-size:10px;letter-spacing:0}.stage-card #driveControls .dc-pedals .dc-btn small{font-size:7px}
+.stage-card #driveControls #steerWheel{position:relative;width:104px;height:104px;margin-bottom:15px;flex:0 0 auto;touch-action:none;user-select:none;-webkit-user-select:none}
+.stage-card #driveControls #steerWheel .wheel-rim{position:absolute;inset:0;border-radius:50%;border:10px solid rgba(235,203,111,.9);background:rgba(15,35,55,.48);box-sizing:border-box}
+.stage-card #driveControls #steerWheel .wheel-rim i{position:absolute;left:50%;top:calc(50% - 3px);width:42%;height:6px;background:rgba(235,203,111,.9);border-radius:3px;transform-origin:0 50%}
+.stage-card #driveControls #steerWheel .wheel-rim i:nth-child(1){transform:rotate(90deg)}
+.stage-card #driveControls #steerWheel .wheel-rim i:nth-child(2){transform:rotate(210deg)}
+.stage-card #driveControls #steerWheel .wheel-rim i:nth-child(3){transform:rotate(330deg)}
+.stage-card #driveControls #steerWheel .wheel-rim::after{content:'';position:absolute;left:50%;top:50%;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:rgba(235,203,111,.9)}
+.stage-card #driveControls #steerWheel small{position:absolute;left:0;right:0;bottom:-16px;text-align:center;font-size:10px;color:#fff1cc;text-shadow:0 1px 3px #101829}
+@media(max-height:500px){.stage-card #driveControls #steerWheel{width:78px;height:78px}}
 .pedal-lines{display:block;width:24px;height:38px;border:1px solid #c5d4df;border-radius:4px;background:repeating-linear-gradient(0deg,transparent 0px,transparent 6px,rgba(222,230,230,.6) 7px,rgba(222,230,230,.6) 9px)}[data-drive="up"] .pedal-lines{background:repeating-linear-gradient(90deg,transparent 0px,transparent 5px,#ddc369 6px,#ddc369 8px)}
 #walkJoystick{display:none;position:absolute;left:0;bottom:0;width:46%;max-width:280px;height:210px;max-height:45%;z-index:13;touch-action:none;user-select:none;-webkit-user-select:none;overflow:visible}
 .joy-hint{position:absolute;left:26px;bottom:26px;width:94px;height:94px;border:1px solid rgba(240,220,167,.45);border-radius:50%;background:rgba(13,33,53,.18);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff1cf;pointer-events:none}.joy-hint span{font-size:30px;line-height:1.1}.joy-hint small{font:9px system-ui;letter-spacing:.07em;text-shadow:0 1px 3px #081526}

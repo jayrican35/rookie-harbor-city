@@ -970,8 +970,7 @@ footer{margin-top:16px;text-align:center;color:var(--ink2);font-size:12.5px;}
           <div class="dc-title"><span>&#128663; DRIVING &mdash; UNIT 9</span><span id="dcHint">Engine: G &middot; stop fully, then EXIT opens the vehicle panel</span></div>
           <div class="dc-grid">
             <div class="dc-steer">
-              <button class="dc-btn" type="button" data-drive="left" aria-label="Steer left">&#9664;<small>STEER</small></button>
-              <button class="dc-btn" type="button" data-drive="right" aria-label="Steer right">&#9654;<small>STEER</small></button>
+              <div id="steerWheel" role="slider" aria-label="Steering wheel: drag left or right to steer, release to center" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0"><div class="wheel-rim"><i></i><i></i><i></i></div><small>STEER</small></div>
             </div>
             <div class="dc-mid">
               <button class="dc-btn toggle" type="button" id="btnEngineTouch">ENGINE<small>G</small></button>
